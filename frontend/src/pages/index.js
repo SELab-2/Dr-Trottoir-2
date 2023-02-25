@@ -18,6 +18,10 @@ export default function Home() {
         <div className={styles.description}>
           Rene was hier.
         </div>
+        <div style={{height: "50%"}}></div>
+        <div className={styles.description}>
+          En ook hier.
+        </div>
       </main>
     </>
   )
