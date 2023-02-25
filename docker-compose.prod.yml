@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  web:
+  django:
     build:
       dockerfile: Dockerfile.prod
       context: backend
@@ -20,14 +20,27 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - .env.prod.db
+  next:
+    build:
+      dockerfile: Dockerfile.prod
+      context: frontend
+      target: runner
+    command: npm run start
+    ports:
+      - 3000:3000
+    env_file:
+      - .env.prod.db
+    depends_on:
+      - django
   nginx:
     build: ./nginx
     volumes:
       - static_volume:/home/app/web/staticfiles
     ports:
-      - 1337:80
+      - 80:80
     depends_on:
-      - web
+      - django
+      - next
 
 volumes:
   postgres_data:

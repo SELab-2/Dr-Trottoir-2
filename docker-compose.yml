@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  web:
+  django:
     build: ./backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -18,5 +18,15 @@ services:
       - POSTGRES_USER=drtrottoir_dev
       - POSTGRES_PASSWORD=foo
       - POSTGRES_DB=drtrottoir_dev
+  next:
+    build: ./frontend
+    command: npm run dev
+    volumes:
+      - ./frontend/src/:/usr/src/app/src/
+      - ./frontend/public/:/usr/src/app/public/
+    ports:
+      - 3000:3000
+    env_file:
+      - .env.dev
 volumes:
   postgres_data:
