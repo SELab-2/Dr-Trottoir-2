@@ -1,5 +1,29 @@
 .container {
-    max-width: 36rem;
-    padding: 0 1rem;
-    margin: 3rem auto 6rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 24em;
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    padding:10px;
+}
+
+.input {
+    padding:10px;
+    border-radius:10px;
+    width:100%;
+    margin:10px 0;
+    box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+    font-family:inherit;
+    font-size: inherit;
+}
+
+.button {
+    padding:10px;
+    border:none;
+    background-color: #fff700;
+    color: #000000;
+    font-weight:600;
+    border-radius:5px;
+    width:100%;
 }
