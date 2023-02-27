@@ -1,2 +1,6 @@
+# IDE things
 .idea
+.devcontainer
+
+# node things
 node_modules/
