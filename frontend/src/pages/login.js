@@ -4,6 +4,10 @@ import styles from "@/components/layout.module.css";
 import {useEffect, useRef, useState} from "react";
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import {baseUrl} from "@/utils/baseUrl";
+import axios from 'axios'
+
+axios
 
 
 export default function Login(){
@@ -12,13 +16,46 @@ export default function Login(){
     const wwInput = useRef(null);
 
     const router = useRouter();
-    function handleSubmit() {
-        router.push({
-            pathname: '/test',
-            query: { email: emailInput.current.value,
-                     password: wwInput.current.value
-            }
+    async function handleSubmit() {
+        // router.push({
+        //     pathname: '/test',
+        //     query: { email: emailInput.current.value,
+        //              password: wwInput.current.value
+        //     }
+        // })
+        const json = JSON.stringify({
+            email: emailInput.current.value,
+            password: wwInput.current.value
         })
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json; charset=utf-8',
+                      'Access-Control-Allow-Origin' : 'http://127.0.0.1:8000/api/'},
+            body: json
+        }
+        const { data } = (await axios
+        .post(baseUrl + 'auth/', json
+        ).then(response => {
+            console.log(response)
+        }).catch((error) => {
+          console.log(error.response)
+        }))
+
+        // try {
+        //     console.log(requestOptions)
+        //     let response = await fetch(baseUrl + "auth/", requestOptions);
+        //     console.log(response)
+        //     let data = await response.json();
+        //     console.log("psssss")
+        //     if (data.hasOwnProperty("message")) {
+        //         //setError(data.message);
+        //     } else {
+        //         //navigate(`/audiobook?url=${data.url}`);
+        //     }
+        // } catch (e) {
+        //     console.log(e);
+        //     //setError(e);
+        // }
     }
     return (
         <Layout>
