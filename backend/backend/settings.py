@@ -16,6 +16,20 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="127.0.0.1").split(" ")
 
+# Also stolen from OSOC-5
+# Tests
+# https://django-testing-docs.readthedocs.io/en/latest/coverage.html
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+
+NOSE_ARGS = [
+    '--cover-erase',
+    # '--with-coverage',    # for some reason, when this is disabled, the coverage report is different (i think it is correct now)
+    '--cover-package=drtrottoir',
+    # '--verbosity=3',  # include for more output
+    '--exe'     # include exe's for windows docker because windows thinks python files are exe's
+]
 
 # Application definition
 
