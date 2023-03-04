@@ -23,7 +23,9 @@ export default function Login(){
         //              password: wwInput.current.value
         //     }
         // })
-        const json = JSON.stringify({
+        console.log(emailInput.current.value)
+        console.log(wwInput.current.value)
+        const jsonData = JSON.stringify({
             email: emailInput.current.value,
             password: wwInput.current.value
         })
@@ -31,10 +33,10 @@ export default function Login(){
             method: 'POST',
             headers: {'Content-Type': 'application/json; charset=utf-8',
                       'Access-Control-Allow-Origin' : 'http://127.0.0.1:8000/api/'},
-            body: json
+            body: jsonData
         }
         const { data } = (await axios
-        .post(baseUrl + 'auth/', json
+        .post(baseUrl + 'auth/', jsonData
         ).then(response => {
             console.log(response)
         }).catch((error) => {
