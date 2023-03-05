@@ -42,7 +42,7 @@ class CustomUser(AbstractBaseUser):
     location = models.ForeignKey(Location, verbose_name="address of the user", on_delete=models.CASCADE, null=True)
     # This is a superuser in the context of the project, django also has a superuser
     is_superuser = models.BooleanField(default=False)
-    buildings = models.ManyToManyField(Building, null=True)
+    buildings = models.ManyToManyField(Building)
 
     objects = CustomUserManager()
 
