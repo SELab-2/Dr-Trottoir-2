@@ -1,6 +1,5 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -62,3 +61,12 @@ class CustomUser(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.admin
+
+# Building
+class Building(models.Model):
+    """
+    Definition of a building: location where students have to
+    """
+    nickname = models.CharField("short name for building", max_length=255)
+    address = models.CharField("building address", max_length=255)
+    description = models.CharField("building description", max_length=4095)

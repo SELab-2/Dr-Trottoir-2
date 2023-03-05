@@ -5,7 +5,9 @@ from rest_framework.decorators import api_view
 import json
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model, authenticate, login
-
+from rest_framework import viewsets
+from .models import Building
+from .serializers import BuildingSerializer
 
 class EmailBackend(ModelBackend):
     def authenticate(self, request, email=None, password=None, **kwargs):
@@ -44,3 +46,11 @@ def login(request):
 
     # return render(request, 'login.html')
     return response
+
+class BuildingViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows buildings to be viewed or edited.
+    """
+    queryset = Building.objects.all()
+    serializer_class = BuildingSerializer
+    permission_classes = []
