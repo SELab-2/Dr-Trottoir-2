@@ -3,6 +3,7 @@
 const nextConfig = {
   reactStrictMode: true,
   /*webpackDevMiddleware: config => {
+  webpack: config => {
     config.watchOptions = {
       poll: 800,
       aggregateTimeout: 300,

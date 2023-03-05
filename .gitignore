@@ -1,4 +1,12 @@
+# IDE things
 .idea
+.vscode
+.devcontainer
+
+# passwords
+.env.prod*
+
+# node things
 node_modules/
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,nextjs,jetbrains+all,django
@@ -402,4 +410,5 @@ cypress/screenshots/*
 cypress/videos/*
 
 # End of https://www.toptal.com/developers/gitignore/api/cypressio
+
 
