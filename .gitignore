@@ -1,2 +1,10 @@
+# IDE things
 .idea
+.vscode
+.devcontainer
+
+# node things
 node_modules/
+
+# passwords
+.env.prod*
