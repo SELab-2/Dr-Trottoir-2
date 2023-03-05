@@ -1,8 +1,8 @@
 /** @type {import("next").NextConfig} */
 
 const nextConfig = {
-  reactStrictMode: 1,
-  webpackDevMiddleware: config => {
+  reactStrictMode: true,
+  webpack: config => {
     config.watchOptions = {
       poll: 800,
       aggregateTimeout: 300,
