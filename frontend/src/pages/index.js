@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
+import Link from 'next/link';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,7 +21,7 @@ export default function Home() {
         </div>
         <div style={{height: "50%"}}></div>
         <div className={styles.description}>
-          En ook hier.
+          En ook hier. <Link href="/login">Go Fish</Link>
         </div>
       </main>
     </>
