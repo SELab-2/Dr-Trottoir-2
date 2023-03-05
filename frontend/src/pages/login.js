@@ -7,8 +7,6 @@ import { useRouter } from 'next/navigation';
 import {baseUrl} from "@/utils/baseUrl";
 import axios from 'axios'
 
-axios
-
 
 export default function Login(){
 
@@ -59,32 +57,32 @@ export default function Login(){
         //     //setError(e);
         // }
     }
+
     return (
-        <Layout>
-            <Head>
-                <title>Login</title>
-            </Head>
-            <Image
-                src="/images/Logo-Dr-Trottoir-GEEL-01.png"
-                height={144}
-                width={470}
-                alt=""
-            />
-            <h1>Inloggen</h1>
-            <br/>
-            <label htmlFor="email">E-mailadres:</label>
-            <input
-                className={styles.input}
-                type="text"
-                id="email"
-                name="email"
-                required
-                ref={emailInput}
-            />
-            <label htmlFor="name">Wachtwoord:</label>
-            <input className={styles.input} type="password" id="ww" name="ww" ref={wwInput} required/>
-            <br/>
-            <button className={styles.button} type="submit" onClick={handleSubmit}>Log in</button>
-        </Layout>
+		<Layout>
+			<Head>
+				<title>Inloggen</title>
+			</Head>
+			<main className="flex justify-center">
+				<div className={"p-20 border-2"}>
+					<div className={"py-10"}>
+						<p className={"font-bold"}>Inloggen</p>
+					</div>
+					<div>
+						<p htmlFor="email">E-mailadres:</p>
+						<input className="border-2 border-gray-200" type="text" id="email" name="email" required ref={emailInput}/>
+					</div>
+					<div>
+						<p htmlFor="name">Wachtwoord:</p>
+						<input className="border-2 border-gray-200" type="password" id="ww" name="ww" ref={wwInput} required/>
+					</div>
+					<div className={"py-10"}>
+						<button className="underline" type="submit" onClick={handleSubmit}>Log in</button>
+					</div>
+				</div>
+			</main>
+		</Layout>
     )
+
+
 }

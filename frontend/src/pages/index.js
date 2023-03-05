@@ -15,16 +15,18 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          Rene was hier.
-          <h1 className="text-3xl font-bold underline">
-            If this is underlined, tailwind works.
+      <main className={"m-20 h-4/5"}>
+        <div className={"flex"}>
+      	  <div className={"basis-1/2 mr-5"}>
+            <p>Rene was hier.</p>
+            <p>Elias was hier ook!</p>
+      	  </div>
+          <h1 className="basis-1/2 text-3xl font-bold text-red-500">
+            If this is red, tailwind works.
           </h1>
         </div>
-        <div style={{height: "50%"}}></div>
-        <div className={styles.description}>
-          En ook hier. <Link href="/login">Go Fish</Link>
+        <div className="mt-20">
+            En ook hier. <Link className="underline" href="/login">Go Fish</Link>
         </div>
       </main>
     </>
