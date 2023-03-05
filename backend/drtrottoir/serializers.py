@@ -4,7 +4,7 @@ This module contains serializers for the models defined in models.py
 
 from .models import Building
 from rest_framework import serializers
-from django.contrib.auth.admin import get_user_model
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
