@@ -1,4 +1,5 @@
-# Dr-Trottoir
+![logo](https://raw.githubusercontent.com/SELab-2/Dr-Trottoir-2/main/logo.png?token=GHSAT0AAAAAAB2DT3N4M5LCYLBFY7IUJR34ZAD73VQ)
+
 ## About this project.
 This project is a full web management platform designed for [DrTrottoir](https://drtrottoir.be/), a company doing garbage management.   
 This is the solution by team 2.
