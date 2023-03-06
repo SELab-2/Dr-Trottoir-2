@@ -12,6 +12,8 @@ const customJestConfig = {
     // Add more setup options before each test is run
     // setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     // modulePathIgnorePatterns: ['<rootDir>/usr'],
+    collectCoverage: true,
+    coverageDirectory:"src",
     testEnvironment: 'jest-environment-jsdom',
 }
 
