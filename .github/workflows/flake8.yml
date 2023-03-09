@@ -24,5 +24,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Analysing the code with flake8
+      working-directory: ./backend
       run: |
-        flake8 
+        flake8 backend/ drtrottoir/ 
