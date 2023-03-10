@@ -7,7 +7,6 @@ from django.http import HttpResponse
 
 @api_view(['POST'])
 def user_auth(request):
-    #response = JsonResponse(json.loads(request.body))
     data = json.loads(request.body)
     user = authenticate(request, email=data["email"], password=data["password"])
     
@@ -16,4 +15,4 @@ def user_auth(request):
         # redirect to home page of api
         return redirect('/api/')
     else:
-        return HttpResponse("Invalid Email or Password", status=405)
+        return HttpResponse("Invalid Email or Password", status=401)
