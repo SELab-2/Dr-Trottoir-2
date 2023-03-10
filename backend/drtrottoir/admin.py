@@ -5,7 +5,7 @@ from .forms import UserChangeForm, UserCreationForm
 
 from .models import (
     CustomUser,
-    Location,
+    Region,
     Building,
     Photo,
     Visit,
@@ -48,5 +48,5 @@ admin.site.register(CustomUser, UserAdmin)
 # unregister the Group model from admin.
 admin.site.unregister(Group)
 # Register other moments
-models = [Location, Building, Photo, Visit, Tour, Schedule, BuildingInTour]
+models = [Region, Building, Photo, Visit, Tour, Schedule, BuildingInTour]
 admin.site.register(models)
