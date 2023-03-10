@@ -1,4 +1,4 @@
 from .building_viewset import BuildingViewSet
-from .location_viewset import LocationViewSet
+from .region_viewset import RegionViewSet
 from .email_backend import EmailBackend
 from .user_auth import *
