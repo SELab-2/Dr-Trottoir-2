@@ -10,7 +10,7 @@ router.register(r'location', LocationViewSet)
 router.register(r'tour', TourViewSet)
 
 urlpatterns = [
-    path('auth/', views.login, name='login'),
+    path('user/auth/', views.user_auth, name='user_auth'),
 ]
 
 urlpatterns += router.urls
