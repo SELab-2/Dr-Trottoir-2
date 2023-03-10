@@ -8,7 +8,7 @@ router.register(r'building', BuildingViewSet)
 router.register(r'location', LocationViewSet)
 
 urlpatterns = [
-    path('auth/', views.login, name='login'),
+    path('user/auth/', views.user_auth, name='user_auth'),
 ]
 
 urlpatterns += router.urls
