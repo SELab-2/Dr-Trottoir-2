@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from .building import Building
-from .location import Location
+from .region import Region
 
 
 class CustomUserManager(BaseUserManager):
@@ -39,7 +39,7 @@ class CustomUser(AbstractBaseUser):
     admin = models.BooleanField(default=False)
     first_name = models.CharField(verbose_name="first name", max_length=256, default='default')
     last_name = models.CharField(verbose_name="last name", max_length=256, default='default')
-    location = models.ForeignKey(Location, verbose_name="address of the user", on_delete=models.CASCADE, null=True)
+    region = models.ForeignKey(Region, verbose_name="address of the user", on_delete=models.SET_NULL, null=True)
     # This is a superuser in the context of the project, django also has a superuser
     is_superuser = models.BooleanField(default=False)
     buildings = models.ManyToManyField(Building)
