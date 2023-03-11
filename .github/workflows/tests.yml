@@ -3,13 +3,13 @@ on:
   - push
 
 jobs:
-  jobname:
+  tests:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
       - name: Build the image
-        run: docker-compose up -d --build
+        run: sudo docker-compose up -d --build
       - name: Test Django unittest
-        run: docker exec -it DrTrottoir-be python manage.py test
+        run: sudo docker exec -it DrTrottoir-be python manage.py test
       - name: Test NEXT.js Jest
-        run: docker exec -it DrTrottoir-fe npm run test
+        run: sudo docker exec -it DrTrottoir-fe npm run test
