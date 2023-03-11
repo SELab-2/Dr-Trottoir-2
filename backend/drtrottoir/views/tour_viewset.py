@@ -26,7 +26,7 @@ class TourViewSet(viewsets.ModelViewSet):
                 new_tour = Tour.objects.create(region=region, name=name)
                 serializer = self.get_serializer_class()
                 ser = serializer(instance=new_tour, context={'request': request})
-                return Response({'id': ser.data["id"]})
+                return Response({'tour': ser.data})
             else:
                 return Response("Given tour doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -36,20 +36,20 @@ class TourViewSet(viewsets.ModelViewSet):
                 serializer = self.get_serializer_class()
                 tour = Tour.objects.create(region=region, name=name)
                 ser = serializer(instance=tour, context={'request': request})
-                return Response({'id': ser.data["id"]})
+                return Response({'tour': ser.data})
             else:
                 return Response("Given region doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, request, pk=None):
+    def update(self, request, pk=None):  # data.region must be the url
         if Tour.objects.filter(pk=pk).exists():
             data = request.POST
             instance = Tour.objects.get(id=pk)
+            print(instance)
             serializer = self.get_serializer_class()
             ser = serializer(instance, data={'name': data["name"], 'region': data["region"]},
                              context={'request': request})
             if ser.is_valid():
                 ser.save()
-                print(instance.name)
                 return Response({'status': "success"})
             else:
                 return Response("Given data was not valid", status=status.HTTP_400_BAD_REQUEST)
