@@ -12,4 +12,4 @@ jobs:
       - name: Test Django unittest
         run: docker exec DrTrottoir-be python manage.py test
       - name: Test NEXT.js Jest
-        run: docker exec DrTrottoir-fe npm run test
+        run: docker exec DrTrottoir-fe npm run jest:workflow
