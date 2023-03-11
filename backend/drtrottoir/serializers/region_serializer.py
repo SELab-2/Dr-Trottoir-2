@@ -8,4 +8,4 @@ class RegionSerializer(serializers.HyperlinkedModelSerializer):
     """
     class Meta:
         model = Region
-        fields = ['url', 'region']
+        fields = '__all__'
