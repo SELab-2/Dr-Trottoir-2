@@ -1,8 +1,9 @@
 name: ESLint CI
 
 on:
-  - pull_request
-  - push
+  push:
+    paths:
+      - 'frontend/*'
 
 jobs:
   build:
