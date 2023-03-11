@@ -21,13 +21,13 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="127.0.0.1").spli
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
-
 NOSE_ARGS = [
     '--cover-erase',
-    # '--with-coverage',    # for some reason, when this is disabled, the coverage report is different (i think it is correct now)
+    # '--with-coverage', # for some reason, when this is disabled,
+    # the coverage report is different (i think it is correct now)
     '--cover-package=drtrottoir',
     # '--verbosity=3',  # include for more output
-    '--exe'     # include exe's for windows docker because windows thinks python files are exe's
+    '--exe'  # include exe's for windows docker because windows thinks python files are exe's
 ]
 CORS_ALLOW_METHODS = [
     "DELETE",

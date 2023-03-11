@@ -1,4 +1,5 @@
 from django.db import models
+
 from .building import Building
 
 IMAGE_STATES = ((1, 'Arrival'), (2, 'Departure'), (3, 'Extra'))

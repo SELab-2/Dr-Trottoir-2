@@ -1,6 +1,6 @@
-from .custom_user import CustomUser, CustomUserManager
 from .building import Building
 from .building_in_tour import BuildingInTour
+from .custom_user import CustomUser, CustomUserManager
 from .location import Location
 from .photo import Photo
 from .schedule import Schedule

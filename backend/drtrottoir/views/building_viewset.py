@@ -1,6 +1,6 @@
-from rest_framework import viewsets
 from drtrottoir.models import Building
 from drtrottoir.serializers import BuildingSerializer
+from rest_framework import viewsets
 
 
 class BuildingViewSet(viewsets.ModelViewSet):

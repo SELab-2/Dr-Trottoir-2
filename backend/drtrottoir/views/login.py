@@ -1,7 +1,8 @@
+import json
+
+from django.contrib.auth import authenticate
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from django.contrib.auth import authenticate, login
-import json
 
 
 @api_view(['POST'])

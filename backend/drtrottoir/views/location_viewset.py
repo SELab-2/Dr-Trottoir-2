@@ -1,6 +1,6 @@
-from rest_framework import viewsets
 from drtrottoir.models import Location
 from drtrottoir.serializers import LocationSerializer
+from rest_framework import viewsets
 
 
 class LocationViewSet(viewsets.ModelViewSet):

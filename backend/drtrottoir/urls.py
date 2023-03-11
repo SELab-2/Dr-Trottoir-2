@@ -1,7 +1,8 @@
 from django.urls import path
-from rest_framework import routers
-from . import views
 from drtrottoir.views import BuildingViewSet, LocationViewSet
+from rest_framework import routers
+
+from . import views
 
 router = routers.DefaultRouter()
 router.register(r'building', BuildingViewSet)
