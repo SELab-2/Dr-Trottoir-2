@@ -1,6 +1,7 @@
-name: flake8 Lint
+name: flake8 CI
 
 on:
+  pull_request:
   push:
     # branches:
     #   - main
