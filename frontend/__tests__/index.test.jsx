@@ -1,17 +1,17 @@
 //TODO: Just an example, to be deleted
 
 import { render, screen } from '@testing-library/react'
-import Home from '../src/pages/index'
+import Login from '../src/pages/index'
 import '@testing-library/jest-dom'
 
 describe('Home', () => {
     it('renders a heading', () => {
-        render(<Home />)
+        render(<Login />)
 
-        const heading = screen.getByRole('heading', {
-            name: /René\./i,
+        const el = screen.getByRole('button', {
+            name: "Log in",
         })
 
-        expect(heading).toBeInTheDocument()
+        expect(el).toBeInTheDocument()
     })
 })
