@@ -14,3 +14,6 @@ class Building(models.Model):
 
     region = models.ForeignKey(Region, verbose_name="region of building", on_delete=models.PROTECT)
     # waste schedule
+
+    def __str__(self):
+        return self.name
