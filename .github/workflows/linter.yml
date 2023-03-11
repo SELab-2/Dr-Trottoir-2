@@ -4,7 +4,7 @@ on:
   - push
 
 jobs:
-  flake8-lint:
+  flake8:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,7 +23,6 @@ jobs:
           flake8 backend/ drtrottoir/ 
 
   ESLint:
-    name: Run ESLint
     runs-on: ubuntu-latest
     steps:
 
