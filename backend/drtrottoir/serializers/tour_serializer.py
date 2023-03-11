@@ -15,7 +15,3 @@ class TourSerializer(serializers.HyperlinkedModelSerializer):
         model = Tour
         fields = ['url', 'id', 'name', 'region']
 
-    # def create(self, validated_data):
-    #     print(validated_data)
-    #     region_data = validated_data.pop('region')
-    #     return Tour.objects.create(region=region_data, **validated_data)
