@@ -1,12 +1,13 @@
 name: flake8 CI
 
 on:
-  push:
+  - push
+  # push:
     # branches:
     #   - main
-    paths:
-      - 'backend/backend/**/*.py'
-      - 'backend/drtrottoir/**/*.py'
+    # paths:
+    #  - 'backend/backend/**/*.py'
+    #  - 'backend/drtrottoir/**/*.py'
 
 
 jobs:
