@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIRequestFactory
 from django.urls import reverse
 
 from drtrottoir.models import Region
@@ -16,7 +16,7 @@ class TestRegionAPIView(APITestCase):
         self.client.force_authenticate(user=user)
 
     def test_get(self):
-        response = self.client.get(reverse("building-detail", kwargs={'pk': self.region.pk}))
-        serializer = RegionSerializer(self.region)
+        response = self.client.get(reverse("region-detail", kwargs={'pk': self.region.pk}))
+        serializer = RegionSerializer(self.region, context={'request': response.wsgi_request})
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
