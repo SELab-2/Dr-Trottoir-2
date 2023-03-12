@@ -3,7 +3,7 @@
     "model": "drtrottoir.region",
     "pk": 1,
     "fields": {
-        "region": "Gent"
+        "region_name": "Gent"
     }
 },
 {
@@ -12,7 +12,6 @@
     "fields": {
         "nickname": "Academie",
         "description": "Twee containers",
-        "name": "Academie",
         "manual": "fixtures/data/academie_handleiding.txt",
         "address_line_1": "Sint-Margrietstraat 11",
         "address_line_2": "9000 Gent",
@@ -26,7 +25,6 @@
     "fields": {
         "nickname": "KotCompany",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "name": "KotCompany Coupure",
         "manual": "fixtures/data/KotCompany_handleiding.txt",
         "address_line_1": "Theresianenstraat 10",
         "address_line_2": "9000 Gent",
@@ -39,7 +37,6 @@
     "fields": {
         "nickname": "Tu Casa",
         "description": "Ingang via de kleine poort achter het gebouw. Er is een badge nodig om bij de containers te geraken.",
-        "name": "Tu Casa",
         "manual": "fixtures/data/Tu_Casa_handleiding.txt",
         "address_line_1": "Ingelandgat 29",
         "address_line_2": "9000 Gent",
@@ -54,10 +51,11 @@
         "last_login": "2023-03-08T15:32:41.298Z",
         "email": "admin@admin.com",
         "is_active": true,
-        "admin": true,
+        "developer": false,
+        "superuser": false,
+        "superstudent": false,
         "first_name": "default",
         "last_name": "default",
-        "is_superuser": false,
         "buildings": []
     }
 },
@@ -69,10 +67,11 @@
         "last_login": null,
         "email": "elias.rene@brent.wout",
         "is_active": true,
-        "admin": false,
+        "developer": true,
+        "superuser": false,
+        "superstudent": false,
         "first_name": "default",
         "last_name": "default",
-        "is_superuser": false,
         "buildings": []
     }
 },
