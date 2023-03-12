@@ -10,3 +10,6 @@ class Photo(models.Model):
     state = models.IntegerField(verbose_name="type of photo", choices=IMAGE_STATES)
     comment = models.TextField(verbose_name="comment on the photo")
     created_at = models.DateTimeField(verbose_name="time of creation")
+
+    def __str__(self):
+        return f"{self.visit.name}, {self.created_at}"

@@ -21,13 +21,12 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="127.0.0.1").spli
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
-
 NOSE_ARGS = [
     '--cover-erase',
     # '--with-coverage',    # for some reason, when this is disabled, the coverage report is different (i think it is correct now)
     '--cover-package=drtrottoir',
     # '--verbosity=3',  # include for more output
-    '--exe'     # include exe's for windows docker because windows thinks python files are exe's
+    '--exe'  # include exe's for windows docker because windows thinks python files are exe's
 ]
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -61,7 +60,8 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'backend.disableCSRF.DisableCSRFMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -103,7 +103,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 
 # Database
