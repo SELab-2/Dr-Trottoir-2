@@ -6,6 +6,7 @@ from drtrottoir.models import BuildingInTour
 from drtrottoir.tests.factories.tour_factory import TourFactory
 from drtrottoir.tests.factories.region_factory import RegionFactory
 from drtrottoir.tests.factories.building_factory import BuildingFactory
+from drtrottoir.tests.factories.user_factory import DeveloperUserFactory
 from drtrottoir.serializers.tour_serializer import TourSerializer
 import json
 
@@ -17,6 +18,8 @@ class TestTourAPIView(APITestCase):
         self.tour = TourFactory()
         self.region = RegionFactory()
         self.building = BuildingFactory()
+        user = DeveloperUserFactory()
+        self.client.force_login(user=user)
 
     def test_get(self):
         response = self.client.get('/api/tour/' + str(self.tour.pk), follow=True)
@@ -24,8 +27,11 @@ class TestTourAPIView(APITestCase):
         self.assertEqual(serializer.data, response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+
     def test_post(self):
         response = self.client.post('/api/tour/', data={"region": self.region.pk, "name": "test"}, follow=True)
+        print(response.data)
+        print("help")
         self.assertTrue("tour" in response.data and "url" in response.data["tour"])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         url = response.data["tour"]["url"]

@@ -2,6 +2,8 @@ from rest_framework.decorators import action
 from rest_framework import status, viewsets
 from drtrottoir.models import Tour, Region, BuildingInTour
 from drtrottoir.serializers.tour_serializer import TourSerializer
+from drtrottoir.permissions.super_permission import SuperPermissionOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
@@ -11,6 +13,7 @@ class TourViewSet(viewsets.ModelViewSet):
     """
     serializer_class = TourSerializer
     queryset = Tour.objects.all()
+    permission_classes = [IsAuthenticated & SuperPermissionOrReadOnly]
 
     def create(self, request):
         data = request.data
