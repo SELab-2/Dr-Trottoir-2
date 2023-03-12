@@ -28,7 +28,7 @@ class CustomUserManager(BaseUserManager):
             email,
             password=password
         )
-        user.admin = True
+        user.developer = True
         user.save(using=self._db)
         return user
 

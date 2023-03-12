@@ -1,8 +1,7 @@
 from rest_framework import status
-from rest_framework.test import APITestCase, APIRequestFactory
+from rest_framework.test import APITestCase
 from django.urls import reverse
 
-from drtrottoir.models import Region
 from drtrottoir.serializers import RegionSerializer
 from drtrottoir.tests.factories import RegionFactory, DeveloperUserFactory
 
