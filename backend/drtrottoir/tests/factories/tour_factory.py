@@ -1,7 +1,7 @@
 from factory.django import DjangoModelFactory
 import factory
 from drtrottoir.models import Tour
-from drtrottoir.tests.region_factory import RegionFactory
+from drtrottoir.tests.factories import RegionFactory
 
 
 class TourFactory(DjangoModelFactory):
