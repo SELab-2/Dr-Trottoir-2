@@ -2,7 +2,8 @@ import axios from "axios";
 import {baseUrl} from "@/utils/baseUrl";
 
 // TODO(Elias):
-//  1. When do we call refreshAccessTokens()? Research/figure out a way to do this without doing too much requests.
+//  1. This code is not tested yet! Backend is not far along enough...
+//  2. When do we call refreshAccessTokens()? Research/figure out a way to do this without doing too much requests.
 
 const baseUrlAuth = `${baseUrl}/token/`
 
