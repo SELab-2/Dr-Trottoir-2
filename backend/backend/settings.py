@@ -26,9 +26,7 @@ NOSE_ARGS = [
     # '--with-coverage',    # for some reason, when this is disabled, the coverage report is different (i think it is correct now)
     '--cover-package=drtrottoir',
     # '--verbosity=3',  # include for more output
-    '--exe',  # include exe's for windows docker because windows thinks python files are exe's
-    '--nocapture',
-    '--nologcapture',
+    '--exe'  # include exe's for windows docker because windows thinks python files are exe's
 ]
 CORS_ALLOW_METHODS = [
     "DELETE",
