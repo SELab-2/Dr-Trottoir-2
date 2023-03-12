@@ -26,7 +26,7 @@ NOSE_ARGS = [
     # '--with-coverage',    # for some reason, when this is disabled, the coverage report is different (i think it is correct now)
     '--cover-package=drtrottoir',
     # '--verbosity=3',  # include for more output
-    '--exe',  # include exe's for windows docker because windows thinks python files are exe's
+    '--exe'  # include exe's for windows docker because windows thinks python files are exe's
 ]
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -60,7 +60,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'backend.disableCSRF.DisableCSRFMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

@@ -5,7 +5,6 @@ from .region import Region
 class Building(models.Model):
     nickname = models.CharField("short name for building", max_length=255)
     description = models.CharField("building description", max_length=4095)
-    name = models.CharField(verbose_name="name of building", max_length=256)
     manual = models.FileField(verbose_name="manual", upload_to='files/', null=True)
 
     address_line_1 = models.CharField(verbose_name="address line 1", max_length=256)
@@ -16,4 +15,4 @@ class Building(models.Model):
     # waste schedule
 
     def __str__(self):
-        return self.name
+        return self.nickname
