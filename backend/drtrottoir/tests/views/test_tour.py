@@ -2,9 +2,10 @@ from django.http import QueryDict
 from rest_framework import status
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from drtrottoir.models import Tour
+from drtrottoir.models import BuildingInTour
 from drtrottoir.tests.factories.tour_factory import TourFactory
 from drtrottoir.tests.factories.region_factory import RegionFactory
+from drtrottoir.tests.factories.building_factory import BuildingFactory
 from drtrottoir.serializers.tour_serializer import TourSerializer
 import json
 
@@ -15,6 +16,7 @@ class TestTourAPIView(APITestCase):
     def setUp(self):
         self.tour = TourFactory()
         self.region = RegionFactory()
+        self.building = BuildingFactory()
 
     def test_get(self):
         response = self.client.get('/api/tour/' + str(self.tour.pk), follow=True)
@@ -67,3 +69,22 @@ class TestTourAPIView(APITestCase):
         new_data = response.data
         self.assertNotEqual(original["name"], new_data["name"])
         self.assertEqual(new_data["name"], "test")
+
+    def test_buildings(self):
+        build_tour = BuildingInTour.objects.create(tour=self.tour, building=self.building, order_index=0)
+        response = self.client.get('/api/tour/' + str(self.tour.pk) + '/buildings/', follow=True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        buildings = response.data["buildings"]
+        self.assertEqual(len(buildings), 1)
+        self.assertEqual(buildings[0], build_tour.pk)
+        found_build_tour = BuildingInTour.objects.get(pk=buildings[0])
+        self.assertEqual(found_build_tour.building, build_tour.building)
+        self.assertEqual(found_build_tour.tour, build_tour.tour)
+        self.assertEqual(found_build_tour.order_index, build_tour.order_index)
+
+        BuildingInTour.objects.filter(pk=build_tour.pk).delete()
+        response = self.client.get('/api/tour/' + str(self.tour.pk) + '/buildings/', follow=True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        buildings = response.data["buildings"]
+        self.assertEqual(len(buildings), 0)
+

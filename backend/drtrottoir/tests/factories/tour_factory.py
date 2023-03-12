@@ -5,7 +5,7 @@ from drtrottoir.tests.factories import RegionFactory
 
 
 class TourFactory(DjangoModelFactory):
-    name = factory.Faker("name")
+    name = factory.Faker("city")
     region = factory.SubFactory(RegionFactory)
 
     class Meta:
