@@ -1,3 +1,4 @@
 from .building_serializer import BuildingSerializer
 from .region_serializer import RegionSerializer
 from .user_serializer import UserSerializer
+from .visit_serializer import VisitSerializer
