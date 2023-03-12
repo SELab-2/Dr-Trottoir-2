@@ -3,7 +3,7 @@
     "model": "drtrottoir.region",
     "pk": 1,
     "fields": {
-        "region": "Gent"
+        "region_name": "Gent"
     }
 },
 {
