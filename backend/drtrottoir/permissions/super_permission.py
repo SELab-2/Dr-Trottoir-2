@@ -18,7 +18,7 @@ class SuperPermissionOrReadOnly(BasePermission):
     But requires higher levels for non-safe methods.
     """
     def has_permission(self, request, view):
-        return request.user.is_super and request.method in SAFE_METHODS
+        return request.user.is_super or request.method in SAFE_METHODS
 
     def has_object_permission(self, request, view, obj):
-        return request.user.is_super and request.method in SAFE_METHODS
+        return request.user.is_super or request.method in SAFE_METHODS
