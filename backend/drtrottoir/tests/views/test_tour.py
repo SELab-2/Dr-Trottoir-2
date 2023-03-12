@@ -1,14 +1,8 @@
-from django.http import QueryDict
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.urls import reverse
 from drtrottoir.models import BuildingInTour
-from drtrottoir.tests.factories.tour_factory import TourFactory
-from drtrottoir.tests.factories.region_factory import RegionFactory
-from drtrottoir.tests.factories.building_factory import BuildingFactory
-from drtrottoir.tests.factories.user_factory import DeveloperUserFactory
-from drtrottoir.serializers.tour_serializer import TourSerializer
-import json
+from drtrottoir.tests.factories import TourFactory, RegionFactory, BuildingFactory, DeveloperUserFactory
+from drtrottoir.serializers import TourSerializer
 
 
 class TestTourAPIView(APITestCase):
