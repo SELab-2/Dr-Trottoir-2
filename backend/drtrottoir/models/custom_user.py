@@ -4,6 +4,14 @@ from .building import Building
 from .region import Region
 
 
+class Roles(models.IntegerChoices):
+    DEVELOPER = 1
+    SUPERADMIN = 2
+    SUPERSTUDENT = 3
+    OWNER = 4
+    STUDENT = 5
+
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None):
         """
@@ -28,7 +36,7 @@ class CustomUserManager(BaseUserManager):
             email,
             password=password
         )
-        user.developer = True
+        user.role = Roles.DEVELOPER
         user.save(using=self._db)
         return user
 
@@ -36,13 +44,11 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser):
     email = models.EmailField(verbose_name='email address', unique=True)
     is_active = models.BooleanField(default=True)
-    developer = models.BooleanField(default=False)
-    superuser = models.BooleanField(default=False)
-    superstudent = models.BooleanField(default=False)
     first_name = models.CharField(verbose_name="first name", max_length=256, default='default')
     last_name = models.CharField(verbose_name="last name", max_length=256, default='default')
     region = models.ForeignKey(Region, verbose_name="address of the user", on_delete=models.SET_NULL, null=True)
     buildings = models.ManyToManyField(Building)
+    role = models.IntegerField(choices=Roles.choices, default=Roles.STUDENT)
 
     objects = CustomUserManager()
 
@@ -58,23 +64,23 @@ class CustomUser(AbstractBaseUser):
 
     def has_perm(self, perm, obj=None):
         # For the dango admin panel
-        return self.developer
+        return self.role == Roles.DEVELOPER
 
     def has_module_perms(self, app_label):
         # For the dango admin panel
-        return self.developer
+        return self.role == Roles.DEVELOPER
 
     @property
     def is_super(self):
         # Is this a superuser, student or a developer
-        return self.superstudent or self.superuser or self.developer
+        return self.role <= Roles.SUPERSTUDENT
 
     @property
     def is_admin(self):
         # For the dango admin panel
-        return self.developer
+        return self.role == Roles.DEVELOPER
 
     @property
     def is_staff(self):
         # For the dango admin panel
-        return self.developer
+        return self.role == Roles.DEVELOPER
