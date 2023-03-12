@@ -27,11 +27,8 @@ class TestTourAPIView(APITestCase):
         self.assertEqual(serializer.data, response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-
     def test_post(self):
         response = self.client.post('/api/tour/', data={"region": self.region.pk, "name": "test"}, follow=True)
-        print(response.data)
-        print("help")
         self.assertTrue("tour" in response.data and "url" in response.data["tour"])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         url = response.data["tour"]["url"]
@@ -93,4 +90,3 @@ class TestTourAPIView(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         buildings = response.data["buildings"]
         self.assertEqual(len(buildings), 0)
-
