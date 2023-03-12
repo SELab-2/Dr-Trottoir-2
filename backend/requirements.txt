@@ -9,3 +9,6 @@ django-cors-headers==3.14.0
 flake8~=6.0.0
 coverage
 django-nose
+djangorestframework-simplejwt==5.2.2
+Faker==17.6.0
+factory-boy==3.2.1

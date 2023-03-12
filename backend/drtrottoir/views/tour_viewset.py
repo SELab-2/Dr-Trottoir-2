@@ -1,12 +1,8 @@
 from rest_framework.decorators import action
 from rest_framework import status, viewsets
-# from rest_framework.decorators import detail_route
 from drtrottoir.models import Tour, Region, BuildingInTour
 from drtrottoir.serializers.tour_serializer import TourSerializer
 from rest_framework.response import Response
-from django.http import JsonResponse
-from django.forms.models import model_to_dict
-import json
 
 
 class TourViewSet(viewsets.ModelViewSet):
@@ -17,19 +13,23 @@ class TourViewSet(viewsets.ModelViewSet):
     queryset = Tour.objects.all()
 
     def create(self, request):
-        data = request.POST
+        data = request.data
         if 'id' in data:  # Create a new version of an existing tour
             if Tour.objects.filter(pk=data["id"]).exists():
+                buildings_tour = BuildingInTour.objects.filter(tour=data["id"])
                 tour = Tour.objects.get(pk=data["id"])
                 name = tour.name
                 region = tour.region
                 new_tour = Tour.objects.create(region=region, name=name)
+                for build_tour in buildings_tour:
+                    BuildingInTour.objects.create(tour=new_tour, building=build_tour.building,
+                                                  order_index=build_tour.order_index)
                 serializer = self.get_serializer_class()
                 ser = serializer(instance=new_tour, context={'request': request})
                 return Response({'tour': ser.data})
             else:
                 return Response("Given tour doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
-        else:
+        elif "region" in data and "name" in data:  # Region must be the id
             if Region.objects.filter(pk=data["region"]).exists():
                 region = Region.objects.get(pk=data["region"])
                 name = data["name"]
@@ -39,29 +39,8 @@ class TourViewSet(viewsets.ModelViewSet):
                 return Response({'tour': ser.data})
             else:
                 return Response("Given region doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
-
-    def update(self, request, pk=None):  # data.region must be the url
-        if Tour.objects.filter(pk=pk).exists():
-            data = request.POST
-            instance = Tour.objects.get(id=pk)
-            print(instance)
-            serializer = self.get_serializer_class()
-            ser = serializer(instance, data={'name': data["name"], 'region': data["region"]},
-                             context={'request': request})
-            if ser.is_valid():
-                ser.save()
-                return Response({'status': "success"})
-            else:
-                return Response("Given data was not valid", status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response("Given tour doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, pk=None):
-        if pk is not None and Tour.objects.filter(pk=pk).exists():
-            Tour.objects.filter(id=pk).delete()
-            return Response({'status': "success"})
-        else:
-            return Response("Given tour doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Given values are not valid", status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['get'])
     def buildings(self, request, pk=None):
