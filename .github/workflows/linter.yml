@@ -5,13 +5,13 @@ on:
 
 jobs:
   flake8:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python 3.12
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: "3.9.6"
       - name: Install dependencies
         working-directory: ./backend
         run: |
@@ -23,7 +23,7 @@ jobs:
           flake8 backend/ drtrottoir/ 
 
   ESLint:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
 
       # Check out the repository
