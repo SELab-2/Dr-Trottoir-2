@@ -1,1 +1,3 @@
-from .test_region import *
+from .test_region import TestRegionAPIView
+
+__all__ = [TestRegionAPIView]

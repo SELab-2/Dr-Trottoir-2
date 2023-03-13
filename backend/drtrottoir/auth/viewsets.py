@@ -5,7 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from backend.drtrottoir.auth.serializers import LoginSerializer
+from drtrottoir.auth.serializers import LoginSerializer
 
 
 class LoginViewSet(ModelViewSet, TokenObtainPairView):

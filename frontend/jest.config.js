@@ -15,6 +15,11 @@ const customJestConfig = {
     collectCoverage: true,
     coverageDirectory:"src",
     testEnvironment: 'jest-environment-jsdom',
+
+	//ChatGPT suggested this fix. It seems to work, but more testing is needed.
+	moduleNameMapper: {
+		'^@/(.*)$': '<rootDir>/src/$1'
+	}
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
