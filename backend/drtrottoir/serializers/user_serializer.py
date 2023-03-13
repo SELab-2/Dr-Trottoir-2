@@ -13,5 +13,17 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     region_name = serializers.CharField(source='region.region_name', read_only=True)
     class Meta:
         model = User
-        fields = '__all__'
+        fields = [
+            'url',
+            'email',
+            'last_login',
+            'first_name',
+            'last_name',
+            'region',
+            'region_name',
+            'developer',
+            'superuser',
+            'superstudent',
+            'buildings'
+        ]
         read_only_field = ['is_active']
