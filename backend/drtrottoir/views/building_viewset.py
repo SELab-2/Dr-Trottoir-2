@@ -11,4 +11,4 @@ class BuildingViewSet(viewsets.ModelViewSet):
     """
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated & SuperPermissionOrReadOnly]
