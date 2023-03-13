@@ -1,5 +1,5 @@
 from .building_serializer import BuildingSerializer
-from .location_serializer import LocationSerializer
+from .region_serializer import RegionSerializer
 from .user_serializer import UserSerializer
 
-__all__ = [BuildingSerializer, LocationSerializer, UserSerializer]
+__all__ = [BuildingSerializer, RegionSerializer, UserSerializer]

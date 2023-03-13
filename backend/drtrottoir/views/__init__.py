@@ -1,6 +1,4 @@
 from .building_viewset import BuildingViewSet
-from .email_backend import EmailBackend
-from .location_viewset import LocationViewSet
-from .login import login
+from .region_viewset import RegionViewSet
 
-__all__ = [BuildingViewSet, LocationViewSet, EmailBackend, login]
+__all__ = [BuildingViewSet, RegionViewSet]
