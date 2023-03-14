@@ -7,6 +7,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
+      - name: remove artifacts
+        run: docker-compose down -v
       - name: Build the image
         run: docker-compose up -d --build
       - name: Test Django unittest
@@ -17,3 +19,5 @@ jobs:
         run: docker exec DrTrottoir-be flake8 backend/ drtrottoir/
       - name: Linter Javascript
         run: docker exec DrTrottoir-fe npm run lint
+      - name: remove artifacts
+        run: docker-compose down -v
