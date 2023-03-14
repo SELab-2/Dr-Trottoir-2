@@ -11,4 +11,3 @@ class TourSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Tour
         fields = '__all__'
-

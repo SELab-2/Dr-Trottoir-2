@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 from drtrottoir.models import BuildingInTour
-from drtrottoir.tests.factories import TourFactory, RegionFactory, BuildingFactory, DeveloperUserFactory
+from drtrottoir.tests.factories import TourFactory, BuildingFactory, DeveloperUserFactory
 from drtrottoir.serializers import TourSerializer
 
 
@@ -10,8 +10,8 @@ class TestTourAPIView(APITestCase):
 
     def setUp(self):
         self.tour = TourFactory()
-        self.region = RegionFactory()
         self.building = BuildingFactory()
+        self.region = self.building.region
         user = DeveloperUserFactory()
         self.client.force_login(user=user)
 
