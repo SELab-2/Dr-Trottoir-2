@@ -1,2 +1,4 @@
-from .test_region import *
-from .test_tour import *
+from .test_region import TestRegionAPIView
+from .test_tour import TestTourAPIView
+
+__all__ = [TestTourAPIView, TestRegionAPIView]
