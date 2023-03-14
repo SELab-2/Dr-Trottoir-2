@@ -6,9 +6,9 @@ psycopg2-binary==2.9.5
 pytz==2022.7.1
 sqlparse==0.4.3
 django-cors-headers==3.14.0
-flake8~=6.0.0
-coverage
-django-nose
 djangorestframework-simplejwt==5.2.2
 Faker==17.6.0
 factory-boy==3.2.1
+flake8==6.0.0
+coverage==7.2.1
+django-nose==1.4.7
