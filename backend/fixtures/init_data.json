@@ -72,7 +72,7 @@
         "superstudent": false,
         "first_name": "default",
         "last_name": "default",
-        "buildings": []
+        "buildings": [1]
     }
 },
 {
