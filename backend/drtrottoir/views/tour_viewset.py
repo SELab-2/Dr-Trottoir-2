@@ -1,7 +1,7 @@
 from rest_framework.decorators import action
 from rest_framework import status, viewsets
 from drtrottoir.models import Tour, Region, BuildingInTour
-from drtrottoir.serializers.tour_serializer import TourSerializer
+from drtrottoir.serializers import TourSerializer, RegionSerializer
 from drtrottoir.permissions.super_permission import SuperPermissionOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -35,11 +35,16 @@ class TourViewSet(viewsets.ModelViewSet):
         elif "region" in data and "name" in data:  # Region must be the id
             if Region.objects.filter(pk=data["region"]).exists():
                 region = Region.objects.get(pk=data["region"])
+                reg_ser = RegionSerializer(instance=region, context={'request': request})
                 name = data["name"]
                 serializer = self.get_serializer_class()
-                tour = Tour.objects.create(region=region, name=name)
-                ser = serializer(instance=tour, context={'request': request})
-                return Response({'tour': ser.data})
+                ser = serializer(data={"region": reg_ser.data["url"], "name": name}, context={'request': request})
+                if ser.is_valid(raise_exception=True):
+                    ser.save()
+                    return Response({'tour': ser.data})
+                else:
+
+                    return Response("Given values are not valid", status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response("Given region doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
         else:
