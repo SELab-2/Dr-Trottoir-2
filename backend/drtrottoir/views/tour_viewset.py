@@ -15,7 +15,7 @@ class TourViewSet(viewsets.ModelViewSet):
     queryset = Tour.objects.all()
     permission_classes = [IsAuthenticated & SuperPermissionOrReadOnly]
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         data = request.data
         if 'id' in data:  # Create a new version of an existing tour
             if Tour.objects.filter(pk=data["id"]).exists():
