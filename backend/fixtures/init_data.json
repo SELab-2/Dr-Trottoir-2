@@ -129,5 +129,14 @@
         "user": 2,
         "comment": "Vuilbakken zijn buitengezet"
     }
+},
+{
+    "model": "drtrottoir.waste",
+    "pk": 1,
+    "fields": {
+        "date": "2023-03-14",
+        "waste_type": "afvaltype",
+        "building": 1
+    }
 }
 ]
