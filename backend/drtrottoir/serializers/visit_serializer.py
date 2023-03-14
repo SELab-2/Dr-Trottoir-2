@@ -8,7 +8,7 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
     """
     A serializer for visits
     """
-    
+
     user = UserPartialSerializer()
     building = BuildingPartialSerializer()
 

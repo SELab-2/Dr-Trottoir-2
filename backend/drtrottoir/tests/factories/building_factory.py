@@ -4,6 +4,7 @@ import factory
 from drtrottoir.models import Building
 from drtrottoir.tests.factories import RegionFactory
 
+
 class BuildingFactory(DjangoModelFactory):
     nickname = factory.Faker("name")
     region = factory.SubFactory(RegionFactory)

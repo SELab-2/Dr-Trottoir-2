@@ -4,6 +4,7 @@ import factory
 from drtrottoir.models import Visit
 from drtrottoir.tests.factories import BuildingFactory, DeveloperUserFactory
 
+
 class VisitFactory(DjangoModelFactory):
     user = factory.SubFactory(DeveloperUserFactory)
     building = factory.SubFactory(BuildingFactory)

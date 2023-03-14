@@ -10,7 +10,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     A serializer for CustomUser
     """
     buildings = BuildingPartialSerializer(read_only=True, many=True)
-    region_name = serializers.CharField(source='region.region_name', read_only=True)
+    region_name = serializers.CharField(
+        source='region.region_name',
+        read_only=True
+    )
+
     class Meta:
         model = User
         fields = [
