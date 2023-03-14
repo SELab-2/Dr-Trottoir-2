@@ -1,6 +1,7 @@
 from django.db import models
-from .custom_user import CustomUser
+
 from .building import Building
+from .custom_user import CustomUser
 
 
 class Visit(models.Model):
