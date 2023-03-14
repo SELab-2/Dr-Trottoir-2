@@ -7,7 +7,7 @@ from drtrottoir.serializers import UserSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows regions to be viewed or edited.
+    API endpoint that allows users to be viewed or edited.
     """
 
     queryset = CustomUser.objects.all()

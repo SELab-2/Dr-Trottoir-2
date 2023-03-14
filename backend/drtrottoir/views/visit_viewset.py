@@ -7,7 +7,7 @@ from drtrottoir.serializers import VisitSerializer
 
 class VisitViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows regions to be viewed or edited.
+    API endpoint that allows visits to be viewed or edited.
     """
 
     queryset = Visit.objects.all()
