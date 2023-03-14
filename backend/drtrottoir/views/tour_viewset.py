@@ -24,7 +24,7 @@ class TourViewSet(viewsets.ModelViewSet):
                 name = tour.name
                 region = tour.region
                 new_tour = Tour.objects.create(region=region, name=name)
-                for build_tour in buildings_tour:
+                for build_tour in buildings_tour:  # We will also copy all BuildingInTour objects
                     BuildingInTour.objects.create(tour=new_tour, building=build_tour.building,
                                                   order_index=build_tour.order_index)
                 serializer = self.get_serializer_class()
