@@ -1,5 +1,4 @@
-from drtrottoir.models import Tour, Region
-from drtrottoir.serializers import RegionSerializer
+from drtrottoir.models import Tour
 from rest_framework import serializers
 
 
