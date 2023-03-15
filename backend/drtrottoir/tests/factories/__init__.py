@@ -1,8 +1,9 @@
 from .region_factory import RegionFactory
 from .user_factory import DeveloperUserFactory
-from .building_factory import BuildingFactory
 from .visit_factory import VisitFactory
 from .waste_factory import WasteFactory
+from .tour_factory import TourFactory
+from .building_factory import BuildingFactory
 
 __all__ = [
     RegionFactory,
@@ -10,4 +11,5 @@ __all__ = [
     BuildingFactory,
     VisitFactory,
     WasteFactory,
+    TourFactory,
 ]

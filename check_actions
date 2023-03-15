@@ -4,9 +4,9 @@ docker-compose down -v
 docker-compose up -d --build
 
 echo "--------------------------------- RUNNING TESTS ---------------------------------"
-docker exec DrTrottoir-be-d python manage.py test
-docker exec DrTrottoir-fe-d npm run jest:workflow
+docker exec DrTrottoir-be python manage.py test
+docker exec DrTrottoir-fe npm run jest:workflow
 
 echo "--------------------------------- RUNNING LINTERS ---------------------------------"
-docker exec DrTrottoir-be-d flake8 backend/ drtrottoir/
-docker exec DrTrottoir-fe-d npm run lint
+docker exec DrTrottoir-be flake8 backend/ drtrottoir/
+docker exec DrTrottoir-fe npm run lint
