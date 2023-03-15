@@ -8,6 +8,8 @@ class UserPartialSerializer(serializers.HyperlinkedModelSerializer):
     """
     A serializer for CustomUser, not showing recursive relations
     """
+    url = serializers.HyperlinkedIdentityField(view_name='user-detail', read_only=True)
+
     class Meta:
         model = User
         fields = [
@@ -17,3 +19,5 @@ class UserPartialSerializer(serializers.HyperlinkedModelSerializer):
             'last_name'
         ]
         read_only_field = ['is_active']
+
+

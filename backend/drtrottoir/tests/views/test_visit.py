@@ -2,8 +2,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
-from drtrottoir.serializers import VisitSerializer, UserSerializer
-from drtrottoir.tests.factories import VisitFactory, DeveloperUserFactory
+from drtrottoir.serializers import VisitSerializer, UserSerializer, BuildingInTourSerializer
+from drtrottoir.tests.factories import VisitFactory, DeveloperUserFactory, BuildingInTourFactory
 
 
 class TestVisitView(APITestCase):
@@ -11,6 +11,7 @@ class TestVisitView(APITestCase):
 
     def setUp(self):
         self.visit = VisitFactory()
+        self.building_in_tour = BuildingInTourFactory
         self.user = DeveloperUserFactory()
         self.client.force_authenticate(user=self.user)
 
@@ -28,19 +29,21 @@ class TestVisitView(APITestCase):
         response = self.client.get(reverse("visit-detail", kwargs={'pk': self.visit.pk}), follow=True)
         self.assertEqual(response.data["detail"].code, "not_found")
 
-    def test_update(self):
+    def test_patch(self):
         response = self.client.get(reverse("visit-detail", kwargs={'pk': self.visit.pk}), follow=True)
         original = response.data
-        print(original["user"]["url"])
-        response = self.client.get(reverse("visit-detail", kwargs={'pk': self.visit.pk}), follow=True)
-        user_serializer = UserSerializer(self.user, context={'request': response.wsgi_request})
-        response = self.client.put(reverse("visit-detail", kwargs={'pk': self.visit.pk}),
-                                   data={"arrival": original["arrival"],
-                                         "building_in_tour": original["building_in_tour"],
-                                         "user": user_serializer.data,
-                                         "comment": "UPDATE TEST"
-                                         }, follow=True)
+        response = self.client.patch(reverse("visit-detail", kwargs={'pk': self.visit.pk}), data={"comment": "UPDATE TEST"}, follow=True)
         new_data = response.data
         print(new_data)
         self.assertNotEqual(original["comment"], new_data["comment"])
         self.assertEqual(new_data["comment"], "UPDATE TEST")
+
+    def test_post(self):
+        response = self.client.get(reverse("visit-detail", kwargs={'pk': self.visit.pk}), follow=True)
+        print(response.data)
+        # serializer = BuildingInTourSerializer(self.building_in_tour, context={'request': response.wsgi_request})
+        response = self.client.post(reverse("visit-detail"),
+                                    data={"comment": "TEST",
+                                          "arrival": "2023-03-15T17:10:46Z",
+
+                                          }, follow=True)

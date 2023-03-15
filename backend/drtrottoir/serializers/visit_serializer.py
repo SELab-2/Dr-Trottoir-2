@@ -12,7 +12,7 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
 
     user = UserPartialSerializer()
     # building = BuildingPartialSerializer()
-    building_in_tour = BuildingInTourPartialSerializer()
+    building_in_tour = BuildingInTourPartialSerializer(read_only=True)
 
     class Meta:
         model = Visit

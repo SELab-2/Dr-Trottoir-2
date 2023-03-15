@@ -3,11 +3,13 @@ from .user_factory import DeveloperUserFactory
 from .visit_factory import VisitFactory
 from .tour_factory import TourFactory
 from .building_factory import BuildingFactory
+from .building_in_tour_factory import BuildingInTourFactory
 
 __all__ = [
     RegionFactory,
     DeveloperUserFactory,
     BuildingFactory,
     VisitFactory,
-    TourFactory
+    TourFactory,
+    BuildingInTourFactory
 ]
