@@ -6,7 +6,7 @@ from drtrottoir.serializers import WasteSerializer
 from drtrottoir.tests.factories import WasteFactory, DeveloperUserFactory
 
 
-class TestBuildingView(APITestCase):
+class TestWasteView(APITestCase):
     """ Test module for GET single Waste API """
 
     def setUp(self):
