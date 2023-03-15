@@ -21,15 +21,19 @@ class TestTourAPIView(APITestCase):
         self.assertEqual(serializer.data, response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_post(self):
-        response = self.client.post('/api/tour/', data={"region": self.region.pk, "name": "test"}, follow=True)
+    def correct_add_DB(self, response):
         self.assertTrue("tour" in response.data and "url" in response.data["tour"])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         url = response.data["tour"]["url"]
         response2 = self.client.get(url, follow=True)
-
         self.assertEqual(response2.data, response.data["tour"])
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
+        return response2
+
+    def test_post(self):
+        response = self.client.post('/api/tour/', data={"region": self.region.pk, "name": "test"}, follow=True)
+        self.correct_add_DB(response)
+
         response3 = self.client.post('/api/tour/', data={}, follow=True)
         self.assertEqual(response3.status_code, status.HTTP_400_BAD_REQUEST)
         response4 = self.client.post('/api/tour/', data={"region": 6548749, "name": "test"}, follow=True)  # Region
@@ -38,12 +42,8 @@ class TestTourAPIView(APITestCase):
 
     def test_post_from_existing(self):
         response = self.client.post('/api/tour/', data={"id": self.tour.pk}, follow=True)
-        self.assertTrue("tour" in response.data and "url" in response.data["tour"])
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        url = response.data["tour"]["url"]
-        response2 = self.client.get(url, follow=True)
-        self.assertEqual(response2.data, response.data["tour"])
-        self.assertEqual(response2.status_code, status.HTTP_200_OK)
+        response2 = self.correct_add_DB(response)
+
         response_get = self.client.get('/api/tour/' + str(self.tour.pk), follow=True)
         self.assertEqual(response_get.status_code, status.HTTP_200_OK)
         self.assertEqual(response_get.data["name"], response2.data["name"])
