@@ -1,3 +1,3 @@
-from .super_permission import SuperPermission
+from .user_permissions import SuperPermission, SuperPermissionOrReadOnly, AdminPermissionOrReadOnly
 
-__all__ = [SuperPermission]
+__all__ = [SuperPermission, SuperPermissionOrReadOnly, AdminPermissionOrReadOnly]
