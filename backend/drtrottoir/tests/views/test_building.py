@@ -7,7 +7,7 @@ from drtrottoir.tests.factories import BuildingFactory, DeveloperUserFactory
 
 
 class TestBuildingView(APITestCase):
-    """ Test module for GET single Region API """
+    """ Test module for GET single Building API """
 
     def setUp(self):
         self.building = BuildingFactory()
