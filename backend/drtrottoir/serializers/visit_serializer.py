@@ -17,3 +17,5 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Visit
         fields = '__all__'
+
+
