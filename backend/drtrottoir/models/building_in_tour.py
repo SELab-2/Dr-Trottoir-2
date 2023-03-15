@@ -10,4 +10,4 @@ class BuildingInTour(models.Model):
     order_index = models.IntegerField(verbose_name="order index of the building in the tour")
 
     def __str__(self):
-        return f"{self.tour.name}-{self.order_index}: {self.building.name} "
+        return f"{self.tour.name}-{self.order_index}: {self.building.nickname} "
