@@ -5,9 +5,9 @@ from drtrottoir.models import BuildingInTour
 from drtrottoir.tests.factories import BuildingFactory, TourFactory
 
 class BuildingInTourFactory(DjangoModelFactory):
-    building = factory.subFactory(BuildingFactory)
-    tour = factory.subFactory(TourFactory)
-    order_index = factory.Faker("pydecimal", positive=True)
+    building = factory.SubFactory(BuildingFactory)
+    tour = factory.SubFactory(TourFactory)
+    order_index = factory.Faker("pyint", min_value=0)
 
     class Meta:
         model = BuildingInTour

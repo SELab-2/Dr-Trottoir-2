@@ -13,10 +13,10 @@ class TestBuildingInTourView(APITestCase):
     def setUp(self):
         self.buildingInTour = BuildingInTourFactory()
         user = DeveloperUserFactory()
-        self.client.force_login(user=user)
+        self.client.force_authenticate(user=user)
 
     def test_get(self):
-        response = self.client.get(reverse("buildingInTour-detail", kwargs={'pk': self.buildingInTour.pk}))
+        response = self.client.get(reverse("buildingintour-detail", kwargs={'pk': self.buildingInTour.pk}))
         serializer = BuildingInTourSerializer(self.buildingInTour, context={'request': response.wsgi_request})
         self.assertEqual(serializer.data, response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

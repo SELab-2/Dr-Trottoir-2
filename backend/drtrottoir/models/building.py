@@ -15,4 +15,4 @@ class Building(models.Model):
     # waste schedule
 
     def __str__(self):
-        return self.name
+        return self.nickname
