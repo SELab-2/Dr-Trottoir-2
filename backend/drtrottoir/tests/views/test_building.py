@@ -19,3 +19,5 @@ class TestBuildingView(APITestCase):
         serializer = BuildingSerializer(self.building, context={'request': response.wsgi_request})
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # TODO /building/{id}/waste tests

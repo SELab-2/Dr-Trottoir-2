@@ -10,6 +10,7 @@ class WastePartialSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Waste
         fields = [
+            "url",
             "date",
             "waste_type",
         ]

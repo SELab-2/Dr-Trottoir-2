@@ -41,7 +41,7 @@ class BuildingViewSet(viewsets.ModelViewSet):
                 try:
                     q = Waste.objects.filter(date=q_params["date"]).order_by('id')
                     # Return WastePartialSerializer
-                    return Response(WastePartialSerializer(list(q), many=True).data)
+                    return Response(WastePartialSerializer(list(q), many=True, context={'request': request}).data)
 
                 except: # Catch ivalid date
                     return Response("Invalid date: date must be of format (YYYY-MM-DD)", status=status.HTTP_400_BAD_REQUEST)
@@ -50,11 +50,9 @@ class BuildingViewSet(viewsets.ModelViewSet):
             try:
                 # Adds date__gte field when start param is present and date__gte field when end param is present
                 arg = {"date__gte" if k == "start" else "date__lte": q_params[k] for k in q_param_keys}
-                print("fkjH")
-                print(arg)
                 q = Waste.objects.filter(**arg).order_by('id')
                 # Return WastePartialSerializer
-                return Response(WastePartialSerializer(list(q), many=True).data)
+                return Response(WastePartialSerializer(list(q), many=True, context={'request': request}).data)
 
             except: # Catch ivalid dates
                 return Response("Invalid date: date must be of format (YYYY-MM-DD)", status=status.HTTP_400_BAD_REQUEST)
