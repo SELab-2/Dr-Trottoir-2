@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 class WasteSerializer(serializers.HyperlinkedModelSerializer):
     """
-    A serializer for regions
+    A serializer for waste model
     """
 
     class Meta:

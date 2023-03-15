@@ -7,7 +7,7 @@ from drtrottoir.serializers import WasteSerializer
 
 class WasteViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows buildings to be viewed or edited.
+    API endpoint that allows waste model to be viewed or edited.
     """
     queryset = Waste.objects.all()
     serializer_class = WasteSerializer
