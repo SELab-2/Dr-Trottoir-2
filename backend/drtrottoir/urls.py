@@ -6,6 +6,8 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
 )
+
+from backend.settings import API_DOCS_TITLE, API_DOCS_DESCRIPTION
 from .views import (
     BuildingViewSet,
     RegionViewSet,
@@ -16,9 +18,6 @@ from .views import (
     RegisterView,
     MeView
 )
-
-API_DESCRIPTION = 'This is an overview of all API endpoints on the DrTrottoir API, what you see depends on your level ' \
-                  'of authentication, go to /admin to log in first. '
 
 router = routers.DefaultRouter()
 router.register(r'building', BuildingViewSet)
@@ -33,7 +32,7 @@ urlpatterns = [
     path('user/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('user/auth/register/', RegisterView.as_view(), name='auth_register'),
     path('user/me/', MeView.as_view(), name='me'),
-    path('schema/', get_schema_view(title='DrTrottoir API', description=API_DESCRIPTION)),
+    path('schema/', get_schema_view(title=API_DOCS_TITLE, description=API_DOCS_DESCRIPTION)),
     path('docs/', TemplateView.as_view(template_name='swagger-ui.html'), name='swagger-ui'),
 ]
 
