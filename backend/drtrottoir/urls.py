@@ -1,7 +1,5 @@
 from django.urls import path
 from rest_framework import routers
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import BuildingViewSet, RegionViewSet, VisitViewSet, UserViewSet, RegisterView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
@@ -12,7 +10,8 @@ from .views import (
     TourViewSet,
     BuildingInTourViewSet,
     VisitViewSet,
-    UserViewSet
+    UserViewSet,
+    RegisterView
 )
 
 router = routers.DefaultRouter()

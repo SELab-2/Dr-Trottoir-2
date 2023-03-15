@@ -3,8 +3,6 @@ from rest_framework.test import APITestCase
 from django.urls import reverse
 
 from drtrottoir.models import CustomUser
-from drtrottoir.serializers import VisitSerializer
-from drtrottoir.tests.factories import VisitFactory, DeveloperUserFactory
 
 
 class TestRegisterView(APITestCase):

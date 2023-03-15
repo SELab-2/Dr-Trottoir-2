@@ -2,8 +2,8 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
-from drtrottoir.models.custom_user import Roles, CustomUser
-from drtrottoir.serializers import RegionSerializer
+from drtrottoir.models import CustomUser
+from drtrottoir.models.custom_user import Roles
 
 
 class RegisterSerializer(serializers.ModelSerializer):
