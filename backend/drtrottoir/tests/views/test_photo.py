@@ -24,4 +24,25 @@ class TestPhotoView(APITestCase):
         response = self.client.get(reverse("photo-detail", kwargs={'pk': self.photo.pk+1}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_delete(self):
+        response1 = self.client.delete('/api/photo/' + str(self.photo.pk) + "/", follow=True)
+        response2 = self.client.get(reverse("photo-detail", kwargs={'pk': self.photo.pk}))
+        self.assertEqual(response1.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response2.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_fault(self):
+        response = self.client.delete('/api/photo/', follow=True)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_patch(self):
+        response1 = self.client.patch(
+            '/api/photo/' + str(self.photo.pk) + "/",
+            data={"comment": "nieuwe zin"},
+            follow=True
+        )
+        response2 = self.client.get(reverse("photo-detail", kwargs={'pk': self.photo.pk}))
+
+        self.assertNotEqual(response1.data, self.photo)
+        self.assertEqual(response1.data["comment"], response2.data["comment"])
+
 
