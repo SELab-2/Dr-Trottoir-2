@@ -7,6 +7,7 @@ from .visit_factory import VisitFactory
 
 
 class PhotoFactory(DjangoModelFactory):
+    image = factory.Faker("image_url")
     visit = factory.SubFactory(VisitFactory)
     state = random.choice([0, 1, 2])
     comment = factory.Faker("sentence")

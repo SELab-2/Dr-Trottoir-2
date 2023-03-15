@@ -37,12 +37,12 @@ class TestPhotoView(APITestCase):
     def test_patch(self):
         response1 = self.client.patch(
             '/api/photo/' + str(self.photo.pk) + "/",
+            content_type="application/x-www-form-urlencoded",
             data={"comment": "nieuwe zin"},
             follow=True
         )
+
         response2 = self.client.get(reverse("photo-detail", kwargs={'pk': self.photo.pk}))
 
         self.assertNotEqual(response1.data, self.photo)
         self.assertEqual(response1.data["comment"], response2.data["comment"])
-
-

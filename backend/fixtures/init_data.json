@@ -125,15 +125,6 @@
         "user": 2,
         "comment": "Vuilbakken zijn buitengezet"
     }
-},
-{
-    "model": "drtrottoir.photo",
-    "pk": 1,
-    "fields": {
-        "visit": 1,
-        "state": "1",
-        "comment": "Alles gelukt",
-        "created_at": "2023-03-08T16:00:33Z"
-    }
 }
+
 ]
