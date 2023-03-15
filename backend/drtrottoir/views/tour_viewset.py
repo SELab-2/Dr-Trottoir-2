@@ -11,8 +11,25 @@ from rest_framework.response import Response
 
 class TourViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows tours to be viewed or edited.
+    retrieve:
+    API endpoint that allows a tour to be retrieved. Authentication required.
+
+    list:
+    API endpoint that allows all tours to be retrieved. Authentication required.
+
+    create:
+    API endpoint that allows a tour to be created. Superstudent role or above required.
+
+    update:
+    API endpoint that allows a tour to be updated. Superstudent role or above required.
+
+    partial_update:
+    API endpoint that allows a tour to be updated. Superstudent role or above required.
+
+    destroy:
+    API endpoint that allows a tour to be deleted. Superstudent role or above required.
     """
+
     serializer_class = TourSerializer
     queryset = Tour.objects.all()
     permission_classes = [IsAuthenticated & SuperPermissionOrReadOnly]
@@ -54,6 +71,9 @@ class TourViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def buildings(self, request, pk=None):
+        """
+        Get all buildings inside a tour. Authentication required.
+        """
         if pk is not None and Tour.objects.filter(pk=pk).exists():
             buildings_tour = BuildingInTour.objects.filter(tour=pk).order_by('order_index')
             buildings = []
