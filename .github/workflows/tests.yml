@@ -7,6 +7,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
+      - name: Remove artifacts
+        run: docker-compose down -v
       - name: Build the image
         run: docker-compose up -d --build
       - name: Test Django unittest
