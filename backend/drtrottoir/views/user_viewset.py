@@ -1,6 +1,5 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 from drtrottoir.models import CustomUser
 from drtrottoir.permissions.user_permissions import AdminPermissionOrReadOnly
