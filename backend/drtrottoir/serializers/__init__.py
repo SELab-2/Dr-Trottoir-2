@@ -4,6 +4,7 @@ from .region_serializer import RegionSerializer
 from .user_serializer import UserSerializer
 from .user_partial import UserPartialSerializer
 from .visit_serializer import VisitSerializer
+from .photo_serializer import PhotoSerializer
 
 __all__ = [
     BuildingSerializer,
@@ -11,5 +12,6 @@ __all__ = [
     RegionSerializer,
     UserSerializer,
     UserPartialSerializer,
-    VisitSerializer
+    VisitSerializer,
+    PhotoSerializer
 ]
