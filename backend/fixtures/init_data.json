@@ -51,9 +51,7 @@
         "last_login": "2023-03-08T15:32:41.298Z",
         "email": "admin@admin.com",
         "is_active": true,
-        "developer": true,
-        "superuser": false,
-        "superstudent": false,
+        "role": 1,
         "first_name": "default",
         "last_name": "default",
         "buildings": []
@@ -67,9 +65,7 @@
         "last_login": null,
         "email": "elias.rene@brent.wout",
         "is_active": true,
-        "developer": false,
-        "superuser": false,
-        "superstudent": false,
+        "role": 4,
         "first_name": "default",
         "last_name": "default",
         "buildings": [1]

@@ -8,6 +8,7 @@ from .user_partial import UserPartialSerializer
 from .visit_serializer import VisitSerializer
 from .schedule_serializer import ScheduleSerializer
 from .tour_partial import TourPartialSerializer
+from .register_serializer import RegisterSerializer
 
 __all__ = [
     BuildingSerializer,
@@ -17,6 +18,7 @@ __all__ = [
     UserPartialSerializer,
     VisitSerializer,
     ScheduleSerializer,
+    RegisterSerializer,
     TourSerializer,
     BuildingInTourSerializer,
     TourPartialSerializer

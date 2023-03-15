@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from drtrottoir.models import Schedule
-from drtrottoir.permissions.super_permission import SuperPermissionOrReadOnly
+from drtrottoir.permissions import SuperPermissionOrReadOnly
 from drtrottoir.serializers import ScheduleSerializer
 
 
