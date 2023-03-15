@@ -7,7 +7,7 @@ from drtrottoir.tests.factories import VisitFactory, DeveloperUserFactory
 
 
 class TestVisitView(APITestCase):
-    """ Test module for GET single Region API """
+    """ Test module for Visit API """
 
     def setUp(self):
         self.visit = VisitFactory()
@@ -19,3 +19,6 @@ class TestVisitView(APITestCase):
         serializer = VisitSerializer(self.visit, context={'request': response.wsgi_request})
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response2 = self.client.get(reverse("visit-detail", kwargs={'pk': 546465}))  # Visit object shouldn't exist
+        self.assertEqual(response2.status_code, 404)
