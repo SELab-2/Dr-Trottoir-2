@@ -1,1 +1,2 @@
-from .test_region import *
+from .test_region import TestRegionAPIView
+from .test_building_in_tour import TestBuildingInTourView
