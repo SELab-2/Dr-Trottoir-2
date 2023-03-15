@@ -1,13 +1,12 @@
-from drtrottoir.models import Waste
+from drtrottoir.models import Waste, Building
 from rest_framework import serializers
-from .building_partial import BuildingPartialSerializer
 
 
 class WasteSerializer(serializers.HyperlinkedModelSerializer):
     """
     A serializer for waste model
     """
-    building = BuildingPartialSerializer(read_only=True)
+    building = serializers.HyperlinkedRelatedField(queryset=Building.objects.all(), view_name='building-detail')
 
     class Meta:
         model = Waste
