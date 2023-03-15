@@ -1,5 +1,5 @@
 from django.test import TestCase
-from ..models import Building
+from drtrottoir.models import Building
 
 
 class FixturesTest(TestCase):
