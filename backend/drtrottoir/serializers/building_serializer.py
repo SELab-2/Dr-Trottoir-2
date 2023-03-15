@@ -11,7 +11,7 @@ class BuildingSerializer(serializers.HyperlinkedModelSerializer):
         source='region.region_name',
         read_only=True
     )
-    users = UserPartialSerializer(many=True)
+    owners = UserPartialSerializer(many=True)
 
     class Meta:
         model = Building

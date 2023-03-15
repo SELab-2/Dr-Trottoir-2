@@ -49,7 +49,7 @@ class CustomUser(AbstractBaseUser):
     last_name = models.CharField(verbose_name="last name", max_length=256, default='default')
     region = models.ForeignKey(Region, verbose_name="Region of the user", on_delete=models.SET_NULL, null=True)
     role = models.IntegerField(choices=Roles.choices, default=Roles.STUDENT)
-    buildings = models.ManyToManyField(Building, related_name='users')
+    buildings = models.ManyToManyField(Building, related_name='owners')
 
     objects = CustomUserManager()
 
