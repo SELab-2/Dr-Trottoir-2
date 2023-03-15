@@ -2,7 +2,7 @@ from factory.django import DjangoModelFactory
 import factory
 
 from drtrottoir.models import Waste
-from drtrottoir.tests.factories import BuildingFactory
+from .building_factory import BuildingFactory
 
 
 class WasteFactory(DjangoModelFactory):
