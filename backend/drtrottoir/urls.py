@@ -16,7 +16,7 @@ from .views import (
 router = routers.DefaultRouter()
 router.register(r'building', BuildingViewSet)
 router.register(r'region', RegionViewSet)
-router.register(r'tour', TourViewSet, basename='tour')
+router.register(r'tour', TourViewSet)
 router.register(r'building_in_tour', BuildingInTourViewSet)
 router.register(r'visit', VisitViewSet)
 router.register(r'user', UserViewSet)
