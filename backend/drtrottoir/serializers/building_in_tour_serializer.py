@@ -7,8 +7,8 @@ class BuildingInTourSerializer(serializers.HyperlinkedModelSerializer):
     """
     A serializer for a building in a tour
     """
-    tour = serializers.PrimaryKeyRelatedField(queryset=Tour.objects.all())
-    building = serializers.PrimaryKeyRelatedField(queryset=Building.objects.all())
+    tour = serializers.HyperlinkedRelatedField(queryset=Tour.objects.all(), view_name='tour-detail')
+    building = serializers.HyperlinkedRelatedField(queryset=Building.objects.all(), view_name='building-detail')
 
     class Meta:
         model = BuildingInTour
