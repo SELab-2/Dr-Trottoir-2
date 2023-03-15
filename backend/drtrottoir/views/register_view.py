@@ -6,6 +6,10 @@ from drtrottoir.serializers import RegisterSerializer
 
 
 class RegisterView(CreateAPIView):
+    """
+    API endpoint for registering new user. No Authentication required.
+    """
+
     queryset = CustomUser.objects.all()
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
