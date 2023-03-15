@@ -1,5 +1,7 @@
 from django.urls import path
+from django.views.generic import TemplateView
 from rest_framework import routers
+from rest_framework.schemas import get_schema_view
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
@@ -28,6 +30,8 @@ urlpatterns = [
     path('user/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('user/auth/register/', RegisterView.as_view(), name='auth_register'),
     path('user/me/', MeView.as_view(), name='me'),
+    path('schema/', get_schema_view()),
+    path('docs/', TemplateView.as_view(template_name='swagger-ui.html'), name='swagger-ui'),
 ]
 
 urlpatterns += router.urls
