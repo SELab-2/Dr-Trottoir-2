@@ -7,7 +7,7 @@ from drtrottoir.tests.factories import WasteFactory, DeveloperUserFactory
 
 
 class TestBuildingView(APITestCase):
-    """ Test module for GET single waste model API """
+    """ Test module for GET single Waste API """
 
     def setUp(self):
         self.waste = WasteFactory()
