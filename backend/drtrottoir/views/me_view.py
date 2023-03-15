@@ -6,6 +6,9 @@ from drtrottoir.serializers import UserSerializer
 
 
 class MeView(APIView):
+    """
+    Retrieve the user you are authenticated as. Authentication required.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
