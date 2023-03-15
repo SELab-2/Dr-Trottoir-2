@@ -1,5 +1,5 @@
 from django.db import models
-import uuid
+
 from .building import Building
 from .tour import Tour
 

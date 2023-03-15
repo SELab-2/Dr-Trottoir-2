@@ -5,7 +5,7 @@ This project is a full web management platform designed for [DrTrottoir](https:/
 This is the solution by team 2.
 Our team members are:
 - Jasper Janin
-- Brench Blanckaert
+- Brent Blanckaert
 - Michiel Lachaert
 - Rene Van Der Schueren
 - Bert Cappelle
