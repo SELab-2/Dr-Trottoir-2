@@ -1,3 +1,3 @@
-from .super_permission import SuperPermission
+from .user_permissions import SuperPermission
 
 __all__ = [SuperPermission]
