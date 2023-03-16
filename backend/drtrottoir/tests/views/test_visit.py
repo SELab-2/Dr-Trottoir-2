@@ -11,8 +11,9 @@ class TestVisitView(APITestCase):
 
     def setUp(self):
         self.visit = VisitFactory()
-        user = DeveloperUserFactory()
-        self.client.force_authenticate(user=user)
+        self.building_in_tour = BuildingInTourFactory()
+        self.user = DeveloperUserFactory()
+        self.client.force_authenticate(user=self.user)
 
     def test_get(self):
         response = self.client.get(reverse("visit-detail", kwargs={'pk': self.visit.pk}))
@@ -20,7 +21,25 @@ class TestVisitView(APITestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response2 = self.client.get(reverse("visit-detail", kwargs={'pk': 546465}))  # Visit object shouldn't exist
+        self.assertTrue("url" in response.data and
+                        "user" in response.data and
+                        "user_data" in response.data and
+                        "building_in_tour" in response.data and
+                        "building_in_tour_data" in response.data and
+                        "arrival" in response.data and
+                        "comment" in response.data)
+
+        user_data = response.data["user_data"]
+        self.assertTrue("email" in user_data and
+                        "first_name" in user_data and
+                        "last_name" in user_data)
+
+        building_in_tour_data = response.data["building_in_tour_data"]
+        self.assertTrue("nickname" in building_in_tour_data and
+                        "description" in building_in_tour_data and
+                        "tour_name" in building_in_tour_data)
+
+        response2 = self.client.get(reverse("visit-detail", kwargs={'pk': -1}))  # Visit object shouldn't exist
         self.assertEqual(response2.status_code, 404)
 
     def test_delete(self):
@@ -31,7 +50,8 @@ class TestVisitView(APITestCase):
     def test_patch(self):
         response = self.client.get(reverse("visit-detail", kwargs={'pk': self.visit.pk}), follow=True)
         original = response.data
-        response = self.client.patch(reverse("visit-detail", kwargs={'pk': self.visit.pk}), data={"comment": "UPDATE TEST"}, follow=True)
+        response = self.client.patch(reverse("visit-detail", kwargs={'pk': self.visit.pk}),
+                                     data={"comment": "UPDATE TEST"}, follow=True)
         new_data = response.data
         print(new_data)
         self.assertNotEqual(original["comment"], new_data["comment"])
@@ -39,15 +59,24 @@ class TestVisitView(APITestCase):
 
     def test_post(self):
         response = self.client.get("/api/building_in_tour/" + str(self.building_in_tour.pk) + "/", follow=True)
-        serializerBuildTour = BuildingInTourSerializer(self.building_in_tour, context={'request': response.wsgi_request})
+        serializerBuildTour = BuildingInTourSerializer(self.building_in_tour,
+                                                       context={'request': response.wsgi_request})
         serializerUser = UserSerializer(self.user, context={'request': response.wsgi_request})
-        print(serializerUser.data)
         response = self.client.post("/api/visit/",
                                     data={"comment": "TEST",
                                           "arrival": "2023-03-15T17:10:46Z",
                                           "building_in_tour": serializerBuildTour.data["url"],
                                           "user": serializerUser.data["url"]
                                           }, follow=True)
+        self.assertEqual(response.status_code, 201)
+        response = self.client.get(response.data["url"], follow=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        print(response.data)
-        print(pong)
+
+        # Test incorrect POST body
+        response = self.client.post("/api/visit/",
+                                    data={"comment": "TEST",
+                                          "arrival": "2023-03-15T17:10:46Z",
+                                          "building_in_tour": 1,
+                                          "user": "user"
+                                          }, follow=True)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
