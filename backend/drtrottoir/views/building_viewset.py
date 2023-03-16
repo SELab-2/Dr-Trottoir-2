@@ -48,7 +48,7 @@ class BuildingViewSet(viewsets.ModelViewSet):
             unknown_params = list(filter(lambda x: x not in params, q_param_keys))
             if unknown_params:
                 return Response(
-                    f"Unknown query params: {', '.join(unknown_params)}. Valid params: {params}", 
+                    f"Unknown query params: {', '.join(unknown_params)}. Valid params: {params}",
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -56,7 +56,7 @@ class BuildingViewSet(viewsets.ModelViewSet):
                 # Catch wrong usage of date param
                 if len(q_param_keys) > 1:
                     return Response(
-                        "Can't combine 'date' parameter with another parameter", 
+                        "Can't combine 'date' parameter with another parameter",
                         status=status.HTTP_400_BAD_REQUEST
                     )
 
@@ -67,7 +67,7 @@ class BuildingViewSet(viewsets.ModelViewSet):
 
                 except Exception:  # Catch ivalid date
                     return Response(
-                        "Invalid date: date must be of format (YYYY-MM-DD)", 
+                        "Invalid date: date must be of format (YYYY-MM-DD)",
                         status=status.HTTP_400_BAD_REQUEST
                     )
 
@@ -81,7 +81,7 @@ class BuildingViewSet(viewsets.ModelViewSet):
 
             except Exception: # Catch ivalid dates
                 return Response(
-                    "Invalid date: date must be of format (YYYY-MM-DD)", 
+                    "Invalid date: date must be of format (YYYY-MM-DD)",
                     status=status.HTTP_400_BAD_REQUEST
                 )
   

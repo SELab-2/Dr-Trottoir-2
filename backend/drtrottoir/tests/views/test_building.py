@@ -18,7 +18,7 @@ class TestBuildingView(APITestCase):
         response = self.client.get(reverse("building-detail", kwargs={'pk': self.building.pk}))
         serializer = BuildingSerializer(self.building, context={'request': response.wsgi_request})
         self.assertEqual(response.data, serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)     
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # Test /building/{id}/waste?params endpoint
     def test_waste(self):
@@ -74,10 +74,10 @@ class TestBuildingView(APITestCase):
         r = self.client.get(f'/api/building/{self.building.pk}/waste?end=0000-00-00', follow=True)
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
         r = self.client.get(
-            f'/api/building/{self.building.pk}/waste?date={data_now["date"]}&start={data_past["date"]}', 
+            f'/api/building/{self.building.pk}/waste?date={data_now["date"]}&start={data_past["date"]}',
             follow=True
         )
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
         # Wrong building id
-        r = self.client.get(f'/api/building/-1/waste', follow=True)
+        r = self.client.get('/api/building/-1/waste', follow=True)
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
