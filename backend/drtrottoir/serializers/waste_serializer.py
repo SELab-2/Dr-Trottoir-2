@@ -7,7 +7,7 @@ class WasteSerializer(serializers.HyperlinkedModelSerializer):
     """
     A serializer for waste model
     """
-    building = BuildingPartialSerializer(read_only=True)
+    building = BuildingPartialSerializer()
 
     class Meta:
         model = Waste
