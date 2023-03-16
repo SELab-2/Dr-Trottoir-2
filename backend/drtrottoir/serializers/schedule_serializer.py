@@ -8,8 +8,6 @@ class ScheduleSerializer(serializers.HyperlinkedModelSerializer):
     """
     A serializer for schedules, showing tour info
     """
-    student = UserPartialSerializer(read_only=True)
-    tour = TourPartialSerializer(read_only=True)
 
     class Meta:
         model = Schedule
