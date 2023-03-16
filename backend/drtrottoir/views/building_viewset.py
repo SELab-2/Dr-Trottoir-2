@@ -79,11 +79,11 @@ class BuildingViewSet(viewsets.ModelViewSet):
                 # Return WastePartialSerializer
                 return Response(WastePartialSerializer(list(q), many=True, context={'request': request}).data)
 
-            except Exception: # Catch ivalid dates
+            except Exception:  # Catch ivalid dates
                 return Response(
                     "Invalid date: date must be of format (YYYY-MM-DD)",
                     status=status.HTTP_400_BAD_REQUEST
                 )
-  
+
         else:
             return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
