@@ -1,7 +1,16 @@
-from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.db import models
+
 from .building import Building
-from .location import Location
+from .region import Region
+
+
+class Roles(models.IntegerChoices):
+    DEVELOPER = 1
+    SUPERADMIN = 2
+    SUPERSTUDENT = 3
+    OWNER = 4
+    STUDENT = 5
 
 
 class CustomUserManager(BaseUserManager):
@@ -28,7 +37,7 @@ class CustomUserManager(BaseUserManager):
             email,
             password=password
         )
-        user.admin = True
+        user.role = Roles.DEVELOPER
         user.save(using=self._db)
         return user
 
@@ -36,13 +45,11 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser):
     email = models.EmailField(verbose_name='email address', unique=True)
     is_active = models.BooleanField(default=True)
-    admin = models.BooleanField(default=False)
     first_name = models.CharField(verbose_name="first name", max_length=256, default='default')
     last_name = models.CharField(verbose_name="last name", max_length=256, default='default')
-    location = models.ForeignKey(Location, verbose_name="address of the user", on_delete=models.CASCADE, null=True)
-    # This is a superuser in the context of the project, django also has a superuser
-    is_superuser = models.BooleanField(default=False)
-    buildings = models.ManyToManyField(Building)
+    region = models.ForeignKey(Region, verbose_name="Region of the user", on_delete=models.SET_NULL, null=True)
+    role = models.IntegerField(choices=Roles.choices, default=Roles.STUDENT)
+    buildings = models.ManyToManyField(Building, related_name='owners')
 
     objects = CustomUserManager()
 
@@ -54,20 +61,27 @@ class CustomUser(AbstractBaseUser):
         verbose_name_plural = 'Users'
 
     def __str__(self):
-        return self.email
+        return f'User {self.email}'
 
     def has_perm(self, perm, obj=None):
-        # Simplest possible answer: Yes, always
-        return True
+        # For the dango admin panel
+        return self.role == Roles.DEVELOPER
 
     def has_module_perms(self, app_label):
-        # Simplest possible answer: Yes, always
-        return True
+        # For the dango admin panel
+        return self.role == Roles.DEVELOPER
+
+    @property
+    def is_super(self):
+        # Is this a superuser, student or a developer
+        return self.role <= Roles.SUPERSTUDENT
 
     @property
     def is_admin(self):
-        return self.admin
+        # For the dango admin panel
+        return self.role == Roles.DEVELOPER
 
     @property
     def is_staff(self):
-        return self.admin
+        # For the dango admin panel
+        return self.role == Roles.DEVELOPER

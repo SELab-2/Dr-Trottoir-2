@@ -1,6 +1,6 @@
+from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
-from django import forms
 
 from .models import CustomUser
 
@@ -41,4 +41,6 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'password', 'is_active', 'admin')
+        fields = (
+            'email', 'password', 'is_active', 'role', 'first_name', 'last_name',
+            'region', 'buildings')

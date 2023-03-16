@@ -1,0 +1,23 @@
+name: "All CI"
+on:
+  - pull_request
+
+jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Remove artifacts
+        run: docker-compose down -v
+      - name: Build the image
+        run: docker-compose up -d --build
+      - name: Test Django unittest
+        run: docker exec DrTrottoir-be python manage.py test
+      - name: Test NEXT.js Jest
+        run: docker exec DrTrottoir-fe npm run jest:workflow
+      - name: Linter Python
+        run: docker exec DrTrottoir-be flake8 backend/ drtrottoir/
+      - name: Linter Javascript
+        run: docker exec DrTrottoir-fe npm run lint
+      - name: remove artifacts
+        run: docker-compose down -v

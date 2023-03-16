@@ -1,11 +1,18 @@
 from django.db import models
-from .location import Location
+from .region import Region
 
 
 class Building(models.Model):
     nickname = models.CharField("short name for building", max_length=255)
     description = models.CharField("building description", max_length=4095)
-    name = models.CharField(verbose_name="name of building", max_length=256)
-    manual = models.FileField(verbose_name="manual", upload_to='files/')
-    location = models.ForeignKey(Location, verbose_name="adress of building", on_delete=models.CASCADE)
+    manual = models.FileField(verbose_name="manual", upload_to='files/', null=True)
+
+    address_line_1 = models.CharField(verbose_name="address line 1", max_length=256)
+    address_line_2 = models.CharField(verbose_name="address line 1", max_length=256)
+    country = models.CharField(verbose_name="countryname", max_length=256)
+
+    region = models.ForeignKey(Region, verbose_name="region of building", on_delete=models.PROTECT)
     # waste schedule
+
+    def __str__(self):
+        return self.nickname

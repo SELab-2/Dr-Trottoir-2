@@ -5,13 +5,14 @@ from .forms import UserChangeForm, UserCreationForm
 
 from .models import (
     CustomUser,
-    Location,
+    Region,
     Building,
     Photo,
     Visit,
     Tour,
     Schedule,
-    BuildingInTour
+    BuildingInTour,
+    Waste
 )
 
 
@@ -23,11 +24,11 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'admin')
-    list_filter = ('admin',)
+    list_display = ('email', 'role')
+    list_filter = ('role',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('admin',)}),
+        ('Permissions', {'fields': ('role',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -48,5 +49,5 @@ admin.site.register(CustomUser, UserAdmin)
 # unregister the Group model from admin.
 admin.site.unregister(Group)
 # Register other moments
-models = [Location, Building, Photo, Visit, Tour, Schedule, BuildingInTour]
+models = [Region, Building, Photo, Visit, Tour, Schedule, BuildingInTour, Waste]
 admin.site.register(models)

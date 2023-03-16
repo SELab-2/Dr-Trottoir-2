@@ -1,0 +1,139 @@
+[
+{
+    "model": "drtrottoir.region",
+    "pk": 1,
+    "fields": {
+        "region_name": "Gent"
+    }
+},
+{
+    "model": "drtrottoir.building",
+    "pk": 1,
+    "fields": {
+        "nickname": "Academie",
+        "description": "Twee containers",
+        "manual": "fixtures/data/academie_handleiding.txt",
+        "address_line_1": "Sint-Margrietstraat 11",
+        "address_line_2": "9000 Gent",
+        "country": "België",
+        "region": 1
+    }
+},
+{
+    "model": "drtrottoir.building",
+    "pk": 2,
+    "fields": {
+        "nickname": "KotCompany",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "manual": "fixtures/data/KotCompany_handleiding.txt",
+        "address_line_1": "Theresianenstraat 10",
+        "address_line_2": "9000 Gent",
+        "region": 1
+    }
+},
+{
+    "model": "drtrottoir.building",
+    "pk": 3,
+    "fields": {
+        "nickname": "Tu Casa",
+        "description": "Ingang via de kleine poort achter het gebouw. Er is een badge nodig om bij de containers te geraken.",
+        "manual": "fixtures/data/Tu_Casa_handleiding.txt",
+        "address_line_1": "Ingelandgat 29",
+        "address_line_2": "9000 Gent",
+        "region": 1
+    }
+},
+{
+    "model": "drtrottoir.customuser",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$390000$GhbhXRtWfdXE2ahj36vxZd$TVEHDO0ZacKXe61YpgZEirZfnoBI7TGgpJxabDzUBr0=",
+        "last_login": "2023-03-08T15:32:41.298Z",
+        "email": "admin@admin.com",
+        "is_active": true,
+        "role": 1,
+        "first_name": "default",
+        "last_name": "default",
+        "buildings": []
+    }
+},
+{
+    "model": "drtrottoir.customuser",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$390000$Jw32RaQqVYJwnke2GdBfxU$nLWkcqmbuVKV+fErOx8OJNA3SauIrGuEMPNS+p1TiSc=",
+        "last_login": null,
+        "email": "elias.rene@brent.wout",
+        "is_active": true,
+        "role": 4,
+        "first_name": "default",
+        "last_name": "default",
+        "buildings": [1]
+    }
+},
+{
+    "model": "drtrottoir.tour",
+    "pk": 1,
+    "fields": {
+        "name": "Coupure",
+        "region": 1
+    }
+},
+{
+    "model": "drtrottoir.buildingintour",
+    "pk": 1,
+    "fields": {
+        "tour": 1,
+        "building": 1,
+        "order_index": 0
+    }
+},
+{
+    "model": "drtrottoir.buildingintour",
+    "pk": 2,
+    "fields": {
+        "tour": 1,
+        "building": 2,
+        "order_index": 1
+    }
+},
+{
+    "model": "drtrottoir.buildingintour",
+    "pk": 3,
+    "fields": {
+        "tour": 1,
+        "building": 3,
+        "order_index": 2
+    }
+},
+{
+    "model": "drtrottoir.schedule",
+    "pk": 1,
+    "fields": {
+        "date": "2023-03-08",
+        "student": 2,
+        "tour": 1,
+        "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    }
+},
+{
+    "model": "drtrottoir.visit",
+    "pk": 1,
+    "fields": {
+        "arrival": "2023-03-08T16:00:33Z",
+        "building_in_tour": 1,
+        "user": 2,
+        "comment": "Vuilbakken zijn buitengezet"
+    }
+},
+{
+    "model": "drtrottoir.waste",
+    "pk": 1,
+    "fields": {
+        "date": "2023-03-14",
+        "waste_type": "afvaltype",
+        "building": 1
+    }
+}
+
+]

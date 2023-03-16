@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   django:
+    container_name: DrTrottoir-be
     build: ./backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -11,6 +12,7 @@ services:
     env_file:
       - .env.dev
   db:
+    container_name: DrTrottoir-db
     image: postgres:13.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
@@ -19,6 +21,7 @@ services:
       - POSTGRES_PASSWORD=foo
       - POSTGRES_DB=drtrottoir_dev
   next:
+    container_name: DrTrottoir-fe
     build: ./frontend
     command: npm run dev
     volumes:
