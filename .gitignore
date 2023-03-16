@@ -16,6 +16,9 @@ node_modules/
 # Created by https://www.toptal.com/developers/gitignore/api/python,nextjs,jetbrains+all,django
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,nextjs,jetbrains+all,django
 
+# backend files
+backend/files/*
+
 ### Django ###
 *.log
 *.pot
@@ -414,5 +417,6 @@ cypress/screenshots/*
 cypress/videos/*
 
 # End of https://www.toptal.com/developers/gitignore/api/cypressio
+
 
 

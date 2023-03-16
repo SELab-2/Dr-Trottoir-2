@@ -45,20 +45,6 @@
 },
 {
     "model": "drtrottoir.customuser",
-    "pk": 1,
-    "fields": {
-        "password": "pbkdf2_sha256$390000$GhbhXRtWfdXE2ahj36vxZd$TVEHDO0ZacKXe61YpgZEirZfnoBI7TGgpJxabDzUBr0=",
-        "last_login": "2023-03-08T15:32:41.298Z",
-        "email": "admin@admin.com",
-        "is_active": true,
-        "role": 1,
-        "first_name": "default",
-        "last_name": "default",
-        "buildings": []
-    }
-},
-{
-    "model": "drtrottoir.customuser",
     "pk": 2,
     "fields": {
         "password": "pbkdf2_sha256$390000$Jw32RaQqVYJwnke2GdBfxU$nLWkcqmbuVKV+fErOx8OJNA3SauIrGuEMPNS+p1TiSc=",
@@ -135,5 +121,4 @@
         "building": 1
     }
 }
-
 ]

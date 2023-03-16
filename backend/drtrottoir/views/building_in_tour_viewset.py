@@ -23,7 +23,7 @@ class BuildingInTourViewSet(viewsets.ModelViewSet):
     partial_update: API endpoint that allows a connection between a building and a tour to be updated. Superstudent
     role or above required.
 
-    destroy: API endpoint that allows a connection between a building and a tour to be delted. Superstudent role or
+    destroy: API endpoint that allows a connection between a building and a tour to be deleted. Superstudent role or
     above required.
     """
     queryset = BuildingInTour.objects.all()
