@@ -6,6 +6,7 @@ from .tour_serializer import TourSerializer
 from .building_in_tour_serializer import BuildingInTourSerializer
 from .user_partial import UserPartialSerializer
 from .visit_serializer import VisitSerializer
+from .photo_serializer import PhotoSerializer
 from .waste_serializer import WasteSerializer
 from .waste_partial import WastePartialSerializer
 from .register_serializer import RegisterSerializer
@@ -20,6 +21,7 @@ __all__ = [
     UserSerializer,
     UserPartialSerializer,
     VisitSerializer,
+    PhotoSerializer,
     WasteSerializer,
     WastePartialSerializer,
     RegisterSerializer,
