@@ -6,7 +6,7 @@ from drtrottoir.models import CustomUser
 from drtrottoir.models.custom_user import Roles
 
 
-class RegisterSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.HyperlinkedModelSerializer):
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=CustomUser.objects.all())]

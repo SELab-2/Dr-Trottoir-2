@@ -1,5 +1,6 @@
 from .building_viewset import BuildingViewSet
 from .region_viewset import RegionViewSet
+from .waste_viewset import WasteViewSet
 from .tour_viewset import TourViewSet
 from .building_in_tour_viewset import BuildingInTourViewSet
 from .visit_viewset import VisitViewSet
@@ -15,7 +16,9 @@ __all__ = [
     UserViewSet,
     ScheduleViewSet,
     RegisterView,
+    WasteViewSet,
     TourViewSet,
     BuildingInTourViewSet,
+    RegisterView,
     MeView
 ]

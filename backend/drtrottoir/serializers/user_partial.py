@@ -8,6 +8,7 @@ class UserPartialSerializer(serializers.HyperlinkedModelSerializer):
     """
     A serializer for CustomUser, not showing recursive relations
     """
+
     class Meta:
         model = User
         fields = [

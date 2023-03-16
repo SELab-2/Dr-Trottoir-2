@@ -1,12 +1,15 @@
-from rest_framework import serializers
 from drtrottoir.models import Tour
+from rest_framework import serializers
 
 
 class TourPartialSerializer(serializers.HyperlinkedModelSerializer):
     """
-    A partial serializer for Tour, not showing recursive relations
+    A serializer for buildings, not showing recursive relations
     """
-    region_name = serializers.CharField(source='region.region_name', read_only=True)
+    region_name = serializers.CharField(
+        source='region.region_name',
+        read_only=True
+    )
 
     class Meta:
         model = Tour
