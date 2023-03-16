@@ -2,70 +2,107 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 import {baseUrl} from "@/utils/baseUrl";
-import {UserService} from "@/services/user.service";
+import jwtDecode from "jwt-decode";
 
-// TODO(Elias):
-//  Document login system
+async function refreshAccessToken(token) {
+	const new_token = await axios.post(baseUrl + 'user/auth/refresh/', {refresh: token.refresh}).then(
+		(response) => {
+			if (response.status !== 200) {
+				return null
+			}
+			return response.data
+		})
 
-// TODO(Elias):
-//  Request and store the userid after successful authentication
+	if (!new_token) {
+		return null
+	}
 
-// NOTE(Elias):
-//	NextJS documentation suggested using next-auth (https://nextjs.org/docs/authentication)
-//
-//	Website this is based upon: 	https://remaster.com/blog/next-auth-jwt-session
-//	NextAuth documentation:			https://next-auth.js.org/configuration/options
+	const { exp } = jwtDecode(new_token.data.access)
+	return { ...token, ...new_token, exp: Date.now() + exp*1000}
+}
 
+async function signInCallback(user, account, profile) {
+	return true
+}
 
+async function jwtCallback({token, user, account, profile, isNewUser}) {
+	console.log('jwt')
+	if (account && user) {
+		return user
+	}
+	if (Date.now() > token.exp) {
+		token = refreshAccessToken(token)
+	}
+	return token
+}
+
+async function sessionCallback({session, token}) {
+	console.log('session')
+	session.user = token.user
+	session.access = token.access
+	session.refresh = token.refresh
+	session.exp = token.exp
+	return session
+}
 
 const credentialsProvider = CredentialsProvider({
 	name: 'credentials',
-	id:	'credentials',
+	id: 'credentials',
 	credentials: {
 		email: { label: "Email", type: "text", placeholder: "bob@bobmail.bob"},
 		password: { label: "Password", type: "password"},
 	},
-	async authorize(credentials, req) {
-		const tokens = await axios.post(baseUrl + 'user/auth/', credentials).then(
+	async authorize(credentials) {
+
+		console.log('authorize')
+
+		// NOTE(Elias): Request access and refresh token
+		const data = {email: credentials?.email, password: credentials?.password}
+		const token = await axios.post( baseUrl + 'user/auth/', data).then(
 			(response) => {
-				if (!response || !response.data || !response.data.access || !response.data.refresh)	 {
+				if  (response.status !== 200) {
 					return null
 				}
-				return {  // Returns user object
-					tokenAccess: response.data?.access,
-					tokenRefresh: response.data?.refresh,
+				const { exp } = jwtDecode(response.data.access)
+				return {
+					access: response.data.access,
+					exp: Date.now() + exp * 1000,
+					refresh: response.data.refresh,
 				}
 			})
 
-		const user = UserService.getUser()
+		if (!token) {
+			return null
+		}
 
+		// NOTE(Elias): Request User
+		const authHeader = {Authorization: 'Bearer ' + token.access}
+		const user = await axios.get( baseUrl + 'user/me/', {headers: authHeader}).then(
+			(response) => {
+				if (response.status !== 200) {
+					return null
+				}
+				return response.data;
+			}
+		)
+
+		if (!user) {
+			return null
+		}
+
+		// NOTE(Elias): Return user and tokens combined
+		return { ...token, user}
 	},
 })
 
-const jwtCallback = async ({token, user}) => {
-	if (user) {
-		token.accessToken = user.tokenAccess
-		token.refresh_token= user.tokenRefresh
-	}
-  	return token
-}
-
-const sessionCallback = async ({session, token}) => {
-	session.user = {
-
-	}
-	session.accessToken = token.accessToken
-}
-
-export default async function auth(req, res) {
-    return await NextAuth(req, res, {
-        session: {
-            strategy: "jwt",
-		},
-		providers: [credentialsProvider],
-		callbacks: {
-			jwt_callback: jwtCallback,
-			session_callback: sessionCallback,
-		}
-	});
-}
+export default NextAuth({
+	providers: [credentialsProvider],
+	callbacks: {
+		signIn: signInCallback,
+		jwt: jwtCallback,
+		session: sessionCallback,
+	},
+	session: {
+		strategy: "jwt",
+	},
+})

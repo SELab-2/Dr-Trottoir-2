@@ -4,6 +4,7 @@ import {UserService} from "@/services/user.service";
 import Logo from "/public/images/Logo-Dr-Trottoir-GEEL-01.png"
 import Image from "next/image";
 import {useRouter} from "next/router";
+import {getCsrfToken, signIn} from "next-auth/react";
 
 // TODO(Elias):
 //   1. Add readable error messages such as 'incorrect password'
@@ -12,7 +13,7 @@ import {useRouter} from "next/router";
 //   3. Figure out which email to put instead of placeholder 'help@drtrotoir.be'
 //   4. Fix scaling issues
 
-export default function Login() {
+export default function Login({ csrfToken }) {
 	const router = useRouter()
 
 	const handleLogin = async (event) => {
@@ -26,16 +27,19 @@ export default function Login() {
 			return
 		}
 
-		UserService.login(email, password).then(
-			() => {
-				console.log('Login success! Enjoy your stay :)')
-				router.push('/testing')
-			}, (error) => {
-				console.log('something went wrong... login failed!')
-				if (error.response && error.response.data && error.response.detail) {
-					console.log(error.response.data.detail)
-				}
-			})
+		console.log(email)
+		console.log(password)
+
+		const response = await signIn("credentials", {email, password, redirect: false, })
+		console.log(response)
+
+		if (response?.error) {
+			console.log("something went wrong... failed to login :(")
+			console.log("    : ", response.error)
+		} else {
+			console.log("Login success! Enjoy your stay :)")
+		}
+
 	}
 
 	return (
@@ -45,18 +49,19 @@ export default function Login() {
 			</Head>
 			<main className="h-screen flex flex-col justify-between p-12 text-sm">
 				<div></div>
-				<div className={"flex justify-center pb-40"}>
+				<div className={"flex justify-center pb-10"}>
 					<div className={"border-2 rounded-lg w-1/2"}>
 						<div className={"flex justify-center p-8 bg-black rounded-t-lg"}>
 							<Image src={Logo} alt={"logo"} width={128}></Image>
 						</div>
 						<form className={"py-12 p-40"} onSubmit={handleLogin}>
+							<input name={"csrfToken"} type={"hidden"} defaultValue={csrfToken}></input>
 							<p className={"font-bold text-center mb-8 text-lg"}>Inloggen</p>
 							<div>
 								<div className={"pb-3"}>
 									<p className={"text-gray-600"}>Email</p>
 									<input className="w-full border-2 my-2 p-1 rounded" type="text" id="email"
-										   name="email" autoComplete={"email"}/>
+										   name="username" autoComplete={"email"}/>
 								</div>
 								<div className={"pb-3"}>
 									<p className={"text-gray-600"}>Wachtwoord</p>
@@ -81,4 +86,12 @@ export default function Login() {
 			</main>
 		</>
 	)
+}
+
+export async function getServerSideProps(context) {
+	return {
+		props: {
+			csrfToken: await getCsrfToken(context),
+		},
+	}
 }
