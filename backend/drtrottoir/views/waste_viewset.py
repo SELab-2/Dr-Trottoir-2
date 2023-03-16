@@ -7,7 +7,23 @@ from drtrottoir.serializers import WasteSerializer
 
 class WasteViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows waste model to be viewed or edited.
+    retrieve:
+    API endpoint that allows a waste to be retrieved. Authentication required.
+
+    list:
+    API endpoint that allows all wastes to be retrieved. Authentication required.
+
+    create:
+    API endpoint that allows a waste to be created. Superstudent role or above required.
+
+    update:
+    API endpoint that allows a waste to be updated. Superstudent role or above required.
+
+    partial_update:
+    API endpoint that allows a waste to be updated. Superstudent role or above required.
+
+    destroy:
+    API endpoint that allows a waste to be deleted. Superstudent role or above required.
     """
     queryset = Waste.objects.all()
     serializer_class = WasteSerializer

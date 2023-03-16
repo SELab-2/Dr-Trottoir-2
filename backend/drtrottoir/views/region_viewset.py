@@ -7,7 +7,23 @@ from drtrottoir.serializers import RegionSerializer
 
 class RegionViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows regions to be viewed or edited.
+    retrieve:
+    API endpoint that allows a region to be retrieved. Authentication required.
+
+    list:
+    API endpoint that allows all regions to be retrieved. Authentication required.
+
+    create:
+    API endpoint that allows a region to be created. Superstudent role or above required.
+
+    update:
+    API endpoint that allows a region to be updated. Superstudent role or above required.
+
+    partial_update:
+    API endpoint that allows a region to be updated. Superstudent role or above required.
+
+    destroy:
+    API endpoint that allows a region to be deleted. Superstudent role or above required.
     """
 
     queryset = Region.objects.all()

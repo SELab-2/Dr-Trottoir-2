@@ -9,7 +9,23 @@ from drtrottoir.serializers import BuildingSerializer, WastePartialSerializer
 
 class BuildingViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows buildings to be viewed or edited.
+    retrieve:
+    API endpoint that allows a building to be retrieved. Authentication required.
+
+    list:
+    API endpoint that allows all buildings to be retrieved. Authentication required.
+
+    create:
+    API endpoint that allows a building to be created. Superstudent role or above required.
+
+    update:
+    API endpoint that allows a building to be updated. Superstudent role or above required.
+
+    partial_update:
+    API endpoint that allows a building to be updated. Superstudent role or above required.
+
+    destroy:
+    API endpoint that allows a building to be deleted. Superstudent role or above required.
     """
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
@@ -50,7 +66,7 @@ class BuildingViewSet(viewsets.ModelViewSet):
             try:
                 # Adds date__gte field when start param is present and date__gte field when end param is present
                 arg = {"date__gte" if k == "start" else "date__lte": q_params[k] for k in q_param_keys}
-                q = Waste.objects.filter(**arg).order_by('id')
+                q = Waste.objects.filter(**arg).order_by('date')
                 # Return WastePartialSerializer
                 return Response(WastePartialSerializer(list(q), many=True, context={'request': request}).data)
 
