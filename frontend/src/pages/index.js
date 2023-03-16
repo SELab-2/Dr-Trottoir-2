@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Logo from "/public/images/Logo-Dr-Trottoir-GEEL-01.png"
 import Image from "next/image";
 import {signIn} from "next-auth/react";
+import {useRouter} from "next/router";
 
 // TODO(Elias):
 //   1. Add readable error messages such as 'incorrect password'
@@ -12,6 +13,7 @@ import {signIn} from "next-auth/react";
 //   4. Fix scaling issues
 
 export default function Login() {
+	const router = useRouter()
 
 	const handleLogin = async (event) => {
 		event.preventDefault()
@@ -24,20 +26,15 @@ export default function Login() {
 			return
 		}
 
-		console.log(email)
-		console.log(password)
-
-		console.log('waiting for response...')
 		const response = await signIn("credentials", {email, password, redirect: false, })
-		console.log(response)
 
 		if (response?.error) {
 			console.log("something went wrong... failed to login :(")
-			console.log("    : ", response.error)
-		} else {
-			console.log("Login success! Enjoy your stay :)")
+			return
 		}
 
+		console.log("Login success! Enjoy your stay :)")
+		await router.push("/testing")
 	}
 
 	return (

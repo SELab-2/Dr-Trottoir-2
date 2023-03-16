@@ -10,8 +10,6 @@ import jwtDecode from "jwt-decode";
 
 export default async function auth(req, res) {
 
-	console.log('> Authenticating now...')
-
 	const refreshAccessToken = async (token) => {
 		try {
 			const response = await axios.post(baseUrl + 'user/auth/refresh/', {refresh: token.refresh})
@@ -60,15 +58,10 @@ export default async function auth(req, res) {
 				password: {label: "password", type: "password"},
 			},
 			async authorize({email, password}, req) {
-				console.log('> CredentialsProvider: authorization')
 
-				console.log('waiting for response...')
-				let response = await axios.post(  'http://django:8000/api/user/auth/', {email, password})
-				console.log(response.status)
+				const baseServerUrl = 'http://django:8000/api/'
 
-				console.log(response)
-
-				console.log('hello world')
+				let response = await axios.post(  baseServerUrl + 'user/auth/', {email, password})
 
 				if (response.status !== 200) {
 					return null
@@ -78,7 +71,7 @@ export default async function auth(req, res) {
 				const { exp } = jwtDecode(access)
 
 				const authHeader = {Authorization: 'Bearer ' + access}
-				response = await axios.get( baseUrl + 'user/me/', {headers: authHeader})
+				response = await axios.get( baseServerUrl + 'user/me/', {headers: authHeader})
 				if (response.status !== 200) {
 					return null
 				}
@@ -94,8 +87,6 @@ export default async function auth(req, res) {
 		session: { strategy: "jwt", },
 		callbacks: { jwt, session }
 	}
-
-	console.log('> returning NextAuth with options')
 
 	return await NextAuth(req, res, options)
 }
