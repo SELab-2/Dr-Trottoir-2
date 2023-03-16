@@ -11,9 +11,8 @@ class TestVisitView(APITestCase):
 
     def setUp(self):
         self.visit = VisitFactory()
-        self.building_in_tour = BuildingInTourFactory()
-        self.user = DeveloperUserFactory()
-        self.client.force_authenticate(user=self.user)
+        user = DeveloperUserFactory()
+        self.client.force_authenticate(user=user)
 
     def test_get(self):
         response = self.client.get(reverse("visit-detail", kwargs={'pk': self.visit.pk}))

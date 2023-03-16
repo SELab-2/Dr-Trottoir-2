@@ -45,20 +45,6 @@
 },
 {
     "model": "drtrottoir.customuser",
-    "pk": 1,
-    "fields": {
-        "password": "pbkdf2_sha256$390000$GhbhXRtWfdXE2ahj36vxZd$TVEHDO0ZacKXe61YpgZEirZfnoBI7TGgpJxabDzUBr0=",
-        "last_login": "2023-03-08T15:32:41.298Z",
-        "email": "admin@admin.com",
-        "is_active": true,
-        "role": 1,
-        "first_name": "default",
-        "last_name": "default",
-        "buildings": []
-    }
-},
-{
-    "model": "drtrottoir.customuser",
     "pk": 2,
     "fields": {
         "password": "pbkdf2_sha256$390000$Jw32RaQqVYJwnke2GdBfxU$nLWkcqmbuVKV+fErOx8OJNA3SauIrGuEMPNS+p1TiSc=",
@@ -121,7 +107,7 @@
     "pk": 1,
     "fields": {
         "arrival": "2023-03-08T16:00:33Z",
-        "building_in_tour": 1,
+        "building": 1,
         "user": 2,
         "comment": "Vuilbakken zijn buitengezet"
     }
