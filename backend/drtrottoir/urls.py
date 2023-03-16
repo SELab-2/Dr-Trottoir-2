@@ -18,7 +18,8 @@ from .views import (
     ScheduleViewSet,
     WasteViewSet,
     RegisterView,
-    MeView,
+    PhotoViewSet,
+    MeView
 )
 
 router = routers.DefaultRouter()
@@ -29,6 +30,7 @@ router.register(r'building_in_tour', BuildingInTourViewSet)
 router.register(r'visit', VisitViewSet)
 router.register(r'user', UserViewSet)
 router.register(r'schedule', ScheduleViewSet)
+router.register(r'photo', PhotoViewSet)
 router.register(r'waste', WasteViewSet)
 
 urlpatterns = [

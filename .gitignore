@@ -1,3 +1,7 @@
+# Data files
+backend/files
+backend/uploads
+
 # IDE things
 .idea
 .vscode
