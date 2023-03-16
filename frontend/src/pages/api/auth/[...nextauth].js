@@ -1,18 +1,17 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
-import {baseUrl} from "@/utils/baseUrl";
 import jwtDecode from "jwt-decode";
-
 
 
 // TODO(Elias): add secret (https://next-auth.js.org/v3/configuration/options#secret)
 
 export default async function auth(req, res) {
+	const baseServerUrl = 'http://django:8000/api/'
 
 	const refreshAccessToken = async (token) => {
 		try {
-			const response = await axios.post(baseUrl + 'user/auth/refresh/', {refresh: token.refresh})
+			const response = await axios.post(baseServerUrl + 'user/auth/refresh/', {refresh: token.refresh})
 
 			if (response.status !== 200) {
 				return null
@@ -31,7 +30,7 @@ export default async function auth(req, res) {
 		if (account && user) {
 			return user
 		}
-		if (Date.now() > token.exp) {
+		if (Date.now()/1000 >= token.exp) {
 			token = await refreshAccessToken(token)
 		}
 		return token
@@ -59,8 +58,6 @@ export default async function auth(req, res) {
 			},
 			async authorize({email, password}, req) {
 
-				const baseServerUrl = 'http://django:8000/api/'
-
 				let response = await axios.post(  baseServerUrl + 'user/auth/', {email, password})
 
 				if (response.status !== 200) {
@@ -85,7 +82,13 @@ export default async function auth(req, res) {
 	const options = {
 		providers: providers,
 		session: { strategy: "jwt", },
-		callbacks: { jwt, session }
+		callbacks: { jwt, session },
+		secret: process.env.NEXTAUTH_SECRET,
+		pages: {
+			singIn: '/',
+			singOut: '/',
+			error: '/',
+		},
 	}
 
 	return await NextAuth(req, res, options)

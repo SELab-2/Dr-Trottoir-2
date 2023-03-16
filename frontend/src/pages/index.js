@@ -34,7 +34,7 @@ export default function Login() {
 		}
 
 		console.log("Login success! Enjoy your stay :)")
-		await router.push("/testing")
+		await router.push("/home")
 	}
 
 	return (
