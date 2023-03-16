@@ -5,6 +5,7 @@ from .photo_factory import PhotoFactory
 from .waste_factory import WasteFactory
 from .tour_factory import TourFactory
 from .building_factory import BuildingFactory
+from .building_in_tour_factory import BuildingInTourFactory
 
 __all__ = [
     RegionFactory,
@@ -15,4 +16,5 @@ __all__ = [
     TourFactory,
     WasteFactory,
     TourFactory,
+    BuildingInTourFactory
 ]
