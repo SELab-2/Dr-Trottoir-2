@@ -9,6 +9,9 @@ from .visit_serializer import VisitSerializer
 from .waste_serializer import WasteSerializer
 from .waste_partial import WastePartialSerializer
 from .register_serializer import RegisterSerializer
+from .building_in_tour_partial import BuildingInTourPartialSerializer
+from .tour_partial import TourPartialSerializer
+
 
 __all__ = [
     BuildingSerializer,
@@ -22,4 +25,6 @@ __all__ = [
     RegisterSerializer,
     TourSerializer,
     BuildingInTourSerializer,
+    BuildingInTourPartialSerializer,
+    TourPartialSerializer
 ]

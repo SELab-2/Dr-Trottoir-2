@@ -36,7 +36,7 @@ class TestTourAPIView(APITestCase):
 
         response3 = self.client.post('/api/tour/', data={}, follow=True)
         self.assertEqual(response3.status_code, status.HTTP_400_BAD_REQUEST)
-        response4 = self.client.post('/api/tour/', data={"region": 6548749, "name": "test"}, follow=True)  # Region
+        response4 = self.client.post('/api/tour/', data={"region": -1, "name": "test"}, follow=True)  # Region
         # should not exist in this case
         self.assertEqual(response4.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -50,7 +50,7 @@ class TestTourAPIView(APITestCase):
         self.assertEqual(response_get.data["region"], response2.data["region"])
         self.assertNotEqual(response_get.data["url"], response2.data["url"])
 
-        response_fault = self.client.post('/api/tour/', data={"id": 5648561}, follow=True)  # tour should not exist
+        response_fault = self.client.post('/api/tour/', data={"id": -1}, follow=True)  # tour should not exist
         self.assertEqual(response_fault.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_delete(self):
