@@ -20,4 +20,3 @@ class Photo(models.Model):
 @receiver(pre_delete, sender=Photo)
 def pre_delete(sender, instance: Photo, **kwargs):
     instance.image.delete()
-
