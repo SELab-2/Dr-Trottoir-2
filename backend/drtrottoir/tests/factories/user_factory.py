@@ -3,7 +3,7 @@ import factory
 
 from drtrottoir.models import CustomUser
 from drtrottoir.models.custom_user import Roles
-from drtrottoir.tests.factories import RegionFactory
+from .region_factory import RegionFactory
 
 
 class DeveloperUserFactory(DjangoModelFactory):

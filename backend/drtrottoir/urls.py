@@ -15,8 +15,9 @@ from .views import (
     BuildingInTourViewSet,
     VisitViewSet,
     UserViewSet,
+    WasteViewSet,
     RegisterView,
-    MeView
+    MeView,
 )
 
 router = routers.DefaultRouter()
@@ -26,6 +27,7 @@ router.register(r'tour', TourViewSet)
 router.register(r'building_in_tour', BuildingInTourViewSet)
 router.register(r'visit', VisitViewSet)
 router.register(r'user', UserViewSet)
+router.register(r'waste', WasteViewSet)
 
 urlpatterns = [
     path('user/auth/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
