@@ -6,7 +6,9 @@ from .custom_user import CustomUser
 
 class Visit(models.Model):
     arrival = models.DateTimeField(verbose_name="time of arrival")
-    building_in_tour = models.ForeignKey(BuildingInTour, verbose_name="id of building in tour", on_delete=models.CASCADE)
+    building_in_tour = models.ForeignKey(BuildingInTour,
+                                         verbose_name="id of building in tour",
+                                         on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, verbose_name="id of user", on_delete=models.CASCADE)
     comment = models.TextField(verbose_name="Comment on the visit", blank=True)
 

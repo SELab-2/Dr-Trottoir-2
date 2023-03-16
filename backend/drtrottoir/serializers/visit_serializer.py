@@ -1,8 +1,5 @@
 from rest_framework import serializers
 from drtrottoir.models import Visit, CustomUser, BuildingInTour
-from .building_partial import BuildingPartialSerializer
-from .building_in_tour_partial import BuildingInTourPartialSerializer
-from .user_partial import UserPartialSerializer
 
 
 class VisitSerializer(serializers.HyperlinkedModelSerializer):
@@ -12,7 +9,8 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
 
     user = serializers.HyperlinkedRelatedField(queryset=CustomUser.objects.all(), view_name='customuser-detail')
     user_data = serializers.SerializerMethodField()
-    building_in_tour = serializers.HyperlinkedRelatedField(queryset=BuildingInTour.objects.all(), view_name='buildingintour-detail')
+    building_in_tour = serializers.HyperlinkedRelatedField(queryset=BuildingInTour.objects.all(),
+                                                           view_name='buildingintour-detail')
     building_in_tour_data = serializers.SerializerMethodField()
 
     class Meta:

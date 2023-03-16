@@ -19,5 +19,3 @@ class UserPartialSerializer(serializers.HyperlinkedModelSerializer):
             'last_name'
         ]
         read_only_field = ['is_active']
-
-
