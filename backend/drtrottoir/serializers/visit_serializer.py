@@ -10,9 +10,9 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
     A serializer for visits
     """
 
-    user = serializers.HyperlinkedRelatedField(queryset=CustomUser.objects.all(), view_name='user-detail')
+    user = serializers.HyperlinkedRelatedField(queryset=CustomUser.objects.all(), view_name='customuser-detail')
     user_data = serializers.SerializerMethodField()
-    building_in_tour = serializers.HyperlinkedRelatedField(queryset=BuildingInTour.objects.all(), view_name='building_in_tour-detail')
+    building_in_tour = serializers.HyperlinkedRelatedField(queryset=BuildingInTour.objects.all(), view_name='buildingintour-detail')
     building_in_tour_data = serializers.SerializerMethodField()
 
     class Meta:

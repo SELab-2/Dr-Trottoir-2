@@ -11,7 +11,7 @@ class TestVisitView(APITestCase):
 
     def setUp(self):
         self.visit = VisitFactory()
-        self.building_in_tour = BuildingInTourFactory
+        self.building_in_tour = BuildingInTourFactory()
         self.user = DeveloperUserFactory()
         self.client.force_authenticate(user=self.user)
 
@@ -39,11 +39,16 @@ class TestVisitView(APITestCase):
         self.assertEqual(new_data["comment"], "UPDATE TEST")
 
     def test_post(self):
-        response = self.client.get(reverse("visit-detail", kwargs={'pk': self.visit.pk}), follow=True)
-        print(response.data)
-        # serializer = BuildingInTourSerializer(self.building_in_tour, context={'request': response.wsgi_request})
-        response = self.client.post(reverse("visit-detail"),
+        response = self.client.get("/api/building_in_tour/" + str(self.building_in_tour.pk) + "/", follow=True)
+        serializerBuildTour = BuildingInTourSerializer(self.building_in_tour, context={'request': response.wsgi_request})
+        serializerUser = UserSerializer(self.user, context={'request': response.wsgi_request})
+        print(serializerUser.data)
+        response = self.client.post("/api/visit/",
                                     data={"comment": "TEST",
                                           "arrival": "2023-03-15T17:10:46Z",
-
+                                          "building_in_tour": serializerBuildTour.data["url"],
+                                          "user": serializerUser.data["url"]
                                           }, follow=True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        print(response.data)
+        print(pong)
