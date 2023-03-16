@@ -1,6 +1,25 @@
 import Head from "next/head";
+import { useSession } from "next-auth/react"
 
 export default function Testing() {
+	const { data: session } = useSession()
+
+	if (!session) {
+		return (
+			<>
+				<Head>
+					<title>Testing</title>
+				</Head>
+				<main className={`h-screen flex flex-col justify-center p-12 text-sm`}>
+					<p className={"mb-40 text-center font-bold text-red-500 text-lg"}>
+						You are unauthorized! <span className={"emoji"}>🤬</span>
+					</p>
+				</main>
+			</>
+		)
+	}
+
+
 	return (
 		<>
 			<Head>
@@ -13,11 +32,8 @@ export default function Testing() {
 				<div>
 {/*////////////////////////////////////////////////////////////////////////////////////////////////////////////*/}
 {/*///// NOTE(Elias): Write your test code here: 															   */}
-					<button onClick={login} className={buttonStyle}>click me for login</button>
-					<br/>
-					<br/>
-					<br/>
-					<button onClick={authorization} className={buttonStyle}>click me for auth</button>
+
+					<p>If you are viewing this page, you are successfully logged in <span className={"emoji"}>🥳</span></p>
 
 {/*////////////////////////////////////////////////////////////////////////////////////////////////////////////*/}
 				</div>
