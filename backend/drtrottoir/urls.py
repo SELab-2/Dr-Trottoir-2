@@ -23,9 +23,9 @@ router = routers.DefaultRouter()
 router.register(r'building', BuildingViewSet)
 router.register(r'region', RegionViewSet)
 router.register(r'tour', TourViewSet)
-router.register(r'building_in_tour', BuildingInTourViewSet)
+router.register(r'building_in_tour', BuildingInTourViewSet, basename="building_in_tour")
 router.register(r'visit', VisitViewSet)
-router.register(r'user', UserViewSet)
+router.register(r'user', UserViewSet, basename="user")
 
 urlpatterns = [
     path('user/auth/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
