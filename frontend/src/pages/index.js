@@ -26,7 +26,7 @@ export default function Login() {
 			return
 		}
 
-		const response = await signIn("credentials", {email, password, redirect: false, })
+		const response = await signIn("mail-login", {email, password, redirect: false, })
 
 		if (response?.error) {
 			console.log("something went wrong... failed to login :(")

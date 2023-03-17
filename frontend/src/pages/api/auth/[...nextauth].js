@@ -49,8 +49,8 @@ export default async function auth(req, res) {
 
 	const providers = [
 		CredentialsProvider({
-			name: 'credentials',
-			id: 'credentials',
+			name: 'Login',
+			id: 'mail-login',
 			type: 'credentials',
 			credentials: {
 				email: {label: "email", type: "text"},
@@ -81,7 +81,7 @@ export default async function auth(req, res) {
 
 	const options = {
 		providers: providers,
-		session: { strategy: "jwt", },
+		session: { strategy: "jwt", jwt: true},
 		callbacks: { jwt, session },
 		secret: process.env.NEXTAUTH_SECRET,
 		pages: {
