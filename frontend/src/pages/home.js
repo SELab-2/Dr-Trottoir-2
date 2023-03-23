@@ -3,6 +3,7 @@ import {getSession, signOut} from "next-auth/react"
 import {useState} from "react";
 import {BuildingService} from "@/services/building.service";
 import {UserService} from "@/services/user.service";
+import Layout from '../components/layout';
 
 export default function Home() {
 	const [response, setResponse] = useState('{}');
@@ -20,11 +21,11 @@ export default function Home() {
 	const buttonStyle = "underline pr-5 py-2"
 
 	return (
-		<>
+		<Layout>
 			<Head>
 				<title>Testing</title>
 			</Head>
-			<main className={`h-screen p-12 flex flex-col justify-between`}>
+			<main className={`h-full p-12 flex flex-col justify-between`}>
 				<div className={"mb-20"}>
 					<p className={"text-xl font-bold"}>Home.</p>
 				</div>
@@ -50,7 +51,7 @@ export default function Home() {
 					<p>By team 2 </p>
 				</div>
 			</main>
-		</>
+		</Layout>
 	)
 }
 
