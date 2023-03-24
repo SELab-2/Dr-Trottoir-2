@@ -39,3 +39,15 @@ class AdminPermissionOrReadOnly(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return request.user.role <= Roles.SUPERADMIN or request.method in SAFE_METHODS
+    
+class SuperStudentPermissionOrReadOnly(BasePermission):
+    """
+    Including this permission allows everyone to do safe methods like GET.
+    But requires higher levels for non-safe methods.
+    """
+
+    def has_permission(self, request, view):
+        return request.user.role <= Roles.SUPERSTUDENT or request.method in SAFE_METHODS
+
+    def has_object_permission(self, request, view, obj):
+        return request.user.role <= Roles.SUPERSTUDENT or request.method in SAFE_METHODS
