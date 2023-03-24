@@ -30,7 +30,7 @@ class SuperStudentUserFactory(UserFactory):
 
 
 class OwnerUserFactory(UserFactory):
-    role = Roles.OWNER    
+    role = Roles.OWNER
 
 
 class StudentUserFactory(UserFactory):
