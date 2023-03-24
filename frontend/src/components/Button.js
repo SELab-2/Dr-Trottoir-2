@@ -17,7 +17,7 @@ export function PrimaryButton({text, handle}){
 export function SecundaryButton({text, handle}){
 
 	return (
-		<button className="ring-2 ring-[#4D4D4D] mt-5 mb-8 py-3 px-3 text-center rounded font-bold"
+		<button className="ring-2 ring-gray-300 mt-5 mb-8 py-3 px-3 text-center rounded font-bold"
 				onClick={handle}>
 			<FontAwesomeIcon icon={faCirclePlus} style={{"--fa-primary-color": "#000000", "--fa-secondary-color": "#ffffff", "--fa-secondary-opacity": "1",}} />
 			<span class="flex-1 ml-3 whitespace-nowrap">{text}</span>
