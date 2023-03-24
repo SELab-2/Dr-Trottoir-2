@@ -48,7 +48,7 @@ export default function Home() {
 					</div>
 				</div>
 				<div className={"py-12"}>
-					<Progressbar finishedCount={5} amount={6}/>
+					<Progressbar finishedCount={6} amount={6}/>
 					<p>By team 2 </p>
 				</div>
 			</main>

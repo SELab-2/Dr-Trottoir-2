@@ -1,10 +1,7 @@
 import {useEffect, useState} from "react";
+import {low, average, high, done} from "@/utils/colors";
 
 export default function Progressbar({finishedCount, amount}){
-	const low = "#CF222E"
-	const average = "#D29922"
-	const high = "#2DA44C"
-	const done = "#8250DF"
 	const [percentage, setPercentage] = useState(0);
 	const [color, setColor] = useState(low);
 
