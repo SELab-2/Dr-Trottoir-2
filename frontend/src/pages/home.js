@@ -50,10 +50,7 @@ export default function Home() {
 						<pre> {response} </pre>
 					</div>
 				</div>
-				<div className={"py-12 space-x-3"}>
-					<PrimaryButton text={"Nieuw"} icon={faCirclePlus} handleclick={() => {}}/>
-					<SecundaryButton text={"Nieuw Item"} icon={faCirclePlus} handleclick={() => {}}/>
-					<CustomButton text={"Nieuw Item"} border={"#000000"} foregroundColor={"#00FF3B"} backgroundColor={"#0087ff"} icon={faCirclePlus} handleclick={() => {}}/>
+				<div className={"py-12"}>
 					<p>By team 2 </p>
 				</div>
 			</main>
