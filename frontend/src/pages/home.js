@@ -3,7 +3,10 @@ import {getSession, signOut} from "next-auth/react"
 import {useState} from "react";
 import {BuildingService} from "@/services/building.service";
 import {UserService} from "@/services/user.service";
-import {PrimaryButton, SecundaryButton} from "@/components/Button";
+import {PrimaryButton, SecundaryButton, CustomButton} from "@/components/Button";
+import {
+	faCirclePlus,
+} from '@fortawesome/free-solid-svg-icons'
 
 export default function Home() {
 	const [response, setResponse] = useState('{}');
@@ -48,8 +51,9 @@ export default function Home() {
 					</div>
 				</div>
 				<div className={"py-12 space-x-3"}>
-					<PrimaryButton text={"Nieuw"} handleclick={() => {}}/>
-					<SecundaryButton text={"Nieuw Item"} handleclick={() => {}}/>
+					<PrimaryButton text={"Nieuw"} icon={faCirclePlus} handleclick={() => {}}/>
+					<SecundaryButton text={"Nieuw Item"} icon={faCirclePlus} handleclick={() => {}}/>
+					<CustomButton text={"Nieuw Item"} border={"#000000"} foregroundColor={"#ffffff"} backgroundColor={"#0087ff"} icon={faCirclePlus} handleclick={() => {}}/>
 					<p>By team 2 </p>
 				</div>
 			</main>
