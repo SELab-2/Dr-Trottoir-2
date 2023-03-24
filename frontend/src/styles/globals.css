@@ -9,7 +9,13 @@ html {
 	font-family: 'Inter', sans-serif;
 }
 
-
+:root {
+	--color-low: #CF222E;
+	--color-average: #D29922;
+	--color-high: #2DA44C;
+	--color-done: #8250DF;
+	--color-primary-button: #0087FF;
+}
 
 .bg-yellow {
 	background: #E6E600;
