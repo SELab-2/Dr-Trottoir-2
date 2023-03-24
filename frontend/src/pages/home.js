@@ -3,6 +3,7 @@ import {getSession, signOut} from "next-auth/react"
 import {useState} from "react";
 import {BuildingService} from "@/services/building.service";
 import {UserService} from "@/services/user.service";
+import {PrimaryButton, SecundaryButton} from "@/components/Button";
 
 export default function Home() {
 	const [response, setResponse] = useState('{}');
@@ -46,7 +47,9 @@ export default function Home() {
 						<pre> {response} </pre>
 					</div>
 				</div>
-				<div className={"py-12"}>
+				<div className={"py-12 space-x-3"}>
+					<PrimaryButton text={"Nieuw"} handleclick={() => {}}/>
+					<SecundaryButton text={"Nieuw Item"} handleclick={() => {}}/>
 					<p>By team 2 </p>
 				</div>
 			</main>
