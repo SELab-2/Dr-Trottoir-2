@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react";
 import {low, average, high, done} from "@/utils/colors";
+import ProgressBar from "react-customizable-progressbar";
 
-export default function Progressbar({finishedCount, amount}){
+export default function Progressbar({finishedCount, amount, wheel}){
 	const [percentage, setPercentage] = useState(0);
 	const [color, setColor] = useState(low);
 
@@ -27,9 +28,22 @@ export default function Progressbar({finishedCount, amount}){
 
     },[]);
 
-	return (
+	if (wheel){
+		return (
+			<ProgressBar
+				progress={percentage}
+				radius={100}
+				strokeColor={color}
+				trackStrokeWidth={35}
+				strokeWidth={20}
+			/>
+		)
+	}else {
+		return (
 		<div className={"bg-gray-100 p-1 rounded"}>
 			<div className={"py-1 px-1 rounded"} style={{width: `${percentage}%`, backgroundColor: color}}/>
 		</div>
 	)
+	}
+
 }

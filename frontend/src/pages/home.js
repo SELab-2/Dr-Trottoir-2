@@ -3,6 +3,7 @@ import {getSession, signOut} from "next-auth/react"
 import {useState} from "react";
 import {BuildingService} from "@/services/building.service";
 import {UserService} from "@/services/user.service";
+import Progressbar from "@/components/Progressbar";
 
 export default function Home() {
 	const [response, setResponse] = useState('{}');
@@ -47,6 +48,7 @@ export default function Home() {
 					</div>
 				</div>
 				<div className={"py-12"}>
+					<Progressbar wheel={true} finishedCount={9} amount={10}/>
 					<p>By team 2 </p>
 				</div>
 			</main>
