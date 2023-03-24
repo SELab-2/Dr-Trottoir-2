@@ -4,13 +4,13 @@ from django.urls import reverse
 
 from drtrottoir.serializers import WasteSerializer
 from drtrottoir.tests.factories import (
-    WasteFactory, 
-    DeveloperUserFactory, 
-    SuperAdminUserFactory, 
-    SuperStudentUserFactory, 
-    OwnerUserFactory, 
-    StudentUserFactory, 
-    BuildingFactory
+    WasteFactory,
+    DeveloperUserFactory,
+    SuperAdminUserFactory,
+    SuperStudentUserFactory,
+    OwnerUserFactory,
+    StudentUserFactory,
+    BuildingFactory,
 )
 from drtrottoir.models.custom_user import Roles
 

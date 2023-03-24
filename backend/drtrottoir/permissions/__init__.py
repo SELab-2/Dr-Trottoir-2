@@ -1,7 +1,7 @@
 from .user_permissions import (
-    SuperPermission, 
-    SuperPermissionOrReadOnly, 
-    AdminPermissionOrReadOnly, 
+    SuperPermission,
+    SuperPermissionOrReadOnly,
+    AdminPermissionOrReadOnly,
     SuperStudentPermissionOrReadOnly
 )
 

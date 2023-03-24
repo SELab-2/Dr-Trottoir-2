@@ -1,5 +1,11 @@
 from .region_factory import RegionFactory
-from .user_factory import DeveloperUserFactory, SuperAdminUserFactory, SuperStudentUserFactory, OwnerUserFactory, StudentUserFactory
+from .user_factory import (
+    DeveloperUserFactory,
+    SuperAdminUserFactory,
+    SuperStudentUserFactory,
+    OwnerUserFactory,
+    StudentUserFactory
+)
 from .visit_factory import VisitFactory
 from .photo_factory import PhotoFactory
 from .waste_factory import WasteFactory
