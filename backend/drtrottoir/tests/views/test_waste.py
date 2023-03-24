@@ -3,7 +3,15 @@ from rest_framework.test import APITestCase
 from django.urls import reverse
 
 from drtrottoir.serializers import WasteSerializer
-from drtrottoir.tests.factories import *
+from drtrottoir.tests.factories import (
+    WasteFactory, 
+    DeveloperUserFactory, 
+    SuperAdminUserFactory, 
+    SuperStudentUserFactory, 
+    OwnerUserFactory, 
+    StudentUserFactory, 
+    BuildingFactory
+)
 from drtrottoir.models.custom_user import Roles
 
 
