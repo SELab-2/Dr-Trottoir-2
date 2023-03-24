@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {primaryButton} from "@/utils/colors";
 
 export function CustomButton({text, handle, icon, backgroundColor, foregroundColor, border}){
 
@@ -16,7 +17,7 @@ export function CustomButton({text, handle, icon, backgroundColor, foregroundCol
 export function PrimaryButton({text, handle, icon}){
 
 	return (
-		<CustomButton text={text} border={"#0087FF"} foregroundColor={"#ffffff"} backgroundColor={"#0087FF"} icon={icon} handleclick={handle}/>
+		<CustomButton text={text} border={primaryButton} foregroundColor={"#ffffff"} backgroundColor={primaryButton} icon={icon} handleclick={handle}/>
 	)
 }
 
