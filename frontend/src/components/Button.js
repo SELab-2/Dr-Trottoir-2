@@ -9,7 +9,7 @@ export function CustomButton({text, handle, icon, backgroundColor, foregroundCol
 			style={{color: foregroundColor, background: backgroundColor, borderColor: border, boxShadow: `0 0 0 3px ${border} inset !important`}}
 			onClick={handle}>
 			<FontAwesomeIcon icon={icon} style={{"--fa-primary-color": {backgroundColor}, "--fa-secondary-color": {foregroundColor}, "--fa-secondary-opacity": "1",}} />
-			<span class="flex-1 ml-3 whitespace-nowrap">{text}</span>
+			<span className="flex-1 ml-3 whitespace-nowrap">{text}</span>
 		</button>
 	)
 }
@@ -17,14 +17,14 @@ export function CustomButton({text, handle, icon, backgroundColor, foregroundCol
 export function PrimaryButton({text, handle, icon}){
 
 	return (
-		<CustomButton text={text} border={primaryButton} foregroundColor={"#ffffff"} backgroundColor={primaryButton} icon={icon} handleclick={handle}/>
+		<CustomButton text={text} border={primaryButton} foregroundColor={"#ffffff"} backgroundColor={primaryButton} icon={icon} handle={handle}/>
 	)
 }
 
 export function SecundaryButton({text, handle, icon}){
 
 	return (
-		<CustomButton text={text} border={"#d1d5db"} foregroundColor={"#000000"} backgroundColor={"#ffffff"} icon={icon} handleclick={handle}/>
+		<CustomButton text={text} border={"#d1d5db"} foregroundColor={"#000000"} backgroundColor={"#ffffff"} icon={icon} handle={handle}/>
 	)
 }
 

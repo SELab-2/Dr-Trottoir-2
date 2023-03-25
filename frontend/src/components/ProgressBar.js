@@ -5,7 +5,7 @@ export default function CustomProgressBar({finishedCount, amount, wheel}){
 	let percentage = (finishedCount/amount)*100
 	let color = low
 
-	if ( percentage >= 33) {
+	if ( percentage >= 33 && percentage <= 100) {
 		if (percentage < 66){
 			color = average
 		}else if (percentage < 99){
