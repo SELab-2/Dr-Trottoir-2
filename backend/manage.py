@@ -23,7 +23,7 @@ def main():
     if is_testing:
         import coverage
         cov = coverage.coverage(source=['drtrottoir'],
-                                omit=[])
+                                omit=['*/migrations/*', '*/tests/*'])
         cov.set_option('report:show_missing', True)
         cov.erase()
         cov.start()
