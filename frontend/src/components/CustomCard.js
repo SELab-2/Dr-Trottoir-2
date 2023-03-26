@@ -12,7 +12,7 @@ export function CustomCard({title, icon, text, bgColor, titleColor, textColor, f
                         {title}
                     </p>
                 </div>
-                <div style={{color: textColor}}>
+                <div className="max-w-sm" style={{color: textColor}}>
                     {text}
                 </div>
                 <div className="flex flex-col lg:flex-row lg:flex-wrap">
