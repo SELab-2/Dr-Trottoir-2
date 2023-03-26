@@ -4,6 +4,7 @@ import Logo from "/public/images/Logo-Dr-Trottoir-GEEL-01.png"
 import Image from "next/image";
 import {signIn} from "next-auth/react";
 import {useRouter} from "next/router";
+import {BG_ACCENT} from "@/utils/colors";
 
 // TODO(Elias):
 //   1. Add readable error messages such as 'incorrect password'
@@ -63,7 +64,7 @@ export default function Login() {
 										   name="password" autoComplete={"current-password"}/>
 								</div>
 							</div>
-							<button className="bg-yellow mt-5 mb-8 py-1 text-center w-full rounded font-bold"
+							<button style={{background: BG_ACCENT}} className="mt-5 mb-8 py-1 text-center w-full rounded font-bold"
 									type="submit">Log in</button>
 							<p className={"text-center"}>
 								<a className={"text-blue-500"} href={"mail://asdf@dsfs.com"}>Wachtwoord Vergeten?</a>

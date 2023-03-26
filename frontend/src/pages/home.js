@@ -1,6 +1,6 @@
 import Head from "next/head";
 import {getSession, signOut} from "next-auth/react"
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {BuildingService} from "@/services/building.service";
 import {UserService} from "@/services/user.service";
 import SelectionList from "@/components/SelectionList";
@@ -53,7 +53,6 @@ export default function Home() {
 		const response = await UserService.getAll()
 		setResponse(JSON.stringify(response, null, 2))
 	}
-
 
 	const buttonStyle = "underline pr-5 py-2"
 
