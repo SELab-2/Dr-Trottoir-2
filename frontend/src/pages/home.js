@@ -7,6 +7,7 @@ import SelectionList from "@/components/SelectionList";
 import SmallTour from "@/components/SmallTour";
 import {TourService} from "@/services/tour.services";
 import {BuildingInTourService} from "@/services/buildingInTour.service";
+import {VisitService} from "@/services/visit.service";
 
 export default function Home() {
 	const [response, setResponse] = useState('{}');
@@ -17,24 +18,28 @@ export default function Home() {
 			const response = await TourService.getAll()
 			//setTours(JSON.stringify(response, null, 2))
 			const btResponse = await BuildingInTourService.getAll()
-			//const visitResponse =
+			const visitResponse = await VisitService.getAll()
 			const tour = []
 
-			if (response.hasOwnProperty("results") && btResponse.hasOwnProperty("results")){
-				console.log("ping")
+			if (response.hasOwnProperty("results") && btResponse.hasOwnProperty("results") && visitResponse.hasOwnProperty("results")){
 				const list = response["results"]
+				const visits = visitResponse["results"].map((entry) => entry["building_in_tour"])
+				let finished = 0
 				for(let i in list){
 					const entry = list[i]
 					const url = entry["url"]
-					console.log(url)
-					const buildings = btResponse["results"].filter((entry) => entry["tour"] === url)
-					tour.push({"name": entry["name"], "amount": buildings.length})
+					const buildings = btResponse["results"].filter((entry) => entry["tour"] === url).map((entry) => entry["url"])
+					for(let i = 0; i < buildings.length; i++){
+						for (let j = 0; j < visits.length; j++) {
+							if ( visits[j] === buildings[i]){
+								finished++
+							}
+						}
+					}
+					tour.push({"url": url, "name": entry["name"], "amount": buildings.length, "finished": finished})
 				}
 			}
-			console.log(tour)
 			setTours(tour)
-			console.log(response)
-			console.log(btResponse)
 		}
 		allTours().catch()
 	},[]);
@@ -50,7 +55,6 @@ export default function Home() {
 	}
 
 
-
 	const buttonStyle = "underline pr-5 py-2"
 
 	return (
@@ -62,8 +66,8 @@ export default function Home() {
 				<div className={"mb-20"}>
 					<p className={"text-xl font-bold"}>Home.</p>
 				</div>
-				<div className={"flex flex-row space-x-4"}>
-					<div>
+				<div className={"h-4/6 flex flex-row space-x-4"}>
+					<div className={"w-4/6"}>
 						<div>
 							<h2 className={"text-lg font-bold pb-3"}>Test authentication</h2>
 							<p>
@@ -84,7 +88,7 @@ export default function Home() {
 					<SelectionList
 						Component={({index, callback, data}) => (<SmallTour key={index} callback={callback} data={data}/>)}
 						title={"Rondes"}
-						callback={() => {}}
+						callback={() => {console.log("callback is called!")}}
 						elements={tours}
 					/>
 				</div>
