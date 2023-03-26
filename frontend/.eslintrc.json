@@ -1,3 +1,35 @@
 {
-  "extends": "next/core-web-vitals"
+  "root": true,
+  "plugins": [
+    "prettier",
+    "react-hooks"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "next",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 9,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "modules": true
+    }
+  },
+  "rules": {
+    "no-useless-escape": "off",
+    "no-unused-vars": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
+  },
+  "env": {
+    "node": true,
+    "commonjs": true,
+    "es6": true
+  }
 }
