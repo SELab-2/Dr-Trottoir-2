@@ -1,11 +1,11 @@
 import CustomProgressBar from "@/components/ProgressBar";
-
+import {BG_MEH, BG_GOOD, BG_BAD, BG_DONE} from "@/utils/colors";
 const wheel = false;
 
 test('CustomProgressBar returns the correct color for percentage under 33%', () => {
   const finishedCount = 2;
   const expectedPercentage = 20;
-  const expectedColor = "var(--color-low)";
+  const expectedColor = BG_BAD;
   const amount = 10;
 
 
@@ -18,7 +18,7 @@ test('CustomProgressBar returns the correct color for percentage under 33%', () 
 test('CustomProgressBar returns the correct color for percentage between 33% and 66%', () => {
   const finishedCount = 4;
   const expectedPercentage = 40;
-  const expectedColor = "var(--color-average)";
+  const expectedColor = BG_MEH;
   const amount = 10
 
   const result = CustomProgressBar({finishedCount, amount, wheel});
@@ -30,7 +30,7 @@ test('CustomProgressBar returns the correct color for percentage between 33% and
 test('CustomProgressBar returns the correct color for percentage between 66% and 99%', () => {
   const finishedCount = 7;
   const expectedPercentage = 70;
-  const expectedColor = "var(--color-high)";
+  const expectedColor = BG_GOOD;
   const amount = 10
 
   const result = CustomProgressBar({finishedCount, amount, wheel});
@@ -42,7 +42,7 @@ test('CustomProgressBar returns the correct color for percentage between 66% and
 test('CustomProgressBar returns the correct color for percentage 100% completion', () => {
   const finishedCount = 10;
   const expectedPercentage = 100;
-  const expectedColor = "var(--color-done)";
+  const expectedColor = BG_DONE;
   const amount = 10
 
   const result = CustomProgressBar({finishedCount, amount, wheel});
@@ -55,7 +55,7 @@ test('CustomProgressBar gives 0% completion when actual percentage is higher tha
   const finishedCount = 10;
   const amount = 5;
   const expectedPercentage = 0;
-  const expectedColor = "var(--color-low)";
+  const expectedColor = BG_BAD;
 
   const result = CustomProgressBar({finishedCount, amount, wheel});
 
@@ -67,7 +67,7 @@ test('CustomProgressBar gives 0% completion when actual percentage is lower than
   const finishedCount = -5;
   const amount = 10;
   const expectedPercentage = 0;
-  const expectedColor = "var(--color-low)";
+  const expectedColor = BG_BAD;
 
   const result = CustomProgressBar({finishedCount, amount, wheel});
 

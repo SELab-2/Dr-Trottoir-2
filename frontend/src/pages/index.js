@@ -1,9 +1,10 @@
-import Head from "next/head";
+import Head from 'next/head'
 
-import Logo from "/public/images/Logo-Dr-Trottoir-GEEL-01.png";
+import Logo from "/public/images/Logo-Dr-Trottoir-GEEL-01.png"
 import Image from "next/image";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/router";
+import {signIn} from "next-auth/react";
+import {useRouter} from "next/router";
+import {BG_ACCENT} from "@/utils/colors";
 
 // TODO(Elias):
 //   1. Add readable error messages such as 'incorrect password'
@@ -13,93 +14,71 @@ import { useRouter } from "next/router";
 //   4. Fix scaling issues
 
 export default function Login() {
-  const router = useRouter();
+	const router = useRouter()
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
+	const handleLogin = async (event) => {
+		event.preventDefault()
 
-    const email = event.target.email.value;
-    const password = event.target.password.value;
+		const email = event.target.email.value
+		const password = event.target.password.value
 
-    if (!email || !password) {
-      console.log("Invalid input");
-      return;
-    }
+		if (!email || !password) {
+			console.log('Invalid input')
+			return
+		}
 
-    const response = await signIn("mail-login", {
-      email,
-      password,
-      redirect: false,
-    });
+		const response = await signIn("credentials", {email, password, redirect: false, })
 
-    if (response?.error) {
-      console.log("something went wrong... failed to login :(");
-      return;
-    }
+		if (response?.error) {
+			console.log("something went wrong... failed to login :(")
+			return
+		}
 
-    console.log("Login success! Enjoy your stay :)");
-    await router.push("/home");
-  };
+		console.log("Login success! Enjoy your stay :)")
+		await router.push("/home")
+	}
 
-  return (
-    <>
-      <Head>
-        <title>Inloggen</title>
-      </Head>
-      <main className="h-screen flex flex-col justify-between p-12 text-sm">
-        <div></div>
-        <div className={"flex justify-center pb-10"}>
-          <div className={"border-2 rounded-lg lg:w-1/2"}>
-            <div className={"flex justify-center p-8 bg-black rounded-t-lg"}>
-              <Image src={Logo} alt={"logo"} width={128}></Image>
-            </div>
-            <form className={"py-12 p-40"} onSubmit={handleLogin}>
-              <p className={"font-bold text-center mb-8 text-lg"}>Inloggen</p>
-              <div>
-                <div className={"pb-3"}>
-                  <p className={"text-gray-600"}>Email</p>
-                  <input
-                    className="w-full border-2 my-2 p-1 rounded"
-                    type="text"
-                    id="email"
-                    name="username"
-                    autoComplete={"email"}
-                  />
-                </div>
-                <div className={"pb-3"}>
-                  <p className={"text-gray-600"}>Wachtwoord</p>
-                  <input
-                    className="w-full border-2 my-2 p-1 rounded"
-                    type="password"
-                    id="password"
-                    name="password"
-                    autoComplete={"current-password"}
-                  />
-                </div>
-              </div>
-              <button
-                className="bg-yellow mt-5 mb-8 py-1 text-center w-full rounded font-bold"
-                type="submit"
-              >
-                Log in
-              </button>
-              <p className={"text-center"}>
-                <a className={"text-blue-500"} href={"mail://asdf@dsfs.com"}>
-                  Wachtwoord Vergeten?
-                </a>
-              </p>
-            </form>
-          </div>
-        </div>
-        <div>
-          <p className={"text-center"}>
-            In geval van problemen, contacteer: <br />
-            <a className={"text-blue-500"} href={"mail://asdf@dsfs.com"}>
-              help@drtrotoir.be
-            </a>
-          </p>
-        </div>
-      </main>
-    </>
-  );
+	return (
+		<>
+			<Head>
+				<title>Inloggen</title>
+			</Head>
+			<main className="h-screen flex flex-col justify-between p-12 text-sm">
+				<div></div>
+				<div className={"flex justify-center pb-10"}>
+					<div className={"border-2 rounded-lg lg:w-1/2"}>
+						<div className={"flex justify-center p-8 bg-black rounded-t-lg"}>
+							<Image src={Logo} alt={"logo"} width={128}></Image>
+						</div>
+						<form className={"py-12 p-40"} onSubmit={handleLogin}>
+							<p className={"font-bold text-center mb-8 text-lg"}>Inloggen</p>
+							<div>
+								<div className={"pb-3"}>
+									<p className={"text-gray-600"}>Email</p>
+									<input className="w-full border-2 my-2 p-1 rounded" type="text" id="email"
+										   name="username" autoComplete={"email"}/>
+								</div>
+								<div className={"pb-3"}>
+									<p className={"text-gray-600"}>Wachtwoord</p>
+									<input className="w-full border-2 my-2 p-1 rounded" type="password" id="password"
+										   name="password" autoComplete={"current-password"}/>
+								</div>
+							</div>
+							<button style={{background: BG_ACCENT}} className="mt-5 mb-8 py-1 text-center w-full rounded font-bold"
+									type="submit">Log in</button>
+							<p className={"text-center"}>
+								<a className={"text-blue-500"} href={"mail://asdf@dsfs.com"}>Wachtwoord Vergeten?</a>
+							</p>
+						</form>
+					</div>
+				</div>
+				<div>
+					<p className={"text-center"}>
+						In geval van problemen, contacteer: <br/>
+						<a className={"text-blue-500"} href={"mail://asdf@dsfs.com"}>help@drtrotoir.be</a>
+					</p>
+				</div>
+			</main>
+		</>
+	)
 }
