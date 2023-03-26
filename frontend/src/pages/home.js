@@ -50,10 +50,6 @@ export default function Home() {
 				<div className={"py-12"}>
 					<p>By team 2 </p>
 				</div>
-
-				<PrimaryButton text={"abc"} icon={null} handle={null}/>
-				<SecondaryButton text={"abc"} icon={null} handle={null}/>
-
 			</main>
 		</>
 	)
