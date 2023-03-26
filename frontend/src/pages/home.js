@@ -1,12 +1,43 @@
 import Head from "next/head";
 import {getSession, signOut} from "next-auth/react"
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {BuildingService} from "@/services/building.service";
 import {UserService} from "@/services/user.service";
 import SelectionList from "@/components/SelectionList";
+import SmallTour from "@/components/SmallTour";
+import {TourService} from "@/services/tour.services";
+import {BuildingInTourService} from "@/services/buildingInTour.service";
 
 export default function Home() {
 	const [response, setResponse] = useState('{}');
+	const [tours, setTours] = useState([]);
+
+	useEffect(  () => {
+		const allTours = async () => {
+			const response = await TourService.getAll()
+			//setTours(JSON.stringify(response, null, 2))
+			const btResponse = await BuildingInTourService.getAll()
+			//const visitResponse =
+			const tour = []
+
+			if (response.hasOwnProperty("results") && btResponse.hasOwnProperty("results")){
+				console.log("ping")
+				const list = response["results"]
+				for(let i in list){
+					const entry = list[i]
+					const url = entry["url"]
+					console.log(url)
+					const buildings = btResponse["results"].filter((entry) => entry["tour"] === url)
+					tour.push({"name": entry["name"], "amount": buildings.length})
+				}
+			}
+			console.log(tour)
+			setTours(tour)
+			console.log(response)
+			console.log(btResponse)
+		}
+		allTours().catch()
+	},[]);
 
 	const allBuildings = async () => {
 		const response = await BuildingService.getAll()
@@ -17,6 +48,8 @@ export default function Home() {
 		const response = await UserService.getAll()
 		setResponse(JSON.stringify(response, null, 2))
 	}
+
+
 
 	const buttonStyle = "underline pr-5 py-2"
 
@@ -48,7 +81,12 @@ export default function Home() {
 							<pre> {response} </pre>
 						</div>
 					</div>
-					<SelectionList title={"Rondes"}/>
+					<SelectionList
+						Component={({index, callback, data}) => (<SmallTour key={index} callback={callback} data={data}/>)}
+						title={"Rondes"}
+						callback={() => {}}
+						elements={tours}
+					/>
 				</div>
 				<div className={"py-12"}>
 					<p>By team 2 </p>
