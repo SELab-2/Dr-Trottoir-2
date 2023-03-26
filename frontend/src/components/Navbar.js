@@ -11,6 +11,8 @@ import {
 	faCalendarWeek,
 	faCirclePlus,
 } from '@fortawesome/free-solid-svg-icons'
+import Link from 'next/link';
+
 
 /**
  * Button component of the navbar.
@@ -21,11 +23,11 @@ import {
  */
 function Navbar_button({tag, icon, link}) {
 	return (
-		<a href={link}
-		   className={"flex items-center p-2 text-base font-normal text-gray-300 rounded-lg hover:bg-[#E6E600] hover:text-gray-900"} >
-			<FontAwesomeIcon icon={icon} className={"flex-shrink-0 w-6 h-6 ml-4 text-gray-500 group-hover:text-gray-900 hover:text-gray-900"} />
+		<Link href={link}
+		   className={"flex items-center p-2 text-base font-normal text-gray-200 rounded-lg hover:bg-accent-100 hover:text-gray-400"} >
+			<FontAwesomeIcon icon={icon} className={"flex-shrink-0 w-6 h-6 ml-4"} />
 			<span className="ml-3">{tag}</span>
-		</a>
+		</Link>
 	)
 }
 
@@ -40,7 +42,7 @@ function Navbar_List({name, categories}) {
 
 	let new_cat =Object.entries(categories).map(function([category, info], i){
 		return(
-			<li key={category + "i"}>
+			<li key={category + i}>
 				<Navbar_button tag={category} icon={info.icon} link={info.link} />
 			</li>
 		);
@@ -49,7 +51,7 @@ function Navbar_List({name, categories}) {
 	return (
 		<ul className="space-y-2 mt-9">
 			<li>
-				<span className="ml-6 text-white">{name}</span>
+				<span className="ml-6 text-gray-100">{name}</span>
 			</li>
 			{new_cat}
 		</ul>)
@@ -71,7 +73,7 @@ export default function Navbar({user}) {
 			<aside id="default-sidebar"
 				   className="fixed top-0 left-0 z-40 w-72 h-screen"
 				   aria-label="Sidebar">
-				<div className="h-full px-3 py-4 overflow-y-auto bg-gray-800">
+				<div className="h-full px-3 py-4 overflow-y-auto bg-gray-500">
 
 					<div className={"flex justify-center w-full"}>
 						<img src="/images/Logo-Dr-Trottoir-GEEL-01.png" alt="Logo Dr.Trottoir" className={"w-3/5"} />
@@ -79,7 +81,7 @@ export default function Navbar({user}) {
 
 					<Navbar_List name={"Menu"} categories={
 						{
-							Dasboard: {icon: faGrip, link: "#"},
+							Dashboard: {icon: faGrip, link: "/admin/dashboard"},
 							Planning: {icon: faCalendarWeek, link: "#"},
 							'Nieuwe data' : {icon: faCirclePlus, link: "#"}
 						}
@@ -108,8 +110,8 @@ export default function Navbar({user}) {
 							<div style={styles.pict}></div>
 
 							<div className={"flex flex-col justify-center ml-6"}>
-								<p>{user.first_name}</p>
-								<p>{user.last_name}</p>
+								<p className={"text-gray-100"}>{user.first_name}</p>
+								<p className={"text-gray-100"}>{user.last_name}</p>
 							</div>
 
 						</div>

@@ -8,9 +8,6 @@ import Layout from '@/components/layout';
 export default function Home() {
 	const [response, setResponse] = useState('{}');
 
-	const [currentUser, setCurrentUser] = useState(null)
-	const [isLoading, setLoading] = useState(false)
-
 	const allBuildings = async () => {
 		const response = await BuildingService.getAll()
 		setResponse(JSON.stringify(response, null, 2))
@@ -21,25 +18,10 @@ export default function Home() {
 		setResponse(JSON.stringify(response, null, 2))
 	}
 
-	// Fetch the data about the current logged in User
-	useEffect(() => {
-		setLoading(true)
-		UserService.getLoggedInUser()
-			.then((data) => {
-				setCurrentUser(data)
-				setLoading(false)
-			})
-	}, [])
-
-	// TODO: change to something usefull
-	if (isLoading) return <p>Loading...</p>
-	if (!currentUser) return <p>No profile data</p>
-
-
 	const buttonStyle = "underline pr-5 py-2"
 
 	return (
-		<Layout user={currentUser}>
+		<Layout>
 			<Head>
 				<title>Testing</title>
 			</Head>
