@@ -1,6 +1,6 @@
 import Head from "next/head";
 import {getSession, signOut} from "next-auth/react"
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {BuildingService} from "@/services/building.service";
 import {UserService} from "@/services/user.service";
 import SelectionList from "@/components/SelectionList";
@@ -24,8 +24,10 @@ export default function Home() {
 			if (response.hasOwnProperty("results") && btResponse.hasOwnProperty("results") && visitResponse.hasOwnProperty("results")){
 				const list = response["results"]
 				const visits = visitResponse["results"].map((entry) => entry["building_in_tour"])
-				let finished = 0
+				console.log(visits)
+
 				for(let i in list){
+					let finished = 0
 					const entry = list[i]
 					const url = entry["url"]
 					const buildings = btResponse["results"].filter((entry) => entry["tour"] === url).map((entry) => entry["url"])
@@ -85,7 +87,7 @@ export default function Home() {
 						</div>
 					</div>
 					<SelectionList
-						Component={({index, callback, data}) => (<SmallTour key={index} callback={callback} data={data}/>)}
+						Component={({url, background, setSelected, callback, data}) => (<SmallTour key={url} background={background} setSelected={setSelected} callback={callback} data={data}/>)}
 						title={"Rondes"}
 						callback={() => {console.log("callback is called!")}}
 						elements={tours}

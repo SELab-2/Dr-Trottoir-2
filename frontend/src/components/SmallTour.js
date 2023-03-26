@@ -1,7 +1,7 @@
 import CustomProgressBar from "@/components/ProgressBar";
 
-export default function SmallTour({data, callback}){
-
+export default function SmallTour({data, callback, setSelected, background}){
+	const url = data["url"]
 	let name = ""
 	let amount = 1
 	let finished = 0
@@ -15,8 +15,14 @@ export default function SmallTour({data, callback}){
 		finished = data["finished"]
 	}
 
+	function handleClick(){
+		setSelected(url)
+		callback()
+
+	}
+
 	return (
-		<div className={"bg-yellow p-4 rounded-lg space-y-3 cursor-pointer"} onClick={callback}>
+		<div className={"p-4 rounded-lg space-y-3 cursor-pointer"} style={{backgroundColor: background}} onClick={handleClick}>
 			<h1 className={"font-semibold"}>{name}</h1>
 			<CustomProgressBar finishedCount={finished} amount={amount}/>
 		</div>
