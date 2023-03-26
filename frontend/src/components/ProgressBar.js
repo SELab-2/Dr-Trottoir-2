@@ -1,17 +1,17 @@
-import {low, average, high, done} from "@/utils/colors";
+import {BG_BAD, BG_MEH, BG_GOOD, BG_DONE} from "@/utils/colors";
 import ProgressBar from "react-customizable-progressbar";
 
 export default function CustomProgressBar({finishedCount, amount, wheel}){
 	let percentage = (finishedCount/amount)*100
-	let color = low
+	let color = BG_BAD
 
-	if ( percentage >= 33) {
+	if ( percentage >= 33 && percentage <= 100) {
 		if (percentage < 66){
-			color = average
+			color = BG_MEH
 		}else if (percentage < 99){
-			color = high
+			color = BG_GOOD
 		}else {
-			color = done
+			color = BG_DONE
 		}
 	}else if (percentage < 0 || percentage > 100){
 		percentage = 0
