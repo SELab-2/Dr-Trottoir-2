@@ -11,6 +11,7 @@ import {
 	faCalendarWeek,
 	faCirclePlus,
 } from '@fortawesome/free-solid-svg-icons'
+import * as colours from '@/utils/colors'
 
 /**
  * Button component of the navbar.
@@ -40,7 +41,7 @@ function Navbar_List({name, categories}) {
 
 	let new_cat =Object.entries(categories).map(function([category, info], i){
 		return(
-			<li>
+			<li key={category + "i"}>
 				<Navbar_button tag={category} icon={info.icon} link={info.link} />
 			</li>
 		);
@@ -107,7 +108,7 @@ export default function Navbar({user}) {
 
 							<div style={styles.pict}></div>
 
-							<div class={"flex flex-col justify-center ml-6"}>
+							<div className={"flex flex-col justify-center ml-6"}>
 								<p>{user.first_name}</p>
 								<p>{user.last_name}</p>
 							</div>
