@@ -3,6 +3,7 @@ import {getSession, signOut} from "next-auth/react"
 import {useState} from "react";
 import {BuildingService} from "@/services/building.service";
 import {UserService} from "@/services/user.service";
+import {PrimaryButton, SecondaryButton} from "@/components/Button";
 
 export default function Home() {
 	const [response, setResponse] = useState('{}');

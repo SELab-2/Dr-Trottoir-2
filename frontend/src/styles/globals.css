@@ -10,16 +10,32 @@ html {
 }
 
 :root {
-	--color-low: #CF222E;
-	--color-average: #D29922;
-	--color-high: #2DA44C;
-	--color-done: #8250DF;
-	--color-primary-button: #0087FF;
+	--color-bg-light-primary: #FFFFFF;
+	--color-bg-light-secondary: #F6F8FA;
+	--color-bg-dark-primary: #1D1D1D;
+	--color-bg-dark-secondary: #282828;
+	--color-bg-accent: #E6E600;
+	--color-bg-press-me:#377DFF;
+	--color-bg-selected:#D7E5FF;
+	--color-bg-done:#D6CCED;
+	--color-bg-good:#CEF5D2;
+	--color-bg-meh:#FFDCCC;
+	--color-bg-bad:#FFD4DF;
+
+	--color-light-primary: #000000;
+	--color-light-secondary: #B2B2B2;
+	--color-light-text: #4D4D4D;
+	--color-dark-primary: #ffffff;
+	--color-dark-secondary: #4D4D4D;
+	--color-dark-text: #B2B2B2;
+	--color-accent: #585936;
+	--color-selected:#377DFF;
+	--color-done:#8250DF;
+	--color-good:#2DA44C;
+	--color-meh:#D29922;
+	--color-bad:#CF222E;
 }
 
-.bg-yellow {
-	background: #E6E600;
-}
 
 .emoji {
 		font-family: 'Noto Color Emoji', sans-serif;
