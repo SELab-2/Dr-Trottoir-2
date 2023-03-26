@@ -11,7 +11,6 @@ import {
 	faCalendarWeek,
 	faCirclePlus,
 } from '@fortawesome/free-solid-svg-icons'
-import * as colours from '@/utils/colors'
 
 /**
  * Button component of the navbar.
@@ -23,8 +22,8 @@ import * as colours from '@/utils/colors'
 function Navbar_button({tag, icon, link}) {
 	return (
 		<a href={link}
-		   className="flex items-center p-2 text-base font-normal text-gray-300 rounded-lg hover:bg-[#E6E600] hover:text-gray-900 " >
-			<FontAwesomeIcon icon={icon} className="flex-shrink-0 w-6 h-6 ml-4 text-gray-500 group-hover:text-gray-900 hover:text-gray-900 "/>
+		   className={"flex items-center p-2 text-base font-normal text-gray-300 rounded-lg hover:bg-[#E6E600] hover:text-gray-900"} >
+			<FontAwesomeIcon icon={icon} className={"flex-shrink-0 w-6 h-6 ml-4 text-gray-500 group-hover:text-gray-900 hover:text-gray-900"} />
 			<span className="ml-3">{tag}</span>
 		</a>
 	)
