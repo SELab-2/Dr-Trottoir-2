@@ -27,7 +27,7 @@ export default function Login() {
       return;
     }
 
-    const response = await signIn("credentials", {
+    const response = await signIn("mail-login", {
       email,
       password,
       redirect: false,
