@@ -80,7 +80,7 @@ export default function Navbar({user}) {
 				<Navbar_List name={"Menu"} categories={
 					{
 						Dashboard: {icon: faGrip, link: "/admin/dashboard"},
-						Planning: {icon: faCalendarWeek, link: "#"},
+						Planning: {icon: faCalendarWeek, link: "/student/planning"},
 						'Nieuwe data' : {icon: faCirclePlus, link: "#"}
 					}
 				}/>

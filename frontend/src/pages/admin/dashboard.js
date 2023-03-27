@@ -1,4 +1,4 @@
-import Layout from "@/components/layout";
+import Layout from "@/components/Layout";
 
 export default function AdminDashboardPage() {
 	// TODO: Implement this page

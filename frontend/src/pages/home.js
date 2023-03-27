@@ -3,7 +3,7 @@ import {getSession, signOut} from "next-auth/react"
 import {useState, useEffect} from "react";
 import {BuildingService} from "@/services/building.service";
 import {UserService} from "@/services/user.service";
-import Layout from '@/components/layout';
+import Layout from '@/components/Layout';
 
 export default function Home() {
 	const [response, setResponse] = useState('{}');
