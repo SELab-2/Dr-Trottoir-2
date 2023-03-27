@@ -23,13 +23,12 @@ export default function Layout({ children }) {
 	if (!currentUser) return <p>No profile data</p>
 
 	return (
-		<div className={"h-screen"}>
+		<div className={"h-screen w-screen flex"}>
 			<Head>
 				<link rel="icon" href="/favicon_beer.ico" />
 			</Head>
-
-			<div><Navbar user={currentUser}/></div>
-			<div className={"p-4 sm:ml-64 h-full"}><main>{children}</main></div>
+			<div><Navbar user={currentUser} /></div>
+			<div><main>{children}</main></div>
 		</div>
 	);
 }
