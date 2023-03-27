@@ -12,6 +12,7 @@ import {
 	faCirclePlus,
 } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link';
+import Image from 'next/image';
 
 
 /**
@@ -74,7 +75,7 @@ export default function Navbar({user}) {
 				   aria-label="Sidebar">
 
 				<div className={"flex justify-center w-full"}>
-					<img src="/images/Logo-Dr-Trottoir-GEEL-01.png" alt="Logo Dr.Trottoir" className={"w-3/5"} />
+					<Image width={500} height={500} src="/images/Logo-Dr-Trottoir-GEEL-01.png" alt="Logo Dr.Trottoir" className={"w-3/5"} />
 				</div>
 
 				<Navbar_List name={"Menu"} categories={

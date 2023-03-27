@@ -14,7 +14,13 @@ const customJestConfig = {
     // modulePathIgnorePatterns: ['<rootDir>/usr'],
     collectCoverage: true,
     coverageDirectory:"src",
+	collectCoverageFrom: ["./src/components/**", "./src/pages/**", "./src/services/**"],
     testEnvironment: 'jest-environment-jsdom',
+	"coverageThreshold": {
+		"global": {
+			"lines": 90
+		}
+	},
 
 	//ChatGPT suggested this fix. It seems to work, but more testing is needed.
 	moduleNameMapper: {
