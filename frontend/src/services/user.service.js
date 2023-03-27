@@ -1,6 +1,6 @@
 import getAuthHeader from "@/utils/getAuthHeader";
 import axios from "axios";
-import {baseUrl} from "@/utils/baseUrl";
+import { baseUrl } from "@/utils/baseUrl";
 
 async function getRequest(request) {
 	const authHeader = await getAuthHeader()
