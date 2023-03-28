@@ -2,7 +2,9 @@ import Navbar from "@/components/Navbar";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
-test("User info not visible when no data is given", async () => {});
+test("User info not visible when no data is given", async () => {
+  render(<Navbar />);
+});
 
 test("User info visible", async () => {
   render(<Navbar user={{ last_name: "Lachaert", first_name: "Michiel" }} />);
@@ -12,7 +14,6 @@ test("User info visible", async () => {
 });
 
 test("Direction press Dashboard", async () => {
-
   render(<Navbar user={{ last_name: "Lachaert", first_name: "Michiel" }} />);
 
   const link = screen.getByRole("link", { name: "Dashboard" });
