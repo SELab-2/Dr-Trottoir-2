@@ -1,3 +1,3 @@
 export default function StudentPlanningPage() {
-	// TODO: Implement this page
+  // TODO: Implement this page
 }
