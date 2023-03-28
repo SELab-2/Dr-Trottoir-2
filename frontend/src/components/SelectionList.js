@@ -20,6 +20,7 @@ function Selection({list, Component, callback}){
 }
 
 export default function SelectionList({title, Component, callback, elements}){
+	console.log(elements)
 	return (
 		<div className={"h-full p-5 w-1/6 flex flex-col rounded-lg bg"}>
 			<h1 className={"font-semibold py-2"}>{title}</h1>
