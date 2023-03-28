@@ -22,7 +22,7 @@ export default function SmallTour({data, callback, setSelected, background}){
 	}
 
 	return (
-		<div className={"p-4 rounded-lg space-y-3 cursor-pointer"} style={{backgroundColor: background}} onClick={handleClick}>
+		<div data-testid="small-tour" className={"p-4 rounded-lg space-y-3 cursor-pointer"} style={{backgroundColor: background}} onClick={handleClick}>
 			<h1 className={"font-semibold"}>{name}</h1>
 			<CustomProgressBar finishedCount={finished} amount={amount}/>
 		</div>

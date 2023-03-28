@@ -1,5 +1,5 @@
-import {BAD} from "@/utils/colors";
-import {queryAllByTestId, render} from '@testing-library/react';
+import {BAD, BG_ACCENT} from "@/utils/colors";
+import {fireEvent, queryAllByTestId, render, waitFor} from '@testing-library/react';
 import SelectionList from "@/components/SelectionList";
 import SmallTour from "@/components/SmallTour";
 
@@ -13,7 +13,7 @@ const tours = [{url: 'http://127.0.0.1:8000/api/tour/1/', name: 'Coupure', amoun
               {url: 'http://127.0.0.1:8000/api/tour/8/', name: 'tour 7', amount: 5, finished: 5},
               {url: 'http://127.0.0.1:8000/api/tour/9/', name: 'tour 8', amount: 12, finished: 9}]
 
-test('CustomProgressBar returns the correct color for percentage under 33%', () => {
+test('Test if all SmallTour components are rendered', () => {
   const amount = tours.length;
 
   const view =
@@ -27,11 +27,27 @@ test('CustomProgressBar returns the correct color for percentage under 33%', () 
       />
 
     );
-    const smallTours = view.queryAllByTestId("tour");
-    console.log(view)
+    const smallTours = view.queryAllByTestId("small-tour");
     expect(smallTours.length).toBe(amount);
+});
 
-    smallTours.forEach((tour, index) => {
-      expect(tour).toHaveAttribute('key', tours[index].url);
+test('Test if SmallTour components is selected on click', async () => {
+    const handleClick = jest.fn();
+    const background = BG_ACCENT
+    const view =
+        render(
+            <SelectionList
+                elements={tours}
+                title={"Rondes"}
+                callback={handleClick}
+                Component={({url, background, setSelected, callback, data}) =>
+                    (<SmallTour data-testid={"tour"} key={url} background={background} setSelected={setSelected}
+                                callback={callback} data={data}/>)}
+            />
+        );
+    const smallTour = view.queryAllByTestId("small-tour")[0];
+    await waitFor(() => {
+        fireEvent.click(smallTour);
     });
+    expect(handleClick).toHaveBeenCalledTimes(1);
 });
