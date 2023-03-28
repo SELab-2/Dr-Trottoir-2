@@ -26,7 +26,7 @@ function Navbar_button({ tag, icon, link }) {
     <Link
       href={link}
       className={
-        "flex items-center p-2 text-base font-normal text-gray-200 rounded-lg hover:bg-accent-100 hover:text-gray-400"
+        "flex items-center p-2 text-base font-normal text-dark-text rounded-lg hover:bg-accent-1 hover:text-light-h-1"
       }
     >
       <FontAwesomeIcon icon={icon} className={"flex-shrink-0 w-6 h-6 ml-4"} />
@@ -54,7 +54,7 @@ function Navbar_List({ name, categories }) {
   return (
     <ul className="space-y-2 mt-9">
       <li>
-        <span className="ml-6 text-gray-100">{name}</span>
+        <span className="ml-6 text-dark-h-1">{name}</span>
       </li>
       {new_cat}
     </ul>
@@ -73,7 +73,9 @@ export default function Navbar({ user }) {
   };
 
   return (
-    <div className={"w-72 h-full bg-gray-500 px-3 py-4"}>
+    <div
+      className={"fixed sm:w-72 h-full bg-dark-bg-2 px-3 py-4 overflow-scroll"}
+    >
       <aside id="default-sidebar" aria-label="Sidebar">
         <div className={"flex justify-center w-full"}>
           <Image
@@ -114,12 +116,12 @@ export default function Navbar({ user }) {
         />
 
         {user && (
-          <div className={"flex bottom-0 left-0 absolute p-6 w-full"}>
+          <div className={"relative bottom-0 flex p-6 w-full"}>
             <div style={styles.pict}></div>
 
             <div className={"flex flex-col justify-center ml-6"}>
-              <p className={"text-gray-100"}>{user.first_name}</p>
-              <p className={"text-gray-100"}>{user.last_name}</p>
+              <p className={"text-dark-text"}>{user.first_name}</p>
+              <p className={"text-dark-text"}>{user.last_name}</p>
             </div>
           </div>
         )}

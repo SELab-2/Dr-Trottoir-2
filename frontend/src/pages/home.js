@@ -1,9 +1,9 @@
 import Head from "next/head";
-import {getSession, signOut} from "next-auth/react"
-import {useState, useEffect} from "react";
-import {BuildingService} from "@/services/building.service";
-import {UserService} from "@/services/user.service";
-import Layout from '@/components/Layout';
+import { getSession, signOut } from "next-auth/react";
+import { useState } from "react";
+import { BuildingService } from "@/services/building.service";
+import { UserService } from "@/services/user.service";
+import Layout from "@/components/Layout";
 import { PrimaryButton, SecondaryButton } from "@/components/Button";
 
 export default function Home() {
@@ -55,7 +55,7 @@ export default function Home() {
           <h2 className={"text-lg font-bold mt-10"}>Response</h2>
           <div
             className={
-              "mt-3 mb-10 text-gray-800 bg-gray-200 min-w-full w-fit rounded-lg p-5"
+              "mt-3 mb-10 text-light-h-1 bg-dark-text min-w-full w-fit rounded-lg p-5"
             }
           >
             <pre> {response} </pre>
