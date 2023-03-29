@@ -1,12 +1,39 @@
-import { BG_ACCENT } from "@/utils/colors";
-import {
-  fireEvent,
-  queryAllByTestId,
-  render,
-  waitFor,
-} from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import SelectionList from "@/components/SelectionList";
-import SmallTour from "@/components/SmallTour";
+import CustomProgressBar from "@/components/ProgressBar";
+
+function SmallTour({ data, callback, setSelected, background }) {
+  const url = data["url"];
+  let name = "";
+  let amount = 1;
+  let finished = 0;
+  if (data !== undefined) {
+    console.log(data["name"]);
+    console.log(data);
+    name = data["name"];
+    if (data["amount"] > 0) {
+      amount = data["amount"];
+    }
+    finished = data["finished"];
+  }
+
+  function handleClick() {
+    setSelected(url);
+    callback();
+  }
+
+  return (
+    <div
+      data-testid="small-tour"
+      className={"p-4 rounded-lg space-y-3 cursor-pointer"}
+      style={{ backgroundColor: background }}
+      onClick={handleClick}
+    >
+      <h1 className={"font-semibold"}>{name}</h1>
+      <CustomProgressBar finishedCount={finished} amount={amount} />
+    </div>
+  );
+}
 
 const tours = [
   {
@@ -91,7 +118,6 @@ test("Test if all SmallTour components are rendered", () => {
 
 test("Test if SmallTour components is selected on click", async () => {
   const handleClick = jest.fn();
-  const background = BG_ACCENT;
   const view = render(
     <SelectionList
       elements={tours}
