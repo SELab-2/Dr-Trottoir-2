@@ -22,7 +22,10 @@ export function CustomCard({
       style={{ backgroundColor: bgColor }}
       className={"rounded-lg p-5 m-2" + class_style}
     >
-      <div className="flex items-center" style={{ color: titleColor, fontSize: fontSize }}>
+      <div
+        className="flex items-center"
+        style={{ color: titleColor, fontSize: fontSize }}
+      >
         {icon ? <FontAwesomeIcon className="mr-2" icon={icon} /> : <></>}
         <p className={"font-semibold"}>{title}</p>
       </div>
