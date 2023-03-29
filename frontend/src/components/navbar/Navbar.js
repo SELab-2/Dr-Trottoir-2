@@ -12,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import NavbarList from "@/components/navbar/NavbarList";
+import Link from "next/link";
 
 // https://flowbite.com/docs/components/sidebar/
 export default function Navbar({ user }) {
@@ -29,14 +30,16 @@ export default function Navbar({ user }) {
       className={"fixed sm:w-72 h-full bg-dark-bg-2 px-3 py-4 overflow-scroll"}
     >
       <aside id="default-sidebar" aria-label="Sidebar">
-        <div className={"flex justify-center w-full"}>
-          <Image
-            width={500}
-            height={500}
-            src="/images/Logo-Dr-Trottoir-GEEL-01.png"
-            alt="Logo Dr.Trottoir"
-            className={"w-3/5"}
-          />
+        <div>
+          <Link href={"/home"} className={"flex justify-center w-full"}>
+            <Image
+              width={500}
+              height={500}
+              src="/images/Logo-Dr-Trottoir-GEEL-01.png"
+              alt="Logo Dr.Trottoir"
+              className={"w-3/5"}
+            />
+          </Link>
         </div>
 
         <NavbarList
