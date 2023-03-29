@@ -3,7 +3,9 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 test("User info not visible when no data is given", async () => {
-  render(<Navbar />);
+  const result = render(<Navbar />);
+  const someElement = result.container.querySelector("#p-info");
+  expect(someElement).toBeNull();
 });
 
 test("User info visible", async () => {

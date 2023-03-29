@@ -116,7 +116,7 @@ export default function Navbar({ user }) {
         />
 
         {user && (
-          <div className={"relative bottom-0 flex p-6 w-full"}>
+          <div className={"absolute bottom-0 flex p-6 w-full"} id={"p-info"}>
             <div style={styles.pict}></div>
 
             <div className={"flex flex-col justify-center ml-6"}>
