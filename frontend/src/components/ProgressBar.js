@@ -1,36 +1,20 @@
-import {
-  BG_BAD,
-  BG_MEH,
-  BG_GOOD,
-  BG_DONE,
-  DONE,
-  BAD,
-  MEH,
-  GOOD,
-} from "@/utils/colors";
+import { DONE, BAD, MEH, GOOD } from "@/utils/colors";
 import ProgressBar from "react-customizable-progressbar";
+import { clamp } from "@/utils/helpers";
 
-export default function CustomProgressBar({ finishedCount, amount, wheel }) {
-  let percentage = (finishedCount / amount) * 100;
+export default function CustomProgressBar({ fraction, is_wheel }) {
+  let percentage = clamp(0, fraction * 100, 100);
+
   let color = BAD;
-  let bgColor = BG_BAD;
-
-  if (percentage >= 33 && percentage <= 100) {
-    if (percentage < 66) {
-      color = MEH;
-      bgColor = BG_MEH;
-    } else if (percentage < 99) {
-      color = GOOD;
-      bgColor = BG_GOOD;
-    } else {
-      color = DONE;
-      bgColor = BG_DONE;
-    }
-  } else if (percentage < 0 || percentage > 100) {
-    percentage = 0;
+  if (percentage === 100) {
+    color = DONE;
+  } else if (percentage > 66) {
+    color = GOOD;
+  } else if (percentage > 33) {
+    color = MEH;
   }
 
-  if (wheel) {
+  if (is_wheel) {
     return (
       <ProgressBar
         progress={percentage}
@@ -40,14 +24,13 @@ export default function CustomProgressBar({ finishedCount, amount, wheel }) {
         strokeWidth={20}
       />
     );
-  } else {
-    return (
-      <div className={"p-1 rounded"} style={{ backgroundColor: bgColor }}>
-        <div
-          className={"py-1 px-1 rounded"}
-          style={{ width: `${percentage}%`, backgroundColor: color }}
-        />
-      </div>
-    );
   }
+  return (
+    <div className={`p-1 rounded bg-${color}-2`}>
+      <div
+        className={`py-1 px-1 rounded bg-${color}-1`}
+        style={{ width: `${percentage}%`, backgroundColor: color }}
+      />
+    </div>
+  );
 }

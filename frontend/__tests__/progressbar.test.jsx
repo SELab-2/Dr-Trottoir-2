@@ -1,14 +1,15 @@
 import CustomProgressBar from "@/components/ProgressBar";
 import { MEH, GOOD, BAD, DONE } from "@/utils/colors";
-const wheel = false;
+const is_wheel = false;
 
 test("CustomProgressBar returns the correct color for percentage under 33%", () => {
   const finishedCount = 2;
   const expectedPercentage = 20;
   const expectedColor = BAD;
   const amount = 10;
+  const fraction = finishedCount / amount;
 
-  let result = CustomProgressBar({ finishedCount, amount, wheel });
+  let result = CustomProgressBar({ fraction, is_wheel });
 
   expect(result.props.children.props.style.width).toBe(
     `${expectedPercentage}%`
@@ -20,9 +21,10 @@ test("CustomProgressBar returns the correct color for percentage between 33% and
   const finishedCount = 4;
   const expectedPercentage = 40;
   const expectedColor = MEH;
-  const amount = 10
+  const amount = 10;
+  const fraction = finishedCount / amount;
 
-  const result = CustomProgressBar({ finishedCount, amount, wheel });
+  const result = CustomProgressBar({ fraction, is_wheel });
 
   expect(result.props.children.props.style.width).toBe(
     `${expectedPercentage}%`
@@ -34,9 +36,10 @@ test("CustomProgressBar returns the correct color for percentage between 66% and
   const finishedCount = 7;
   const expectedPercentage = 70;
   const expectedColor = GOOD;
-  const amount = 10
+  const amount = 10;
+  const fraction = finishedCount / amount;
 
-  const result = CustomProgressBar({ finishedCount, amount, wheel });
+  const result = CustomProgressBar({ fraction, is_wheel });
 
   expect(result.props.children.props.style.width).toBe(
     `${expectedPercentage}%`
@@ -49,8 +52,9 @@ test("CustomProgressBar returns the correct color for percentage 100% completion
   const expectedPercentage = 100;
   const expectedColor = DONE;
   const amount = 10;
+  const fraction = finishedCount / amount;
 
-  const result = CustomProgressBar({ finishedCount, amount, wheel });
+  const result = CustomProgressBar({ fraction, is_wheel });
 
   expect(result.props.children.props.style.width).toBe(
     `${expectedPercentage}%`
@@ -61,10 +65,11 @@ test("CustomProgressBar returns the correct color for percentage 100% completion
 test("CustomProgressBar gives 0% completion when actual percentage is higher than 100%", () => {
   const finishedCount = 10;
   const amount = 5;
-  const expectedPercentage = 0;
-  const expectedColor = BAD;
+  const fraction = finishedCount / amount;
+  const expectedPercentage = 100;
+  const expectedColor = DONE;
 
-  const result = CustomProgressBar({ finishedCount, amount, wheel });
+  const result = CustomProgressBar({ fraction, is_wheel });
 
   expect(result.props.children.props.style.width).toBe(
     `${expectedPercentage}%`
@@ -77,8 +82,9 @@ test("CustomProgressBar gives 0% completion when actual percentage is lower than
   const amount = 10;
   const expectedPercentage = 0;
   const expectedColor = BAD;
+  const fraction = finishedCount / amount;
 
-  const result = CustomProgressBar({ finishedCount, amount, wheel });
+  const result = CustomProgressBar({ fraction, is_wheel });
 
   expect(result.props.children.props.style.width).toBe(
     `${expectedPercentage}%`
