@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBicycle,
   faBriefcase,
@@ -11,55 +10,8 @@ import {
   faCalendarWeek,
   faCirclePlus,
 } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
 import Image from "next/image";
-
-/**
- * Button component of the navbar.
- * @param tag The tag that needs to be displayed on the button.
- * @param icon The icon of the button.
- * @param link The link where the button needs to send the user.
- * @constructor
- */
-function Navbar_button({ tag, icon, link }) {
-  return (
-    <Link
-      href={link}
-      className={
-        "flex items-center p-2 text-base font-normal text-dark-text rounded-lg hover:bg-accent-1 hover:text-light-h-1"
-      }
-    >
-      <FontAwesomeIcon icon={icon} className={"flex-shrink-0 w-6 h-6 ml-4"} />
-      <span className="ml-3">{tag}</span>
-    </Link>
-  );
-}
-
-/**
- * Create a list for the navbar.
- * @param name Name of the categories.
- * @param categories: Dictionary where the keys are the different categories and the value the corresponding info.
- * 						Info includes the icon and the link.
- * @constructor
- */
-function Navbar_List({ name, categories }) {
-  let new_cat = Object.entries(categories).map(function ([category, info], i) {
-    return (
-      <li key={category + i}>
-        <Navbar_button tag={category} icon={info.icon} link={info.link} />
-      </li>
-    );
-  });
-
-  return (
-    <ul className="space-y-2 mt-9">
-      <li>
-        <span className="ml-6 text-dark-h-1">{name}</span>
-      </li>
-      {new_cat}
-    </ul>
-  );
-}
+import NavbarList from "@/components/navbar/NavbarList";
 
 // https://flowbite.com/docs/components/sidebar/
 export default function Navbar({ user }) {
@@ -87,7 +39,7 @@ export default function Navbar({ user }) {
           />
         </div>
 
-        <Navbar_List
+        <NavbarList
           name={"Menu"}
           categories={{
             Dashboard: { icon: faGrip, link: "/admin/dashboard" },
@@ -96,7 +48,7 @@ export default function Navbar({ user }) {
           }}
         />
 
-        <Navbar_List
+        <NavbarList
           name={"Data"}
           categories={{
             Rondes: { icon: faBicycle, link: "#" },
@@ -106,7 +58,7 @@ export default function Navbar({ user }) {
           }}
         />
 
-        <Navbar_List
+        <NavbarList
           name={"Communicatie"}
           categories={{
             Berichten: { icon: faEnvelope, link: "#" },
