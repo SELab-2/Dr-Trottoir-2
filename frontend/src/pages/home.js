@@ -4,6 +4,7 @@ import { useState } from "react";
 import { BuildingService } from "@/services/building.service";
 import { UserService } from "@/services/user.service";
 import { PrimaryButton, SecondaryButton } from "@/components/Button";
+import Layout from "@/components/Layout";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
