@@ -27,7 +27,9 @@ export default function Navbar({ user }) {
 
   return (
     <div
-      className={"fixed sm:w-72 h-full bg-dark-bg-2 px-3 py-4 overflow-scroll"}
+      className={
+        "fixed sm:w-72 h-full bg-dark-bg-2 px-3 py-4 overflow-y-scroll"
+      }
     >
       <aside id="default-sidebar" aria-label="Sidebar">
         <div>
