@@ -1,6 +1,6 @@
 import { BG_LIGHT_SECONDARY, BG_ACCENT } from "@/utils/colors";
 import { useState } from "react";
-import {PrimaryCard} from "@/components/CustomCard";
+import { PrimaryCard } from "@/components/CustomCard";
 
 function Selection({ list, Component, callback }) {
   const defaultBG = BG_LIGHT_SECONDARY;
@@ -46,7 +46,6 @@ export default function SelectionList({
   callback,
   elements,
 }) {
-  console.log(elements);
   return (
     <PrimaryCard
       title={title}
