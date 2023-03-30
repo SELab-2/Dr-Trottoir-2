@@ -22,11 +22,7 @@ test("Test if input works and callback is called on click", () => {
 });
 
 test("Button does not have to be present", () => {
-  const view = render(
-    <CustomInputField
-      callback={() => {}}
-    />
-  );
+  const view = render(<CustomInputField callback={() => {}} />);
   const button = view.queryByTestId("input-button");
   expect(button).toBe(null);
 });
