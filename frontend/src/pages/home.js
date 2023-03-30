@@ -3,8 +3,6 @@ import { getSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import { BuildingService } from "@/services/building.service";
 import { UserService } from "@/services/user.service";
-import CustomInputField from "@/components/InputField";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
