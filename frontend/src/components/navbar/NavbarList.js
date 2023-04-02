@@ -19,7 +19,7 @@ export default function NavbarList({ name, categories }) {
   return (
     <ul className="space-y-2 mt-9">
       <li>
-        <span className="ml-6 text-dark-h-1">{name}</span>
+        <span className="ml-6 text-dark-h-1 font-bold">{name}</span>
       </li>
       {new_cat}
     </ul>

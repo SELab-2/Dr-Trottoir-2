@@ -10,10 +10,8 @@ import { useRouter } from "next/router";
  * @constructor
  */
 export default function NavbarButton({ tag, icon, link }) {
+  // Background is the accent colour if it is the current page.
   const router = useRouter();
-  console.log(router.asPath);
-  console.log(link);
-
   let background = "bg-dark-bg-1";
   let hover_background = "bg-dark-bg-2";
   let text = "text-dark-text";
