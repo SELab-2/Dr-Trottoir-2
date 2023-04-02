@@ -17,7 +17,7 @@ export default function NavbarList({ name, categories }) {
   });
 
   return (
-    <ul className="space-y-2 mt-9">
+    <ul className="space-y-2 mt-6 mb-6">
       <li>
         <span className="ml-6 text-dark-h-1 font-bold">{name}</span>
       </li>

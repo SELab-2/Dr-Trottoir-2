@@ -27,23 +27,25 @@ export default function Navbar({ user }) {
 
   return (
     <div
-      className={
-        "fixed sm:w-72 h-full bg-dark-bg-1 px-3 py-4 overflow-y-scroll"
-      }
+      className={"fixed flex flex-col sm:w-72 h-full bg-dark-bg-1 px-3 py-4"}
     >
-      <aside id="default-sidebar" aria-label="Sidebar">
-        <div>
-          <Link href={"/home"} className={"flex justify-center w-full"}>
-            <Image
-              width={500}
-              height={500}
-              src="/images/Logo-Dr-Trottoir-GEEL-01.png"
-              alt="Logo Dr.Trottoir"
-              className={"w-3/5"}
-            />
-          </Link>
-        </div>
+      <div className={"flex"}>
+        <Link href={"/home"} className={"flex justify-center w-full"}>
+          <Image
+            width={500}
+            height={500}
+            src="/images/Logo-Dr-Trottoir-GEEL-01.png"
+            alt="Logo Dr.Trottoir"
+            className={"w-3/5"}
+          />
+        </Link>
+      </div>
 
+      <div
+        class={
+          "overflow-y-auto overflow-x-hidden flex-grow border-b border-dark-text"
+        }
+      >
         <NavbarList
           name={"Menu"}
           categories={{
@@ -71,18 +73,18 @@ export default function Navbar({ user }) {
             Templates: { icon: faEnvelopeOpenText, link: "#" },
           }}
         />
+      </div>
 
-        {user && (
-          <div className={"flex p-6 w-full"} id={"p-info"}>
-            <div style={styles.pict}></div>
+      {user && (
+        <div className={"flex p-6 w-full"} id={"p-info"}>
+          <div style={styles.pict}></div>
 
-            <div className={"flex flex-col justify-center ml-6"}>
-              <p className={"text-dark-text"}>{user.first_name}</p>
-              <p className={"text-dark-text"}>{user.last_name}</p>
-            </div>
+          <div className={"flex flex-col justify-center ml-6"}>
+            <p className={"text-dark-text"}>{user.first_name}</p>
+            <p className={"text-dark-text"}>{user.last_name}</p>
           </div>
-        )}
-      </aside>
+        </div>
+      )}
     </div>
   );
 }
