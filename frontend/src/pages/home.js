@@ -3,7 +3,6 @@ import { getSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import { BuildingService } from "@/services/building.service";
 import { UserService } from "@/services/user.service";
-import { PrimaryButton, SecondaryButton } from "@/components/Button";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
@@ -29,7 +28,7 @@ export default function Home() {
         <div className={"mb-20"}>
           <p className={"text-xl font-bold"}>Home.</p>
         </div>
-        <div>
+        <div className={"w-4/6"}>
           <div>
             <h2 className={"text-lg font-bold pb-3"}>Test authentication</h2>
             <p>
@@ -44,11 +43,11 @@ export default function Home() {
             <h2 className={"text-lg font-bold pb-3"}>Test models</h2>
             <button className={buttonStyle} onClick={allBuildings}>
               {" "}
-              All buildings
+              All buildings{" "}
             </button>
             <button className={buttonStyle} onClick={allUsers}>
               {" "}
-              All users
+              All users{" "}
             </button>
           </div>
           <h2 className={"text-lg font-bold mt-10"}>Response</h2>
