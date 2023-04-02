@@ -21,7 +21,7 @@ export default function Home() {
   const buttonStyle = "underline pr-5 py-2";
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>Testing</title>
       </Head>
@@ -66,7 +66,7 @@ export default function Home() {
           <p>By team 2 </p>
         </div>
       </main>
-    </Layout>
+    </>
   );
 }
 
