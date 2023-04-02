@@ -3,7 +3,6 @@ import { getSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import { BuildingService } from "@/services/building.service";
 import { UserService } from "@/services/user.service";
-import { PrimaryButton, SecondaryButton } from "@/components/Button";
 import Layout from "@/components/Layout";
 
 export default function Home() {
@@ -26,7 +25,9 @@ export default function Home() {
       <Head>
         <title>Testing</title>
       </Head>
-      <main className={`h-screen p-12 flex flex-col justify-between overflow-x-hidden`}>
+      <main
+        className={`h-screen p-12 flex flex-col justify-between overflow-x-hidden`}
+      >
         <div className={"mb-20"}>
           <p className={"text-xl font-bold"}>Home.</p>
         </div>
