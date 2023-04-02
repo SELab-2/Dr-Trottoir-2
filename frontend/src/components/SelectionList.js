@@ -46,7 +46,6 @@ export default function SelectionList({
   callback,
   elements,
 }) {
-  console.log(elements);
   return (
     <PrimaryCard
       title={title}

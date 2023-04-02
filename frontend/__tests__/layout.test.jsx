@@ -3,6 +3,7 @@ import { act, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 import axios from "axios";
+import { getSession, SessionProvider } from "next-auth/react";
 jest.mock("axios");
 jest.mock("next-auth/react");
 jest.mock("next/router", () => require("next-router-mock"));
@@ -17,6 +18,9 @@ jest.mock("next-auth/react", () => {
     __esModule: true,
     ...originalModule,
     getSession: jest.fn(() => {
+      return { data: mockSession, status: "authenticated" }; // return type is [] in v3 but changed to {} in v4
+    }),
+    useSession: jest.fn(() => {
       return { data: mockSession, status: "authenticated" }; // return type is [] in v3 but changed to {} in v4
     }),
   };

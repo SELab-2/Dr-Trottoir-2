@@ -13,7 +13,8 @@ export default function Layout({ children }) {
   useEffect(() => {
     setLoading(true);
 
-    //TODO remove this, error handling should be done in GetLoggedInUser.
+    //TODO: remove this, error handling should be done in GetLoggedInUser.
+    // at this moment, you get an error if you remove the session?.user branch.
     if (session?.user) {
       UserService.getLoggedInUser().then((data) => {
         setCurrentUser(data);
