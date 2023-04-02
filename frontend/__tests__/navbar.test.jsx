@@ -2,6 +2,8 @@ import Navbar from "@/components/navbar/Navbar";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
+jest.mock("next/router", () => require("next-router-mock"));
+
 test("User info not visible when no data is given", async () => {
   const result = render(<Navbar />);
   const someElement = result.container.querySelector("#p-info");

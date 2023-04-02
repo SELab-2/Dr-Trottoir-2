@@ -5,6 +5,7 @@ import "@testing-library/jest-dom";
 import axios from "axios";
 jest.mock("axios");
 jest.mock("next-auth/react");
+jest.mock("next/router", () => require("next-router-mock"));
 
 jest.mock("next-auth/react", () => {
   const originalModule = jest.requireActual("next-auth/react");
