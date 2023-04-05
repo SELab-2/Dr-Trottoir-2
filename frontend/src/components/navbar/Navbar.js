@@ -42,7 +42,7 @@ export default function Navbar({ user }) {
       </div>
 
       <div
-        class={
+        className={
           "overflow-y-auto overflow-x-hidden flex-grow border-b border-dark-text"
         }
       >
