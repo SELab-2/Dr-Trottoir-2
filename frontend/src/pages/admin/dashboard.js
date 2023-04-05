@@ -1,14 +1,20 @@
-import { PrimaryCard } from "@/components/CustomCard";
-
+import Head from "next/head";
+import { PrimaryButton, SecondaryButton } from "@/components/Button";
+import { PrimaryCard, SecondaryCard } from "@/components/CustomCard";
 
 export default function AdminDashboardPage() {
   // TODO: Implement this page
 
   return (
-    <div>
-      <PrimaryCard class_style={" border-2 border-accent-1"}>
-        <p>test</p>
-      </PrimaryCard>
-    </div>
+    <>
+      <Head>
+        <title>Dasboard</title>
+      </Head>
+      <main className={"w-full h-full bg-light-bg-2 p-4"}>
+        <PrimaryCard className={"w-full h-full"}>
+
+        </PrimaryCard>
+      </main>
+    </>
   );
 }
