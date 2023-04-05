@@ -42,6 +42,6 @@ html {
 }
 
 body {
-	background-color: var(--color-bg-light-secondary);
+	@apply bg-light-bg-2;
 }
 

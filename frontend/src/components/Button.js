@@ -17,7 +17,7 @@ export function CustomButton({
 }) {
   return (
     <button
-      className="border-2 mt-5 mb-8 py-3 px-6 text-center rounded font-bold"
+      className="border-2 my-4 py-3 px-6 text-center rounded font-bold"
       style={{
         color: foregroundColor,
         background: backgroundColor,
@@ -27,13 +27,14 @@ export function CustomButton({
     >
       <FontAwesomeIcon
         icon={icon}
+        className={"mr-3"}
         style={{
           "--fa-primary-color": { backgroundColor },
           "--fa-secondary-color": { foregroundColor },
           "--fa-secondary-opacity": "1",
         }}
       />
-      <span className="flex-1 ml-3 whitespace-nowrap">{text}</span>
+      <span className="flex-1 whitespace-nowrap">{text}</span>
     </button>
   );
 }
