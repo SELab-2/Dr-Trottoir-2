@@ -3,9 +3,9 @@ import {CustomDayPicker, CustomWeekPicker} from "@/components/CustomWeekPicker";
 import moment from "moment";
 
 test("Correct value is being stored in input of week picker", async () => {
-  const changeData = jest.fn();
-  render(<CustomWeekPicker callback={changeData} />);
+  render(<CustomWeekPicker data-testid="week" />);
   const inputField = screen.getByTestId("week");
+  console.log(inputField.value);
   await waitFor(() => {
     fireEvent.change(inputField, { target: { value: "2023-W17" } });
   });

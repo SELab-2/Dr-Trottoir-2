@@ -3,6 +3,10 @@ import { getSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import { BuildingService } from "@/services/building.service";
 import { UserService } from "@/services/user.service";
+import {
+  CustomWeekPicker,
+  CustomDayPicker,
+} from "@/components/CustomWeekPicker";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
@@ -60,6 +64,8 @@ export default function Home() {
           </div>
         </div>
         <div className={"py-12"}>
+          <CustomWeekPicker />
+          <CustomDayPicker />
           <p>By team 2 </p>
         </div>
       </main>

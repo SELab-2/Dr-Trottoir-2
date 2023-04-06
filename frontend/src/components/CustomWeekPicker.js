@@ -1,37 +1,51 @@
 import moment from "moment";
+import DatePicker from "react-datepicker";
+import { useState } from "react";
+import "react-datepicker/dist/react-datepicker.css";
 
-export function CustomWeekPicker({ callback }) {
+export function CustomWeekPicker() {
+  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+  const [startDate, endDate] = dateRange;
+
   const handleValueChange = (newValue) => {
-    const value = newValue.target.value;
-    const dateFrom = moment(value).startOf("isoWeek").format("yyyy-MM-DD");
-    const dateTo = moment(value).endOf("isoWeek").format("yyyy-MM-DD");
-
-    callback({ startDate: dateFrom, endDate: dateTo });
+    console.log(newValue);
+    const value = newValue[0];
+    if (value !== null) {
+      const dateFrom = moment(value).startOf("isoWeek").toDate();
+      const dateTo = moment(value).endOf("isoWeek").toDate();
+      console.log(value);
+      console.log(dateFrom);
+      setDateRange([dateFrom, dateTo]);
+    }
   };
 
   return (
-    <input
-      type="week"
-      name="week"
+    <DatePicker
+      startDate={startDate}
       data-testid="week"
-      id="camp-week"
+      endDate={endDate}
+      dateFormat="dd/MM/yyyy"
+      selectsRange={true}
+      onChange={(date) => handleValueChange(date)}
+      calendarStartDay={1}
       className={
-        "bg-light-bg-2 p-2 flex w-1/6 border-2 border-light-h-2 rounded-full"
+        "rounded-full w-1/6 p-2 border-2 border-light-h-2 bg-light-bg-2"
       }
-      onChange={handleValueChange}
     />
   );
 }
 
 export function CustomDayPicker() {
+  const [startDate, setStartDate] = useState(new Date());
+
   return (
-    <input
-      type="date"
-      name="day"
-      data-testid="day"
-      id="camp-day"
+    <DatePicker
+      selected={startDate}
+      onChange={(date) => setStartDate(date)}
+      dateFormat="dd/MM/yyyy"
+      calendarStartDay={1}
       className={
-        "bg-light-bg-2 p-2 flex w-1/6 border-2 border-light-h-2 rounded-full"
+        "rounded-full w-1/6 p-2 border-2 border-light-h-2 bg-light-bg-2"
       }
     />
   );
