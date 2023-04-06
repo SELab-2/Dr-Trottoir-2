@@ -1,19 +1,14 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 import ProgressBar from "react-customizable-progressbar";
 import CustomProgressBar from "@/components/ProgressBar";
 
+function Cell({ Component }) {
+  return <div className={"max-h-6 w-full overflow-x-hidden overflow-hidden hover:max-h-none"}>{Component}</div>;
+}
+
 export default function CustomTable({ header, data }) {
-
-
-  useEffect(() => {
-        const loadData = () => {
-
-        }
-        loadData();
-    }, []);
-
   return (
-    <table className={"w-4/6"}>
+    <table className={"w-full"}>
       <tbody>
         <tr className={"bg-accent-1"}>
           <th className={"rounded-l-full"}>Nr.</th>
@@ -29,28 +24,26 @@ export default function CustomTable({ header, data }) {
             }
           })}
         </tr>
-        <tr className={"relative overflow-visible"}>
-          <th>Test</th>
-          <th
-            className={
-              " active:bg-light-bg-1 overflow-hidden max-w-0 active:max-w-none active:overflow-visible"
-            }
-          >
-            Test
+        <tr className={"p-6"}>
+          <th>
+            <Cell Component={"Test"} />
           </th>
-          <th
-            className={
-              "active:bg-light-bg-1 overflow-hidden max-h-0 max-w-0 active:max-w-none active:max-h-none active:overflow-visible"
-            }
-          >
-            <p className={"flex"}>Testfffffffffffffffffffffffffffffffffffffffffffffff fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff ffffff fffffffffff fffffffffffff fffffffffff fffffffffff ffffffffffffffffffffffffffffff</p>
+          <th>
+            <Cell Component={"Test"} />
           </th>
-          <th
-            id={"test"}
-            className={
-              "place-content-stretch active:bg-light-bg-2 overflow-hidden max-w-0 active:max-w-none active:overflow-visible"
-            }
-          >
+          <th>
+            <Cell
+              Component={
+                <p>
+                  Testfffffffffffffffffffffffffffffffffffffffffffffff
+                  fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                  ffffff fffffffffff fffffffffffff fffffffffff fffffffffff
+                  ffffffffffffffffffffffffffffff
+                </p>
+              }
+            />
+          </th>
+          <th id={"test"}>
             <CustomProgressBar fraction={0.8} />
           </th>
           <th>Test</th>
