@@ -83,7 +83,10 @@ const callbacks = {
 export const options = {
   providers,
   callbacks,
-  pages: {},
+  pages: {
+    signIn: "/",
+    signOut: "/",
+  },
   secret: "your_secret",
 };
 

@@ -5,9 +5,11 @@ import BuildingService from "@/services/building.service";
 import UserService from "@/services/user.service";
 import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
 import CustomDayPicker from "@/components/input-fields/CustomDayPicker";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
+  const router = useRouter();
 
   const allBuildings = async () => {
     const response = await BuildingService.getAll();
@@ -39,7 +41,12 @@ export default function Home() {
               If you are viewing this page, you are successfully logged in{" "}
               <span className={"emoji"}>🥳</span>
             </p>
-            <button className={buttonStyle} onClick={() => signOut()}>
+            <button
+              className={buttonStyle}
+              onClick={() => {
+                signOut({ redirect: false }).then(() => router.push("/"));
+              }}
+            >
               log out
             </button>
           </div>
