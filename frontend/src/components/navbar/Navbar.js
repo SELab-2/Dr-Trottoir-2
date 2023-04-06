@@ -13,9 +13,14 @@ import {
 import Image from "next/image";
 import NavbarList from "@/components/navbar/NavbarList";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 // https://flowbite.com/docs/components/sidebar/
-export default function Navbar({ user }) {
+export default function Navbar() {
+  const {
+    data: { user },
+  } = useSession();
+
   const styles = {
     pict: {
       width: "50px",
@@ -26,9 +31,7 @@ export default function Navbar({ user }) {
   };
 
   return (
-    <div
-      className={"fixed flex flex-col sm:w-72 h-full bg-dark-bg-1 px-3 py-4"}
-    >
+    <div className={"flex flex-col sm:w-72 h-full bg-dark-bg-1 px-3 py-4"}>
       <div className={"flex"}>
         <Link href={"/home"} className={"flex justify-center w-full"}>
           <Image
@@ -75,16 +78,14 @@ export default function Navbar({ user }) {
         />
       </div>
 
-      {user && (
-        <div className={"flex p-6 w-full"} id={"p-info"}>
-          <div style={styles.pict}></div>
+      <div className={"flex p-6 w-full"} id={"p-info"}>
+        <div style={styles.pict}></div>
 
-          <div className={"flex flex-col justify-center ml-6"}>
-            <p className={"text-dark-text"}>{user.first_name}</p>
-            <p className={"text-dark-text"}>{user.last_name}</p>
-          </div>
+        <div className={"flex flex-col justify-center ml-6"}>
+          <p className={"text-dark-text"}>{user.first_name}</p>
+          <p className={"text-dark-text"}>{user.last_name}</p>
         </div>
-      )}
+      </div>
     </div>
   );
 }

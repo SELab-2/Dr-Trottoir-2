@@ -1,9 +1,8 @@
 import Layout from "@/components/Layout";
 import { act, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-
 import axios from "axios";
-import { getSession, SessionProvider } from "next-auth/react";
+
 jest.mock("axios");
 jest.mock("next-auth/react");
 jest.mock("next/router", () => require("next-router-mock"));
@@ -27,16 +26,6 @@ jest.mock("next-auth/react", () => {
 });
 
 test("Layout includes the children", async () => {
-  axios.get.mockResolvedValue({
-    data: [
-      {
-        first_name: "Michiel",
-        last_name: "Lachaert",
-      },
-    ],
-    status: 200,
-  });
-
   await act(() => {
     render(
       <Layout>

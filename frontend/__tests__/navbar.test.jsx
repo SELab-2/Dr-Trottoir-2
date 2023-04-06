@@ -1,24 +1,36 @@
 import Navbar from "@/components/navbar/Navbar";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
+jest.mock("next-auth/react");
 jest.mock("next/router", () => require("next-router-mock"));
-
-test("User info not visible when no data is given", async () => {
-  const result = render(<Navbar />);
-  const someElement = result.container.querySelector("#p-info");
-  expect(someElement).toBeNull();
+jest.mock("next-auth/react", () => {
+  const originalModule = jest.requireActual("next-auth/react");
+  const mockSession = {
+    expires: new Date(Date.now() + 2 * 86400).toISOString(),
+    user: { first_name: "Michiel", last_name: "Lachaert" },
+  };
+  return {
+    __esModule: true,
+    ...originalModule,
+    getSession: jest.fn(() => {
+      return { data: mockSession, status: "authenticated" }; // return type is [] in v3 but changed to {} in v4
+    }),
+    useSession: jest.fn(() => {
+      return { data: mockSession, status: "authenticated" }; // return type is [] in v3 but changed to {} in v4
+    }),
+  };
 });
 
 test("User info visible", async () => {
-  render(<Navbar user={{ last_name: "Lachaert", first_name: "Michiel" }} />);
+  render(<Navbar />);
 
   screen.getByText(/Michiel/i, {});
   screen.getByText(/Lachaert/i, {});
 });
 
 test("Direction press Dashboard", async () => {
-  render(<Navbar user={{ last_name: "Lachaert", first_name: "Michiel" }} />);
+  render(<Navbar />);
 
   const link = screen.getByRole("link", { name: "Dashboard" });
   expect(link).toBeInTheDocument();

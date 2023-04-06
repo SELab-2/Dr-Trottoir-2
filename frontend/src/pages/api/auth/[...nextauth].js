@@ -32,13 +32,17 @@ const providers = [
     authorize: async ({ email, password }) => {
       try {
         // Authenticate user with credentials
-        const user = await axios.post(BASE_SERVER_URL + "user/auth/", {
+        const creds = await axios.post(BASE_SERVER_URL + "user/auth/", {
           password,
           email,
         });
 
-        if (user.data.access) {
-          return user.data;
+        if (creds.data.access) {
+          const headers = { Authorization: "Bearer " + creds.data.access };
+          const user = await axios.get(BASE_SERVER_URL + "user/me", {
+            headers,
+          });
+          return { ...creds.data, user: user.data };
         }
 
         return null;
@@ -55,6 +59,7 @@ const callbacks = {
       // This will only be executed at login. Each next invocation will skip this part.
       token.accessToken = user.access;
       token.refreshToken = user.refresh;
+      token.user = user.user;
     }
 
     // If the token is still valid, just return it.
@@ -70,7 +75,7 @@ const callbacks = {
     // Here we pass accessToken to the client to be used in authentication with your API
     session.access = token.accessToken;
     session.refresh = token.refreshToken;
-
+    session.user = token.user;
     return session;
   },
 };

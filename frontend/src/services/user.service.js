@@ -18,11 +18,6 @@ async function getAll() {
   return await getRequest(baseUrl + "user/");
 }
 
-async function getLoggedInUser() {
-  return await getRequest(baseUrl + "user/me");
-}
-
 export const UserService = {
   getAll,
-  getLoggedInUser,
 };
