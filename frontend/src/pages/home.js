@@ -28,7 +28,9 @@ export default function Home() {
       <Head>
         <title>Testing</title>
       </Head>
-      <main className={`h-screen p-12 flex flex-col justify-between`}>
+      <main
+        className={`h-screen p-12 flex flex-col justify-between overflow-x-hidden`}
+      >
         <div className={"mb-20"}>
           <p className={"text-xl font-bold"}>Home.</p>
         </div>

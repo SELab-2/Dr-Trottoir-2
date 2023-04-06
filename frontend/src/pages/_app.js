@@ -1,11 +1,14 @@
 import "@/styles/globals.css";
 import "../styles/CustomWeekPicker.css";
 import { SessionProvider } from "next-auth/react";
+import Layout from "@/components/Layout";
 
 export default function App({ session, Component, pageProps }) {
   return (
     <SessionProvider session={session} basePath="/next/auth">
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </SessionProvider>
   );
 }
