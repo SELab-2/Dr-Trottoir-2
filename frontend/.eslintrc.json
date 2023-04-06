@@ -31,5 +31,16 @@
     "node": true,
     "commonjs": true,
     "es6": true
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.test.js",
+        "**/*.test.jsx"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
 }
