@@ -1,7 +1,13 @@
 import { BG_LIGHT_SECONDARY, DARK_TEXT, LIGHT_PRIMARY } from "@/utils/colors";
 import CustomCard from "@/components/custom-card/CustomCard";
 
-export default function SecondaryCard({ title, icon, text, children, className }) {
+export default function SecondaryCard({
+  title,
+  icon,
+  text,
+  children,
+  className,
+}) {
   return (
     <CustomCard
       title={title}
