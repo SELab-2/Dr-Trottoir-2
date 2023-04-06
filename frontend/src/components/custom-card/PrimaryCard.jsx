@@ -1,7 +1,7 @@
 import { BG_LIGHT_PRIMARY, LIGHT_PRIMARY } from "@/utils/colors";
-import { CustomCard } from "@/components/custom-card/CustomCard";
+import CustomCard from "@/components/custom-card/CustomCard";
 
-export function PrimaryCard({ title, icon, text, children, className }) {
+export default function PrimaryCard({ title, icon, text, children, className }) {
   return (
     <CustomCard
       title={title}

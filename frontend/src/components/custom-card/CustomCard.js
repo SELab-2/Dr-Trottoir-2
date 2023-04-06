@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export function CustomCard({
+export default function CustomCard({
   title,
   icon,
   text,

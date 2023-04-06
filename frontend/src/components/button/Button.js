@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export function CustomButton({
+export default function CustomButton({
   text,
   handle,
   icon,

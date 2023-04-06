@@ -1,4 +1,4 @@
-import { PrimaryCard } from "@/components/custom-card/PrimaryCard";
+import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import Selection from "@/components/selection/Selection";
 
 export default function SelectionList({

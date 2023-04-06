@@ -2,7 +2,7 @@ import DatePicker from "react-datepicker";
 import { useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
-export function CustomDayPicker() {
+export default function CustomDayPicker() {
   const [startDate, setStartDate] = useState(new Date());
 
   return (
