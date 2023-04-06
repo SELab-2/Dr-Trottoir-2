@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "../styles/CustomWeekPicker.css";
 import { SessionProvider } from "next-auth/react";
 import Layout from "@/components/Layout";
 
