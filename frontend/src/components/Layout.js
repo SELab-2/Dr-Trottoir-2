@@ -11,7 +11,7 @@ export default function Layout({ children }) {
         <link rel="icon" href="/favicon_beer.ico" />
       </Head>
 
-      {status == "authenticated" && <Navbar />}
+      {status === "authenticated" && <Navbar />}
 
       <main className={"grow"}>{children}</main>
     </div>
