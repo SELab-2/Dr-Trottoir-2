@@ -3,6 +3,7 @@ import { getSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import { BuildingService } from "@/services/building.service";
 import { UserService } from "@/services/user.service";
+import CustomTable from "@/components/Table";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
@@ -60,6 +61,10 @@ export default function Home() {
           </div>
         </div>
         <div className={"py-12"}>
+          <CustomTable
+            header={["Ronde", "Aangewezen Student", "Gebouwen", "Opmerkingen"]}
+            data={["Test", "Test", "Test", "Test", "Test", "Test", "Test"]}
+          />
           <p>By team 2 </p>
         </div>
       </main>
