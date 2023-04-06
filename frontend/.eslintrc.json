@@ -18,6 +18,7 @@
     }
   },
   "rules": {
+    "import/no-anonymous-default-export": "off",
     "no-useless-escape": "off",
     "no-unused-vars": "off",
     "prettier/prettier": [

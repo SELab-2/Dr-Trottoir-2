@@ -1,8 +1,8 @@
 import Head from "next/head";
 import { getSession, signOut } from "next-auth/react";
 import { useState } from "react";
-import { BuildingService } from "@/services/building.service";
-import { UserService } from "@/services/user.service";
+import BuildingService from "@/services/building.service";
+import UserService from "@/services/user.service";
 import {
   CustomWeekPicker,
   CustomDayPicker,
