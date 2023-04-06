@@ -15,18 +15,18 @@ export function CustomCard({
   textColor,
   fontSize,
   children,
-  class_style = "",
+  className = "",
 }) {
   return (
     <div
       style={{ backgroundColor: bgColor }}
-      className={"rounded-lg p-5 m-2" + class_style}
+      className={`rounded-lg p-5 m-2 ${className}`}
     >
       <div
         className="flex items-center"
         style={{ color: titleColor, fontSize: fontSize }}
       >
-        {icon ? <FontAwesomeIcon className="mr-2" icon={icon} /> : <></>}
+        {icon && <FontAwesomeIcon className="mr-2" icon={icon} />}
         <p className={"font-semibold"}>{title}</p>
       </div>
       <div className="max-w-sm" style={{ color: textColor }}>
@@ -37,13 +37,13 @@ export function CustomCard({
   );
 }
 
-export function PrimaryCard({ title, icon, text, children, class_style }) {
+export function PrimaryCard({ title, icon, text, children, className }) {
   return (
     <CustomCard
       title={title}
       icon={icon}
       text={text}
-      class_style={class_style}
+      className={className}
       bgColor={BG_LIGHT_PRIMARY}
       titleColor={LIGHT_PRIMARY}
       textColor={LIGHT_PRIMARY}
@@ -54,13 +54,13 @@ export function PrimaryCard({ title, icon, text, children, class_style }) {
   );
 }
 
-export function SecondaryCard({ title, icon, text, children, class_style }) {
+export function SecondaryCard({ title, icon, text, children, className }) {
   return (
     <CustomCard
       title={title}
       icon={icon}
       text={text}
-      class_style={class_style}
+      className={className}
       bgColor={BG_LIGHT_SECONDARY}
       titleColor={DARK_TEXT}
       textColor={LIGHT_PRIMARY}
