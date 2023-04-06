@@ -51,7 +51,7 @@ export default function Login() {
         <div></div>
         <div className={"flex justify-center pb-10"}>
           <div className={"border-2 rounded-lg lg:w-1/2"}>
-            <div className={"flex justify-center p-8 bg-black rounded-t-lg"}>
+            <div className={"bg-dark-bg-1 flex justify-center p-8 bg-black"}>
               <Image src={Logo} alt={"logo"} width={128}></Image>
             </div>
             <form className={"py-12 p-40"} onSubmit={handleLogin}>
