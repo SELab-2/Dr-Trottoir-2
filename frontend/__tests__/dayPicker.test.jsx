@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { CustomDayPicker } from "@/components/CustomDayPicker";
+import { CustomDayPicker } from "@/components/input-fields/CustomDayPicker";
 
 test("Correct value is being stored in input of day picker", async () => {
   render(<CustomDayPicker />);

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { CustomWeekPicker } from "@/components/CustomWeekPicker";
+import { CustomWeekPicker } from "@/components/input-fields/CustomWeekPicker";
 
 test("Test week picker is correctly formatted", async () => {
   render(<CustomWeekPicker />);

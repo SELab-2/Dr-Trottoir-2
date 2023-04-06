@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import CustomInputField from "@/components/InputField";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import CustomInputField from "@/components/input-fields/InputField";
 
 test("Test if input works and callback is called on click", () => {
   const handleClick = jest.fn();
