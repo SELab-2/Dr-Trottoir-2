@@ -7,15 +7,13 @@ async function getAll() {
   if (!authHeader) {
     return { error: "failed to construct authorization header" };
   }
-  const response = await axios.get(baseUrl + "building/", {
-    headers: authHeader,
-  });
+  const response = await axios.get(baseUrl + "visit/", { headers: authHeader });
   if (response.status !== 200) {
-    return { error: "failed to fetch all buildings" };
+    return { error: "failed to fetch all tours" };
   }
   return response.data;
 }
 
-export const BuildingService = {
+export const VisitService = {
   getAll,
 };
