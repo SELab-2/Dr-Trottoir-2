@@ -1,21 +1,10 @@
-import { baseUrl } from "@/utils/baseUrl";
-import axios from "axios";
-import getAuthHeader from "@/utils/getAuthHeader";
+import ApiInstance from "@/services/ApiInstance";
 
-async function getAll() {
-  const authHeader = await getAuthHeader();
-  if (!authHeader) {
-    return { error: "failed to construct authorization header" };
+class BuildingInTourService {
+  async getAll() {
+    const response = await ApiInstance.getApi().get("building_in_tour/");
+    return response.data;
   }
-  const response = await axios.get(baseUrl + "building_in_tour/", {
-    headers: authHeader,
-  });
-  if (response.status !== 200) {
-    return { error: "failed to fetch all buildings in a tour" };
-  }
-  return response.data;
 }
 
-export const BuildingInTourService = {
-  getAll,
-};
+export default new BuildingInTourService();

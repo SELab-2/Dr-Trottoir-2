@@ -3,7 +3,7 @@ import Navbar from "@/components/navbar/Navbar";
 import { useSession } from "next-auth/react";
 
 export default function Layout({ children }) {
-  const { data: user, status } = useSession();
+  const { status } = useSession();
 
   return (
     <div className={"h-screen w-screen flex"}>

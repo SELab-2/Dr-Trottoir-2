@@ -1,9 +1,6 @@
-//TODO: Just an example, to be deleted
-
 import { render, screen } from "@testing-library/react";
 import Login from "../src/pages/index";
 import "@testing-library/jest-dom";
-import mockRouter from "next-router-mock";
 
 jest.mock("next/router", () => require("next-router-mock"));
 
