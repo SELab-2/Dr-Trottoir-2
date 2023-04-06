@@ -8,13 +8,10 @@ export function CustomWeekPicker() {
   const [startDate, endDate] = dateRange;
 
   const handleValueChange = (newValue) => {
-    console.log(newValue);
     const value = newValue[0];
     if (value !== null) {
       const dateFrom = moment(value).startOf("isoWeek").toDate();
       const dateTo = moment(value).endOf("isoWeek").toDate();
-      console.log(value);
-      console.log(dateFrom);
       setDateRange([dateFrom, dateTo]);
     }
   };

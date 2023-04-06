@@ -2,37 +2,31 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import {CustomDayPicker, CustomWeekPicker} from "@/components/CustomWeekPicker";
 import moment from "moment";
 
-test("Correct value is being stored in input of week picker", async () => {
-  render(<CustomWeekPicker data-testid="week" />);
-  const inputField = screen.getByTestId("week");
-  console.log(inputField.value);
+test("Test week picker is correctly formatted", async () => {
+  render(<CustomWeekPicker />);
+  const inputField = screen.getByRole("textbox", { name: "" });
   await waitFor(() => {
-    fireEvent.change(inputField, { target: { value: "2023-W17" } });
+    fireEvent.change(inputField, {
+      target: { value: "06/04/2023 - 06/04/2023" },
+    });
   });
-  expect(changeData).toHaveBeenCalledTimes(1);
-  expect(inputField.value).toBe("2023-W17");
-});
-
-test("Correct value is being returned by callback", async () => {
-  let date = null;
-  const changeData = (data) => {
-    date = data;
-  };
-  render(<CustomWeekPicker callback={changeData} />);
-  const inputField = screen.getByTestId("week");
-  await waitFor(() => {
-    fireEvent.change(inputField, { target: { value: "2023-W17" } });
-  });
-  const value = inputField.value;
-  const dateFrom = moment(value).startOf("isoWeek").format("yyyy-MM-DD");
-  const dateTo = moment(value).endOf("isoWeek").format("yyyy-MM-DD");
-  expect(dateFrom).toBe(date.startDate);
-  expect(dateTo).toBe(date.endDate);
+  const date = new Date();
+  expect(inputField.value).toBe("06/04/2023 - 06/04/2023");
 });
 
 test("Correct value is being stored in input of day picker", async () => {
   render(<CustomDayPicker />);
-  const inputField = screen.getByTestId("day");
+  const inputField = screen.getByRole("textbox", { name: "" });
+  await waitFor(() => {
+    fireEvent.change(inputField, { target: { value: "2023-03-03" } });
+  });
+  expect(inputField.value).toBe("03/03/2023");
+});
+
+test("Check value is being parsed without error", async () => {
+  render(<CustomWeekPicker />);
+  const inputField = screen.getByRole("textbox", { name: "" });
+  console.log(inputField.value);
   await waitFor(() => {
     fireEvent.change(inputField, { target: { value: "2023-03-03" } });
   });
