@@ -1,11 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  BG_PRESS_ME,
-  BG_LIGHT_PRIMARY,
-  LIGHT_PRIMARY,
-  LIGHT_SECONDARY,
-  DARK_PRIMARY,
-} from "@/utils/colors";
 
 export function CustomButton({
   text,
@@ -35,31 +28,5 @@ export function CustomButton({
       />
       <span className="flex-1 ml-3 whitespace-nowrap">{text}</span>
     </button>
-  );
-}
-
-export function PrimaryButton({ text, handle, icon }) {
-  return (
-    <CustomButton
-      text={text}
-      border={BG_PRESS_ME}
-      foregroundColor={DARK_PRIMARY}
-      backgroundColor={BG_PRESS_ME}
-      icon={icon}
-      handle={handle}
-    />
-  );
-}
-
-export function SecondaryButton({ text, handle, icon }) {
-  return (
-    <CustomButton
-      text={text}
-      border={LIGHT_SECONDARY}
-      foregroundColor={LIGHT_PRIMARY}
-      backgroundColor={BG_LIGHT_PRIMARY}
-      icon={icon}
-      handle={handle}
-    />
   );
 }
