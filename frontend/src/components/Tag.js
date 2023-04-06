@@ -1,14 +1,9 @@
-export function ColoredTag({text, color}) {
-  
+export function ColoredTag({text, color}) { 
     return (
-      <div style={{backgroundColor: color,
-        borderRadius: '20px',
-        padding: '5px 10px',
-        color: 'black',
-        fontSize: '14px',
-        display: 'inline-block',
-        textAlign: 'center',
-        margin: '5px'}}>
+      <div 
+        className={"inline-block text-center px-2 py-1 rounded-full text-sm"} 
+        style={{backgroundColor: color}}
+      >
         {text}
       </div>
     );
