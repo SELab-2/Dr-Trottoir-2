@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from drtrottoir.models import Photo
 from drtrottoir.models import Visit
-from drtrottoir.permissions.user_permissions import AnyonePostSuperStudentEdit
+from drtrottoir.permissions.user_permissions import AnyonePostSuperEditPermission
 from drtrottoir.serializers import VisitSerializer
 
 
@@ -33,7 +33,7 @@ class VisitViewSet(viewsets.ModelViewSet):
 
     queryset = Visit.objects.all()
     serializer_class = VisitSerializer
-    permission_classes = [IsAuthenticated & AnyonePostSuperStudentEdit]
+    permission_classes = [IsAuthenticated & AnyonePostSuperEditPermission]
 
     @action(detail=True, methods=['get'])
     def photos(self, request, pk=None):

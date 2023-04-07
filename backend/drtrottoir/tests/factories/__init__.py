@@ -12,6 +12,7 @@ from .waste_factory import WasteFactory
 from .tour_factory import TourFactory
 from .building_factory import BuildingFactory
 from .building_in_tour_factory import BuildingInTourFactory
+from .schedule_factory import ScheduleFactory
 
 __all__ = [
     RegionFactory,
@@ -26,5 +27,6 @@ __all__ = [
     TourFactory,
     WasteFactory,
     TourFactory,
-    BuildingInTourFactory
+    BuildingInTourFactory,
+    ScheduleFactory,
 ]

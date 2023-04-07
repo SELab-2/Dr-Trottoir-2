@@ -3,7 +3,7 @@ from .user_permissions import (
     SuperPermissionOrReadOnly,
     AdminPermissionOrReadOnly,
     SuperStudentPermissionOrReadOnly,
-    AnyonePostSuperStudentEdit,
+    AnyonePostSuperEditPermission,
     UserViewSetPermission,
 )
 
@@ -12,6 +12,6 @@ __all__ = [
     SuperPermissionOrReadOnly,
     AdminPermissionOrReadOnly,
     SuperStudentPermissionOrReadOnly,
-    AnyonePostSuperStudentEdit,
+    AnyonePostSuperEditPermission,
     UserViewSetPermission,
 ]

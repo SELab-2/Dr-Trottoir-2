@@ -12,7 +12,7 @@ from drtrottoir.tests.factories import (
 from drtrottoir.models.custom_user import Roles
 
 
-class TestUserAPIView(APITestCase):
+class TestUserView(APITestCase):
     """ Test module for User API """
 
     def setUp(self):
