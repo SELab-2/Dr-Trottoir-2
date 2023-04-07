@@ -2,7 +2,7 @@ import Head from "next/head";
 
 import Logo from "/public/images/Logo-Dr-Trottoir-GEEL-01.png";
 import Image from "next/image";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { BG_ACCENT } from "@/utils/colors";
 
@@ -51,7 +51,7 @@ export default function Login() {
         <div></div>
         <div className={"flex justify-center pb-10"}>
           <div className={"border-2 rounded-lg lg:w-1/2"}>
-            <div className={"flex justify-center p-8 bg-black rounded-t-lg"}>
+            <div className={"bg-dark-bg-1 flex justify-center p-8 bg-black"}>
               <Image src={Logo} alt={"logo"} width={128}></Image>
             </div>
             <form className={"py-12 p-40"} onSubmit={handleLogin}>
@@ -104,4 +104,19 @@ export default function Login() {
       </main>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  if (session) {
+    return {
+      redirect: {
+        destination: "/home",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { session },
+  };
 }

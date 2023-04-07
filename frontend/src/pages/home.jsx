@@ -1,11 +1,15 @@
 import Head from "next/head";
 import { getSession, signOut } from "next-auth/react";
 import { useState } from "react";
-import { BuildingService } from "@/services/building.service";
-import { UserService } from "@/services/user.service";
+import BuildingService from "@/services/building.service";
+import UserService from "@/services/user.service";
+import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
+import CustomDayPicker from "@/components/input-fields/CustomDayPicker";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
+  const router = useRouter();
 
   const allBuildings = async () => {
     const response = await BuildingService.getAll();
@@ -24,7 +28,9 @@ export default function Home() {
       <Head>
         <title>Testing</title>
       </Head>
-      <main className={`h-screen p-12 flex flex-col justify-between`}>
+      <main
+        className={`h-screen p-12 flex flex-col justify-between overflow-x-hidden`}
+      >
         <div className={"mb-20"}>
           <p className={"text-xl font-bold"}>Home.</p>
         </div>
@@ -35,7 +41,12 @@ export default function Home() {
               If you are viewing this page, you are successfully logged in{" "}
               <span className={"emoji"}>🥳</span>
             </p>
-            <button className={buttonStyle} onClick={() => signOut()}>
+            <button
+              className={buttonStyle}
+              onClick={() => {
+                signOut({ redirect: false }).then(() => router.push("/"));
+              }}
+            >
               log out
             </button>
           </div>
@@ -60,6 +71,8 @@ export default function Home() {
           </div>
         </div>
         <div className={"py-12"}>
+          <CustomWeekPicker />
+          <CustomDayPicker />
           <p>By team 2 </p>
         </div>
       </main>

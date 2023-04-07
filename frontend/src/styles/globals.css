@@ -41,4 +41,6 @@ html {
 		font-family: 'Noto Color Emoji', sans-serif;
 }
 
-
+body {
+	@apply bg-light-bg-2
+}
