@@ -5,6 +5,7 @@ from .user_permissions import (
     SuperStudentPermissionOrReadOnly,
     AnyonePostSuperEditPermission,
     UserViewSetPermission,
+    PhotoPermission,
 )
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     SuperStudentPermissionOrReadOnly,
     AnyonePostSuperEditPermission,
     UserViewSetPermission,
+    PhotoPermission
 ]

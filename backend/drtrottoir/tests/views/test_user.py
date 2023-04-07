@@ -88,6 +88,8 @@ class TestUserView(APITestCase):
         self.client.force_authenticate(user=self.users[Roles.SUPERADMIN])
         response = self.client.delete(f'/api/user/{self.users[Roles.STUDENT].pk}/', follow=True)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        response = self.client.get(f'/api/user/{self.users[Roles.STUDENT].pk}/')
+        self.assertEqual(response.data["detail"].code, "not_found")
 
     def test_delete_user_unauthorized(self):
         self.client.force_authenticate(user=self.users[Roles.OWNER])

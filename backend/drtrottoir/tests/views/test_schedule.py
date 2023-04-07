@@ -54,6 +54,7 @@ class TestScheduleView(APITestCase):
                                         "student": serializerUser.data["url"],
                                     }, follow=True)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["comment"], "TEST")
 
     def test_post_unauthorized(self):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
@@ -72,7 +73,8 @@ class TestScheduleView(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete(self):
-        self.client.delete(reverse("schedule-detail", kwargs={'pk': self.schedule.pk}), follow=True)
+        response = self.client.delete(reverse("schedule-detail", kwargs={'pk': self.schedule.pk}), follow=True)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         response = self.client.get(reverse("schedule-detail", kwargs={'pk': self.schedule.pk}), follow=True)
         self.assertEqual(response.data["detail"].code, "not_found")
 

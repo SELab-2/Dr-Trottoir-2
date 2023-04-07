@@ -64,6 +64,16 @@ class AnyonePostSuperEditPermission(BasePermission):
         return request.user.is_super or request.method in SAFE_METHODS or obj.user == request.user
 
 
+class PhotoPermission(BasePermission):
+    """
+    Including this permission allows everyone to do safe methods like GET.
+    Anyone can post new entries, only the owner of the record and users with higher permissions can edit.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_super or request.method in SAFE_METHODS or obj.visit.user == request.user
+
+
 class UserViewSetPermission(BasePermission):
     """
     Including this permission allows only superadmins to GET index page.
