@@ -1,7 +1,9 @@
 import React from 'react'
-import { CustomButton } from '@/components/Button'
+import { PrimaryButton } from '@/components/button/PrimaryButton'
+import { PrimaryCard } from "@/components/custom-card/PrimaryCard";
+import { SecondaryCard } from "@/components/custom-card/SecondaryCard";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPenToSquare, faTrash, faFilter, faSort, faPlusCircle,  } from '@fortawesome/free-solid-svg-icons'
 
 
 export default function Buildings() {
@@ -18,8 +20,8 @@ export default function Buildings() {
                 <div class={'flex flex-row'}>
                     <h1 class={"text-xl font-bold"}>{building_name}</h1>
                     <div class={'grow'} />
-                    <CustomButton handle="Bewerken" icon={faPenToSquare} backgroundColor="color-done" foregroundColor="color-good" onClick={() => {console.log("click")}} />
-                    <CustomButton handle="Verwijderen" icon={faTrash} backgroundColor="color-done" foregroundColor="color-good" onClick={() => {console.log("click")}} />
+                    {/* <PrimaryButton handle="Bewerken" icon={faPenToSquare} onClick={() => {console.log("click")}} /> */}
+                    {/* <PrimaryButton handle="Verwijderen" icon={faTrash} onClick={() => {console.log("click")}} /> */}
                 </div>
 
                 {/* Grid */}
