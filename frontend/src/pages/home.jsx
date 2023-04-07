@@ -69,8 +69,6 @@ export default function Home() {
           </div>
         </div>
         <div className={"py-12"}>
-          <CustomWeekPicker />
-          <CustomDayPicker />
           <p>By team 2 </p>
         </div>
       </main>
