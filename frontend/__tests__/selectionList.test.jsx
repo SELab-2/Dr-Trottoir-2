@@ -1,6 +1,7 @@
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import SelectionList from "@/components/SelectionList";
+
 import CustomProgressBar from "@/components/ProgressBar";
+import SelectionList from "@/components/selection/SelectionList";
 
 function SmallTour({ data, callback, setSelected, background }) {
   const url = data["url"];
@@ -8,8 +9,6 @@ function SmallTour({ data, callback, setSelected, background }) {
   let amount = 1;
   let finished = 0;
   if (data !== undefined) {
-    console.log(data["name"]);
-    console.log(data);
     name = data["name"];
     if (data["amount"] > 0) {
       amount = data["amount"];
