@@ -3,8 +3,6 @@ import { getSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import BuildingService from "@/services/building.service";
 import UserService from "@/services/user.service";
-import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
-import CustomDayPicker from "@/components/input-fields/CustomDayPicker";
 import { useRouter } from "next/router";
 
 export default function Home() {

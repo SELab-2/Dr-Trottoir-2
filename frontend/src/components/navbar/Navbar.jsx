@@ -14,22 +14,13 @@ import Image from "next/image";
 import NavbarList from "@/components/navbar/NavbarList";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import ProfilePicture from "@/components/ProfilePicture";
 
 // https://flowbite.com/docs/components/sidebar/
 export default function Navbar() {
   const {
     data: { user },
   } = useSession();
-
-  const styles = {
-    pict: {
-      width: "50px",
-      height: "50px",
-      borderRadius: "50%",
-      backgroundColor: "blue",
-    },
-  };
-
   return (
     <div className={"flex flex-col sm:w-72 h-full bg-dark-bg-1 px-3 py-4"}>
       <div className={"flex"}>
@@ -43,7 +34,6 @@ export default function Navbar() {
           />
         </Link>
       </div>
-
       <div
         className={
           "overflow-y-auto overflow-x-hidden flex-grow border-b border-dark-text"
@@ -57,7 +47,6 @@ export default function Navbar() {
             "Nieuwe data": { icon: faCirclePlus, link: "#" },
           }}
         />
-
         <NavbarList
           name={"Data"}
           categories={{
@@ -67,7 +56,6 @@ export default function Navbar() {
             Syndici: { icon: faBriefcase, link: "#" },
           }}
         />
-
         <NavbarList
           name={"Communicatie"}
           categories={{
@@ -77,10 +65,8 @@ export default function Navbar() {
           }}
         />
       </div>
-
       <div className={"flex p-6 w-full"} id={"p-info"}>
-        <div style={styles.pict}></div>
-
+        <ProfilePicture image={null} />
         <div className={"flex flex-col justify-center ml-6"}>
           <p className={"text-dark-text"}>{user.first_name}</p>
           <p className={"text-dark-text"}>{user.last_name}</p>
