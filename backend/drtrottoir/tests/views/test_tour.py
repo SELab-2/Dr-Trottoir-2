@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from drtrottoir.models import BuildingInTour
 from drtrottoir.tests.factories import (
-    TourFactory, 
+    TourFactory,
     BuildingFactory,
     DeveloperUserFactory,
     SuperAdminUserFactory,
