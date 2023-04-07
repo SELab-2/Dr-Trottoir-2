@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export function ProfilePicture({ srcPath, width, height }) {
+export default function ProfilePicture({ srcPath, width, height }) {
   return (
     <div className="relative m-2" style={{ width: width, height: height }}>
       <Image
