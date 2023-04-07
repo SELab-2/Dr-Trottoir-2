@@ -1,7 +1,8 @@
-import { PrimaryCard, SecondaryCard } from "@/components/CustomCard";
 import { render } from "@testing-library/react";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import "@testing-library/jest-dom/extend-expect";
+import PrimaryCard from "@/components/custom-card/PrimaryCard";
+import SecondaryCard from "@/components/custom-card/SecondaryCard";
 
 test("Test the nesting of cards", () => {
   const { getByText } = render(

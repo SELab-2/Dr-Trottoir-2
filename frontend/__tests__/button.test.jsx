@@ -1,6 +1,7 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import { PrimaryButton, SecondaryButton } from "@/components/Button";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import PrimaryButton from "@/components/button/PrimaryButton";
+import SecondaryButton from "@/components/button/SecondaryButton";
 
 test("calls handle function on button press in PrimaryButton component", async () => {
   const handleClick = jest.fn();
