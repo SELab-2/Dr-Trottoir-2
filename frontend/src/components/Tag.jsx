@@ -1,10 +1,7 @@
-export default function ColoredTag({ text, color }) {
+export default function ColoredTag({ className, children }) {
   return (
-    <div
-      className={"inline-block text-center px-2 py-1 rounded-full text-sm"}
-      style={{ backgroundColor: color }}
-    >
-      {text}
+    <div className={`${className} rounded-full px-3 py-1 m-1 w-fit `}>
+      {children}
     </div>
   );
 }
