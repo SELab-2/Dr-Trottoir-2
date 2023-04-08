@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
-from drtrottoir.serializers import BuildingSerializer, RegionSerializer, UserPartialSerializer
+from drtrottoir.serializers import BuildingSerializer, RegionSerializer
 from drtrottoir.tests.factories import (
     BuildingFactory,
     RegionFactory,
