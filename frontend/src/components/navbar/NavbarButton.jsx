@@ -12,22 +12,18 @@ import { useRouter } from "next/router";
 export default function NavbarButton({ tag, icon, link }) {
   // Background is the accent colour if it is the current page.
   const router = useRouter();
-  let background = "bg-dark-bg-1";
-  let hover_background = "bg-dark-bg-2";
-  let text = "text-dark-text";
-  if (router.asPath.startsWith(link)) {
-    background = "bg-accent-1";
-    hover_background = background;
 
-    text = "text-dark-bg-2";
+  let style = "bg-dark-bg-1 hover:bg-dark-bg-2 text-dark-text";
+  if (router.asPath.startsWith(link)) {
+    style = "bg-accent-1 hover:bg-accent-1 text-accent-2 font-bold";
   }
 
   return (
     <Link
       href={link}
-      className={`flex items-center p-2 text-base font-normal ${text} rounded-lg ${background} hover:${hover_background}`}
+      className={`flex py-2 px-2 items-center rounded-lg ${style}`}
     >
-      <FontAwesomeIcon icon={icon} className={"flex-shrink-0 w-6 h-6 ml-4"} />
+      <FontAwesomeIcon icon={icon} className={"flex-shrink-0 w-4 h-4 ml-4"} />
       <span className="ml-3">{tag}</span>
     </Link>
   );
