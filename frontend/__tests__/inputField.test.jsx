@@ -1,17 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import SelectionList from "@/components/SelectionList";
-import CustomInputField from "@/components/InputField";
-import { useRef } from "react";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import CustomInputField from "@/components/input-fields/InputField";
 
 test("Test if input works and callback is called on click", () => {
   const handleClick = jest.fn();
 
   const view = render(
-    <CustomInputField
-      callback={handleClick}
-      icon={faMagnifyingGlass}
-    />
+    <CustomInputField callback={handleClick} icon={faMagnifyingGlass} />
   );
   const inputField = screen.getByRole("textbox", { name: "" });
   const button = view.queryByTestId("input-button");

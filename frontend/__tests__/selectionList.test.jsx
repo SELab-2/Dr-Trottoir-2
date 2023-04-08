@@ -1,6 +1,7 @@
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import SelectionList from "@/components/SelectionList";
+
 import CustomProgressBar from "@/components/ProgressBar";
+import SelectionList from "@/components/selection/SelectionList";
 
 function SmallTour({ data, callback, setSelected, background }) {
   const url = data["url"];

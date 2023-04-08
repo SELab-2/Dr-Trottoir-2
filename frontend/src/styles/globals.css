@@ -42,6 +42,5 @@ html {
 }
 
 body {
-	@apply bg-light-bg-2;
+	@apply bg-light-bg-2
 }
-
