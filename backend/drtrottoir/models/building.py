@@ -12,7 +12,6 @@ class Building(models.Model):
     country = models.CharField(verbose_name="countryname", max_length=256)
 
     region = models.ForeignKey(Region, verbose_name="region of building", on_delete=models.PROTECT)
-    # waste schedule
 
     def __str__(self):
         return self.nickname

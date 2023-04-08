@@ -3,7 +3,16 @@ from rest_framework.test import APITestCase
 from django.urls import reverse
 
 from drtrottoir.serializers import WasteSerializer
-from drtrottoir.tests.factories import WasteFactory, DeveloperUserFactory, BuildingFactory
+from drtrottoir.tests.factories import (
+    WasteFactory,
+    DeveloperUserFactory,
+    SuperAdminUserFactory,
+    SuperStudentUserFactory,
+    OwnerUserFactory,
+    StudentUserFactory,
+    BuildingFactory,
+)
+from drtrottoir.models.custom_user import Roles
 
 
 class TestWasteView(APITestCase):
@@ -12,23 +21,36 @@ class TestWasteView(APITestCase):
     def setUp(self):
         self.waste = WasteFactory()
         self.building = BuildingFactory()
-        user = DeveloperUserFactory()
-        self.client.force_authenticate(user=user)
+        self.users = {
+            Roles.DEVELOPER: DeveloperUserFactory(),
+            Roles.SUPERADMIN: SuperAdminUserFactory(),
+            Roles.SUPERSTUDENT: SuperStudentUserFactory(),
+            Roles.OWNER: OwnerUserFactory(),
+            Roles.STUDENT: StudentUserFactory()
+        }
+        self.client.force_authenticate(user=self.users[Roles.DEVELOPER])
 
     def test_get(self):
-        response = self.client.get(reverse("waste-detail", kwargs={'pk': self.waste.pk}))
-        serializer = WasteSerializer(self.waste, context={'request': response.wsgi_request})
-        self.assertEqual(response.data, serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # All users should have access
+        for user in self.users.values():
+            self.client.force_authenticate(user=user)
+            response = self.client.get(reverse("waste-detail", kwargs={'pk': self.waste.pk}))
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            serializer = WasteSerializer(self.waste, context={'request': response.wsgi_request})
+            self.assertEqual(response.data, serializer.data)
 
-    def correct_add_DB(self, response):
-        self.assertTrue("url" in response.data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = response.data["url"]
-        response2 = self.client.get(url, follow=True)
-        self.assertEqual(response2.data, response.data)
-        self.assertEqual(response2.status_code, status.HTTP_200_OK)
-        return response2
+    def test_get_unauthenticated(self):
+        self.client.force_authenticate(user=None)
+        response = self.client.get(reverse("waste-detail", kwargs={'pk': self.waste.pk}))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_post_unauthorized(self):
+        self.client.force_authenticate(user=self.users[Roles.STUDENT])
+        building_resp = self.client.get(f'/api/building/{self.building.pk}/', follow=True)
+        building_url = building_resp.data["url"]
+        d = {"date": "2000-01-01", "waste_type": "spaghetticode", "building": building_url}
+        response = self.client.post('/api/waste/', data=d, follow=True)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_post(self):
         # Check post
@@ -36,7 +58,14 @@ class TestWasteView(APITestCase):
         building_url = building_resp.data["url"]
         d = {"date": "2000-01-01", "waste_type": "spaghetticode", "building": building_url}
         r = self.client.post('/api/waste/', data=d, follow=True)
-        self.correct_add_DB(r)
+
+        # Check correct add db
+        self.assertTrue("url" in r.data)
+        self.assertEqual(r.status_code, status.HTTP_201_CREATED)
+        url = r.data["url"]
+        r2 = self.client.get(url, follow=True)
+        self.assertEqual(r2.data, r.data)
+        self.assertEqual(r2.status_code, status.HTTP_200_OK)
 
         # Check invalid data
         r = self.client.post('/api/waste/', data={}, follow=True)
@@ -63,3 +92,8 @@ class TestWasteView(APITestCase):
         self.client.delete(f'/api/waste/{self.waste.pk}/', follow=True)
         r = self.client.get(f'/api/waste/{self.waste.pk}/', follow=True)
         self.assertEqual(r.data["detail"].code, "not_found")
+
+    def test_delete_unauthorized(self):
+        self.client.force_authenticate(user=self.users[Roles.STUDENT])
+        r = self.client.delete(f'/api/waste/{self.waste.pk}/', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
