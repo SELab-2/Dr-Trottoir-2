@@ -2,6 +2,9 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
+from django.core.files.uploadedfile import SimpleUploadedFile
+from PIL import Image
+
 from drtrottoir.serializers import PhotoSerializer, VisitSerializer
 from drtrottoir.tests.factories import (
     PhotoFactory,
@@ -44,18 +47,25 @@ class TestPhotoView(APITestCase):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
         response = self.client.get(f"/api/visit/{self.photo.visit.pk}/", follow=True)
         serializerVisit = VisitSerializer(self.photo.visit, context={'request': response.wsgi_request})
+        # Create temp image
+        image = Image.new('RGB', (100, 100))
+        tmpfile = SimpleUploadedFile(name='test_image.jpg', content=b'')
+        image.save(tmpfile)
+        tmpfile.seek(0)
+
         response = self.client.post(
             '/api/photo/',
+            format="multipart",
             data={"comment": "TEST",
-                  "image": "TODO: INSERT FIX HERE",
                   "created_at": self.photo.created_at,
                   "state": self.photo.state,
                   "visit": serializerVisit.data["url"],
+                  "image": tmpfile,
                   },
             follow=True
         )
-        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # self.assertEqual(response.data["comment"], "TEST")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["comment"], "TEST")
 
     def test_patch(self):
         response1 = self.client.patch(

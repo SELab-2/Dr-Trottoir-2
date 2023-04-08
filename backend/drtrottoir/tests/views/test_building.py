@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
-from drtrottoir.serializers import BuildingSerializer, RegionSerializer
+from drtrottoir.serializers import BuildingSerializer, RegionSerializer, UserPartialSerializer
 from drtrottoir.tests.factories import (
     BuildingFactory,
     RegionFactory,
@@ -52,10 +52,11 @@ class TestBuildingView(APITestCase):
             "address_line_2": "TEST",
             "country": "TEST",
             "region": serializerRegion.data["url"],
-            "manual": "TODO INSERT FIX HERE"
+            "owners": [],
         }, follow=True)
-        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # self.assertEqual(response.data["nickname"], "TEST")
+        print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["nickname"], "TEST")
 
     def test_post_unauthorized(self):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])

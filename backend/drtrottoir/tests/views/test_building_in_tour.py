@@ -16,7 +16,7 @@ from drtrottoir.tests.factories import (
 from drtrottoir.models.custom_user import Roles
 
 
-class TestBuildingView(APITestCase):
+class TestBuildingInTourView(APITestCase):
     """ Test module for GET single Building API """
 
     def setUp(self):
