@@ -55,6 +55,8 @@ export default function MapView({ address, route, mode }) {
   if (address === undefined && (route === undefined || route.length == 0)) {
     return (
       <iframe
+        width="400"
+        height="250"
         style={{ border: 0 }}
         loading="lazy"
         allowFullScreen
@@ -69,6 +71,8 @@ export default function MapView({ address, route, mode }) {
 
   return (
     <iframe
+      width="400"
+      height="250"
       style={{ border: 0 }}
       loading="lazy"
       allowFullScreen
