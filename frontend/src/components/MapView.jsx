@@ -4,7 +4,6 @@
  */
 
 import React from "react";
-import PrimaryCard from "./custom-card/PrimaryCard";
 
 function buildUrl(address, route, mode) {
   console.log(route);
@@ -28,7 +27,7 @@ function buildUrl(address, route, mode) {
         if (i < route.length - 2) {
           params += "|";
         }
-      }
+      }🗑️
     }
     params += "&destination=" + encodeURIComponent(route[route.length - 1]);
   }
