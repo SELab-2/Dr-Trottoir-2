@@ -27,7 +27,7 @@ function buildUrl(address, route, mode) {
         if (i < route.length - 2) {
           params += "|";
         }
-      }🗑️
+      }
     }
     params += "&destination=" + encodeURIComponent(route[route.length - 1]);
   }
