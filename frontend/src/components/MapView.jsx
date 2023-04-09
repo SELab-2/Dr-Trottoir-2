@@ -49,25 +49,29 @@ function buildUrl(address, route, mode) {
 export default function MapView({ address, route, mode }) {
   if (address === undefined && (route === undefined || route.length == 0)) {
     return (
-        <iframe
-        width="400"
-        height="250"
-        style={{ border: 0 }}
-        loading="lazy"
-        allowFullScreen
-        src={"https://www.google.com/maps/embed/v1/view?key=" + process.env.NEXT_PUBLIC_GOOGLE_API_KEY + "&center=50.5508573,4.3932513&zoom=8.75"}
-      />
-    );
-  }
-
-  return (
       <iframe
         width="400"
         height="250"
         style={{ border: 0 }}
         loading="lazy"
         allowFullScreen
-        src={buildUrl(address, route, mode)}
+        src={
+          "https://www.google.com/maps/embed/v1/view?key=" +
+          process.env.NEXT_PUBLIC_GOOGLE_API_KEY +
+          "&center=50.5508573,4.3932513&zoom=8.75"
+        }
       />
+    );
+  }
+
+  return (
+    <iframe
+      width="400"
+      height="250"
+      style={{ border: 0 }}
+      loading="lazy"
+      allowFullScreen
+      src={buildUrl(address, route, mode)}
+    />
   );
 }
