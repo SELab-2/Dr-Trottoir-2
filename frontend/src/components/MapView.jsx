@@ -11,9 +11,13 @@ function buildUrl(address, route, mode) {
 
   let map_type = "";
   let params = "";
-  if (address !== undefined) {
+
+  // determine type of embed: if it's a single address or a 'route' with length 1, a single pin is enough
+  // otherwise, embed a route
+  if (address !== undefined || (route !== undefined && route.length == 1)) {
     map_type = "place";
-    params += "&q=" + encodeURIComponent(address);
+    params +=
+      "&q=" + encodeURIComponent(address !== undefined ? address : route[0]);
   } else if (route !== undefined) {
     map_type = "directions";
     params += "&origin=" + encodeURIComponent(route[0]);
@@ -43,24 +47,27 @@ function buildUrl(address, route, mode) {
 }
 
 export default function MapView({ address, route, mode }) {
-  if (address === undefined && (route === undefined || route.length < 2)) {
+  if (address === undefined && (route === undefined || route.length == 0)) {
     return (
-      <PrimaryCard>
-        <p>invalid map</p>
-      </PrimaryCard>
+        <iframe
+        width="400"
+        height="250"
+        style={{ border: 0 }}
+        loading="lazy"
+        allowFullScreen
+        src={"https://www.google.com/maps/embed/v1/view?key=" + process.env.NEXT_PUBLIC_GOOGLE_API_KEY + "&center=50.5508573,4.3932513&zoom=8.75"}
+      />
     );
   }
 
   return (
-    <PrimaryCard>
       <iframe
-        width="600"
-        height="450"
+        width="400"
+        height="250"
         style={{ border: 0 }}
         loading="lazy"
         allowFullScreen
         src={buildUrl(address, route, mode)}
       />
-    </PrimaryCard>
   );
 }
