@@ -1,6 +1,5 @@
 /*
  * Component for a google maps embed, view documentation at https://developers.google.com/maps/documentation/embed/embedding-map
- * mode can be "driving", "walking", "bicycling", "transit", "flying"
  */
 
 import React from "react";
@@ -43,12 +42,19 @@ function buildUrl(address, route, mode) {
   );
 }
 
+/**
+ * A simple google map embed.
+ * Either address or route have to be included.
+ * Using address wil show an embed with a single pin,
+ * route will show directions from the first element to the last.
+ * @param address String containing an address
+ * @param route Array containing address strings
+ * @param mode Way of transport (when using route), can be "driving", "walking", "bicycling", "transit", "flying"
+ */
 export default function MapView({ address, route, mode }) {
   if (address === undefined && (route === undefined || route.length == 0)) {
     return (
       <iframe
-        width="400"
-        height="250"
         style={{ border: 0 }}
         loading="lazy"
         allowFullScreen
@@ -63,8 +69,6 @@ export default function MapView({ address, route, mode }) {
 
   return (
     <iframe
-      width="400"
-      height="250"
       style={{ border: 0 }}
       loading="lazy"
       allowFullScreen
