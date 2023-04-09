@@ -10,7 +10,7 @@ export default function CustomButton({
 }) {
   return (
     <button
-      className="border-2 mt-5 mb-8 py-3 px-6 text-center rounded font-bold"
+      className="border-2 my-5 py-3 px-6 text-center rounded font-bold"
       style={{
         color: foregroundColor,
         background: backgroundColor,

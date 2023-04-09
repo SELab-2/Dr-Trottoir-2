@@ -1,4 +1,4 @@
-import { BG_ACCENT, BG_LIGHT_SECONDARY } from "@/utils/colors";
+import { BG_LIGHT_SECONDARY, BG_ACCENT } from "@/utils/colors";
 import { useState } from "react";
 
 export default function Selection({ list, Component, callback }) {
