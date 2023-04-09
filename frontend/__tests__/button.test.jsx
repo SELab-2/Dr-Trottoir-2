@@ -6,7 +6,9 @@ import SecondaryButton from "@/components/button/SecondaryButton";
 test("calls handle function on button press in PrimaryButton component", async () => {
   const handleClick = jest.fn();
   render(
-    <PrimaryButton icon={faCirclePlus} text={"click me"} handle={handleClick} />
+    <PrimaryButton icon={faCirclePlus} onClick={handleClick}>
+      <span>click me</span>
+    </PrimaryButton>
   );
   const button = screen.getByRole("button", { name: /click me/i });
   await waitFor(() => {
@@ -20,9 +22,10 @@ test("calls handle function on button press in SecondaryButton component", async
   render(
     <SecondaryButton
       icon={faCirclePlus}
-      text={"click me"}
-      handle={handleClick}
-    />
+      onClick={handleClick}
+    >
+      <span>click me</span>
+    </SecondaryButton>
   );
   const button = screen.getByRole("button", { name: /click me/i });
   await waitFor(() => {
