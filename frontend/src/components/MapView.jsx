@@ -6,8 +6,6 @@
 import React from "react";
 
 function buildUrl(address, route, mode) {
-  console.log(route);
-
   let map_type = "";
   let params = "";
 
