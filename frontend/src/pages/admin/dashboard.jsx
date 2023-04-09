@@ -1,20 +1,17 @@
 import Head from "next/head";
-import CustomButton from "@/components/button/Button";
 import PrimaryButton from "@/components/button/PrimaryButton";
-import SecondaryButton from "@/components/button/SecondaryButton";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
 import CustomInputField from "@/components/input-fields/InputField";
 import {
-  faCalendarDay,
   faFilter,
   faMagnifyingGlass,
-  faPlusCircle, faSort,
+  faPlusCircle,
+  faSort,
 } from "@fortawesome/free-solid-svg-icons";
+import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
 
 export default function AdminDashboardPage() {
-  // TODO: Implement this page
-
   return (
     <>
       <Head>
@@ -22,7 +19,7 @@ export default function AdminDashboardPage() {
       </Head>
 
       <div className={"flex m-2"}>
-        <SecondaryButton text={"WeekPicker (Brent)"} icon={faCalendarDay} />
+        <CustomWeekPicker></CustomWeekPicker>
       </div>
 
       <PrimaryCard>
