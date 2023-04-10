@@ -49,6 +49,16 @@ module.exports = {
         1: "#CF222E",
         2: "#FFD4DF",
       },
+      tags: {
+        1: "#FFEAB6",
+        2: "#FFEAB6",
+        3: "#E2D5F7",
+        5: "#FCCCF0",
+      },
+      selected: {
+        bg: "#D7E5FF",
+        h: "#377DFF",
+      },
     },
     extend: {},
   },

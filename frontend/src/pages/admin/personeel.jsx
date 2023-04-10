@@ -7,10 +7,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ContextMenu from "@/components/ContextMenu";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
-import SecondaryButton from "@/components/button/SecondaryButton";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import CustomInputField from "@/components/input-fields/InputField";
 import userService from "@/services/user.service";
+import ColoredTag from "@/components/Tag";
+import CustomDropDown from "@/components/DropDown";
 
 const initialContextMenu = {
   show: false,
@@ -25,27 +26,46 @@ export default function Employees() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [contextMenu, setContextMenu] = useState(initialContextMenu);
+  const [filterSelected, setFilterSelected] = useState(new Set());
+  const [sortSelected, setSortSelected] = useState(null);
 
-  const allUsers = async () => {
-    const response = await userService.getAll();
-    setResponse(JSON.stringify(response, null, 2));
-    let user = [];
+  useEffect(() => {
+    const allUsers = async () => {
+      const response = await userService.getAll();
+      setResponse(JSON.stringify(response, null, 2));
+      let user = [];
 
-    if (Object.prototype.hasOwnProperty.call(response, "results")) {
-      const results = response["results"];
-      for (let i in results) {
-        let entry = results[i];
+      if (Object.prototype.hasOwnProperty.call(response, "results")) {
+        const results = response["results"];
+        for (let i in results) {
+          let entry = results[i];
+          user.push({
+            first_name: entry["first_name"],
+            last_name: entry["last_name"],
+            email: entry["email"],
+            role: entry["role"],
+          });
+        }
         user.push({
-          first_name: entry["first_name"],
-          last_name: entry["last_name"],
-          email: entry["email"],
-          role: entry["role"],
+          first_name: "Bob",
+          last_name: "bobe",
+          email: "Boby",
+          role: 3,
         });
+        setUsers(user);
       }
-      setUsers(user);
-    }
+    };
+    allUsers();
+  }, []);
+
+  // Add color for owner
+  const roleToString = {
+    1: "Admin",
+    2: "Admin",
+    3: "Superstudent",
+    4: "Owner",
+    5: "Student",
   };
-  allUsers();
 
   const handleRightClick = (event, index) => {
     event.preventDefault();
@@ -63,7 +83,7 @@ export default function Employees() {
     });
   };
 
-  const handeClickRow = (event, index) => {
+  const handleClickRow = (event, index) => {
     const updatedRows = new Set(selectedRows);
     if (updatedRows.has(index)) {
       updatedRows.delete(index);
@@ -89,6 +109,14 @@ export default function Employees() {
     ["Mail", mailRow],
   ];
 
+  const changeSortSelected = (option) => {
+    setSortSelected(option);
+  };
+
+  const changeFilterSelected = (newSelected) => {
+    setFilterSelected(newSelected);
+  };
+
   return (
     <>
       <Head>
@@ -100,25 +128,33 @@ export default function Employees() {
       >
         <PrimaryCard>
           <div
-            className={"space-x-2 flex flex-row justify-center items-center"}
+            className={
+              "relative space-x-2 flex flex-row justify-center items-start"
+            }
           >
-            <div className="flex h-32">
-              <SecondaryButton
-                text="Filter"
+            <div className="relative">
+              <CustomDropDown
+                title="Filter"
                 icon={faCirclePlus}
-                className="flex-row"
-              ></SecondaryButton>
+                options={["Admin", "Student", "Superstudent"]}
+                selected={filterSelected}
+                handleChange={changeFilterSelected}
+              />
             </div>
-            <div className="flex h-32">
-              <SecondaryButton
-                text="Sort"
+            <div className="relative">
+              <CustomDropDown
+                title="Sorteer"
                 icon={faCirclePlus}
-              ></SecondaryButton>
+                options={["Voornaam", "Familienaam", "E-mail", "Rol"]}
+                selected={sortSelected}
+                handleChange={changeSortSelected}
+                multi={false}
+              />
             </div>
-            <div className="flex-grow">
-              <CustomInputField></CustomInputField>
+            <div className="flex-grow mt-3">
+              <CustomInputField icon={faMagnifyingGlass}></CustomInputField>
             </div>
-            <div className="flex h-32">
+            <div className="">
               <PrimaryButton text="Nieuw" icon={faCirclePlus}></PrimaryButton>
             </div>
           </div>
@@ -162,9 +198,11 @@ export default function Employees() {
                 <tr
                   key={index}
                   onContextMenu={(event) => handleRightClick(event, index)}
-                  onClick={(event) => handeClickRow(event, index)}
+                  onClick={(event) => handleClickRow(event, index)}
                   className={`${
-                    selectedRows.has(index) ? "bg-black selected" : ""
+                    selectedRows.has(index)
+                      ? "bg-selected-bg text-selected-h"
+                      : "hover:bg-light-bg-2"
                   }`}
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
@@ -180,7 +218,9 @@ export default function Employees() {
                     {user.email}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {user.role /* Convert to Tag component */}
+                    <ColoredTag className={`bg-tags-${user.role}`}>
+                      {roleToString[user.role]}
+                    </ColoredTag>
                   </td>
                 </tr>
               ))}
