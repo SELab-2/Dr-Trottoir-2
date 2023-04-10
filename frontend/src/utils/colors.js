@@ -2,7 +2,7 @@ export const COLOR_LIGHT_BG_1 = "var(--color-light-bg-1)";
 export const COLOR_LIGHT_BG_2 = "var(--color-light-bg-2)";
 export const COLOR_LIGHT_H_1 = "var(--color-light-h-1)";
 export const COLOR_LIGHT_H_2 = "var(--color-light-h-2)";
-export const COLOR_LIGHT_text = "var(--color-light-text)";
+export const COLOR_LIGHT_TEXT = "var(--color-light-text)";
 
 export const COLOR_DARK_BG_1 = "var(--color-dark-bg-1)";
 export const COLOR_DARK_BG_2 = "var(--color-dark-bg-2)";
