@@ -6,7 +6,7 @@ export default function ContextMenu({ x, y, closeContextMenu, options }) {
     const handleClickOutside = (event) => {
       // If the click is outside of the context menu, close it
       if (!event.target.closest(".context-menu")) {
-        closeContextMenu();
+        closeContextMenu(null);
       }
     };
     // Add event listener to handle clicks outside of the context menu
@@ -19,17 +19,16 @@ export default function ContextMenu({ x, y, closeContextMenu, options }) {
   return (
     <div
       onClick={() => closeContextMenu()}
-      className="absolute p-2 rounded-md"
-      style={{ top: y, left: x, backgroundColor: BG_DARK_PRIMARY }}
+      className="absolute p-2 rounded-md bg-light-bg-1 border-light-h-2 border-2"
+      style={{ top: y, left: x }}
     >
-      {options.map((tuple, index) => (
+      {options.map((value) => (
         <div
-          className="cursor-pointer"
-          key={index}
-          style={{ color: LIGHT_SECONDARY }}
-          onClick={tuple[1]}
+          className="cursor-pointer hover:bg-selected-bg p-2 rounded-md"
+          key={value}
+          onClick={() => closeContextMenu(value)}
         >
-          {tuple[0]}
+          {value}
         </div>
       ))}
     </div>

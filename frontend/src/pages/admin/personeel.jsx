@@ -4,6 +4,8 @@ import { BG_LIGHT_SECONDARY } from "@/utils/colors";
 import {
   faCirclePlus,
   faMagnifyingGlass,
+  faFilter,
+  faSort,
 } from "@fortawesome/free-solid-svg-icons";
 import ContextMenu from "@/components/ContextMenu";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
@@ -46,10 +48,11 @@ export default function Employees() {
             role: entry["role"],
           });
         }
+        // data for testing
         user.push({
           first_name: "Bob",
-          last_name: "bobe",
-          email: "Boby",
+          last_name: "bob",
+          email: "Bob@bob.com",
           role: 3,
         });
         setUsers(user);
@@ -67,10 +70,17 @@ export default function Employees() {
     5: "Student",
   };
 
+  const stringToField = {
+    Voornaam: "first_name",
+    Achternaam: "last_name",
+    "E-mailadres": "email",
+    Rol: "role",
+  };
+
   const handleRightClick = (event, index) => {
     event.preventDefault();
     const { pageX, pageY } = event;
-    setSelectedUser(index);
+    selectedRows.add(index);
     let rowOptions = singleRowOptions;
     if (selectedRows.size > 1) {
       rowOptions = multipleRowOptions;
@@ -93,24 +103,45 @@ export default function Employees() {
     setSelectedRows(updatedRows);
   };
 
-  const closeContextMenu = () => setContextMenu(initialContextMenu);
+  const editUser = () => {
+    // To be implemented
+  };
 
-  const editRow = () => console.log("edit row");
-  const deleteRow = () => console.log("delete row");
-  const mailRow = () => console.log("mail row");
-  const singleRowOptions = [
-    ["Edit", editRow],
-    ["Delete", deleteRow],
-    ["Mail", mailRow],
-  ];
+  const deleteUsers = () => {
+    // To be implemented
+  };
 
-  const multipleRowOptions = [
-    ["Delete", deleteRow],
-    ["Mail", mailRow],
-  ];
+  const mailUsers = () => {
+    // To be implemented
+  };
+
+  const closeContextMenu = (option) => {
+    if (option == "Edit") {
+      editUser();
+    } else if (option == "Delete") {
+      deleteUsers();
+    } else if (option == "Mail") {
+      mailUsers();
+    }
+    setContextMenu(initialContextMenu);
+  };
+
+  const singleRowOptions = ["Edit", "Delete", "Mail"];
+
+  const multipleRowOptions = ["Delete", "Mail"];
 
   const changeSortSelected = (option) => {
     setSortSelected(option);
+    setUsers(
+      users.sort(function (a, b) {
+        const field = stringToField[option];
+        if (typeof a[field] === "string") {
+          return a[field].localeCompare(b[field]);
+        } else {
+          return a[field] - b[field];
+        }
+      })
+    );
   };
 
   const changeFilterSelected = (newSelected) => {
@@ -135,7 +166,7 @@ export default function Employees() {
             <div className="relative">
               <CustomDropDown
                 title="Filter"
-                icon={faCirclePlus}
+                icon={faFilter}
                 options={["Admin", "Student", "Superstudent"]}
                 selected={filterSelected}
                 handleChange={changeFilterSelected}
@@ -144,8 +175,8 @@ export default function Employees() {
             <div className="relative">
               <CustomDropDown
                 title="Sorteer"
-                icon={faCirclePlus}
-                options={["Voornaam", "Familienaam", "E-mail", "Rol"]}
+                icon={faSort}
+                options={["Voornaam", "Achternaam", "E-mailadres", "Rol"]}
                 selected={sortSelected}
                 handleChange={changeSortSelected}
                 multi={false}
@@ -171,25 +202,25 @@ export default function Employees() {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  First Name
+                  Voornaam
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Last Name
+                  Achternaam
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Email
+                  E-mailadres
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Role
+                  Rol
                 </th>
               </tr>
             </thead>
