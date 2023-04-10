@@ -20,10 +20,7 @@ test("calls handle function on button press in PrimaryButton component", async (
 test("calls handle function on button press in SecondaryButton component", async () => {
   const handleClick = jest.fn();
   render(
-    <SecondaryButton
-      icon={faCirclePlus}
-      onClick={handleClick}
-    >
+    <SecondaryButton icon={faCirclePlus} onClick={handleClick}>
       <span>click me</span>
     </SecondaryButton>
   );

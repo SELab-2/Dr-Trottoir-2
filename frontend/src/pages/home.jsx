@@ -16,6 +16,7 @@ import {
   faIdCard,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import Emoji from "@/components/Emoji";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
@@ -41,7 +42,7 @@ export default function Home() {
           <SecondaryCard icon={faIdCard} title={"Authentication"}>
             <p className={"text-xl"}>
               If you are viewing this page, you are successfully logged in{" "}
-              <span className={"emoji"}>🥳</span>
+              <Emoji>🥳</Emoji>
             </p>
             <SecondaryButton
               className={"my-2"}
