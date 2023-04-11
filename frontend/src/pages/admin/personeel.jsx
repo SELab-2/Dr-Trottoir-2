@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import { BG_LIGHT_SECONDARY } from "@/utils/colors";
 import {
@@ -22,13 +22,16 @@ const initialContextMenu = {
   rowOptions: [],
 };
 
+// TO DO: Split up page
 export default function Employees() {
   const [response, setResponse] = useState("{}");
   const [users, setUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [contextMenu, setContextMenu] = useState(initialContextMenu);
   const [filterSelected, setFilterSelected] = useState(new Set());
   const [sortSelected, setSortSelected] = useState(null);
+  const searchRef = useRef(null);
 
   useEffect(() => {
     const allUsers = async () => {
@@ -40,15 +43,18 @@ export default function Employees() {
         const results = response["results"];
         for (let i in results) {
           let entry = results[i];
-          user.push({
-            pk: urlToPK(entry["url"]),
-            first_name: entry["first_name"],
-            last_name: entry["last_name"],
-            email: entry["email"],
-            role: entry["role"],
-          });
+          if (entry["role"] !== 4) {
+            user.push({
+              pk: urlToPK(entry["url"]),
+              first_name: entry["first_name"],
+              last_name: entry["last_name"],
+              email: entry["email"],
+              role: entry["role"],
+            });
+          }
         }
         setUsers(user);
+        setAllUsers(user);
       }
     };
     allUsers();
@@ -66,10 +72,9 @@ export default function Employees() {
 
   // Add color for owner
   const roleToString = {
-    1: "Admin",
+    1: "Developer",
     2: "Admin",
     3: "Superstudent",
-    4: "Owner",
     5: "Student",
   };
 
@@ -112,7 +117,9 @@ export default function Employees() {
 
   const deleteUsers = () => {
     let usersCopy = [...users];
+    let allUsersCopy = [...allUsers];
     usersCopy = usersCopy.filter((user) => !selectedRows.has(user.pk));
+    allUsersCopy = allUsersCopy.filter((user) => !selectedRows.has(user.pk));
     selectedRows.forEach(async (pk) => {
       // for development purposes
       if (pk !== "1") {
@@ -120,6 +127,7 @@ export default function Employees() {
       }
     });
     setUsers(usersCopy);
+    setAllUsers(allUsersCopy);
   };
 
   const mailUsers = () => {
@@ -156,7 +164,27 @@ export default function Employees() {
   };
 
   const changeFilterSelected = (newSelected) => {
+    setSelectedRows(new Set());
     setFilterSelected(newSelected);
+    if (newSelected.size === 0) {
+      setUsers(allUsers);
+    } else {
+      setUsers(
+        allUsers.filter((user) => newSelected.has(roleToString[user.role]))
+      );
+    }
+  };
+
+  const clickSearch = () => {
+    setSelectedRows(new Set());
+    const searchStr = searchRef.current.value;
+    const usersCopy = allUsers.filter(
+      (user) =>
+        user.first_name.includes(searchStr) ||
+        user.last_name.includes(searchStr) ||
+        user.email.includes(searchStr)
+    );
+    setUsers(usersCopy);
   };
 
   return (
@@ -174,16 +202,16 @@ export default function Employees() {
               "relative space-x-2 flex flex-row justify-center items-start"
             }
           >
-            <div className="relative">
+            <div>
               <CustomDropDown
                 title="Filter"
                 icon={faFilter}
-                options={["Admin", "Student", "Superstudent", "Eigenaar"]}
+                options={["Developer", "Admin", "Student", "Superstudent"]}
                 selected={filterSelected}
                 handleChange={changeFilterSelected}
               />
             </div>
-            <div className="relative">
+            <div>
               <CustomDropDown
                 title="Sorteer"
                 icon={faSort}
@@ -194,14 +222,24 @@ export default function Employees() {
               />
             </div>
             <div className="flex-grow mt-3">
-              <CustomInputField icon={faMagnifyingGlass}></CustomInputField>
+              <CustomInputField
+                icon={faMagnifyingGlass}
+                reference={searchRef}
+                callback={() => clickSearch()}
+                onKeyDown={(e) => {
+                  clickSearch();
+                }}
+              ></CustomInputField>
             </div>
-            <div className="">
+            <div>
               <PrimaryButton text="Nieuw" icon={faCirclePlus}></PrimaryButton>
             </div>
           </div>
         </PrimaryCard>
         <PrimaryCard>
+          {
+            // Will be replaced by table component
+          }
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>

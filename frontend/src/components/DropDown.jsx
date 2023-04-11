@@ -40,7 +40,7 @@ export default function CustomDropDown({
   return (
     <div className="relative">
       <div
-        className={`border-2 border-light-h-2 mt-5 py-3 px-6 text-center rounded-md font-bold overflow-hidden relative ${
+        className={`cursor-pointer border-2 border-light-h-2 mt-5 py-3 px-6 text-center rounded-md font-bold overflow-hidden relative ${
           sel == null || sel.size == 0 ? "" : "bg-selected-bg text-selected-h"
         }`}
         onClick={changeOpen}
