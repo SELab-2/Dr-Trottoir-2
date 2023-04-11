@@ -25,7 +25,6 @@ const initialContextMenu = {
 export default function Employees() {
   const [response, setResponse] = useState("{}");
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [contextMenu, setContextMenu] = useState(initialContextMenu);
   const [filterSelected, setFilterSelected] = useState(new Set());
@@ -42,24 +41,28 @@ export default function Employees() {
         for (let i in results) {
           let entry = results[i];
           user.push({
+            pk: urlToPK(entry["url"]),
             first_name: entry["first_name"],
             last_name: entry["last_name"],
             email: entry["email"],
             role: entry["role"],
           });
         }
-        // data for testing
-        user.push({
-          first_name: "Bob",
-          last_name: "bob",
-          email: "Bob@bob.com",
-          role: 3,
-        });
         setUsers(user);
       }
     };
     allUsers();
   }, []);
+
+  // Extract the primary key from the url of a user
+  function urlToPK(url) {
+    const regex = /\/(\d+)\/$/;
+    const match = url.match(regex);
+    if (match !== null) {
+      const primaryKey = match[1];
+      return primaryKey;
+    }
+  }
 
   // Add color for owner
   const roleToString = {
@@ -77,10 +80,10 @@ export default function Employees() {
     Rol: "role",
   };
 
-  const handleRightClick = (event, index) => {
+  const handleRightClick = (event, pk) => {
     event.preventDefault();
     const { pageX, pageY } = event;
-    selectedRows.add(index);
+    selectedRows.add(pk);
     let rowOptions = singleRowOptions;
     if (selectedRows.size > 1) {
       rowOptions = multipleRowOptions;
@@ -93,12 +96,12 @@ export default function Employees() {
     });
   };
 
-  const handleClickRow = (event, index) => {
+  const handleClickRow = (event, pk) => {
     const updatedRows = new Set(selectedRows);
-    if (updatedRows.has(index)) {
-      updatedRows.delete(index);
+    if (updatedRows.has(pk)) {
+      updatedRows.delete(pk);
     } else {
-      updatedRows.add(index);
+      updatedRows.add(pk);
     }
     setSelectedRows(updatedRows);
   };
@@ -108,7 +111,15 @@ export default function Employees() {
   };
 
   const deleteUsers = () => {
-    // To be implemented
+    let usersCopy = [...users];
+    usersCopy = usersCopy.filter((user) => !selectedRows.has(user.pk));
+    selectedRows.forEach(async (pk) => {
+      // for development purposes
+      if (pk !== "1") {
+        await userService.deleteUser(pk);
+      }
+    });
+    setUsers(usersCopy);
   };
 
   const mailUsers = () => {
@@ -167,7 +178,7 @@ export default function Employees() {
               <CustomDropDown
                 title="Filter"
                 icon={faFilter}
-                options={["Admin", "Student", "Superstudent"]}
+                options={["Admin", "Student", "Superstudent", "Eigenaar"]}
                 selected={filterSelected}
                 handleChange={changeFilterSelected}
               />
@@ -227,11 +238,11 @@ export default function Employees() {
             <tbody className="bg-white divide-y divide-gray-200">
               {users.map((user, index) => (
                 <tr
-                  key={index}
-                  onContextMenu={(event) => handleRightClick(event, index)}
-                  onClick={(event) => handleClickRow(event, index)}
+                  key={user.pk}
+                  onContextMenu={(event) => handleRightClick(event, user.pk)}
+                  onClick={(event) => handleClickRow(event, user.pk)}
                   className={`${
-                    selectedRows.has(index)
+                    selectedRows.has(user.pk)
                       ? "bg-selected-bg text-selected-h"
                       : "hover:bg-light-bg-2"
                   }`}
