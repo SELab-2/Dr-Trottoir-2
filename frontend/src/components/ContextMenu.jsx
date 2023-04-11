@@ -1,7 +1,14 @@
 import { useEffect } from "react";
 import { BG_DARK_PRIMARY, LIGHT_SECONDARY } from "@/utils/colors";
 
-export default function ContextMenu({ x, y, closeContextMenu, options }) {
+export default function ContextMenu({
+  x,
+  y,
+  closeContextMenu,
+  options,
+  classNameDiv,
+  classNameOption,
+}) {
   useEffect(() => {
     const handleClickOutside = (event) => {
       // If the click is outside of the context menu, close it
@@ -19,12 +26,12 @@ export default function ContextMenu({ x, y, closeContextMenu, options }) {
   return (
     <div
       onClick={() => closeContextMenu()}
-      className="absolute p-2 rounded-md bg-light-bg-1 border-light-h-2 border-2"
+      className={`absolute p-2 rounded-md bg-light-bg-1 border-light-h-2 border-2 ${classNameDiv}`}
       style={{ top: y, left: x }}
     >
       {options.map((value) => (
         <div
-          className="cursor-pointer hover:bg-selected-bg p-2 rounded-md"
+          className={`cursor-pointer hover:bg-selected-bg p-2 rounded-md ${classNameOption}`}
           key={value}
           onClick={() => closeContextMenu(value)}
         >

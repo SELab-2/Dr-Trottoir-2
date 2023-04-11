@@ -163,27 +163,26 @@ export default function Employees() {
     );
   };
 
-  const changeFilterSelected = (newSelected) => {
-    setSelectedRows(new Set());
-    setFilterSelected(newSelected);
-    if (newSelected.size === 0) {
-      setUsers(allUsers);
-    } else {
-      setUsers(
-        allUsers.filter((user) => newSelected.has(roleToString[user.role]))
+  const applySearch = (newFilterSelected) => {
+    setSelectedRows(new Set()); // remove selected rows when filtering
+    setFilterSelected(newFilterSelected);
+    const searchStr = searchRef.current.value;
+    let usersCopy = [...allUsers];
+    if (searchStr !== "") {
+      // apply searchbar
+      usersCopy = usersCopy.filter(
+        (user) =>
+          user.first_name.includes(searchStr) ||
+          user.last_name.includes(searchStr) ||
+          user.email.includes(searchStr)
       );
     }
-  };
-
-  const clickSearch = () => {
-    setSelectedRows(new Set());
-    const searchStr = searchRef.current.value;
-    const usersCopy = allUsers.filter(
-      (user) =>
-        user.first_name.includes(searchStr) ||
-        user.last_name.includes(searchStr) ||
-        user.email.includes(searchStr)
-    );
+    if (newFilterSelected.size !== 0) {
+      // apply filtering
+      usersCopy = usersCopy.filter((user) =>
+        newFilterSelected.has(roleToString[user.role])
+      );
+    }
     setUsers(usersCopy);
   };
 
@@ -196,22 +195,22 @@ export default function Employees() {
         className={`h-screen p-8 flex-col justify-between`}
         style={{ backgroundColor: BG_LIGHT_SECONDARY }}
       >
-        <PrimaryCard>
+        <PrimaryCard className={"mb-4"}>
           <div
             className={
-              "relative space-x-2 flex flex-row justify-center items-start"
+              "relative space-x-0 flex flex-col lg:justify-center lg:items-start lg:space-x-2 lg:flex-row w-full"
             }
           >
-            <div>
+            <div className="">
               <CustomDropDown
                 title="Filter"
                 icon={faFilter}
                 options={["Developer", "Admin", "Student", "Superstudent"]}
                 selected={filterSelected}
-                handleChange={changeFilterSelected}
+                handleChange={applySearch}
               />
             </div>
-            <div>
+            <div className="">
               <CustomDropDown
                 title="Sorteer"
                 icon={faSort}
@@ -225,14 +224,13 @@ export default function Employees() {
               <CustomInputField
                 icon={faMagnifyingGlass}
                 reference={searchRef}
-                callback={() => clickSearch()}
-                onKeyDown={(e) => {
-                  clickSearch();
-                }}
+                callback={() => applySearch(filterSelected)}
               ></CustomInputField>
             </div>
-            <div>
-              <PrimaryButton text="Nieuw" icon={faCirclePlus}></PrimaryButton>
+            <div className="mt-5">
+              <PrimaryButton icon={faCirclePlus}>
+                <span>Nieuw</span>
+              </PrimaryButton>
             </div>
           </div>
         </PrimaryCard>
