@@ -45,7 +45,7 @@ export default function Dropdown({
   };
 
   return (
-    <div className={className}>
+    <div className={`flex w-fit ${className}`}>
       <div className={"relative"}>
         <button
           className={`relative border-2 border-light-h-2 text-center rounded-md bg-light-bg-1 font-bold z-10 ${

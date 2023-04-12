@@ -6,7 +6,7 @@ export default function AdminDashboardPage() {
   return (
     <>
       <div className={"h-screen overflow-x-hidden"}>
-        <Dropdown></Dropdown>
+        <p>placeholder</p>
       </div>
     </>
   );
