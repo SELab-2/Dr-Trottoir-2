@@ -21,7 +21,7 @@ export default function Dropdown({
   icon,
   onClick,
   options,
-  multi = true,
+  multi = false,
 }) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState([]);
