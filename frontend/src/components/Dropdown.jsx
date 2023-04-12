@@ -9,6 +9,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
  * @param className Add extra classes to the dropdown component.
  * @param icon If icon is not null, this will be displayed on the left.
  * @param onClick Function that is executed when element in the dropdown is selected.
+ *        This function expects 1 argument, a list of all selected elements.
  * @param options List of all the options. These needs to be strings/components.
  * @param multi Indicates if multiple elements can be selected.
  * @returns {JSX.Element}
