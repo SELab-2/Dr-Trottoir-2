@@ -1,40 +1,84 @@
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
-export default function Dropdown({ className }) {
+/**
+ * Dropdown menu where you can select one or multiple elements.
+ * It supports selecting exactly one element and multiple elements.
+ * @param children Element displayed in the button of the dropdown menu.
+ * @param className Add extra classes to the dropdown component.
+ * @param icon If icon is not null, this will be displayed on the left.
+ * @param onClick Function that is executed when element in the dropdown is selected.
+ * @param options List of all the options. These needs to be strings/components.
+ * @param multi Indicates if multiple elements can be selected.
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export default function Dropdown({
+  children,
+  className,
+  icon,
+  onClick,
+  options,
+  multi = true,
+}) {
   const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState([]);
+
+  // Function that does the handling when an options is pressed.
+  const changeSelected = (indexEl, options) => {
+    // Value is the index of the element in the list.
+    // We use the index because elements with the same name will be highlighted.
+    let newSelected = [...selected]; // Use new object because States in react check for a new object.
+    if (newSelected.includes(indexEl)) {
+      newSelected.splice(newSelected.indexOf(indexEl), 1);
+    } else {
+      if (!multi) {
+        newSelected = [];
+      }
+      newSelected.push(indexEl);
+    }
+    setSelected(newSelected);
+    // calling onClick on selected runs 1 click behind
+    onClick(newSelected.map((i) => options[i]));
+  };
 
   return (
     <div className={className}>
-      <div>
-        <div
+      <div className={"relative"}>
+        <button
+          className={`relative border-2 border-light-h-2 text-center rounded-md bg-light-bg-1 font-bold z-10 ${
+            selected.length !== 0 ? "bg-primary-2" : "bg-light-bg-1"
+          }`}
           onClick={() => setOpen(!open)}
-          className={"relative border-2 border-bad-1 p-6 "}
         >
-          <span>Click Me</span>
-        </div>
-        {open && (
-          <div className={"border-2 border-accent-1 absolute bg-light-bg-2"}>
-            <ul>
-              <li>Test 1</li>
-              <li>Test 2</li>
-              <li>Test 3</li>
-            </ul>
+          <div className={"flex flex-row justify-center items-center m-2"}>
+            {icon && <FontAwesomeIcon icon={icon} />}
+            {children}
+            <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
           </div>
+        </button>
+
+        {open && (
+          <ul
+            className={`absolute w-full bg-light-bg-1 border-x-2 border-b-2 rounded-b-md border-light-h-2 p-2 -mt-2`}
+          >
+            {options.map((option, index) => (
+              <li
+                className={`cursor-pointer rounded-md text-bg-light-bg-1 my-2 p-2 font-bold ${
+                  selected.includes(index)
+                    ? "bg-primary-2 text-selected-h text-primary-1"
+                    : "hover:bg-light-bg-2"
+                }`}
+                key={index}
+                onClick={() => changeSelected(index, options)}
+              >
+                <div className={"overflow-hidden"}>{option}</div>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
-
-      <p>
-        Et accusantium qui cupiditate. Quis est enim et dolores impedit. Libero
-        eum eaque sit et quia nulla repellat. Corrupti eum recusandae aut. Harum
-        cupiditate iure sit voluptates delectus voluptatem placeat iusto.
-        Assumenda et consequatur nemo eius.
-      </p>
-      <p>
-        Necessitatibus sed tempore ut voluptas animi perferendis. Quis
-        necessitatibus quas est. Qui ut commodi laboriosam repudiandae. Nihil
-        dolorem illo sapiente amet architecto. Quia a quia facere dicta.
-        Eligendi ea facilis perspiciatis praesentium delectus.
-      </p>
     </div>
   );
 }
