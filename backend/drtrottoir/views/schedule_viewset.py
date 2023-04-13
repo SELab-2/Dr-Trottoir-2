@@ -15,15 +15,3 @@ class ScheduleViewSet(viewsets.ModelViewSet):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
     permission_classes = [IsAuthenticated & SuperPermissionOrReadOnly]
-
-    # Get visits for schedule
-    @action(detail=True, methods=['get'])
-    def visits(self, request, pk=None):
-        # Check if schedule id is valid
-        if pk is None or not Schedule.objects.filter(pk=pk).exists():
-            return Response("Given schedule does not exist.", status=status.HTTP_400_BAD_REQUEST)
-        # Get visits corresponding with schedule
-        schedule = Schedule.objects.get(pk=pk)
-        visits = Visit.objects.filter(building_in_tour__tour__pk=schedule.tour.pk)
-        # Return VisitSerializer
-        return Response(VisitSerializer(list(visits), many=True, context={'request': request}).data)
