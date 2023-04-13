@@ -59,29 +59,27 @@ export default function Dropdown({
         </div>
       </button>
       {isOpen && (
-        <div
+        <ul
           className={`absolute z-[100] hover:z-[1000] shadow border-2 rounded-lg bg-light-bg-1 ${listClassName}`}
         >
-          <ul className={``}>
-            {options !== null && options.length !== 0 ? (
-              options.map((ele, index) => (
-                <li
-                  className={`cursor-pointer rounded-lg p-2 m-2 font-bold ${
-                    selectedIndices.includes(index)
-                      ? "bg-primary-2 text-primary-1"
-                      : "hover:bg-light-bg-2"
-                  }`}
-                  key={index}
-                  onClick={() => onElementPressed(index, options)}
-                >
-                  {ele}
-                </li>
-              ))
-            ) : (
-              <li className={"text-bad-1"}>No options available</li>
-            )}
-          </ul>
-        </div>
+          {options !== null && options.length !== 0 ? (
+            options.map((ele, index) => (
+              <li
+                className={`cursor-pointer rounded-lg p-2 m-2 font-bold ${
+                  selectedIndices.includes(index)
+                    ? "bg-primary-2 text-primary-1"
+                    : "hover:bg-light-bg-2"
+                }`}
+                key={index}
+                onClick={() => onElementPressed(index, options)}
+              >
+                {ele}
+              </li>
+            ))
+          ) : (
+            <li className={"text-bad-1"}>No options available</li>
+          )}
+        </ul>
       )}
     </div>
   );
