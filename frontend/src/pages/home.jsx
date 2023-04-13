@@ -4,6 +4,19 @@ import { useState } from "react";
 import BuildingService from "@/services/building.service";
 import UserService from "@/services/user.service";
 import { useRouter } from "next/router";
+import PrimaryCard from "@/components/custom-card/PrimaryCard";
+import SecondaryCard from "@/components/custom-card/SecondaryCard";
+import PrimaryButton from "@/components/button/PrimaryButton";
+import SecondaryButton from "@/components/button/SecondaryButton";
+import {
+  faBuilding,
+  faCheck,
+  faCreditCard,
+  faHome,
+  faIdCard,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
+import Emoji from "@/components/Emoji";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
@@ -19,56 +32,46 @@ export default function Home() {
     setResponse(JSON.stringify(response, null, 2));
   };
 
-  const buttonStyle = "underline pr-5 py-2";
-
   return (
     <>
       <Head>
         <title>Testing</title>
       </Head>
-      <main className={`h-screen p-12 overflow-x-hidden`}>
-        <div className={"mb-20"}>
-          <p className={"text-xl font-bold"}>Home.</p>
-        </div>
-        <div className={"w-4/6"}>
-          <div>
-            <h2 className={"text-lg font-bold pb-3"}>Test authentication</h2>
-            <p>
+      <main>
+        <PrimaryCard icon={faHome} title={"Home"} className={"m-4"}>
+          <SecondaryCard icon={faIdCard} title={"Authentication"}>
+            <p className={"text-xl"}>
               If you are viewing this page, you are successfully logged in{" "}
-              <span className={"emoji"}>🥳</span>
+              <Emoji>🥳</Emoji>
             </p>
-            <button
-              className={buttonStyle}
+            <SecondaryButton
+              className={"my-2"}
               onClick={() => {
                 signOut({ redirect: false }).then(() => router.push("/"));
               }}
             >
               log out
-            </button>
-          </div>
-          <div className={"pt-10"}>
-            <h2 className={"text-lg font-bold pb-3"}>Test models</h2>
-            <button className={buttonStyle} onClick={allBuildings}>
-              {" "}
-              All buildings{" "}
-            </button>
-            <button className={buttonStyle} onClick={allUsers}>
-              {" "}
-              All users{" "}
-            </button>
-          </div>
-          <h2 className={"text-lg font-bold mt-10"}>Response</h2>
-          <div
-            className={
-              "mt-3 mb-10 text-gray-800 bg-gray-200 min-w-full w-fit rounded-lg p-5"
-            }
+            </SecondaryButton>
+          </SecondaryCard>
+          <SecondaryCard
+            icon={faCheck}
+            title={"Test fetching"}
+            className={"my-4"}
           >
-            <pre> {response} </pre>
-          </div>
-        </div>
-        <div className={"py-12"}>
-          <p>By team 2 </p>
-        </div>
+            <PrimaryButton onClick={allBuildings} icon={faBuilding}>
+              All buildings
+            </PrimaryButton>
+            <PrimaryButton onClick={allUsers} icon={faUser}>
+              All users
+            </PrimaryButton>
+            <PrimaryCard title={"Response"} className={"my-4"}>
+              <pre> {response} </pre>
+            </PrimaryCard>
+          </SecondaryCard>
+        </PrimaryCard>
+        <PrimaryCard icon={faCreditCard} className={"m-4"}>
+          <p className={"font-bold"}>By team 2</p>
+        </PrimaryCard>
       </main>
     </>
   );
