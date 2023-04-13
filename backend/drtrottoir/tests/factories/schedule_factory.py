@@ -1,7 +1,8 @@
 from factory.django import DjangoModelFactory
 import factory
 from drtrottoir.models import Schedule
-from drtrottoir.tests.factories import StudentUserFactory, TourFactory
+from .user_factory import StudentUserFactory
+from .tour_factory import TourFactory
 
 
 class ScheduleFactory(DjangoModelFactory):
