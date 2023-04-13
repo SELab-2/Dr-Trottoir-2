@@ -7,6 +7,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
  * It supports selecting exactly one element and multiple elements.
  * @param children Element displayed in the button of the dropdown menu.
  * @param className Add extra classes to the dropdown component.
+ * @param listClassName Add extra classes to the list of the dropdown menu.
  * @param icon If icon is not null, this will be displayed on the left.
  * @param onClick Function that is executed when element in the dropdown is selected.
  *        This function expects 1 argument, a list of all selected elements.
@@ -18,68 +19,68 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 export default function Dropdown({
   children,
   className,
+  listClassName,
   icon,
   onClick,
   options,
   multi = false,
 }) {
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedIndices, setSelectedIndices] = useState([]);
 
-  // Function that does the handling when an options is pressed.
-  const changeSelected = (indexEl, options) => {
-    // Value is the index of the element in the list.
-    // We use the index because elements with the same name will be highlighted.
-    let newSelected = [...selected]; // Use new object because States in react check for a new object.
-    if (newSelected.includes(indexEl)) {
-      newSelected.splice(newSelected.indexOf(indexEl), 1);
-    } else {
-      if (!multi) {
-        newSelected = [];
-      }
-      newSelected.push(indexEl);
-    }
-    setSelected(newSelected);
-    // calling onClick on selected runs 1 click behind
-    onClick(newSelected.map((i) => options[i]));
+  const onButtonPressed = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const onElementPressed = (index) => {
+    let selected = selectedIndices.includes(index)
+      ? multi
+        ? selectedIndices.filter((e) => e !== index)
+        : []
+      : multi
+      ? [...selectedIndices, index]
+      : [index];
+    setSelectedIndices(selected);
+    onClick && onClick(selected.sort().map((i) => options[i]));
   };
 
   return (
-    <div className={`flex w-fit ${className}`}>
-      <div className={"relative"}>
-        <button
-          className={`relative border-2 border-light-h-2 text-center rounded-md bg-light-bg-1 font-bold z-10 ${
-            selected.length !== 0 ? "bg-primary-2" : "bg-light-bg-1"
-          }`}
-          onClick={() => setOpen(!open)}
+    <div className={`${className}`}>
+      <button
+        className={`align-middle border-2 py-2 px-3 text-center rounded-lg font-bold w-fit mb-2 ${
+          selectedIndices.length !== 0 ? `bg-primary-2 text-primary-1` : ``
+        }`}
+        onClick={onButtonPressed}
+      >
+        <div className={"flex items-center justify-center"}>
+          {icon && <FontAwesomeIcon icon={icon} className={"h-4"} />}
+          <div className={`${icon ? "mx-4" : "mx-2"}`}>{children}</div>
+          <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
+        </div>
+      </button>
+      {isOpen && (
+        <ul
+          className={`absolute z-[100] hover:z-[1000] shadow border-2 rounded-lg bg-light-bg-1 ${listClassName}`}
         >
-          <div className={"flex flex-row justify-center items-center m-2"}>
-            {icon && <FontAwesomeIcon icon={icon} />}
-            {children}
-            <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
-          </div>
-        </button>
-
-        {open && (
-          <ul
-            className={`absolute w-full bg-light-bg-1 border-x-2 border-b-2 rounded-b-md border-light-h-2 p-2 -mt-2`}
-          >
-            {options.map((option, index) => (
+          {options !== null && options.length !== 0 ? (
+            options.map((ele, index) => (
               <li
-                className={`cursor-pointer rounded-md text-bg-light-bg-1 my-2 p-2 font-bold ${
-                  selected.includes(index)
+                className={`cursor-pointer rounded-lg p-2 m-2 font-bold ${
+                  selectedIndices.includes(index)
                     ? "bg-primary-2 text-primary-1"
                     : "hover:bg-light-bg-2"
                 }`}
                 key={index}
-                onClick={() => changeSelected(index, options)}
+                onClick={() => onElementPressed(index, options)}
               >
-                <div className={"overflow-hidden"}>{option}</div>
+                {ele}
               </li>
-            ))}
-          </ul>
-        )}
-      </div>
+            ))
+          ) : (
+            <li className={"text-bad-1"}>No options available</li>
+          )}
+        </ul>
+      )}
     </div>
   );
 }

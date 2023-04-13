@@ -248,7 +248,7 @@ export default function Syndici() {
                 options={buildings.map((building) => building.nickname)}
                 onClick={applySearch}
               >
-                <div className="mx-5">Filter</div>
+                Filter
               </Dropdown>
             </div>
             <div className="my-2">
@@ -257,7 +257,7 @@ export default function Syndici() {
                 options={["Voornaam", "Achternaam", "E-mailadres"]}
                 onClick={changeSortSelected}
               >
-                <div className="mx-5">Sorteer</div>
+                Sorteer
               </Dropdown>
             </div>
             <div className="flex-grow">
@@ -352,7 +352,7 @@ export default function Syndici() {
 
           {contextMenu.show && (
             <ContextMenu
-              x={contextMenu.x}
+              x={contextMenu.x - 256}
               y={contextMenu.y}
               closeContextMenu={closeContextMenu}
               options={contextMenu.rowOptions}
