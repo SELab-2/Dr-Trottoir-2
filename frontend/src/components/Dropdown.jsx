@@ -7,7 +7,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
  * It supports selecting exactly one element and multiple elements.
  * @param children Element displayed in the button of the dropdown menu.
  * @param className Add extra classes to the dropdown component.
- * @param listClassName
+ * @param listClassName Add extra classes to the list of the dropdown menu.
  * @param icon If icon is not null, this will be displayed on the left.
  * @param onClick Function that is executed when element in the dropdown is selected.
  *        This function expects 1 argument, a list of all selected elements.
