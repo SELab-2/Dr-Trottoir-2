@@ -13,7 +13,7 @@ export default function Layout({ children }) {
 
       {status === "authenticated" && <Navbar />}
 
-      <main className={"grow"}>{children}</main>
+      <main className={"grow overflow-auto relative"}>{children}</main>
     </div>
   );
 }

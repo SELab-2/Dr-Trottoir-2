@@ -1,8 +1,8 @@
-import { BG_PRESS_ME, BG_SELECTED } from "@/utils/colors";
+import { COLOR_PRIMARY_1, COLOR_PRIMARY_2 } from "@/utils/colors";
 
 export default function Loading({
-  color = BG_PRESS_ME,
-  backgroundColor = BG_SELECTED,
+  color = COLOR_PRIMARY_1,
+  backgroundColor = COLOR_PRIMARY_2,
   className = "",
 }) {
   return (

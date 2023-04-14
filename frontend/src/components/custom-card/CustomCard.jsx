@@ -1,32 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function CustomCard({
-  title,
-  icon,
-  text,
-  bgColor,
-  titleColor,
-  textColor,
-  fontSize,
-  children,
-  className = "",
-}) {
+export default function CustomCard({ children, title, className, icon }) {
   return (
-    <div
-      style={{ backgroundColor: bgColor }}
-      className={`rounded-lg p-5 m-2 ${className}`}
-    >
-      <div
-        className="flex items-center"
-        style={{ color: titleColor, fontSize: fontSize }}
-      >
-        {icon && <FontAwesomeIcon className="mr-2" icon={icon} />}
-        <p className={"font-semibold"}>{title}</p>
-      </div>
-      <div className="max-w-sm" style={{ color: textColor }}>
-        {text}
-      </div>
-      {children}
+    <div className={`overflow-auto rounded-lg p-4 ${className}`}>
+      {(title || icon) && (
+        <div className={"flex items-center font-bold text-light-h-2 mb-4"}>
+          {icon && <FontAwesomeIcon icon={icon} className={"h-4 ml-1 mr-2"} />}
+          {title && <p>{title}</p>}
+        </div>
+      )}
+      <div>{children}</div>
     </div>
   );
 }
