@@ -26,7 +26,7 @@ export default function CustomWeekPicker() {
       onChange={(date) => handleValueChange(date)}
       calendarStartDay={1}
       className={
-        "rounded-full w-1/6 p-2 border-2 border-light-h-2 bg-light-bg-2"
+        "rounded-full p-2 border-2 border-light-h-2 bg-light-bg-1"
       }
     />
   );

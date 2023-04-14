@@ -1,6 +1,6 @@
 import CustomCard from "@/components/custom-card/CustomCard";
 
-export default function PrimaryCard({ title, icon, children, className }) {
+export default function SecondaryCard({ title, icon, children, className }) {
   return (
     <CustomCard
       title={title}

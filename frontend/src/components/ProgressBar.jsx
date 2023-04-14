@@ -7,7 +7,7 @@ import {
 import ProgressBar from "react-customizable-progressbar";
 import { clamp } from "@/utils/helpers";
 
-export default function CustomProgressBar({ fraction, is_wheel }) {
+export default function CustomProgressBar({ fraction, is_wheel, className }) {
   let percentage = clamp(0, fraction * 100, 100);
 
   let color = COLOR_BAD_1;
@@ -27,6 +27,7 @@ export default function CustomProgressBar({ fraction, is_wheel }) {
         strokeColor={color}
         trackStrokeWidth={35}
         strokeWidth={20}
+        className={className}
       />
     );
   }
