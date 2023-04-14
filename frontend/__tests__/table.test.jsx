@@ -1,7 +1,8 @@
-import CustomTable from "@/components/table/Table";
+import { render } from "@testing-library/react";
+import CustomTable from "@/pages/test/table";
 
-export default function Table() {
-  return (
+test("table", async () => {
+  const view = render(
     <CustomTable
       className={"w-1/2 m-5"}
       columns={[
@@ -32,4 +33,4 @@ export default function Table() {
       ]}
     />
   );
-}
+});
