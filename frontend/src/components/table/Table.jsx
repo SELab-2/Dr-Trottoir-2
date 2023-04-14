@@ -1,10 +1,10 @@
 import Cell from "@/components/table/Cell";
 
-export default function CustomTable({ columns, data, className, cut }) {
+export default function CustomTable({ columns, data, className }) {
   return (
     <table className={`${className}`}>
       <thead>
-        <tr className={"bg-accent-1 text-light-h-1"}>
+        <tr className={"bg-accent-1 text-accent-2"}>
           <th className={"rounded-l-full"}></th>
           {columns.map((entry, index) => {
             return (
