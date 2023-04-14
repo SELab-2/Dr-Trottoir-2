@@ -1,8 +1,10 @@
 import CustomTable from "@/components/table/Table";
 
-export default function TableTest() {
+
+export default function Table() {
   return (
     <CustomTable
+      className={"w-1/2 m-5"}
       columns={[
         {
           name: "Ronde",
@@ -29,7 +31,6 @@ export default function TableTest() {
           "Je mag zeggen wat je wilt. Het beste dat bestaat in deze wereld is en blijft toch 🍺",
         ],
       ]}
-      className={"w-1/2 m-5"}
     />
   );
 }

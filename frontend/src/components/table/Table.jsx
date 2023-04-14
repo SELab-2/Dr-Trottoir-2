@@ -2,7 +2,7 @@ import Cell from "@/components/table/Cell";
 
 export default function CustomTable({ columns, data, className, cut }) {
   return (
-    <table className={`w-full ${className}`}>
+    <table className={`${className}`}>
       <thead>
         <tr className={"bg-accent-1 text-light-h-1"}>
           <th className={"rounded-l-full"}></th>
