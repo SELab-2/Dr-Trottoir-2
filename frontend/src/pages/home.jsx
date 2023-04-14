@@ -16,7 +16,6 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import Emoji from "@/components/Emoji";
-import CustomTable from "@/components/table/Table";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
@@ -66,37 +65,7 @@ export default function Home() {
           </PrimaryCard>
         </SecondaryCard>
       </PrimaryCard>
-      <PrimaryCard className={"mx-4"} title={"Testing Ground"}>
-        <CustomTable
-          className={"w-full"}
-          columns={[
-            {
-              name: "Ronde",
-              createCell: (ronde) => <div className={"font-bold"}>{ronde}</div>,
-            },
-            { name: "Opmerkingen", cut: true },
-            { name: "Student" },
-            { name: "Adres" },
-            { name: "Gebouwen" },
-          ]}
-          data={[
-            [
-              "Ronde 1",
-              "Je mag zeggen wat je wilt. Het beste dat bestaat in deze wereld is en blijft toch 🍺",
-              "Renaat",
-              "Kon. Fabiolaan 56, 9000 Gent",
-              "Snegen",
-            ],
-            [
-              "Ronde 2",
-              "Je mag zeggen wat je wilt. Het beste dat bestaat in deze wereld is en blijft toch 🍺",
-              "Dawyndt",
-              "Kon. Fabiolaan 56, 9000 Gent",
-              "Snegen",
-            ],
-          ]}
-        />
-      </PrimaryCard>
+      <PrimaryCard className={"mx-4"} title={"Testing Ground"}></PrimaryCard>
       <PrimaryCard icon={faCreditCard} className={"m-4"}>
         <p className={"font-bold"}>By team 2</p>
       </PrimaryCard>
