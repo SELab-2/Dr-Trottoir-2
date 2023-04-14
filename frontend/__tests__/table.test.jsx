@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import CustomTable from "@/pages/test/table";
+import CustomTable from "@/components/table/Table";
 
 test("table", async () => {
   const view = render(
