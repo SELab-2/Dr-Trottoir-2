@@ -2,7 +2,13 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
-from drtrottoir.serializers import VisitSerializer, UserSerializer, BuildingInTourSerializer, PhotoSerializer
+from drtrottoir.serializers import (
+    VisitSerializer,
+    UserSerializer,
+    BuildingInTourSerializer,
+    PhotoSerializer,
+    ScheduleSerializer,
+)
 from drtrottoir.tests.factories import (
     PhotoFactory,
     BuildingInTourFactory,
@@ -11,6 +17,7 @@ from drtrottoir.tests.factories import (
     SuperStudentUserFactory,
     OwnerUserFactory,
     StudentUserFactory,
+    ScheduleFactory,
 )
 from drtrottoir.models.custom_user import Roles
 
@@ -22,6 +29,7 @@ class TestVisitView(APITestCase):
         self.photo = PhotoFactory()
         self.visit = self.photo.visit
         self.building_in_tour = BuildingInTourFactory()
+        self.schedule = ScheduleFactory()
         self.users = {
             Roles.DEVELOPER: DeveloperUserFactory(),
             Roles.SUPERADMIN: SuperAdminUserFactory(),
@@ -103,11 +111,13 @@ class TestVisitView(APITestCase):
         serializerBuildTour = BuildingInTourSerializer(self.building_in_tour,
                                                        context={'request': response.wsgi_request})
         serializerUser = UserSerializer(self.users[Roles.STUDENT], context={'request': response.wsgi_request})
+        serializerSchedule = ScheduleSerializer(self.schedule, context={'request': response.wsgi_request})
         response = self.client.post("/api/visit/",
                                     data={"comment": "TEST",
                                           "arrival": "2023-03-15T17:10:46Z",
                                           "building_in_tour": serializerBuildTour.data["url"],
-                                          "user": serializerUser.data["url"]
+                                          "user": serializerUser.data["url"],
+                                          "schedule": serializerSchedule.data["url"]
                                           }, follow=True)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         response = self.client.get(response.data["url"], follow=True)
