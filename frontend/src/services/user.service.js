@@ -1,19 +1,10 @@
-import getAuthHeader from "@/utils/getAuthHeader";
-import axios from "axios";
-import { baseUrl } from "@/utils/baseUrl";
+import ApiInstance from "@/services/ApiInstance";
 
-async function getAll() {
-  const authHeader = await getAuthHeader();
-  if (!authHeader) {
-    return { error: "failed to construct authorization header" };
+class UserService {
+  async getAll() {
+    const response = await ApiInstance.getApi().get("user/");
+    return response.data;
   }
-  const response = await axios.get(baseUrl + "user/", { headers: authHeader });
-  if (response.status !== 200) {
-    return { error: "failed to fetch users" };
-  }
-  return response.data;
 }
 
-export const UserService = {
-  getAll,
-};
+export default new UserService();

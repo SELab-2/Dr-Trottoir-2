@@ -1,21 +1,10 @@
-import { baseUrl } from "@/utils/baseUrl";
-import axios from "axios";
-import getAuthHeader from "@/utils/getAuthHeader";
+import ApiInstance from "@/services/ApiInstance";
 
-async function getAll() {
-  const authHeader = await getAuthHeader();
-  if (!authHeader) {
-    return { error: "failed to construct authorization header" };
+class BuildingService {
+  async getAll() {
+    const response = await ApiInstance.getApi().get("building/");
+    return response.data;
   }
-  const response = await axios.get(baseUrl + "building/", {
-    headers: authHeader,
-  });
-  if (response.status !== 200) {
-    return { error: "failed to fetch all buildings" };
-  }
-  return response.data;
 }
 
-export const BuildingService = {
-  getAll,
-};
+export default new BuildingService();

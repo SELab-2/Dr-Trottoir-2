@@ -8,7 +8,7 @@ from drtrottoir.models import CustomUser
 class TestRegisterView(APITestCase):
     """ Test module for GET single Region API """
 
-    def test_get(self):
+    def test_post(self):
         data = {
             "email": "test123@test123.com",
             "password": "testtest123",

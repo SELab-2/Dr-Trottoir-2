@@ -18,6 +18,7 @@
     }
   },
   "rules": {
+    "import/no-anonymous-default-export": "off",
     "no-useless-escape": "off",
     "no-unused-vars": "off",
     "prettier/prettier": [
@@ -31,5 +32,16 @@
     "node": true,
     "commonjs": true,
     "es6": true
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.test.js",
+        "**/*.test.jsx"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
 }

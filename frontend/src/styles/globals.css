@@ -5,40 +5,50 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+	--color-light-bg-1: #FFFFFF;
+	--color-light-bg-2: #F6F8FA;
+	--color-light-h-1: #000000;
+	--color-light-h-2: #B2B2B2;
+	--color-light-text: #4D4D4D;
+
+	--color-dark-bg-1: #101010;
+	--color-dark-bg-2: #1c1c1c;
+	--color-dark-h-1: #FFFFFF;
+	--color-dark-h-2: #4D4D4D;
+	--color-dark-text: #B2B2B2;
+
+	--color-accent-1: #E6E600;
+	--color-accent-2: #585936;
+
+	--color-primary-1: #377DFF;
+	--color-primary-2: #D7E5FF;
+	--color-primary-3: #2c66d3;
+
+	--color-done-1: #8250DF;
+	--color-done-2: #D6CCED;
+
+	--color-good-1: #2DA44C;
+	--color-good-2: #CEF5D2;
+
+	--color-meh-1: #D29922;
+	--color-meh-2: #FFDCCC;
+
+	--color-bad-1: #CF222E;
+	--color-bad-2: #FFD4DF;
+}
+
+
 html {
 	font-family: 'Inter', sans-serif;
 }
-
-:root {
-	--color-bg-light-primary: #FFFFFF;
-	--color-bg-light-secondary: #F6F8FA;
-	--color-bg-dark-primary: #1D1D1D;
-	--color-bg-dark-secondary: #282828;
-	--color-bg-accent: #E6E600;
-	--color-bg-press-me:#377DFF;
-	--color-bg-selected:#D7E5FF;
-	--color-bg-done:#D6CCED;
-	--color-bg-good:#CEF5D2;
-	--color-bg-meh:#FFDCCC;
-	--color-bg-bad:#FFD4DF;
-
-	--color-light-primary: #000000;
-	--color-light-secondary: #B2B2B2;
-	--color-light-text: #4D4D4D;
-	--color-dark-primary: #ffffff;
-	--color-dark-secondary: #4D4D4D;
-	--color-dark-text: #B2B2B2;
-	--color-accent: #585936;
-	--color-selected:#377DFF;
-	--color-done:#8250DF;
-	--color-good:#2DA44C;
-	--color-meh:#D29922;
-	--color-bad:#CF222E;
-}
-
 
 .emoji {
 		font-family: 'Noto Color Emoji', sans-serif;
 }
 
-
+body {
+	@apply bg-light-bg-2;
+	@apply text-light-text;
+	@apply text-base;
+}

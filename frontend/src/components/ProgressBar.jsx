@@ -1,17 +1,22 @@
-import { DONE, BAD, MEH, GOOD } from "@/utils/colors";
+import {
+  COLOR_DONE_1,
+  COLOR_BAD_1,
+  COLOR_MEH_1,
+  COLOR_GOOD_1,
+} from "@/utils/colors";
 import ProgressBar from "react-customizable-progressbar";
 import { clamp } from "@/utils/helpers";
 
 export default function CustomProgressBar({ fraction, is_wheel }) {
   let percentage = clamp(0, fraction * 100, 100);
 
-  let color = BAD;
+  let color = COLOR_BAD_1;
   if (percentage === 100) {
-    color = DONE;
+    color = COLOR_DONE_1;
   } else if (percentage > 66) {
-    color = GOOD;
+    color = COLOR_GOOD_1;
   } else if (percentage > 33) {
-    color = MEH;
+    color = COLOR_MEH_1;
   }
 
   if (is_wheel) {

@@ -1,10 +1,9 @@
-import { BG_LIGHT_SECONDARY, BG_ACCENT } from "@/utils/colors";
+import { COLOR_LIGHT_BG_2, COLOR_ACCENT_1 } from "@/utils/colors";
 import { useState } from "react";
-import { PrimaryCard } from "@/components/CustomCard";
 
-function Selection({ list, Component, callback }) {
-  const defaultBG = BG_LIGHT_SECONDARY;
-  const selectedBG = BG_ACCENT;
+export default function Selection({ list, Component, callback }) {
+  const defaultBG = COLOR_LIGHT_BG_2;
+  const selectedBG = COLOR_ACCENT_1;
   const [selected, setSelected] = useState("");
 
   return (
@@ -37,25 +36,5 @@ function Selection({ list, Component, callback }) {
         }
       })}
     </>
-  );
-}
-
-export default function SelectionList({
-  title,
-  Component,
-  callback,
-  elements,
-}) {
-  console.log(elements);
-  return (
-    <PrimaryCard
-      title={title}
-      text={""}
-      className={"h-full w-1/6 p-5 flex flex-col p-5"}
-    >
-      <div className="h-full overflow-auto space-y-2 rounded-lg">
-        <Selection list={elements} Component={Component} callback={callback} />
-      </div>
-    </PrimaryCard>
   );
 }
