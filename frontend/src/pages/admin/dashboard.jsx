@@ -10,12 +10,35 @@ import {
   faSort,
 } from "@fortawesome/free-solid-svg-icons";
 import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
+import { useState } from "react";
+import ScheduleService from "@/services/schedule.service";
 
 export default function AdminDashboardPage() {
+  const [response, setResponse] = useState([]);
+  const [id, setId] = useState(0);
+
+  const allSchedule = async () => {
+    const response = await ScheduleService.getAll();
+    setResponse(JSON.stringify(response, null, 2));
+  };
+
+  const visitsFromSchedule = async () => {
+    const response = await ScheduleService.getVisitsFromSchedule(id);
+    console.log(response);
+    setResponse(JSON.stringify(response, null, 2));
+  };
+
   const dummy = () => console.log("Dummy");
 
   return (
     <>
+      <Head>
+        <title>Rondes</title>
+      </Head>
+      <div className={"flex m-2"}>
+        <CustomWeekPicker />
+      </div>
+
       <PrimaryCard>
         <div id={"statistics"} className={"flex flex-row"}>
           <SecondaryCard title={"Aantal Rondes"} className={"flex-grow m-2"}>
@@ -49,7 +72,10 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className={"flex-grow px-2 h-full"}>
-                  <CustomInputField icon={faMagnifyingGlass} />
+                  <CustomInputField
+                    icon={faMagnifyingGlass}
+                    classNameDiv={"h-6"}
+                  />
                 </div>
 
                 <div className={"px-2"}>
@@ -65,6 +91,19 @@ export default function AdminDashboardPage() {
             </PrimaryCard>
           </SecondaryCard>
         </div>
+      </PrimaryCard>
+
+      <PrimaryButton onClick={allSchedule}> All Schedules </PrimaryButton>
+      <PrimaryButton onClick={visitsFromSchedule}>
+        {" "}
+        Schedules with ID{" "}
+      </PrimaryButton>
+      <div>
+        <label htmlFor="quantity">Quantity (between 1 and 5):</label>
+        <input type="number" onChange={(e) => setId(e.target.value)} />
+      </div>
+      <PrimaryCard title={"Response"} className={"my-4"}>
+        <pre> {response} </pre>
       </PrimaryCard>
     </>
   );
