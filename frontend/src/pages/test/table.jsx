@@ -1,6 +1,5 @@
 import CustomTable from "@/components/table/Table";
 
-
 export default function Table() {
   return (
     <CustomTable
