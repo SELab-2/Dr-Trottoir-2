@@ -92,21 +92,6 @@ export default function AdminDashboardPage() {
           </SecondaryCard>
         </div>
       </PrimaryCard>
-
-      <PrimaryButton onClick={allSchedule}>
-        <p> All Schedules </p>
-      </PrimaryButton>
-
-      <PrimaryButton onClick={visitsFromSchedule}>
-        <p>Schedules with ID</p>{" "}
-      </PrimaryButton>
-      <div>
-        <label htmlFor="quantity">Quantity (between 1 and 5):</label>
-        <input type="number" onChange={(e) => setId(e.target.value)} />
-      </div>
-      <PrimaryCard title={"Response"} className={"my-4"}>
-        <pre> {response} </pre>
-      </PrimaryCard>
     </>
   );
 }
