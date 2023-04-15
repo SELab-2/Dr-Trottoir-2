@@ -19,10 +19,13 @@ class ScheduleService {
   }
 
   /**
-   * Returns all the schedules.
+   * Return the schedules that meet the filter restriction in args.
+   * An empty dict as args returns all the schedules.
+   * @param args Args contains the values that are used to filter the schedules.
+   *             The possible keys are startDate (date), endDate (date), students (list) and tours (list).
    * @returns {Promise<*[]>}
    */
-  async getAll() {
+  async getSchedules(args = {}) {
     let all = [];
     let response = await ApiInstance.getApi().get("schedule/");
 
@@ -34,6 +37,7 @@ class ScheduleService {
           all.push(...response.data.results);
         }
       }
+      all = this.#filterSchedule(all, args);
     }
     return all;
   }
@@ -49,33 +53,29 @@ class ScheduleService {
   }
 
   /**
-   * Returns all the schedules that meet the filters.
-   * @param startDate The schedule needs to be scheduled on this date or onwards. We expect a date object.
-   * @param endDate The schedule needs to be scheduled on this date or before it. We expect a date object.
-   * @param students A list of allowed students. We expect the API URL of the student.
-   * @param tours A list of allowed tours. We expect the API URL of the tour.
-   * @returns {Promise<*[]>}
+   * Private function to filter the data with the restrictions provided in args.
+   * @param data List of schedule entries
+   * @param args Dict with filter arguments. Possible keys are startDate (date), endDate (date), students (list) and tours (list).
+   * @returns {Promise<*>}
    */
-  async filterSchedule(
-    startDate = null,
-    endDate = null,
-    students = null,
-    tours = null
-  ) {
-    let all = await this.getAll();
-    if (startDate) {
-      all = all.filter((schedule) => new Date(schedule.date) >= startDate);
+  async #filterSchedule(data, args) {
+    if (args.startDate) {
+      data = data.filter(
+        (schedule) => new Date(schedule.date) >= args.startDate
+      );
     }
-    if (endDate) {
-      all = all.filter((schedule) => new Date(schedule.date) <= startDate);
+    if (args.endDate) {
+      data = data.filter((schedule) => new Date(schedule.date) <= args.endDate);
     }
-    if (students) {
-      all = all.filter((schedule) => schedule.student in students);
+    if (args.students) {
+      data = data.filter((schedule) =>
+        args.students.includes(schedule.student)
+      );
     }
-    if (tours) {
-      all = all.filter((schedule) => schedule.tour in tours);
+    if (args.tours) {
+      data = data.filter((schedule) => args.tours.includes(schedule.tour));
     }
-    return all;
+    return data;
   }
 }
 
