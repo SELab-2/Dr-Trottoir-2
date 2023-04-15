@@ -14,8 +14,8 @@ import { useState } from "react";
 import ScheduleService from "@/services/schedule.service";
 
 export default function AdminDashboardPage() {
-  const [response, setResponse] = useState([]);
-  const [id, setId] = useState(0);
+  const [response, setResponse] = useState("");
+  const [id, setId] = useState("0");
 
   const allSchedule = async () => {
     const response = await ScheduleService.getAll();
@@ -93,10 +93,12 @@ export default function AdminDashboardPage() {
         </div>
       </PrimaryCard>
 
-      <PrimaryButton onClick={allSchedule}> All Schedules </PrimaryButton>
+      <PrimaryButton onClick={allSchedule}>
+        <p> All Schedules </p>
+      </PrimaryButton>
+
       <PrimaryButton onClick={visitsFromSchedule}>
-        {" "}
-        Schedules with ID{" "}
+        <p>Schedules with ID</p>{" "}
       </PrimaryButton>
       <div>
         <label htmlFor="quantity">Quantity (between 1 and 5):</label>
