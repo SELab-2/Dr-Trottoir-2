@@ -60,6 +60,7 @@ export default function AdminTourPage() {
 
   useEffect(() => {
     const allTours = async () => {
+
       const response = await TourService.getAll();
       //setTours(JSON.stringify(response, null, 2))
       const btResponse = await BuildingInTourService.getAll();
@@ -109,9 +110,9 @@ export default function AdminTourPage() {
       <Head>
         <title>Rondes</title>
       </Head>
-      <div className={"bg-light-bg-2 flex flex-col py-6 px-3 space-y-4"}>
-        <PrimaryCard>
-          <div className={"flex flex-row h-1/6 items-center justify-center"}>
+      <div className={"bg-light-bg-2 flex flex-col py-6 px-3 space-y-4 h-screen"}>
+        <PrimaryCard className={"h-1/6"}>
+          <div className={"flex flex-row items-center justify-center"}>
             <PrimaryButton icon={faFilter} className={"ml-2"}>
               Filter
             </PrimaryButton>
@@ -127,13 +128,13 @@ export default function AdminTourPage() {
           </div>
         </PrimaryCard>
 
-        <div className={"bg-light-bg-2 flex flex-row space-x-2"}>
+        <div className={"h-5/6 bg-light-bg-2 flex flex-row space-x-2 "}>
           <PrimaryCard className={"w-9/12"} title={"Details"}>
-            <div className={"flex flex-col space-y-4"}>
+            <div className={"flex flex-col space-y-4 h-full"}>
               <h1 className={"text-light-h-1 font-bold text-lg"}>
                 Stations Ronde
               </h1>
-              <div className={"flex flex-row space-x-2"}>
+              <div className={"flex flex-row space-x-2 h-3/6"}>
                 <div className={"flex flex-col space-y-2"}>
                   <SecondaryCard
                     icon={faBriefcase}
@@ -147,8 +148,9 @@ export default function AdminTourPage() {
                     >
                       <CustomProgressBar
                         is_wheel
-                        className={"flex-shrink w-1/6 h-1/6"}
-                        fraction={1 / 6}
+                        radius={40}
+                        circleWidth={120}
+                        fraction={2 / 6}
                       />
                       <h1 className={"text-light-h-1 font-bold text-base"}>
                         1/6 Gebouwen klaar
@@ -165,16 +167,18 @@ export default function AdminTourPage() {
                   <p>The gift card is shattered</p>
                 </SecondaryCard>
               </div>
-              <SecondaryCard
-                icon={faBriefcase}
-                title={"Gebouwen"}
-              >
+              <SecondaryCard icon={faBriefcase} title={"Gebouwen"}>
                 <p>TABLE</p>
               </SecondaryCard>
             </div>
           </PrimaryCard>
-          <div className={"bg-light-bg-2 flex w-3/12 flex-col space-y-2"}>
-            <CustomWeekPicker />
+          <div className={"h-screen bg-light-bg-2 flex w-3/12 flex-col space-y-2"}>
+            <div className={"flex flex-row"}>
+              <CustomWeekPicker />
+              <PrimaryButton icon={faCirclePlus} className={"mr-2 ml-8"}>
+                Nieuw
+              </PrimaryButton>
+            </div>
             <SelectionList
               Component={({ url, background, setSelected, callback, data }) => (
                 <SmallTour

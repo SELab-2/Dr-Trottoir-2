@@ -55,7 +55,29 @@ module.exports = {
       base: "14px",
       lg: "21px",
     },
-    extend: {},
+    extend: {
+      strokeLinecap: {
+        square: "square",
+        round: "round",
+        butt: "butt",
+      },
+    },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        ".stroke-linecap-square": {
+          "stroke-linecap": "square",
+        },
+        ".stroke-linecap-round": {
+          "stroke-linecap": "round",
+        },
+        ".stroke-linecap-butt": {
+          "stroke-linecap": "butt",
+        },
+      };
+
+      addUtilities(newUtilities, ["responsive", "hover"]);
+    },
+  ],
 };

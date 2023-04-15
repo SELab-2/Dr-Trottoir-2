@@ -7,8 +7,15 @@ import {
 import ProgressBar from "react-customizable-progressbar";
 import { clamp } from "@/utils/helpers";
 
-export default function CustomProgressBar({ fraction, is_wheel, className }) {
+export default function CustomProgressBar({
+  fraction,
+  is_wheel,
+  circleWidth,
+  radius,
+}) {
   let percentage = clamp(0, fraction * 100, 100);
+  const dashArray = radius * Math.PI * 2;
+  const dashOffset = dashArray - (dashArray * percentage) / 100;
 
   let color = COLOR_BAD_1;
   if (percentage === 100) {
@@ -21,14 +28,33 @@ export default function CustomProgressBar({ fraction, is_wheel, className }) {
 
   if (is_wheel) {
     return (
-      <ProgressBar
-        progress={percentage}
-        radius={100}
-        strokeColor={color}
-        trackStrokeWidth={35}
-        strokeWidth={20}
-        className={className}
-      />
+      <svg
+        width={circleWidth}
+        height={circleWidth}
+        viewBox={`0 0 ${circleWidth} ${circleWidth}`}
+        className={""}
+      >
+        <circle
+          cx={circleWidth / 2}
+          cy={circleWidth / 2}
+          strokeWidth={"15px"}
+          r={radius}
+          className={"stroke-light-h-2 bg-primary-1 fill-none"}
+        />
+        <circle
+          cx={circleWidth / 2}
+          cy={circleWidth / 2}
+          strokeWidth={"10px"}
+          r={radius}
+          className={"stroke-linecap-round fill-none"}
+          style={{
+            strokeDasharray: dashArray,
+            strokeDashoffset: dashOffset,
+            stroke: color,
+          }}
+          transform={`rotate(-90 ${circleWidth / 2} ${circleWidth / 2})`}
+        />
+      </svg>
     );
   }
   return (
