@@ -43,6 +43,16 @@ class ScheduleService {
   }
 
   /**
+   * Returns a schedule with the given id.
+   * @param id
+   */
+  async getScheduleById(id) {
+    const response = await this.getPage(`schedule/${id}/`);
+    console.log(response);
+    return response.status === 200 ? response.data : [];
+  }
+
+  /**
    * Returns all the visit for a specific schedule.
    * @param id The ID of the schedule you want the visits of.
    * @returns {Promise<*|*[]>}
