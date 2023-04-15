@@ -105,7 +105,7 @@ export default function AdminTourPage() {
     allTours().catch();
   }, []);
 
-  return (
+    return (
     <>
       <Head>
         <title>Rondes</title>
@@ -131,9 +131,10 @@ export default function AdminTourPage() {
                     >
                       <CustomProgressBar
                         is_wheel
-                        radius={40}
                         circleWidth={120}
-                        fraction={2 / 6}
+                        radius={40}
+                        className={"flex-shrink w-1/6 h-1/6"}
+                        fraction={1 / 6}
                       />
                       <h1 className={"text-light-h-1 font-bold text-base"}>
                         1/6 Gebouwen klaar
@@ -161,9 +162,7 @@ export default function AdminTourPage() {
           >
             <div className={"flex flex-row"}>
               <CustomWeekPicker />
-              <PrimaryButton icon={faCirclePlus} className={"mr-2 ml-8"}>
-                Nieuw
-              </PrimaryButton>
+              <PrimaryButton><p>test</p></PrimaryButton>
             </div>
             <SelectionList
               Component={({ url, background, setSelected, callback, data }) => (

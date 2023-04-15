@@ -11,9 +11,9 @@ export default function SelectionList({
     <PrimaryCard
       title={title}
       text={""}
-      className={"max-h-full flex flex-col p-5 p-5 "}
+      className={"h-full flex flex-col p-5"}
     >
-      <div className="h-full overflow-y-auto space-y-2 rounded-lg">
+      <div className="h-full overflow-auto space-y-2 rounded-lg">
         <Selection list={elements} Component={Component} callback={callback} />
       </div>
     </PrimaryCard>
