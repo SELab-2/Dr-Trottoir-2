@@ -21,7 +21,7 @@ export default function Navbar() {
     data: { user },
   } = useSession();
   return (
-    <div className={"flex flex-col sm:w-64 h-full bg-dark-bg-1"}>
+    <div className={"flex flex-col flex-shrink-0 sm:w-64 h-full bg-dark-bg-1"}>
       <div className={"flex justify-center p-1 mb-2 mt-8"}>
         <Link href={"/home"}>
           <Image src={Logo} className="w-36 object-fill" alt="logo" />

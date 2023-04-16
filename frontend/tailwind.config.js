@@ -13,6 +13,7 @@ module.exports = {
           2: "#B2B2B2",
         },
         text: "#4D4D4D",
+        border: "#E6E6E6",
       },
       dark: {
         bg: {
