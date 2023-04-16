@@ -4,7 +4,7 @@ export default function Cell({ children, cut }) {
   const [showFull, setShowFull] = useState(false);
 
   const cutClassNames =
-    "max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer";
+    "max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer";
   const showFullClassNames =
     "bg-primary-2 text-primary-1 border-primary-1 font-bold";
 

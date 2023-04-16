@@ -191,14 +191,18 @@ export default function AdminTourPage() {
       </Head>
       <div className={"h-full bg-light-bg-2 flex flex-col py-6 px-3 space-y-4"}>
         <div className={"h-full bg-light-bg-2 flex flex-row space-x-2"}>
-          <PrimaryCard className={"w-9/12 h-full"} title={"Details"}>
-            <div className={"flex flex-col space-y-4"}>
+          <PrimaryCard
+            className={"w-9/12 h-full flex flex-col"}
+            title={"Details"}
+          >
+            <div className={" space-y-4 h-full"}>
               <h1 className={"text-light-h-1 font-bold text-lg"}>
                 Stations Ronde
               </h1>
-              <div className={"flex flex-row space-x-2 h-3/6"}>
-                <div className={"flex flex-col space-y-2"}>
+              <div className={"flex flex-row space-x-2 h-6/12"}>
+                <div className={"flex flex-col space-y-2 h-full"}>
                   <SecondaryCard
+                    className={"h-1/2"}
                     icon={faBriefcase}
                     title={"Aangeduide student"}
                   >
@@ -218,7 +222,7 @@ export default function AdminTourPage() {
                       </div>
                     </div>
                   </SecondaryCard>
-                  <SecondaryCard icon={faBriefcase} title={"Progress"}>
+                  <SecondaryCard className={"h-1/2 items-center justify-center"} icon={faBriefcase} title={"Progress"}>
                     <div
                       className={"flex flex-row items-center justify-center"}
                     >
@@ -236,8 +240,12 @@ export default function AdminTourPage() {
                   </SecondaryCard>
                 </div>
 
-                <SecondaryCard icon={faLocationDot} title={"Opmerkingen"} className={"h-full"}>
-                  <div className={"flex flex-col space-y-2 overflow-auto"}>
+                <SecondaryCard
+                  icon={faLocationDot}
+                  title={"Opmerkingen"}
+                  className={"h-full flex flex-col"}
+                >
+                  <div className={"space-y-2 h-full overflow-auto"}>
                     {comments.map((entry, index) => (
                       <div
                         key={index}
