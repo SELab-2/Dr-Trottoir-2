@@ -65,6 +65,10 @@ export default function Home() {
           </PrimaryCard>
         </SecondaryCard>
       </PrimaryCard>
+<<<<<<< HEAD
+=======
+      <PrimaryCard className={"mx-4"} title={"Testing Ground"}></PrimaryCard>
+>>>>>>> development
       <PrimaryCard icon={faCreditCard} className={"m-4"}>
         <p className={"font-bold"}>By team 2</p>
       </PrimaryCard>
