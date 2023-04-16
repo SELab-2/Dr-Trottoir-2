@@ -24,6 +24,21 @@ class ScheduleService {
     return [];
   }
 
+  async getSchedule(id) {
+    let response;
+    try {
+      response = await ApiInstance.getApi().get(`schedule/${id}/`);
+    } catch (e) {
+      alert(JSON.stringify(e, null, 2));
+      return []; // TODO: what to do when no data can be fetched.
+    }
+
+    if (response.status === 200) {
+      return response.data;
+    }
+    return [];
+  }
+
   async getVisitsFromSchedule(id) {
     let response;
     try {

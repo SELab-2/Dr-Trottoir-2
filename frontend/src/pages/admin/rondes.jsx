@@ -22,6 +22,7 @@ import CustomProgressBar from "@/components/ProgressBar";
 import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
 import { useRouter } from "next/router";
+import ScheduleService from "@/services/schedule.service";
 
 function SmallTour({ data, callback, setSelected, background }) {
   const url = data["url"];
@@ -56,56 +57,62 @@ function SmallTour({ data, callback, setSelected, background }) {
 export default function AdminTourPage() {
   const [response, setResponse] = useState("{}");
   const [tours, setTours] = useState([]);
-  const { planning } = useRouter().query;
-
+  const planning = useRouter().query["planning"];
+  console.log(planning)
   useEffect(() => {
     const allTours = async () => {
+      console.log(planning);
+      if (planning !== undefined) {
+        const scheduleResponse = await ScheduleService.getSchedule(planning);
+        //const userId = scheduleResponse["student"].split("/").pop();
+        console.log(scheduleResponse);
+        //console.log(userId);
+        const response = await TourService.getAll();
+        //setTours(JSON.stringify(response, null, 2))
+        const btResponse = await BuildingInTourService.getAll();
+        const visitResponse = await VisitService.getAll();
+        const tour = [];
 
-      const response = await TourService.getAll();
-      //setTours(JSON.stringify(response, null, 2))
-      const btResponse = await BuildingInTourService.getAll();
-      const visitResponse = await VisitService.getAll();
-      const tour = [];
+        if (
+          response.hasOwnProperty("results") &&
+          btResponse.hasOwnProperty("results") &&
+          visitResponse.hasOwnProperty("results")
+        ) {
+          const list = response["results"];
+          const visits = visitResponse["results"].map(
+            (entry) => entry["building_in_tour"]
+          );
+          console.log(visits);
 
-      if (
-        response.hasOwnProperty("results") &&
-        btResponse.hasOwnProperty("results") &&
-        visitResponse.hasOwnProperty("results")
-      ) {
-        const list = response["results"];
-        const visits = visitResponse["results"].map(
-          (entry) => entry["building_in_tour"]
-        );
-        console.log(visits);
-
-        for (let i in list) {
-          let finished = 0;
-          const entry = list[i];
-          const url = entry["url"];
-          const buildings = btResponse["results"]
-            .filter((entry) => entry["tour"] === url)
-            .map((entry) => entry["url"]);
-          for (let i = 0; i < buildings.length; i++) {
-            for (let j = 0; j < visits.length; j++) {
-              if (visits[j] === buildings[i]) {
-                finished++;
+          for (let i in list) {
+            let finished = 0;
+            const entry = list[i];
+            const url = entry["url"];
+            const buildings = btResponse["results"]
+              .filter((entry) => entry["tour"] === url)
+              .map((entry) => entry["url"]);
+            for (let i = 0; i < buildings.length; i++) {
+              for (let j = 0; j < visits.length; j++) {
+                if (visits[j] === buildings[i]) {
+                  finished++;
+                }
               }
             }
+            tour.push({
+              url: url,
+              name: entry["name"],
+              amount: buildings.length,
+              finished: finished,
+            });
           }
-          tour.push({
-            url: url,
-            name: entry["name"],
-            amount: buildings.length,
-            finished: finished,
-          });
         }
+        setTours(tour);
       }
-      setTours(tour);
     };
     allTours().catch();
   }, []);
 
-    return (
+  return (
     <>
       <Head>
         <title>Rondes</title>
@@ -162,7 +169,7 @@ export default function AdminTourPage() {
           >
             <div className={"flex flex-row"}>
               <CustomWeekPicker />
-              <PrimaryButton><p>test</p></PrimaryButton>
+              <PrimaryButton icon={faCirclePlus}>Nieuw</PrimaryButton>
             </div>
             <SelectionList
               Component={({ url, background, setSelected, callback, data }) => (
