@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { getSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import BuildingService from "@/services/building.service";
@@ -34,45 +33,42 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Testing</title>
-      </Head>
-      <main>
-        <PrimaryCard icon={faHome} title={"Home"} className={"m-4"}>
-          <SecondaryCard icon={faIdCard} title={"Authentication"}>
-            <p className={"text-xl"}>
-              If you are viewing this page, you are successfully logged in{" "}
-              <Emoji>🥳</Emoji>
-            </p>
-            <SecondaryButton
-              className={"my-2"}
-              onClick={() => {
-                signOut({ redirect: false }).then(() => router.push("/"));
-              }}
-            >
-              log out
-            </SecondaryButton>
-          </SecondaryCard>
-          <SecondaryCard
-            icon={faCheck}
-            title={"Test fetching"}
-            className={"my-4"}
+      <PrimaryCard icon={faHome} title={"Home"} className={"m-4"}>
+        <SecondaryCard icon={faIdCard} title={"Authentication"}>
+          <p className={"text-xl"}>
+            If you are viewing this page, you are successfully logged in{" "}
+            <Emoji>🥳</Emoji>
+          </p>
+          <SecondaryButton
+            className={"my-2"}
+            onClick={() => {
+              signOut({ redirect: false }).then(() => router.push("/"));
+            }}
           >
-            <PrimaryButton onClick={allBuildings} icon={faBuilding}>
-              All buildings
-            </PrimaryButton>
-            <PrimaryButton onClick={allUsers} icon={faUser}>
-              All users
-            </PrimaryButton>
-            <PrimaryCard title={"Response"} className={"my-4"}>
-              <pre> {response} </pre>
-            </PrimaryCard>
-          </SecondaryCard>
-        </PrimaryCard>
-        <PrimaryCard icon={faCreditCard} className={"m-4"}>
-          <p className={"font-bold"}>By team 2</p>
-        </PrimaryCard>
-      </main>
+            log out
+          </SecondaryButton>
+        </SecondaryCard>
+        <SecondaryCard
+          icon={faCheck}
+          title={"Test fetching"}
+          className={"my-4"}
+        >
+          <PrimaryButton onClick={allBuildings} icon={faBuilding}>
+            All buildings
+          </PrimaryButton>
+          <PrimaryButton onClick={allUsers} icon={faUser}>
+            All users
+          </PrimaryButton>
+          <PrimaryButton onClick={allUsers}> All users </PrimaryButton>
+          <PrimaryCard title={"Response"} className={"my-4"}>
+            <pre> {response} </pre>
+          </PrimaryCard>
+        </SecondaryCard>
+      </PrimaryCard>
+      <PrimaryCard className={"mx-4"} title={"Testing Ground"}></PrimaryCard>
+      <PrimaryCard icon={faCreditCard} className={"m-4"}>
+        <p className={"font-bold"}>By team 2</p>
+      </PrimaryCard>
     </>
   );
 }

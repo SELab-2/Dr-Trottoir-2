@@ -79,6 +79,11 @@ class TestBuildingView(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         response = self.client.get(reverse("building-detail", kwargs={'pk': self.building.pk}))
         self.assertEqual(response.data["detail"].code, "not_found")
+        # Region Should not be deleted
+        response = self.client.get(reverse("region-detail", kwargs={'pk': self.region.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        serializerRegion = RegionSerializer(self.region, context={'request': response.wsgi_request})
+        self.assertEqual(response.data, serializerRegion.data)
 
     def test_delete_unauthorized(self):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
@@ -91,9 +96,9 @@ class TestBuildingView(APITestCase):
         # Add waste schedule to building
         building_resp = self.client.get(f'/api/building/{self.building.pk}/', follow=True)
         building_url = building_resp.data["url"]
-        data_past = {"date": "2000-01-01", "waste_type": "verleden test", "building": building_url}
-        data_future = {"date": "2050-01-01", "waste_type": "toekomst test", "building": building_url}
-        data_now = {"date": "2023-01-01", "waste_type": "heden test", "building": building_url}
+        data_past = {"date": "2000-01-01", "waste_type": "verleden test", "building": building_url, "action": "test"}
+        data_future = {"date": "2050-01-01", "waste_type": "toekomst test", "building": building_url, "action": "test"}
+        data_now = {"date": "2023-01-01", "waste_type": "heden test", "building": building_url, "action": "test"}
         for d in (data_past, data_future, data_now):
             r = self.client.post('/api/waste/', data=d, follow=True)
             self.assertEqual(r.status_code, status.HTTP_201_CREATED)
