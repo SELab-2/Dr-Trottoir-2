@@ -38,7 +38,7 @@ export default function Navbar() {
             Planning: { icon: faCalendarWeek, link: "/student/planning" },
             "Nieuwe data": {
               icon: faCirclePlus,
-              link: "/admin/data_toevoegen/planning",
+              link: "/admin/data_toevoegen/",
             },
           }}
           className={"text-dark-text bg-dark-bg-1 mt-6 mb-6"}
