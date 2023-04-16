@@ -31,7 +31,7 @@ export default function CustomProgressBar({ fraction, is_wheel }) {
     );
   }
   return (
-    <div className={`bg-light-bg-1 p-1 rounded-lg`}>
+    <div className={`bg-light-bg-2 p-1 rounded-lg`}>
       <div
         className={`py-1 px-1 rounded`}
         style={{ width: `${percentage}%`, backgroundColor: color }}
