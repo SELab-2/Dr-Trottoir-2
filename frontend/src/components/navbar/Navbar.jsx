@@ -9,7 +9,7 @@ import {
   faCirclePlus,
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
-import NavbarList from "@/components/navbar/NavbarList";
+import LinkList from "@/components/navbar/LinkList";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import ProfilePicture from "@/components/ProfilePicture";
@@ -32,14 +32,19 @@ export default function Navbar() {
           "overflow-y-auto overflow-x-hidden flex-grow border-b border-none p-3"
         }
       >
-        <NavbarList
+        <LinkList
           name={"Menu"}
           categories={{
             Planning: { icon: faCalendarWeek, link: "/student/planning" },
-            "Nieuwe data": { icon: faCirclePlus, link: "/admin/data_toevoegen" },
+            "Nieuwe data": {
+              icon: faCirclePlus,
+              link: "/admin/data_toevoegen/planning",
+            },
           }}
+          className={"text-dark-text bg-dark-bg-1 mt-6 mb-6"}
+          linkClassName={"hover: hover:bg-dark-bg-2"}
         />
-        <NavbarList
+        <LinkList
           name={"Data"}
           categories={{
             Rondes: { icon: faBicycle, link: "#" },
@@ -47,13 +52,17 @@ export default function Navbar() {
             Personeel: { icon: faPeopleGroup, link: "#" },
             Syndici: { icon: faBriefcase, link: "#" },
           }}
+          className={"text-dark-text bg-dark-bg-1 mt-6 mb-6 "}
+          linkClassName={"hover: hover:bg-dark-bg-2"}
         />
-        <NavbarList
+        <LinkList
           name={"Communicatie"}
           categories={{
             Berichten: { icon: faEnvelope, link: "#" },
             Templates: { icon: faEnvelopeOpenText, link: "#" },
           }}
+          className={"text-dark-text bg-dark-bg-1 mt-6 mb-6"}
+          linkClassName={"hover: hover:bg-dark-bg-2"}
         />
       </div>
       <div className={"flex p-8 pt-4 w-full items-center"} id={"p-info"}>

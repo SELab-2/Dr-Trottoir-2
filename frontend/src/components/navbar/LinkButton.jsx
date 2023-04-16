@@ -9,22 +9,25 @@ import { useRouter } from "next/router";
  * @param link The link where the button needs to send the user.
  * @constructor
  */
-export default function NavbarButton({ tag, icon, link }) {
+export default function LinkButton({ children, icon, link, className }) {
   // Background is the accent colour if it is the current page.
   const router = useRouter();
 
-  let style = "bg-dark-bg-1 hover:bg-dark-bg-2 text-dark-text";
+  //change style of the selected link
+  let style = "";
   if (router.asPath.startsWith(link)) {
     style = "bg-accent-1 hover:bg-accent-1 text-accent-2 font-bold";
   }
 
   return (
-    <Link
-      href={link}
-      className={`flex py-2 px-2 items-center rounded-lg ${style}`}
-    >
-      <FontAwesomeIcon icon={icon} className={"flex-shrink-0 w-4 h-4 ml-4"} />
-      <span className="ml-3">{tag}</span>
-    </Link>
+    <div className={`${className} rounded-lg`}>
+      <Link
+        href={link}
+        className={`flex py-2 px-2 items-center rounded-lg ${style} `}
+      >
+        <FontAwesomeIcon icon={icon} className={"flex-shrink-0 w-4 h-4 ml-4"} />
+        <div className={"ml-3"}>{children}</div>
+      </Link>
+    </div>
   );
 }
