@@ -10,23 +10,18 @@ import {
   faSort,
 } from "@fortawesome/free-solid-svg-icons";
 import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ScheduleService from "@/services/schedule.service";
+import CustomTable from "@/components/table/Table";
 
 export default function AdminDashboardPage() {
-  const [response, setResponse] = useState("");
-  const [id, setId] = useState("0");
+  const [schedule, setSchedule] = useState([]);
 
-  const allSchedule = async () => {
-    const response = await ScheduleService.getAll();
-    setResponse(JSON.stringify(response, null, 2));
-  };
-
-  const visitsFromSchedule = async () => {
-    const response = await ScheduleService.getVisitsFromSchedule(id);
-    console.log(response);
-    setResponse(JSON.stringify(response, null, 2));
-  };
+  useEffect(() => {
+    ScheduleService.getSchedules().then((schedule) => {
+      setSchedule(schedule.map((el) => [el.date, el.tour, el.student, 2]));
+    });
+  }, []);
 
   const dummy = () => console.log("Dummy");
 
@@ -41,8 +36,15 @@ export default function AdminDashboardPage() {
 
       <PrimaryCard>
         <div id={"statistics"} className={"flex flex-row"}>
-          <SecondaryCard title={"Aantal Rondes"} className={"flex-grow m-2"}>
-            <p>Aantal rondes</p>
+          <SecondaryCard
+            title={"Aantal Rondes"}
+            className={"flex-grow m-2 justify-center items-center"}
+          >
+            {schedule.length === 1 ? (
+              <p className={"font-bold"}>{schedule.length} Ronde</p>
+            ) : (
+              <p className={"font-bold"}>{schedule.length} Rondes</p>
+            )}
           </SecondaryCard>
           <SecondaryCard
             title={"Aantal opmerkingen"}
@@ -87,7 +89,16 @@ export default function AdminDashboardPage() {
             </PrimaryCard>
 
             <PrimaryCard className={"my-2"}>
-              <p>Lijst</p>
+              <CustomTable
+                className={"w-full"}
+                columns={[
+                  { name: "Datum" },
+                  { name: "Ronde" },
+                  { name: "Student" },
+                  { name: "Gebouwen" },
+                ]}
+                data={schedule}
+              />
             </PrimaryCard>
           </SecondaryCard>
         </div>
