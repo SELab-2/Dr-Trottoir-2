@@ -6,7 +6,7 @@ class UserService {
     return response.data;
   }
 
-  async getUser(id) {
+  async getUserById(id) {
     let response;
     try {
       response = await ApiInstance.getApi().get(`user/${id}/`);

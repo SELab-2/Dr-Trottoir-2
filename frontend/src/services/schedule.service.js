@@ -48,7 +48,6 @@ class ScheduleService {
    */
   async getScheduleById(id) {
     const response = await this.getPage(`schedule/${id}/`);
-    console.log(response);
     return response.status === 200 ? response.data : [];
   }
 
