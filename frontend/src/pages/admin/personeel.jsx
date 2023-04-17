@@ -6,6 +6,8 @@ import {
   faMagnifyingGlass,
   faFilter,
   faSort,
+  faTrash,
+  faBan,
 } from "@fortawesome/free-solid-svg-icons";
 import ContextMenu from "@/components/ContextMenu";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
@@ -13,7 +15,11 @@ import PrimaryButton from "@/components/button/PrimaryButton";
 import CustomInputField from "@/components/input-fields/InputField";
 import userService from "@/services/user.service";
 import ColoredTag from "@/components/Tag";
-import CustomDropDown from "@/components/DropDown";
+import Dropdown from "@/components/Dropdown";
+import CustomModal from "@/components/CustomModal";
+import SecondaryButton from "@/components/button/SecondaryButton";
+import CustomButton from "@/components/button/Button";
+import SelectableTable from "@/components/table/SelectableTable";
 
 const initialContextMenu = {
   show: false,
@@ -22,21 +28,19 @@ const initialContextMenu = {
   rowOptions: [],
 };
 
-// TO DO: Split up page
 export default function Employees() {
-  const [response, setResponse] = useState("{}");
   const [users, setUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
-  const [selectedRows, setSelectedRows] = useState(new Set());
   const [contextMenu, setContextMenu] = useState(initialContextMenu);
-  const [filterSelected, setFilterSelected] = useState(new Set());
-  const [sortSelected, setSortSelected] = useState(null);
+  const [filterSelected, setFilterSelected] = useState([]);
+  const [clearSelected, setClearSelected] = useState(0);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
   const searchRef = useRef(null);
 
   useEffect(() => {
     const allUsers = async () => {
       const response = await userService.getAll();
-      setResponse(JSON.stringify(response, null, 2));
       let user = [];
 
       if (Object.prototype.hasOwnProperty.call(response, "results")) {
@@ -70,6 +74,29 @@ export default function Employees() {
     }
   }
 
+  const createRoleCell = (role) => {
+    return (
+      <ColoredTag className={roleToClassName[role]}>
+        {roleToString[role]}
+      </ColoredTag>
+    );
+  };
+
+  // Tailwindcss can't construct class names dynamically
+  const roleToClassName = {
+    1: "bg-tags-1",
+    2: "bg-tags-2",
+    3: "bg-tags-3",
+    5: "bg-tags-5",
+  };
+
+  const columns = [
+    { name: "Voornaam", cut: false },
+    { name: "Achternaam", cut: false },
+    { name: "E-mailadres", cut: false },
+    { name: "Rol", cut: false, createCell: createRoleCell },
+  ];
+
   // Add color for owner
   const roleToString = {
     1: "Developer",
@@ -85,12 +112,11 @@ export default function Employees() {
     Rol: "role",
   };
 
-  const handleRightClick = (event, pk) => {
+  const handleRightClick = (event, selectedIndiches) => {
     event.preventDefault();
     const { pageX, pageY } = event;
-    selectedRows.add(pk);
     let rowOptions = singleRowOptions;
-    if (selectedRows.size > 1) {
+    if (selectedIndiches.length > 1) {
       rowOptions = multipleRowOptions;
     }
     setContextMenu({
@@ -99,16 +125,7 @@ export default function Employees() {
       y: pageY,
       rowOptions: rowOptions,
     });
-  };
-
-  const handleClickRow = (event, pk) => {
-    const updatedRows = new Set(selectedRows);
-    if (updatedRows.has(pk)) {
-      updatedRows.delete(pk);
-    } else {
-      updatedRows.add(pk);
-    }
-    setSelectedRows(updatedRows);
+    setSelectedRows(selectedIndiches);
   };
 
   const editUser = () => {
@@ -118,15 +135,19 @@ export default function Employees() {
   const deleteUsers = () => {
     let usersCopy = [...users];
     let allUsersCopy = [...allUsers];
-    usersCopy = usersCopy.filter((user) => !selectedRows.has(user.pk));
-    allUsersCopy = allUsersCopy.filter((user) => !selectedRows.has(user.pk));
-    selectedRows.forEach(async (pk) => {
+    let toBeDeleted = selectedRows.map((index) => usersCopy[index]["pk"]);
+    usersCopy = usersCopy.filter((user) => !toBeDeleted.includes(user.pk));
+    allUsersCopy = allUsersCopy.filter(
+      (user) => !toBeDeleted.includes(user.pk)
+    );
+    toBeDeleted.forEach(async (pk) => {
       // for development purposes
       if (pk !== "1") {
         await userService.deleteUser(pk);
       }
     });
     setUsers(usersCopy);
+    setModalOpen(false);
     setAllUsers(allUsersCopy);
   };
 
@@ -135,25 +156,25 @@ export default function Employees() {
   };
 
   const closeContextMenu = (option) => {
-    if (option == "Edit") {
+    if (option == "Wijzig") {
       editUser();
-    } else if (option == "Delete") {
-      deleteUsers();
+    } else if (option == "Verwijder") {
+      setModalOpen(true);
     } else if (option == "Mail") {
       mailUsers();
     }
     setContextMenu(initialContextMenu);
   };
 
-  const singleRowOptions = ["Edit", "Delete", "Mail"];
+  const singleRowOptions = ["Wijzig", "Verwijder", "Mail"];
 
-  const multipleRowOptions = ["Delete", "Mail"];
+  const multipleRowOptions = ["Verwijder", "Mail"];
 
-  const changeSortSelected = (option) => {
-    setSortSelected(option);
+  const changeSortSelected = (selected) => {
+    console.log(selected);
     setUsers(
       users.sort(function (a, b) {
-        const field = stringToField[option];
+        const field = stringToField[selected[0]];
         if (typeof a[field] === "string") {
           return a[field].localeCompare(b[field]);
         } else {
@@ -161,10 +182,10 @@ export default function Employees() {
         }
       })
     );
+    setClearSelected(clearSelected + 1);
   };
 
   const applySearch = (newFilterSelected) => {
-    setSelectedRows(new Set()); // remove selected rows when filtering
     setFilterSelected(newFilterSelected);
     const searchStr = searchRef.current.value;
     let usersCopy = [...allUsers];
@@ -177,12 +198,13 @@ export default function Employees() {
           user.email.includes(searchStr)
       );
     }
-    if (newFilterSelected.size !== 0) {
-      // apply filtering
+    if (newFilterSelected.length !== 0) {
+      // Checks if user has a role that is in the selected roles
       usersCopy = usersCopy.filter((user) =>
-        newFilterSelected.has(roleToString[user.role])
+        newFilterSelected.includes(roleToString[user.role])
       );
     }
+    setClearSelected(clearSelected + 1);
     setUsers(usersCopy);
   };
 
@@ -191,6 +213,27 @@ export default function Employees() {
       <Head>
         <title>Personeel</title>
       </Head>
+      <CustomModal isOpen={modalOpen} className="z-20 bg-light-bg-1">
+        <h2 className="text-lg font-bold mb-4">
+          Weet u zeker dat u de geselecteerde gebruikers wilt verwijderen?
+        </h2>
+        <div className="flex justify-center">
+          <SecondaryButton
+            className="mr-2"
+            icon={faBan}
+            onClick={() => setModalOpen(false)}
+          >
+            Annuleer
+          </SecondaryButton>
+          <CustomButton
+            className="bg-bad-1 text-light-bg-1"
+            icon={faTrash}
+            onClick={deleteUsers}
+          >
+            Verwijder
+          </CustomButton>
+        </div>
+      </CustomModal>
       <main
         className={`h-screen p-8 flex-col justify-between`}
         style={{ backgroundColor: BG_LIGHT_SECONDARY }}
@@ -198,116 +241,58 @@ export default function Employees() {
         <PrimaryCard className={"mb-4"}>
           <div
             className={
-              "relative space-x-0 flex flex-col lg:justify-center lg:items-start lg:space-x-2 lg:flex-row w-full"
+              "space-x-0 flex flex-col lg:justify-center lg:items-start lg:space-x-2 lg:flex-row w-full"
             }
           >
-            <div className="">
-              <CustomDropDown
-                title="Filter"
+            <div className="mt-2">
+              <Dropdown
                 icon={faFilter}
                 options={["Developer", "Admin", "Student", "Superstudent"]}
-                selected={filterSelected}
-                handleChange={applySearch}
-              />
+                onClick={applySearch}
+                multi={true}
+              >
+                Filter
+              </Dropdown>
             </div>
-            <div className="">
-              <CustomDropDown
-                title="Sorteer"
+            <div className="my-2">
+              <Dropdown
                 icon={faSort}
                 options={["Voornaam", "Achternaam", "E-mailadres", "Rol"]}
-                selected={sortSelected}
-                handleChange={changeSortSelected}
-                multi={false}
-              />
+                onClick={changeSortSelected}
+              >
+                Sorteer
+              </Dropdown>
             </div>
-            <div className="flex-grow mt-3">
+            <div className="flex-grow">
               <CustomInputField
                 icon={faMagnifyingGlass}
                 reference={searchRef}
                 callback={() => applySearch(filterSelected)}
               ></CustomInputField>
             </div>
-            <div className="mt-5">
+            <div className="mt-2">
               <PrimaryButton icon={faCirclePlus}>
-                <span>Nieuw</span>
+                <span className="mx-5-3">Nieuw</span>
               </PrimaryButton>
             </div>
           </div>
         </PrimaryCard>
         <PrimaryCard>
-          {
-            // Will be replaced by table component
-          }
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left uppercase tracking-wider"
-                />
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Voornaam
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Achternaam
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  E-mailadres
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Rol
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {users.map((user, index) => (
-                <tr
-                  key={user.pk}
-                  onContextMenu={(event) => handleRightClick(event, user.pk)}
-                  onClick={(event) => handleClickRow(event, user.pk)}
-                  className={`${
-                    selectedRows.has(user.pk)
-                      ? "bg-selected-bg text-selected-h"
-                      : "hover:bg-light-bg-2"
-                  }`}
-                >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                    {index + 1 + "."}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {user.first_name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {user.last_name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {user.email}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    <ColoredTag className={`bg-tags-${user.role}`}>
-                      {roleToString[user.role]}
-                    </ColoredTag>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
+          <SelectableTable
+            columns={columns}
+            data={users.map((user) => [
+              user.first_name,
+              user.last_name,
+              user.email,
+              user.role,
+            ])}
+            rightClick={handleRightClick}
+            clearSelected={clearSelected}
+            className={"w-full"}
+          ></SelectableTable>
           {contextMenu.show && (
             <ContextMenu
-              x={contextMenu.x}
+              x={contextMenu.x - 256}
               y={contextMenu.y}
               closeContextMenu={closeContextMenu}
               options={contextMenu.rowOptions}

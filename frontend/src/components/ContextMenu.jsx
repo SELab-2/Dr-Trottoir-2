@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { BG_DARK_PRIMARY, LIGHT_SECONDARY } from "@/utils/colors";
 
 export default function ContextMenu({
   x,
@@ -31,7 +30,7 @@ export default function ContextMenu({
     >
       {options.map((value) => (
         <div
-          className={`cursor-pointer hover:bg-selected-bg p-2 rounded-md ${classNameOption}`}
+          className={`cursor-pointer hover:bg-primary-2 p-2 rounded-md ${classNameOption}`}
           key={value}
           onClick={() => closeContextMenu(value)}
         >

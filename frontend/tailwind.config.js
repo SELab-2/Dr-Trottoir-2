@@ -13,6 +13,7 @@ module.exports = {
           2: "#B2B2B2",
         },
         text: "#4D4D4D",
+        border: "#E6E6E6",
       },
       dark: {
         bg: {
@@ -55,10 +56,6 @@ module.exports = {
         2: "#FFEAB6",
         3: "#E2D5F7",
         5: "#FCCCF0",
-      },
-      selected: {
-        bg: "#D7E5FF",
-        h: "#377DFF",
       },
     },
     fontSize: {

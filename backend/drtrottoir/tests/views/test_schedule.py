@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
-from drtrottoir.serializers import ScheduleSerializer, UserSerializer, TourSerializer
+from drtrottoir.serializers import ScheduleSerializer, UserSerializer, TourSerializer, VisitSerializer
 from drtrottoir.tests.factories import (
     ScheduleFactory,
     TourFactory,
@@ -11,6 +11,7 @@ from drtrottoir.tests.factories import (
     SuperStudentUserFactory,
     OwnerUserFactory,
     StudentUserFactory,
+    VisitFactory,
 )
 from drtrottoir.models.custom_user import Roles
 
@@ -82,3 +83,12 @@ class TestScheduleView(APITestCase):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
         response = self.client.delete(reverse("schedule-detail", kwargs={'pk': self.schedule.pk}), follow=True)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_visits(self):
+        self.client.force_authenticate(user=self.users[Roles.STUDENT])
+        visit = VisitFactory()
+        response = self.client.get(f"/api/schedule/{visit.schedule.pk}/visits/", follow=True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        serializerVisit = VisitSerializer(visit, context={'request': response.wsgi_request})
+        self.assertEqual(response.data[0], serializerVisit.data)
