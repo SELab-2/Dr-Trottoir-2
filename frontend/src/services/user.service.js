@@ -41,6 +41,11 @@ class UserService {
     return data;
   }
 
+  /**
+   * Deletes a user by id.
+   * @param id The ID of the user.
+   * @returns {*} Empty string if the user is deleted.
+   */
   async deleteUser(pk) {
     const response = await ApiInstance.getApi().delete("user/" + pk + "/");
     return response.data;

@@ -40,26 +40,22 @@ export default function Employees() {
 
   useEffect(() => {
     const allUsers = async () => {
-      const response = await userService.getAll();
+      const response = await userService.get();
       let user = [];
-
-      if (Object.prototype.hasOwnProperty.call(response, "results")) {
-        const results = response["results"];
-        for (let i in results) {
-          let entry = results[i];
-          if (entry["role"] !== 4) {
-            user.push({
-              pk: urlToPK(entry["url"]),
-              first_name: entry["first_name"],
-              last_name: entry["last_name"],
-              email: entry["email"],
-              role: entry["role"],
-            });
-          }
+      for (let i in response) {
+        let entry = response[i];
+        if (entry["role"] !== 4) {
+          user.push({
+            pk: urlToPK(entry["url"]),
+            first_name: entry["first_name"],
+            last_name: entry["last_name"],
+            email: entry["email"],
+            role: entry["role"],
+          });
         }
-        setUsers(user);
-        setAllUsers(user);
       }
+      setUsers(user);
+      setAllUsers(user);
     };
     allUsers();
   }, []);
@@ -97,7 +93,6 @@ export default function Employees() {
     { name: "Rol", cut: false, createCell: createRoleCell },
   ];
 
-  // Add color for owner
   const roleToString = {
     1: "Developer",
     2: "Admin",
@@ -141,14 +136,12 @@ export default function Employees() {
       (user) => !toBeDeleted.includes(user.pk)
     );
     toBeDeleted.forEach(async (pk) => {
-      // for development purposes
-      if (pk !== "1") {
-        await userService.deleteUser(pk);
-      }
+      await userService.deleteUser(pk);
     });
     setUsers(usersCopy);
     setModalOpen(false);
     setAllUsers(allUsersCopy);
+    setClearSelected(clearSelected + 1);
   };
 
   const mailUsers = () => {
