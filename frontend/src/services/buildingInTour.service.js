@@ -17,7 +17,7 @@ class BuildingInTourService {
    * @param id The ID of the BuildingInTour.
    * @returns {Promise<*|*[]>} Dictionary with a BuildingInTour entry.
    */
-  async getByid(id) {
+  async getById(id) {
     const response = await HelperService.getResponseByUrl(
       `building_in_tour/${id}/`
     );
