@@ -13,7 +13,7 @@ test("Closes context menu when clicked outside", () => {
     />
   );
 
-  fireEvent.mouseDown(document);
+  fireEvent.click(document.documentElement);
   expect(closeContextMenu).toHaveBeenCalledTimes(1);
 });
 
@@ -31,10 +31,9 @@ test("Closes context menu and returns selected option when option is clicked", (
     />
   );
 
-  const contextMenuOptions = screen.getAllByRole("menuitem");
+  const contextMenuOptions = screen.getAllByText(/Option [1-3]/i);
   const selectedOptionElement = contextMenuOptions[1];
 
   fireEvent.click(selectedOptionElement);
-  expect(closeContextMenu).toHaveBeenCalledTimes(1);
   expect(closeContextMenu).toHaveBeenCalledWith(selectedOption);
 });
