@@ -2,7 +2,6 @@ import ApiInstance from "@/services/ApiInstance";
 import HelperService from "@/services/helper.service";
 
 class TourService {
-
   /**
    * Returns all tours that match the filters (args). If args is empty, all tours will be returned.
    * @param args Dictionary with the filters. No filters implemented for tour.
