@@ -80,7 +80,7 @@ export default function AdminTourPage() {
       })
     );
 
-    return photos.filter((entry) => entry["state"] === 2).length > 0;
+    return photos.filter((entry) => entry["state"] === 2);
   }
 
   useEffect(() => {
@@ -99,6 +99,36 @@ export default function AdminTourPage() {
       console.log(scheduleResponse);
       console.log(scheduleVisits);
       setWeek([dateFrom, dateTo]);
+
+      // counting the amount of visits that are finished
+      let count = 0;
+      const comments = [];
+      const time = {};
+      for (let i in scheduleVisits) {
+        const visit = scheduleVisits[i];
+        if (visit.comment !== "") {
+          comments.push({
+            comment: visit.comment,
+            building: visit.building_in_tour_data.nickname,
+          });
+        }
+        const buildInTour = await BuildingInTourService.getBuildingInTourById();
+        const photos = await visit_finished(visit.url);
+        if (photos.length > 0) {
+          const diff =
+            new Date(photos[0]["created_at"]) - new Date(visit["arrival"]);
+          let seconds = Math.round(diff / 1000);
+          const minutes = Math.round(seconds / 60);
+          seconds -= minutes * 60;
+          console.log(minutes)
+          console.log(seconds)
+          count++;
+        }
+      }
+      console.log(scheduleVisits)
+      setComments(comments);
+      setfinished(count);
+
       // Searching the buildings of this tour
       let split = scheduleResponse["tour"].trim().split("/");
       const buildingIds = await TourService.getBuildingsFromTour(
@@ -109,28 +139,25 @@ export default function AdminTourPage() {
         const building = await BuildingService.getBuildingById(
           buildingIds["buildings"][i]
         );
-        buildings.push(building);
+        let time = "TBA";
+        let status = "Onderweg";
+        const owners = building["owners"]
+          .map(
+            (entry) => `${entry.first_name} ${entry.last_name} (${entry.email})`
+          )
+          .join(", ");
+        console.log(owners);
+        buildings.push([
+          building.nickname,
+          `${building.address_line_1}\n${building.address_line_2}`,
+          status,
+          owners,
+          time,
+        ]);
       }
       setBuildings(buildings);
       console.log(buildings);
 
-      // counting the amount of visits that are finished
-      let count = 0;
-      const comments = [];
-      for (let i in scheduleVisits) {
-        const visit = scheduleVisits[i];
-        if (visit.comment !== "") {
-          comments.push({
-            comment: visit.comment,
-            building: visit.building_in_tour_data.nickname,
-          });
-        }
-        if (await visit_finished(visit.url)) {
-          count++;
-        }
-      }
-      setComments(comments);
-      setfinished(count);
       // We set the user for this specific tour.
       split = scheduleResponse["student"].trim().split("/");
       console.log(scheduleResponse);
@@ -199,10 +226,10 @@ export default function AdminTourPage() {
               <h1 className={"text-light-h-1 font-bold text-lg"}>
                 Stations Ronde
               </h1>
-              <div className={"flex flex-row space-x-2 h-6/12"}>
+              <div className={"flex flex-row space-x-2 h-3/6"}>
                 <div className={"flex flex-col space-y-2 h-full"}>
                   <SecondaryCard
-                    className={"h-1/2"}
+                    className={"h-2/6"}
                     icon={faBriefcase}
                     title={"Aangeduide student"}
                   >
@@ -222,14 +249,20 @@ export default function AdminTourPage() {
                       </div>
                     </div>
                   </SecondaryCard>
-                  <SecondaryCard className={"h-1/2 items-center justify-center"} icon={faBriefcase} title={"Progress"}>
+                  <SecondaryCard
+                    className={
+                      "h-4/6 items-center items-center justify-center overflow-hidden"
+                    }
+                    icon={faBriefcase}
+                    title={"Progress"}
+                  >
                     <div
                       className={"flex flex-row items-center justify-center"}
                     >
                       <CustomProgressBar
                         is_wheel
-                        circleWidth={120}
-                        radius={40}
+                        circleWidth={150}
+                        radius={50}
                         className={"flex-shrink w-1/6 h-1/6"}
                         fraction={finished / buildings.length}
                       />
@@ -254,29 +287,9 @@ export default function AdminTourPage() {
                         <h1 className={"text-light-h-1 font-bold text-base"}>
                           {entry.building}
                         </h1>
-                        <Cell cut>{entry.comment}</Cell>
-                      </div>
-                    ))}
-                    {comments.map((entry, index) => (
-                      <div
-                        key={index}
-                        className={"rounded-lg bg-light-bg-1 p-2"}
-                      >
-                        <h1 className={"text-light-h-1 font-bold text-base"}>
-                          {entry.building}
-                        </h1>
-                        <Cell cut>{entry.comment}</Cell>
-                      </div>
-                    ))}
-                    {comments.map((entry, index) => (
-                      <div
-                        key={index}
-                        className={"rounded-lg bg-light-bg-1 p-2"}
-                      >
-                        <h1 className={"text-light-h-1 font-bold text-base"}>
-                          {entry.building}
-                        </h1>
-                        <Cell cut>{entry.comment}</Cell>
+                        <Cell cut cutLen={"[300px]"}>
+                          {entry.comment}
+                        </Cell>
                       </div>
                     ))}
                   </div>
@@ -289,6 +302,7 @@ export default function AdminTourPage() {
               <SecondaryCard icon={faBriefcase} title={"Gebouwen"}>
                 <CustomTable
                   className={"w-full"}
+                  cutLen={"[200px]"}
                   columns={[
                     { name: "Naam" },
                     { name: "Adres", cut: true },
@@ -308,18 +322,10 @@ export default function AdminTourPage() {
                         );
                       },
                     },
+                    { name: "Verantwoordelijke", cut: true },
                     { name: "Tijd" },
-                    { name: "Opmerkingen" },
                   ]}
-                  data={[
-                    [
-                      "PLACES",
-                      "nameStreet 564 Place Belgium",
-                      "Onderweg",
-                      "8h39m20s",
-                      "OK!",
-                    ],
-                  ]}
+                  data={buildings}
                 />
               </SecondaryCard>
             </div>
