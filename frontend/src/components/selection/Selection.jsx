@@ -1,9 +1,9 @@
-import { BG_ACCENT, BG_LIGHT_SECONDARY } from "@/utils/colors";
+import { COLOR_LIGHT_BG_2, COLOR_ACCENT_1 } from "@/utils/colors";
 import { useState } from "react";
 
 export default function Selection({ list, Component, callback }) {
-  const defaultBG = BG_LIGHT_SECONDARY;
-  const selectedBG = BG_ACCENT;
+  const defaultBG = COLOR_LIGHT_BG_2;
+  const selectedBG = COLOR_ACCENT_1;
   const [selected, setSelected] = useState("");
 
   return (

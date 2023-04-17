@@ -13,11 +13,12 @@ module.exports = {
           2: "#B2B2B2",
         },
         text: "#4D4D4D",
+        border: "#E6E6E6",
       },
       dark: {
         bg: {
-          1: "#1D1D1D",
-          2: "#282828",
+          1: "#101010",
+          2: "#1c1c1c",
         },
         h: {
           1: "#FFFFFF",
@@ -32,6 +33,7 @@ module.exports = {
       primary: {
         1: "#377DFF",
         2: "#D7E5FF",
+        3: "#2c66d3",
       },
       done: {
         1: "#8250DF",
@@ -49,6 +51,10 @@ module.exports = {
         1: "#CF222E",
         2: "#FFD4DF",
       },
+    },
+    fontSize: {
+      base: "14px",
+      lg: "21px",
     },
     extend: {},
   },

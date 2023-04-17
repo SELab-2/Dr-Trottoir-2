@@ -9,6 +9,7 @@ class WasteFactory(DjangoModelFactory):
     date = factory.Faker("date")
     waste_type = factory.Faker("word")
     building = factory.SubFactory(BuildingFactory)
+    action = factory.Faker("word")
 
     class Meta:
         model = Waste

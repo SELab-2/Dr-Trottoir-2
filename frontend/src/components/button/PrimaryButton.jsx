@@ -1,15 +1,13 @@
 import CustomButton from "@/components/button/Button";
-import { BG_PRESS_ME, DARK_PRIMARY } from "@/utils/colors";
 
-export default function PrimaryButton({ text, handle, icon }) {
+export default function PrimaryButton({ children, onClick, className, icon }) {
   return (
     <CustomButton
-      text={text}
-      border={BG_PRESS_ME}
-      foregroundColor={DARK_PRIMARY}
-      backgroundColor={BG_PRESS_ME}
+      onClick={onClick}
       icon={icon}
-      handle={handle}
-    />
+      className={`bg-primary-1 text-dark-h-1 hover:bg-primary-3 active:bg-primary-2 active:text-primary-1 ${className}`}
+    >
+      {children}
+    </CustomButton>
   );
 }

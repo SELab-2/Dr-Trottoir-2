@@ -1,35 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function CustomButton({
-  text,
-  handle,
-  icon,
-  backgroundColor,
-  foregroundColor,
-  border,
-}) {
+export default function CustomButton({ children, onClick, className, icon }) {
   return (
     <button
-      className="border-2 mt-5 mb-8 py-3 px-6 text-center rounded font-bold"
-      style={{
-        color: foregroundColor,
-        background: backgroundColor,
-        borderColor: border,
-      }}
-      onClick={handle}
+      className={`align-middle border-2 py-2 px-3 text-center rounded-lg font-bold w-fit ${className}`}
+      onClick={onClick}
     >
-      {icon && (
-        <FontAwesomeIcon
-          icon={icon}
-          className={"mr-3"}
-          style={{
-            "--fa-primary-color": { backgroundColor },
-            "--fa-secondary-color": { foregroundColor },
-            "--fa-secondary-opacity": "1",
-          }}
-        />
-      )}
-      <span className="flex-1 whitespace-nowrap">{text}</span>
+      <div className={"flex items-center justify-center"}>
+        {icon && <FontAwesomeIcon icon={icon} className={"h-4"} />}
+        <div className={`${icon ? "mx-4" : "mx-2"}`}>{children}</div>
+      </div>
     </button>
   );
 }

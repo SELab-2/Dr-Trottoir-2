@@ -4,8 +4,6 @@ import {
   faBuilding,
   faEnvelopeOpenText,
   faEnvelope,
-  faGrip,
-  faUserGroup,
   faPeopleGroup,
   faCalendarWeek,
   faCirclePlus,
@@ -14,50 +12,33 @@ import Image from "next/image";
 import NavbarList from "@/components/navbar/NavbarList";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import ProfilePicture from "@/components/ProfilePicture";
+import Logo from "/public/images/Logo-Dr-Trottoir-GEEL-01.png";
 
 // https://flowbite.com/docs/components/sidebar/
 export default function Navbar() {
   const {
     data: { user },
   } = useSession();
-
-  const styles = {
-    pict: {
-      width: "50px",
-      height: "50px",
-      borderRadius: "50%",
-      backgroundColor: "blue",
-    },
-  };
-
   return (
-    <div className={"flex flex-col sm:w-72 h-full bg-dark-bg-1 px-3 py-4"}>
-      <div className={"flex"}>
-        <Link href={"/home"} className={"flex justify-center w-full"}>
-          <Image
-            width={500}
-            height={500}
-            src="/images/Logo-Dr-Trottoir-GEEL-01.png"
-            alt="Logo Dr.Trottoir"
-            className={"w-3/5"}
-          />
+    <div className={"flex flex-col flex-shrink-0 sm:w-64 h-full bg-dark-bg-1"}>
+      <div className={"flex justify-center p-1 mb-2 mt-8"}>
+        <Link href={"/home"}>
+          <Image src={Logo} className="w-36 object-fill" alt="logo" />
         </Link>
       </div>
-
       <div
         className={
-          "overflow-y-auto overflow-x-hidden flex-grow border-b border-dark-text"
+          "overflow-y-auto overflow-x-hidden flex-grow border-b border-none p-3"
         }
       >
         <NavbarList
           name={"Menu"}
           categories={{
-            Dashboard: { icon: faGrip, link: "/admin/dashboard" },
             Planning: { icon: faCalendarWeek, link: "/student/planning" },
             "Nieuwe data": { icon: faCirclePlus, link: "#" },
           }}
         />
-
         <NavbarList
           name={"Data"}
           categories={{
@@ -67,20 +48,16 @@ export default function Navbar() {
             Syndici: { icon: faBriefcase, link: "#" },
           }}
         />
-
         <NavbarList
           name={"Communicatie"}
           categories={{
             Berichten: { icon: faEnvelope, link: "#" },
-            Groepen: { icon: faUserGroup, link: "#" },
             Templates: { icon: faEnvelopeOpenText, link: "#" },
           }}
         />
       </div>
-
-      <div className={"flex p-6 w-full"} id={"p-info"}>
-        <div style={styles.pict}></div>
-
+      <div className={"flex p-8 pt-4 w-full items-center"} id={"p-info"}>
+        <ProfilePicture image={null} className={"w-8"} />
         <div className={"flex flex-col justify-center ml-6"}>
           <p className={"text-dark-text"}>{user.first_name}</p>
           <p className={"text-dark-text"}>{user.last_name}</p>
