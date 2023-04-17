@@ -1,36 +1,55 @@
 import ApiInstance from "@/services/ApiInstance";
+import HelperService from "@/services/helper.service";
 
 class TourService {
+
   /**
-   * Return the data of a get request of a page.
-   * When an error occurs, an alert will be showen and the error will be returned.
-   * @param url The URL where you want to perform a get request on.
-   * @returns {Promise<*>}
+   * Returns all tours that match the filters (args). If args is empty, all tours will be returned.
+   * @param args Dictionary with the filters. No filters implemented for tour.
+   * @returns {Promise<*>} A list with tour entries.
    */
-  async getPage(url) {
-    let response = null;
-    try {
-      response = await ApiInstance.getApi().get(url);
-    } catch (e) {
-      response = e;
-      alert(JSON.stringify(e.message, null, 2));
-    }
-    return response;
+  async get(args = {}) {
+    let all = await HelperService.getAllPagination("tour/");
+    return this.#filterTour(all, args);
   }
 
-  async getAll() {
-    let response = await this.getPage(`tour/`);
-    return response.status === 200 ? response.data : [];
+  /**
+   * Returns a tour by id. When the tour does not exist, an empty dictionary will be returned.
+   * @param id The ID of the tour.
+   * @returns {Promise<*|*[]>} Dictionary with a tour entry.
+   */
+  async getById(id) {
+    const response = await HelperService.getResponseByUrl(`tour/${id}/`);
+    return response.status === 200 ? response.data : {};
+  }
+
+  /**
+   * Returns the tour entry of the url. If the tour does not exist, an empty dictionary will be returned.
+   * @param url A valid tour entry URL.
+   * @returns {Promise<*|{}>}
+   */
+  async getEntryByUrl(url) {
+    return HelperService.getModelEntryByUrl(url, "tour");
   }
 
   /**
    * Returns all the building IDs for a specific tour.
-   * @param id The ID of the schedule you want the visits of.
+   * @param id The ID of the tour you want the visits of.
    * @returns {Promise<*|*[]>}
    */
   async getBuildingsFromTour(id) {
     let response = await this.getPage(`tour/${id}/buildings/`);
     return response.status === 200 ? response.data : [];
+  }
+
+  /**
+   * Filter the data with the filters given in args.
+   * @param data List of tour entries.
+   * @param args Dictionary that contains filters.
+   * @returns {*} The filtered data.
+   */
+  #filterTour(data, args) {
+    return data;
   }
 }
 

@@ -1,36 +1,45 @@
-import ApiInstance from "@/services/ApiInstance";
+import HelperService from "@/services/helper.service";
 
 class PhotoService {
   /**
-   * Return the data of a get request of a page.
-   * When an error occurs, an alert will be showen and the error will be returned.
-   * @param url The URL where you want to perform a get request on.
-   * @returns {Promise<*>}
+   * Returns all photos that match the filters (args). If args is empty, all photos will be returned.
+   * @param args Dictionary with the filters. No filters implemented for photo.
+   * @returns {Promise<*>} A list with photo entries.
    */
-  async getPage(url) {
-    let response = null;
-    try {
-      response = await ApiInstance.getApi().get(url);
-    } catch (e) {
-      response = e;
-      alert(JSON.stringify(e.message, null, 2));
-    }
-    return response;
-  }
-
-  async getAll() {
-    let response = await this.getPage(`photo/`);
-    return response.status === 200 ? response.data : [];
+  async get(args = {}) {
+    let all = await HelperService.getAllPagination("photo/");
+    return this.#filterPhoto(all, args);
   }
 
   /**
-   * Returns photo by id.
+   * Returns a photo by id. When the photo does not exist, an empty dictionary will be returned.
    * @param id The ID of the photo.
-   * @returns {Promise<*|*[]>}
+   * @returns {Promise<*|*[]>} Dictionary with a photo entry.
    */
-  async getPhotoById(id) {
-    let response = await this.getPage(`photo/${id}/`);
-    return response.status === 200 ? response.data : [];
+  async getById(id) {
+    const response = await HelperService.getResponseByUrl(`photo/${id}/`);
+    return response.status === 200 ? response.data : {};
+  }
+
+  /**
+   * Returns the photo entry of the url. If the photo does not exist, an empty dictionary will be returned.
+   * @param url A valid photo entry URL.
+   * @returns {Promise<*|{}>}
+   */
+  async getEntryByUrl(url) {
+    return HelperService.getModelEntryByUrl(url, "photo");
+  }
+
+  /**
+   * Filter the data with the filters given in args.
+   * @param data List of photo entries.
+   * @param args Dictionary that contains filters.
+   * @returns {*} The filtered data.
+   */
+  #filterPhoto(data, args) {
+    //TODO: add filters
+
+    return data;
   }
 }
 

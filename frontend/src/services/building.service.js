@@ -1,36 +1,45 @@
-import ApiInstance from "@/services/ApiInstance";
+import HelperService from "@/services/helper.service";
 
 class BuildingService {
   /**
-   * Return the data of a get request of a page.
-   * When an error occurs, an alert will be showen and the error will be returned.
-   * @param url The URL where you want to perform a get request on.
-   * @returns {Promise<*>}
+   * Returns all buildings that match the filters (args). If args is empty, all buildings will be returned.
+   * @param args Dictionary with the filters. No filters implemented for building.
+   * @returns {Promise<*>} A list with building entries.
    */
-  async getPage(url) {
-    let response = null;
-    try {
-      response = await ApiInstance.getApi().get(url);
-    } catch (e) {
-      response = e;
-      alert(JSON.stringify(e.message, null, 2));
-    }
-    return response;
-  }
-
-  async getAll() {
-    let response = await this.getPage(`building/`);
-    return response.status === 200 ? response.data : [];
+  async get(args = {}) {
+    let all = await HelperService.getAllPagination(`building/`);
+    return this.#filterBuilding(all, args);
   }
 
   /**
-   * Returns building by id.
+   * Returns a building by id. When the building does not exist, an empty dictionary will be returned.
    * @param id The ID of the building.
-   * @returns {Promise<*|*[]>}
+   * @returns {Promise<*|*[]>} Dictionary with a building entry.
    */
-  async getBuildingById(id) {
-    let response = await this.getPage(`building/${id}/`);
-    return response.status === 200 ? response.data : [];
+  async getById(id) {
+    const response = await HelperService.getResponseByUrl(`building/${id}/`);
+    return response.status === 200 ? response.data : {};
+  }
+
+  /**
+   * Returns the building entry of the url. If the building does not exist, an empty dictionary will be returned.
+   * @param url A valid building entry URL.
+   * @returns {Promise<*|{}>}
+   */
+  async getEntryByUrl(url) {
+    return HelperService.getModelEntryByUrl(url, "building");
+  }
+
+  /**
+   * Filter the data with the filters given in args.
+   * @param data List of building entries.
+   * @param args Dictionary that contains filters.
+   * @returns {*} The filtered data.
+   */
+  #filterBuilding(data, args) {
+    //TODO: add filters
+
+    return data;
   }
 }
 
