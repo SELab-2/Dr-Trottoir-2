@@ -28,7 +28,6 @@ const initialContextMenu = {
   rowOptions: [],
 };
 
-// TO DO: Split up page
 export default function Syndici() {
   const [users, setUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
@@ -127,9 +126,9 @@ export default function Syndici() {
   const handleRightClick = (event, selectedIndiches) => {
     event.preventDefault();
     const { pageX, pageY } = event;
-    let updatedRows = Array.from(selectedIndiches);
+    let updatedRows = selectedIndiches;
     let rowOptions = singleRowOptions;
-    if (updatedRows.size > 1) {
+    if (updatedRows.length > 1) {
       rowOptions = multipleRowOptions;
     }
     setContextMenu({
@@ -169,9 +168,9 @@ export default function Syndici() {
   };
 
   const closeContextMenu = (option) => {
-    if (option == "Edit") {
+    if (option == "Wijzig") {
       editUser();
-    } else if (option == "Delete") {
+    } else if (option == "Verwijder") {
       setModalOpen(true);
     } else if (option == "Mail") {
       mailUsers();
@@ -179,9 +178,9 @@ export default function Syndici() {
     setContextMenu(initialContextMenu);
   };
 
-  const singleRowOptions = ["Edit", "Delete", "Mail"];
+  const singleRowOptions = ["Wijzig", "Verwijder", "Mail"];
 
-  const multipleRowOptions = ["Delete", "Mail"];
+  const multipleRowOptions = ["Verwijder", "Mail"];
 
   const changeSortSelected = (selected) => {
     setUsers(

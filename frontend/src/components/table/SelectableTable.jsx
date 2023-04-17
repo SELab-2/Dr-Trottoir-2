@@ -30,7 +30,7 @@ export default function SelectableTable({
     const updatedIndiches = new Set(selectedIndices);
     updatedIndiches.add(index);
     setSelectedIndices(updatedIndiches);
-    rightClick(event, updatedIndiches);
+    rightClick(event, Array.from(updatedIndiches));
   };
 
   return (
