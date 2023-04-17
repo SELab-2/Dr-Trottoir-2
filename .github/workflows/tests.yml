@@ -3,7 +3,7 @@ on:
   - pull_request
 
 jobs:
-  test:
+  docker-runs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
