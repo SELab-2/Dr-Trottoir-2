@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
-import { BG_LIGHT_SECONDARY } from "@/utils/colors";
 import {
   faCirclePlus,
   faMagnifyingGlass,
@@ -20,6 +19,7 @@ import buildingService from "@/services/building.service";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import CustomButton from "@/components/button/Button";
 import CustomModal from "@/components/CustomModal";
+import SelectableTable from "@/components/table/SelectableTable";
 
 const initialContextMenu = {
   show: false,
@@ -33,9 +33,10 @@ export default function Syndici() {
   const [users, setUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [buildings, setBuildings] = useState([]);
-  const [selectedRows, setSelectedRows] = useState(new Set());
   const [contextMenu, setContextMenu] = useState(initialContextMenu);
   const [filterSelected, setFilterSelected] = useState([]);
+  const [clearSelected, setClearSelected] = useState(0);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const searchRef = useRef(null);
 
@@ -101,12 +102,34 @@ export default function Syndici() {
     Gebouwen: "buildings",
   };
 
-  const handleRightClick = (event, pk) => {
+  const createBuildingCell = (buildings) => {
+    return (
+      <div>
+        {buildings.map((building, index) => (
+          <ColoredTag
+            key={index}
+            className={`cursor-pointer bg-light-bg-2 border-2 border-light-h-2`}
+          >
+            {building.nickname}
+          </ColoredTag>
+        ))}
+      </div>
+    );
+  };
+
+  const columns = [
+    { name: "Voornaam", cut: false },
+    { name: "Achternaam", cut: false },
+    { name: "E-mailadres", cut: false },
+    { name: "Gebouwen", cut: false, createCell: createBuildingCell },
+  ];
+
+  const handleRightClick = (event, selectedIndiches) => {
     event.preventDefault();
     const { pageX, pageY } = event;
-    selectedRows.add(pk);
+    let updatedRows = Array.from(selectedIndiches);
     let rowOptions = singleRowOptions;
-    if (selectedRows.size > 1) {
+    if (updatedRows.size > 1) {
       rowOptions = multipleRowOptions;
     }
     setContextMenu({
@@ -115,15 +138,6 @@ export default function Syndici() {
       y: pageY,
       rowOptions: rowOptions,
     });
-  };
-
-  const handleClickRow = (event, pk) => {
-    const updatedRows = new Set(selectedRows);
-    if (updatedRows.has(pk)) {
-      updatedRows.delete(pk);
-    } else {
-      updatedRows.add(pk);
-    }
     setSelectedRows(updatedRows);
   };
 
@@ -134,15 +148,19 @@ export default function Syndici() {
   const deleteUsers = () => {
     let usersCopy = [...users];
     let allUsersCopy = [...allUsers];
-    usersCopy = usersCopy.filter((user) => !selectedRows.has(user.pk));
-    allUsersCopy = allUsersCopy.filter((user) => !selectedRows.has(user.pk));
-    selectedRows.forEach(async (pk) => {
+    let toBeDeleted = selectedRows.map((index) => usersCopy[index]["pk"]);
+    usersCopy = usersCopy.filter((user) => !toBeDeleted.includes(user.pk));
+    allUsersCopy = allUsersCopy.filter(
+      (user) => !toBeDeleted.includes(user.pk)
+    );
+    toBeDeleted.forEach(async (pk) => {
       // for development purposes
       if (pk !== "1") {
-        await userService.deleteUser(pk);
+        await userService.deleteUserById(pk);
       }
     });
     setUsers(usersCopy);
+    setModalOpen(false);
     setAllUsers(allUsersCopy);
   };
 
@@ -176,10 +194,10 @@ export default function Syndici() {
         }
       })
     );
+    setClearSelected(clearSelected + 1);
   };
 
   const applySearch = (newFilterSelected) => {
-    setSelectedRows(new Set()); // remove selected rows when filtering
     setFilterSelected(newFilterSelected);
     const searchStr = searchRef.current.value;
     let usersCopy = [...allUsers];
@@ -193,7 +211,7 @@ export default function Syndici() {
       );
     }
     if (newFilterSelected.length !== 0) {
-      // Checks if a user is the owner of at least 1 of the selected buildigns
+      // Checks if a user is the owner of at least 1 of the selected buildings
       usersCopy = usersCopy.filter((user) => {
         const userBuildings = user.buildings.map(
           (building) => building.nickname
@@ -203,6 +221,7 @@ export default function Syndici() {
         );
       });
     }
+    setClearSelected(clearSelected + 1);
     setUsers(usersCopy);
   };
 
@@ -232,10 +251,7 @@ export default function Syndici() {
           </CustomButton>
         </div>
       </CustomModal>
-      <main
-        className={`h-screen p-8 flex-col justify-between`}
-        style={{ backgroundColor: BG_LIGHT_SECONDARY }}
-      >
+      <main className={`h-screen p-8 flex-col justify-between`}>
         <PrimaryCard className={"mb-4"}>
           <div
             className={
@@ -275,81 +291,18 @@ export default function Syndici() {
           </div>
         </PrimaryCard>
         <PrimaryCard>
-          {
-            // Will be replaced by table component
-          }
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left uppercase tracking-wider"
-                />
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Voornaam
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Achternaam
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  E-mailadres
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Gebouwen
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {users.map((user, index) => (
-                <tr
-                  key={user.pk}
-                  onContextMenu={(event) => handleRightClick(event, user.pk)}
-                  onClick={(event) => handleClickRow(event, user.pk)}
-                  className={`${
-                    selectedRows.has(user.pk)
-                      ? "bg-primary-2 text-selected-h"
-                      : "hover:bg-light-bg-2"
-                  }`}
-                >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                    {index + 1 + "."}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {user.first_name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {user.last_name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {user.email}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {user.buildings.map((building, building_index) => (
-                      <ColoredTag
-                        key={building_index}
-                        className={`cursor-pointer bg-light-bg-2 border-2 border-light-h-2`}
-                      >
-                        {building.nickname}
-                      </ColoredTag>
-                    ))}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
+          <SelectableTable
+            columns={columns}
+            data={users.map((user) => [
+              user.first_name,
+              user.last_name,
+              user.email,
+              user.buildings,
+            ])}
+            rightClick={handleRightClick}
+            clearSelected={clearSelected}
+            className={"w-full"}
+          ></SelectableTable>
           {contextMenu.show && (
             <ContextMenu
               x={contextMenu.x - 256}

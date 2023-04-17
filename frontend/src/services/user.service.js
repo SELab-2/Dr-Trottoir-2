@@ -6,8 +6,8 @@ class UserService {
     return response.data;
   }
 
-  async deleteUser(pk) {
-    const response = await ApiInstance.getApi().delete("user/" + pk + "/");
+  async deleteUserById(id) {
+    const response = await ApiInstance.getApi().delete("user/" + id + "/");
     return response.data;
   }
 }
