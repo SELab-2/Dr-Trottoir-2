@@ -1,5 +1,5 @@
 # pull official base image
-FROM node:18-alpine AS deps
+FROM cypress/base:18.15.0 AS deps
 
 # set work directory
 WORKDIR /usr/src/app
