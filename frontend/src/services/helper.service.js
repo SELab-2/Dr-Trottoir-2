@@ -8,6 +8,10 @@ import ApiInstance from "@/services/ApiInstance";
 
 class HelperService {
   async getResponseByUrl(url) {
+    return await ApiInstance.getApi().get(url);
+
+    // Error will be catched in the component if needed
+    /*
     let response = null;
     try {
       response = await ApiInstance.getApi().get(url);
@@ -15,7 +19,7 @@ class HelperService {
       response = e;
       alert(JSON.stringify(e.message, null, 2));
     }
-    return response;
+    return response;*/
   }
 
   /**
