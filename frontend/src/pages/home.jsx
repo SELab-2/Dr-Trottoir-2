@@ -22,12 +22,12 @@ export default function Home() {
   const router = useRouter();
 
   const allBuildings = async () => {
-    const response = await BuildingService.getAll();
+    const response = await BuildingService.get();
     setResponse(JSON.stringify(response, null, 2));
   };
 
   const allUsers = async () => {
-    const response = await UserService.getAll();
+    const response = await UserService.get();
     setResponse(JSON.stringify(response, null, 2));
   };
 
