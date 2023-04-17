@@ -41,44 +41,37 @@ export default function Syndici() {
 
   useEffect(() => {
     const allUsers = async () => {
-      const response = await userService.getAll();
+      const response = await userService.get();
       let user = [];
-
-      if (Object.prototype.hasOwnProperty.call(response, "results")) {
-        const results = response["results"];
-        for (let i in results) {
-          let entry = results[i];
-          if (entry["role"] === 4) {
-            user.push({
-              pk: urlToPK(entry["url"]),
-              first_name: entry["first_name"],
-              last_name: entry["last_name"],
-              email: entry["email"],
-              role: entry["role"],
-              buildings: entry["buildings"],
-            });
-          }
+      for (let i in response) {
+        let entry = response[i];
+        if (entry["role"] === 4) {
+          user.push({
+            pk: urlToPK(entry["url"]),
+            first_name: entry["first_name"],
+            last_name: entry["last_name"],
+            email: entry["email"],
+            role: entry["role"],
+            buildings: entry["buildings"],
+          });
         }
-        setUsers(user);
-        setAllUsers(user);
       }
+      setUsers(user);
+      setAllUsers(user);
     };
 
     const allBuildings = async () => {
-      const response = await buildingService.getAll();
+      const response = await buildingService.get();
       let buildings = [];
-      if (Object.prototype.hasOwnProperty.call(response, "results")) {
-        const results = response["results"];
-        for (let i in results) {
-          let entry = results[i];
-          buildings.push({
-            pk: urlToPK(entry["url"]),
-            nickname: entry["nickname"],
-            region_name: entry["region_name"],
-          });
-        }
-        setBuildings(buildings);
+      for (let i in response) {
+        let entry = response[i];
+        buildings.push({
+          pk: urlToPK(entry["url"]),
+          nickname: entry["nickname"],
+          region_name: entry["region_name"],
+        });
       }
+      setBuildings(buildings);
     };
     allUsers();
     allBuildings();
@@ -126,9 +119,8 @@ export default function Syndici() {
   const handleRightClick = (event, selectedIndiches) => {
     event.preventDefault();
     const { pageX, pageY } = event;
-    let updatedRows = selectedIndiches;
     let rowOptions = singleRowOptions;
-    if (updatedRows.length > 1) {
+    if (selectedIndiches.length > 1) {
       rowOptions = multipleRowOptions;
     }
     setContextMenu({
@@ -137,7 +129,7 @@ export default function Syndici() {
       y: pageY,
       rowOptions: rowOptions,
     });
-    setSelectedRows(updatedRows);
+    setSelectedRows(selectedIndiches);
   };
 
   const editUser = () => {
@@ -153,14 +145,12 @@ export default function Syndici() {
       (user) => !toBeDeleted.includes(user.pk)
     );
     toBeDeleted.forEach(async (pk) => {
-      // for development purposes
-      if (pk !== "1") {
-        await userService.deleteUserById(pk);
-      }
+      await userService.deleteUserById(pk);
     });
     setUsers(usersCopy);
     setModalOpen(false);
     setAllUsers(allUsersCopy);
+    setClearSelected(clearSelected + 1);
   };
 
   const mailUsers = () => {
