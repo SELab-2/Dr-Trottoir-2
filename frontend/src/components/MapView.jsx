@@ -4,7 +4,7 @@
 
 import React from "react";
 
-function buildUrl(address, route, mode) {
+function buildUrl(address, route, transportationMode) {
   let map_type = "";
   let params = "";
 
@@ -29,8 +29,8 @@ function buildUrl(address, route, mode) {
     params += "&destination=" + encodeURIComponent(route[route.length - 1]);
   }
 
-  if (mode !== undefined) {
-    params += "&mode=" + mode;
+  if (transportationMode !== undefined) {
+    params += "&mode=" + transportationMode;
   }
 
   return (
@@ -49,14 +49,22 @@ function buildUrl(address, route, mode) {
  * route will show directions from the first element to the last.
  * @param address String containing an address
  * @param route Array containing address strings
- * @param mode Way of transport (when using route), can be "driving", "walking", "bicycling", "transit", "flying"
+ * @param transportationMode Way of transport (when using route), can be "driving", "walking", "bicycling", "transit", "flying"
+ * @param mapWidth Width of iframe
+ * @param mapHeight Height of iframe
  */
-export default function MapView({ address, route, mode }) {
+export default function MapView({ address, route, transportationMode, className, mapWidth, mapHeight }) {
+  if (mapWidth === undefined)
+    mapWidth = 400
+  if (mapHeight === undefined)
+    mapHeight = 250
+
   if (address === undefined && (route === undefined || route.length == 0)) {
     return (
       <iframe
-        width="400"
-        height="250"
+        className={className}
+        width={mapWidth}
+        height={mapHeight}
         style={{ border: 0 }}
         loading="lazy"
         allowFullScreen
@@ -71,12 +79,13 @@ export default function MapView({ address, route, mode }) {
 
   return (
     <iframe
-      width="400"
-      height="250"
+      className={className}
+      width={mapWidth}
+      height={mapHeight}
       style={{ border: 0 }}
       loading="lazy"
       allowFullScreen
-      src={buildUrl(address, route, mode)}
+      src={buildUrl(address, route, transportationMode)}
     />
   );
 }
