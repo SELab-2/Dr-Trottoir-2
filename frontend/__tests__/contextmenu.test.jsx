@@ -1,5 +1,5 @@
+import ContextMenu from "@/components/ContextMenu";
 import { render, screen, fireEvent } from "@testing-library/react";
-import ContextMenu from "./ContextMenu";
 
 test("Closes context menu when clicked outside", () => {
   const options = ["Option 1", "Option 2", "Option 3"];
