@@ -13,13 +13,14 @@ import PrimaryButton from "@/components/button/PrimaryButton";
 import CustomInputField from "@/components/input-fields/InputField";
 import userService from "@/services/user.service";
 import ColoredTag from "@/components/Tag";
-import Dropdown from "@/components/DropDown";
+import Dropdown from "@/components/Dropdown";
 import ContextMenu from "@/components/ContextMenu";
 import buildingService from "@/services/building.service";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import CustomButton from "@/components/button/Button";
 import CustomModal from "@/components/CustomModal";
 import SelectableTable from "@/components/table/SelectableTable";
+import { urlToPK } from "@/utils/urlToPK";
 
 const initialContextMenu = {
   show: false,
@@ -76,16 +77,6 @@ export default function Syndici() {
     allUsers();
     allBuildings();
   }, []);
-
-  // Extract the primary key from the url of a user
-  function urlToPK(url) {
-    const regex = /\/(\d+)\/$/;
-    const match = url.match(regex);
-    if (match !== null) {
-      const primaryKey = match[1];
-      return primaryKey;
-    }
-  }
 
   const stringToField = {
     Voornaam: "first_name",
