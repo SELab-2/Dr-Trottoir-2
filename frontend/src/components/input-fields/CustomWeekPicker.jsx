@@ -5,21 +5,42 @@ import "react-datepicker/dist/react-datepicker.css";
 
 /**
  * A calendar where you select a whole week.
+ * @param startDate startDate of the week
+ * @param endDate endDate of the week
  * @param className Classes added to the component.
  * @param onChange Called when the date changes. this functions has following format: (startDate, endDate) => ();
  * @returns {JSX.Element}
  * @constructor
+ *
+ * @example
+ * const [startDate, setStartDate] = useState(getMonday(new Date()));
+ * const [endDate, setEndDate] = useState(getSunday(new Date()));
+ *
+ * return (
+ *   <div>
+ *     <CustomWeekPicker
+ *       startDate={startDate}
+ *       endDate={endDate}
+ *       onChange={(startDate, endDate) => {
+ *         setStartDate(startDate);
+ *         setEndDate(endDate);
+ *       }}
+ *     />
+ *   </div>
+ * );
  */
-export default function CustomWeekPicker({ className, onChange }) {
-  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-  const [startDate, endDate] = dateRange;
-
+export default function CustomWeekPicker({
+  startDate,
+  endDate,
+  className,
+  onChange,
+}) {
   const handleValueChange = (newValue) => {
     const value = newValue[0];
     if (value !== null) {
       const dateFrom = moment(value).startOf("isoWeek").toDate();
       const dateTo = moment(value).endOf("isoWeek").toDate();
-      setDateRange([dateFrom, dateTo]);
+
       onChange(dateFrom, dateTo);
     }
   };
