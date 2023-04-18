@@ -6,6 +6,8 @@ docker-compose up -d --build
 echo "--------------------------------- RUNNING TESTS ---------------------------------"
 docker exec DrTrottoir-be python manage.py test
 docker exec DrTrottoir-fe npm run jest:workflow
+docker exec DrTrottoir-fe npm run component:headless
+docker exec DrTrottoir-fe npm run e2e:headless
 
 echo "--------------------------------- RUNNING LINTERS ---------------------------------"
 docker exec DrTrottoir-be flake8 backend/ drtrottoir/
