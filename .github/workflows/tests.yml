@@ -3,7 +3,7 @@ on:
   - pull_request
 
 jobs:
-  test:
+  docker-runs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
@@ -15,6 +15,10 @@ jobs:
         run: docker exec DrTrottoir-be python manage.py test
       - name: Test NEXT.js Jest
         run: docker exec DrTrottoir-fe npm run jest:workflow
+      - name: Test NEXT.js Cypress component
+        run: docker exec DrTrottoir-fe npm run component:headless
+      - name: Test NEXT.js Cypress e2e
+        run: docker exec DrTrottoir-fe npm run e2e:headless
       - name: Linter Python
         run: docker exec DrTrottoir-be flake8 backend/ drtrottoir/
       - name: Linter Javascript
