@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function CustomWeekPicker({ range }) {
+export default function CustomWeekPicker({ range, className }) {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function CustomWeekPicker({ range }) {
       selectsRange={true}
       onChange={(date) => handleValueChange(date)}
       calendarStartDay={1}
-      className={"rounded-full p-2 border-2 border-light-h-2 bg-light-bg-1"}
+      className={`rounded-full p-2 border-2 border-light-h-2 bg-light-bg-1 ${className}`}
     />
   );
 }

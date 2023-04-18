@@ -62,10 +62,10 @@ export default function AdminTourPage() {
   const [week, setWeek] = useState([]);
   const [finished, setfinished] = useState(0);
   const [buildings, setBuildings] = useState([]);
+  const [comments, setComments] = useState([]);
   const [visits, setVisits] = useState([]);
   const [response, setResponse] = useState("{}");
   const [tours, setTours] = useState([]);
-  const [comments, setComments] = useState([]);
   const router = useRouter();
 
   async function visit_finished(url) {
@@ -112,7 +112,11 @@ export default function AdminTourPage() {
             building: visit.building_in_tour_data.nickname,
           });
         }
-        const buildInTour = await BuildingInTourService.getBuildingInTourById();
+        const split = visit["building_in_tour"].trim().split("/");
+        const buildInTour = await BuildingInTourService.getBuildingInTourById(
+          split[split.length - 2]
+        );
+        time[buildInTour["building"]] = "TBA";
         const photos = await visit_finished(visit.url);
         if (photos.length > 0) {
           const diff =
@@ -120,12 +124,12 @@ export default function AdminTourPage() {
           let seconds = Math.round(diff / 1000);
           const minutes = Math.round(seconds / 60);
           seconds -= minutes * 60;
-          console.log(minutes)
-          console.log(seconds)
+          time[buildInTour["building"]] = `${minutes}m${seconds}s`;
           count++;
         }
       }
-      console.log(scheduleVisits)
+      console.log(time);
+      console.log(scheduleVisits);
       setComments(comments);
       setfinished(count);
 
@@ -139,8 +143,16 @@ export default function AdminTourPage() {
         const building = await BuildingService.getBuildingById(
           buildingIds["buildings"][i]
         );
-        let time = "TBA";
+        let computedTime = time[building["url"]];
         let status = "Onderweg";
+        if (computedTime === undefined) {
+          computedTime = "TBA";
+        } else if (computedTime === "TBA") {
+          status = "Bezig";
+        } else {
+          status = "Klaar";
+        }
+
         const owners = building["owners"]
           .map(
             (entry) => `${entry.first_name} ${entry.last_name} (${entry.email})`
@@ -152,7 +164,7 @@ export default function AdminTourPage() {
           `${building.address_line_1}\n${building.address_line_2}`,
           status,
           owners,
-          time,
+          computedTime,
         ]);
       }
       setBuildings(buildings);
@@ -219,15 +231,19 @@ export default function AdminTourPage() {
       <div className={"h-full bg-light-bg-2 flex flex-col py-6 px-3 space-y-4"}>
         <div className={"h-full bg-light-bg-2 flex flex-row space-x-2"}>
           <PrimaryCard
-            className={"w-9/12 h-full flex flex-col"}
+            className={
+              "w-9/12 h-full lg:overflow-y-hidden max-h-max flex flex-col"
+            }
             title={"Details"}
           >
-            <div className={" space-y-4 h-full"}>
+            <div className={"space-y-4 h-full"}>
               <h1 className={"text-light-h-1 font-bold text-lg"}>
                 Stations Ronde
               </h1>
               <div className={"flex flex-row space-x-2 h-3/6"}>
-                <div className={"flex flex-col space-y-2 h-full"}>
+                <div
+                  className={"w-4/12 flex flex-col space-y-2 h-full lg:h-max"}
+                >
                   <SecondaryCard
                     className={"h-2/6"}
                     icon={faBriefcase}
@@ -242,7 +258,7 @@ export default function AdminTourPage() {
                         <div className={"flex flex-row space-x-4"}>
                           <FontAwesomeIcon
                             icon={faEnvelope}
-                            className={"h-4  mt-1 mx-2"}
+                            className={"h-4 mt-1 mx-2"}
                           />
                           {user.email}
                         </div>
@@ -250,25 +266,27 @@ export default function AdminTourPage() {
                     </div>
                   </SecondaryCard>
                   <SecondaryCard
-                    className={
-                      "h-4/6 items-center items-center justify-center overflow-hidden"
-                    }
+                    className={"h-4/6"}
                     icon={faBriefcase}
                     title={"Progress"}
                   >
-                    <div
-                      className={"flex flex-row items-center justify-center"}
-                    >
-                      <CustomProgressBar
-                        is_wheel
-                        circleWidth={150}
-                        radius={50}
-                        className={"flex-shrink w-1/6 h-1/6"}
-                        fraction={finished / buildings.length}
-                      />
-                      <h1 className={"text-light-h-1 font-bold text-base"}>
-                        {finished}/{buildings.length} Gebouwen klaar
-                      </h1>
+                    <div className={"h-4/5 flex justify-center items-center"}>
+                      <div
+                        className={
+                          "flex flex-row content-center items-center justify-center space-x-2"
+                        }
+                      >
+                        <CustomProgressBar
+                          is_wheel
+                          circleWidth={110}
+                          radius={45}
+                          className={"flex-shrink"}
+                          fraction={finished / buildings.length}
+                        />
+                        <h1 className={"text-light-h-1 font-bold text-base"}>
+                          {finished}/{buildings.length} Gebouwen klaar
+                        </h1>
+                      </div>
                     </div>
                   </SecondaryCard>
                 </div>
@@ -276,9 +294,48 @@ export default function AdminTourPage() {
                 <SecondaryCard
                   icon={faLocationDot}
                   title={"Opmerkingen"}
-                  className={"h-full flex flex-col"}
+                  className={"h-full w-8/12 flex flex-col"}
                 >
                   <div className={"space-y-2 h-full overflow-auto"}>
+                    {comments.map((entry, index) => (
+                      <div
+                        key={index}
+                        className={"rounded-lg bg-light-bg-1 p-2"}
+                      >
+                        <h1 className={"text-light-h-1 font-bold text-base"}>
+                          {entry.building}
+                        </h1>
+                        <Cell cut cutLen={"[300px]"}>
+                          {entry.comment}
+                        </Cell>
+                      </div>
+                    ))}
+                    {comments.map((entry, index) => (
+                      <div
+                        key={index}
+                        className={"rounded-lg bg-light-bg-1 p-2"}
+                      >
+                        <h1 className={"text-light-h-1 font-bold text-base"}>
+                          {entry.building}
+                        </h1>
+                        <Cell cut cutLen={"[300px]"}>
+                          {entry.comment}
+                        </Cell>
+                      </div>
+                    ))}
+                    {comments.map((entry, index) => (
+                      <div
+                        key={index}
+                        className={"rounded-lg bg-light-bg-1 p-2"}
+                      >
+                        <h1 className={"text-light-h-1 font-bold text-base"}>
+                          {entry.building}
+                        </h1>
+                        <Cell cut cutLen={"[300px]"}>
+                          {entry.comment}
+                        </Cell>
+                      </div>
+                    ))}
                     {comments.map((entry, index) => (
                       <div
                         key={index}
@@ -299,10 +356,13 @@ export default function AdminTourPage() {
                   <p>The gift card is shattered</p>
                 </SecondaryCard>
               </div>
-              <SecondaryCard icon={faBriefcase} title={"Gebouwen"}>
+              <SecondaryCard
+                className={"lg:h-2/6 h-3/6"}
+                icon={faBriefcase}
+                title={"Gebouwen"}
+              >
                 <CustomTable
                   className={"w-full"}
-                  cutLen={"[200px]"}
                   columns={[
                     { name: "Naam" },
                     { name: "Adres", cut: true },
@@ -334,8 +394,8 @@ export default function AdminTourPage() {
           <div
             className={"bg-light-bg-2 flex w-3/12 flex-col space-y-2 h-full"}
           >
-            <div className={"flex flex-row"}>
-              <CustomWeekPicker range={week} />
+            <div className={"flex flex-row space-x-2 w-full"}>
+              <CustomWeekPicker className={"w-11/12"} range={week} />
               <PrimaryButton icon={faCirclePlus}>Nieuw</PrimaryButton>
             </div>
             <SelectionList
