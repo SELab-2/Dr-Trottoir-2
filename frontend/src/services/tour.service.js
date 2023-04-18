@@ -37,7 +37,9 @@ class TourService {
    * @returns {Promise<*|*[]>}
    */
   async getBuildingsFromTour(id) {
-    let response = await this.getPage(`tour/${id}/buildings/`);
+    let response = await HelperService.getResponseByUrl(
+      `tour/${id}/buildings/`
+    );
     return response.status === 200 ? response.data : [];
   }
 
