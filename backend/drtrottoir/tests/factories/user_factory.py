@@ -15,6 +15,7 @@ class UserFactory(DjangoModelFactory):
 
     class Meta:
         model = CustomUser
+        django_get_or_create = ('email',)
 
 
 class DeveloperUserFactory(UserFactory):
