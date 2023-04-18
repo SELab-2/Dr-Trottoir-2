@@ -22,7 +22,7 @@ jest.mock("next-auth/react", () => {
   };
 });
 
-test("Direction press Dashboard", async () => {
+test("Direction press Schedule", async () => {
   render(<MobileNavbar />);
 
   const link = screen.getByRole("link", { name: "planning" });
