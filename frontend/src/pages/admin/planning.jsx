@@ -18,7 +18,7 @@ export default function AdminDashboardPage() {
   const [schedule, setSchedule] = useState([]);
 
   useEffect(() => {
-    ScheduleService.getSchedules().then((schedule) => {
+    ScheduleService.get().then((schedule) => {
       setSchedule(schedule.map((el) => [el.date, el.tour, el.student, 2]));
     });
   }, []);
