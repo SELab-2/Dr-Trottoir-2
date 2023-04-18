@@ -25,7 +25,7 @@ test("Check value is being parsed without error", async () => {
   expect(inputField.value).toBe("2023-03-03");
 });
 
-test("onChange gives back te correct value", async () => {
+test("onChange gives back the correct value", async () => {
   let startDate;
   let endDate;
   const click = (newStartDate, newEndDate) => {
