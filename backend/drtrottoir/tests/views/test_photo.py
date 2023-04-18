@@ -35,7 +35,9 @@ class TestPhotoView(APITestCase):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
         response = self.client.get(reverse("photo-detail", kwargs={'pk': self.photo.pk}))
         serializer = PhotoSerializer(self.photo, context={'request': response.wsgi_request})
-        self.assertEqual(response.data, serializer.data)
+        # created_at won't be the same here
+        self.assertEqual({i: response.data[i] for i in response.data if i != 'created_at'},
+                         {i: serializer.data[i] for i in serializer.data if i != 'created_at'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_fault(self):
@@ -57,7 +59,6 @@ class TestPhotoView(APITestCase):
             '/api/photo/',
             format="multipart",
             data={"comment": "TEST",
-                  "created_at": self.photo.created_at,
                   "state": self.photo.state,
                   "visit": serializerVisit.data["url"],
                   "image": tmpfile,
