@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 /**
  * A calendar where you select a day.
- * @param date
+ * @param date Date selected in the datePicker.
  * @param className Classes added to the component.
  * @param onChange Called when the date changes. this functions has following format: (date) => ();
  * @returns {JSX.Element}
@@ -23,7 +23,6 @@ import "react-datepicker/dist/react-datepicker.css";
  * );
  */
 export default function CustomDayPicker({ date, onChange, className }) {
-
   return (
     <DatePicker
       selected={date}
