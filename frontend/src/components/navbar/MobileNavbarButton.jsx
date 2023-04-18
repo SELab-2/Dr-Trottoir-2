@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
  * @param link The link where the button needs to send the user.
  * @constructor
  */
-export default function MobileNavbarButton({ icon, link }) {
+export default function MobileNavbarButton({ icon, link, label }) {
   // Background is the accent colour if it is the current page.
   const router = useRouter();
 
@@ -20,6 +20,7 @@ export default function MobileNavbarButton({ icon, link }) {
   return (
     <div className="h-12">
       <Link
+        aria-label={label}
         href={link}
         className={`flex py-2 px-2 items-center rounded-lg ${style}`}
       >

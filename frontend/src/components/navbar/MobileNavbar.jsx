@@ -7,11 +7,11 @@ import MobileNavbarButton from "./MobileNavbarButton";
 
 export default function MobileNavbar() {
   const buttons = [
-    { icon: faBuilding, link: "#" },
-    { icon: faCalendarWeek, link: "#" },
+    { icon: faBuilding, link: "#", label: "gebouwen" },
+    { icon: faCalendarWeek, link: "/student/planning", label: "planning" },
   ];
 
-  const circleButton = { icon: faCircle, link: "#" };
+  const circleButton = { icon: faCircle, link: "#", label: "cirkel" };
 
   return (
     <div className="flex rounded-t-2xl w-full h-24 h-max- bg-dark-bg-1 items-center">
@@ -21,6 +21,7 @@ export default function MobileNavbar() {
             key={index}
             icon={button.icon}
             link={button.link}
+            label={button.label}
           ></MobileNavbarButton>
         ))}
       </div>
@@ -28,6 +29,7 @@ export default function MobileNavbar() {
         <MobileNavbarButton
           icon={circleButton.icon}
           link={circleButton.link}
+          label={circleButton.label}
         ></MobileNavbarButton>
       </div>
     </div>
