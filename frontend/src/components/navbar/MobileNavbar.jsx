@@ -24,7 +24,10 @@ export default function MobileNavbar() {
           ></MobileNavbarButton>
         ))}
       </div>
-      <div className={"absolute right-0 mr-6 py-2 px-2 flex items-center"} id={"p-info"}>
+      <div
+        className={"absolute right-0 mr-6 py-2 px-2 flex items-center"}
+        id={"p-info"}
+      >
         <ProfilePicture image={null} className={"w-8"} />
       </div>
     </div>
