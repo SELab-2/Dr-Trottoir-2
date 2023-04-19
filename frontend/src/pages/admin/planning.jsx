@@ -17,6 +17,7 @@ import { getMonday, getSunday } from "@/utils/helpers";
 import TourService from "@/services/tour.service";
 import UserService from "@/services/user.service";
 import CustomProgressBar from "@/components/ProgressBar";
+import Link from "next/link";
 
 // TODO: change this to the implemention from Bert his PR
 export const urlToPK = (url) => {
@@ -55,11 +56,24 @@ export default function AdminDashboardPage() {
             schedule.date,
             tour.name,
             student.first_name,
-            <CustomProgressBar
+            <div key={schedule.url} className={"flex flex-row space-x-4"}>
+              <div className={"flex-grow"}>
+                <CustomProgressBar
+                  fraction={visits.length / buildings.length}
+                  is_wheel={false}
+                />
+              </div>
+              <p>
+                {visits.length} / {buildings.length}
+              </p>
+            </div>,
+            <Link
               key={schedule.url}
-              fraction={visits.length / buildings.buildings.length}
-              is_wheel={false}
-            />,
+              href={`/admin/planning/${urlToPK(schedule.url)}`}
+              className={"bg-primary-2 border-2 rounded-lg p-1"}
+            >
+              Details
+            </Link>,
           ];
         })
       );
@@ -86,7 +100,7 @@ export default function AdminDashboardPage() {
         />
       </div>
 
-      <PrimaryCard className={"border-2 border-accent-1"}>
+      <PrimaryCard>
         <div id={"statistics"} className={"flex flex-row grid grid-cols-3"}>
           <SecondaryCard
             title={"Aantal Rondes"}
@@ -146,6 +160,7 @@ export default function AdminDashboardPage() {
                     { name: "Ronde" },
                     { name: "Student" },
                     { name: "Gebouwen" },
+                    { name: "Detail" },
                   ]}
                   data={schedule}
                 />
