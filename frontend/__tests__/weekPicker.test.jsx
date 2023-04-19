@@ -2,7 +2,9 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
 
 test("Test week picker is correctly formatted", async () => {
-  render(<CustomWeekPicker />);
+  const click = jest.fn();
+
+  render(<CustomWeekPicker onChange={click} />);
   const inputField = screen.getByRole("textbox", { name: "" });
   await waitFor(() => {
     fireEvent.change(inputField, {
@@ -13,10 +15,34 @@ test("Test week picker is correctly formatted", async () => {
 });
 
 test("Check value is being parsed without error", async () => {
-  render(<CustomWeekPicker />);
+  const click = jest.fn();
+
+  render(<CustomWeekPicker onChange={click} />);
   const inputField = screen.getByRole("textbox", { name: "" });
   await waitFor(() => {
     fireEvent.change(inputField, { target: { value: "2023-03-03" } });
   });
   expect(inputField.value).toBe("2023-03-03");
+});
+
+test("onChange gives back the correct value", async () => {
+  let startDate;
+  let endDate;
+  const click = (newStartDate, newEndDate) => {
+    startDate = newStartDate;
+    endDate = newEndDate;
+  };
+
+  render(<CustomWeekPicker onChange={click} />);
+  const inputField = screen.getByRole("textbox", { name: "" });
+  await waitFor(() => {
+    fireEvent.change(inputField, { target: { value: "2023-03-03" } });
+  });
+
+  expect(startDate.toLocaleDateString()).toBe(
+    new Date("2023-02-27").toLocaleDateString()
+  );
+  expect(endDate.toLocaleDateString()).toBe(
+    new Date("2023-03-05").toLocaleDateString()
+  );
 });
