@@ -30,7 +30,6 @@ export default function Login() {
       return;
     }
 
-    console.log("Login success! Enjoy your stay :)");
     await router.push("/home");
   };
 
