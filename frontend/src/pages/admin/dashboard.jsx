@@ -1,10 +1,12 @@
 import { useState } from "react";
-import PrimaryCard from "@/components/custom-card/PrimaryCard";
-import PrimaryButton from "@/components/button/PrimaryButton";
-import ScheduleService from "@/services/schedule.service";
+import Layout from "@/components/Layout";
 
 export default function AdminDashboardPage() {
   // TODO: Implement this page
 
   return <p>placeholder</p>;
 }
+
+AdminDashboardPage.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>;
+};

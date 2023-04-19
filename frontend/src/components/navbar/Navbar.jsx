@@ -35,7 +35,7 @@ export default function Navbar() {
         <NavbarList
           name={"Menu"}
           categories={{
-            Planning: { icon: faCalendarWeek, link: "/student/planning" },
+            Planning: { icon: faCalendarWeek, link: "/admin/planning" },
             "Nieuwe data": { icon: faCirclePlus, link: "#" },
           }}
         />
