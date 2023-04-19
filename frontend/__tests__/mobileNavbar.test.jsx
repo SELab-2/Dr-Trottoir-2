@@ -1,4 +1,4 @@
-import Navbar from "@/components/navbar/Navbar";
+import MobileNavbar from "@/components/navbar/MobileNavbar";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
@@ -22,18 +22,11 @@ jest.mock("next-auth/react", () => {
   };
 });
 
-test("User info visible", async () => {
-  render(<Navbar />);
+test("Direction press Schedule", async () => {
+  render(<MobileNavbar />);
 
-  screen.getByText(/Michiel/i, {});
-  screen.getByText(/Lachaert/i, {});
-});
-
-test("Direction press Dashboard", async () => {
-  render(<Navbar />);
-
-  const link = screen.getByRole("link", { name: "Planning" });
+  const link = screen.getByRole("link", { name: "planning" });
   expect(link).toBeInTheDocument();
 
-  expect(link).toHaveAttribute("href", "/admin/planning");
+  expect(link).toHaveAttribute("href", "/student/planning");
 });
