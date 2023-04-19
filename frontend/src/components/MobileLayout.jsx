@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useSession } from "next-auth/react";
-import MobileNavbar from "./navbar/MobileNavBar";
+import MobileNavbar from "./navbar/MobileNavbar";
 
 export default function MobileLayout({ children }) {
   const { status } = useSession();
