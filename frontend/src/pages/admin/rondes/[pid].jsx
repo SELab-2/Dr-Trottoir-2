@@ -252,7 +252,9 @@ export default function AdminTourPage() {
           >
             <div className={"space-y-4 h-full"}>
               <div className={"flex flex-row"}>
-                <h1 className={"text-light-h-1 font-bold text-lg"}>{name}</h1>
+                <h1 className={"w-full text-light-h-1 font-bold text-lg"}>
+                  {name}
+                </h1>
                 <div className={"w-full flex justify-end"}>
                   <Link href={"#"}>
                     <FontAwesomeIcon
