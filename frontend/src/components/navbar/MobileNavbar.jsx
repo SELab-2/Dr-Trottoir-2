@@ -4,14 +4,13 @@ import {
   faCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import MobileNavbarButton from "./MobileNavbarButton";
+import ProfilePicture from "../ProfilePicture";
 
 export default function MobileNavbar() {
   const buttons = [
-    { icon: faBuilding, link: "#", label: "gebouwen" },
     { icon: faCalendarWeek, link: "/student/planning", label: "planning" },
+    { icon: faBuilding, link: "#", label: "gebouwen" },
   ];
-
-  const circleButton = { icon: faCircle, link: "#", label: "cirkel" };
 
   return (
     <div className="flex rounded-t-2xl w-full h-24 h-max- bg-dark-bg-1 items-center">
@@ -25,12 +24,8 @@ export default function MobileNavbar() {
           ></MobileNavbarButton>
         ))}
       </div>
-      <div className="absolute right-0 mr-6">
-        <MobileNavbarButton
-          icon={circleButton.icon}
-          link={circleButton.link}
-          label={circleButton.label}
-        ></MobileNavbarButton>
+      <div className={"absolute right-0 mr-6 py-2 px-2 flex items-center"} id={"p-info"}>
+        <ProfilePicture image={null} className={"w-8"} />
       </div>
     </div>
   );
