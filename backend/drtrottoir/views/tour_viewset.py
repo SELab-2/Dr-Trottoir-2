@@ -3,7 +3,7 @@ from rest_framework import status, viewsets
 from drtrottoir.models import Tour, Region, BuildingInTour
 from drtrottoir.permissions import SuperPermissionOrReadOnly
 
-from drtrottoir.serializers import TourSerializer, RegionSerializer
+from drtrottoir.serializers import TourSerializer, RegionSerializer, BuildingInTourPartialSerializer
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -76,10 +76,7 @@ class TourViewSet(viewsets.ModelViewSet):
         """
         if pk is not None and Tour.objects.filter(pk=pk).exists():
             buildings_tour = BuildingInTour.objects.filter(tour=pk).order_by('order_index')
-            buildings = []
-            for build_tour in buildings_tour:
-                buildings.append(build_tour.building.id)
-
-            return Response({"buildings": buildings})
+            return Response(BuildingInTourPartialSerializer(
+                list(buildings_tour), many=True, context={'request': request}).data)
         else:
             return Response("Given tour doesn't exist.", status=status.HTTP_400_BAD_REQUEST)

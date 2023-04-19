@@ -29,7 +29,7 @@ export default function CustomDayPicker({ date, onChange, className }) {
       onChange={(date) => onChange(date)}
       dateFormat="dd/MM/yyyy"
       calendarStartDay={1}
-      className={`rounded-full p-2 border-2 border-light-h-2 bg-light-bg-2 ${className}`}
+      className={`rounded-lg p-2 border-2 border-light-h-2 bg-light-bg-2 ${className}`}
     />
   );
 }

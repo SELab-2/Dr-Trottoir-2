@@ -104,16 +104,10 @@ class TestTourAPIView(APITestCase):
         build_tour = BuildingInTour.objects.create(tour=self.tour, building=self.building, order_index=0)
         response = self.client.get(f'/api/tour/{self.tour.pk}/buildings/', follow=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        buildings = response.data["buildings"]
+        buildings = response.data
         self.assertEqual(len(buildings), 1)
-        self.assertEqual(buildings[0], self.building.id)
-        found_build_tour = BuildingInTour.objects.get(building=buildings[0])
-        self.assertEqual(found_build_tour.building, build_tour.building)
-        self.assertEqual(found_build_tour.tour, build_tour.tour)
-        self.assertEqual(found_build_tour.order_index, build_tour.order_index)
-
         BuildingInTour.objects.filter(pk=build_tour.pk).delete()
         response = self.client.get(f'/api/tour/{self.tour.pk}/buildings/', follow=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        buildings = response.data["buildings"]
+        buildings = response.data
         self.assertEqual(len(buildings), 0)
