@@ -8,7 +8,7 @@ import {
 import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SelectionList from "@/components/selection/SelectionList";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TourService from "@/services/tour.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
 import VisitService from "@/services/visit.service";
@@ -26,19 +26,12 @@ import BuildingService from "@/services/building.service";
 import PhotoService from "@/services/photo.service";
 import ColoredTag from "@/components/Tag";
 import Cell from "@/components/table/Cell";
+import scheduleService from "@/services/schedule.service";
+import Link from "next/link";
 
 function SmallTour({ data, callback, setSelected, background }) {
   const url = data["url"];
-  let name = "";
-  let amount = 1;
-  let finished = 0;
-  if (data !== undefined) {
-    name = data["name"];
-    if (data["amount"] > 0) {
-      amount = data["amount"];
-    }
-    finished = data["finished"];
-  }
+
   function handleClick() {
     setSelected(url);
     callback();
@@ -46,13 +39,16 @@ function SmallTour({ data, callback, setSelected, background }) {
 
   return (
     <div
-      data-testid="small-tour"
       className={"p-4 rounded-lg space-y-3 cursor-pointer"}
       style={{ backgroundColor: background }}
-      onClick={handleClick}
     >
-      <h1 className={"font-semibold"}>{name}</h1>
-      <CustomProgressBar fraction={finished / amount} />
+      <Link
+        href={`/admin/rondes/${encodeURI(data["id"])}/`}
+        className={"h-full w-full bg-dark-bg-2"}
+      >
+        <h1 className={"font-semibold"}>{data["name"]}</h1>
+        <CustomProgressBar fraction={data["finished"] / data["amount"]} />
+      </Link>
     </div>
   );
 }
@@ -60,12 +56,10 @@ function SmallTour({ data, callback, setSelected, background }) {
 export default function AdminTourPage() {
   const [user, setUser] = useState({});
   const [week, setWeek] = useState([]);
+  const [schedules, setSchedules] = useState([]);
   const [finished, setfinished] = useState(0);
   const [buildings, setBuildings] = useState([]);
   const [comments, setComments] = useState([]);
-  const [visits, setVisits] = useState([]);
-  const [response, setResponse] = useState("{}");
-  const [tours, setTours] = useState([]);
   const router = useRouter();
 
   async function visit_finished(url) {
@@ -75,19 +69,43 @@ export default function AdminTourPage() {
     );
     const photos = await Promise.all(
       photoUrls["photos"].map(async (entry) => {
-        const split = entry.trim().split("/");
-        return await PhotoService.getPhotoById(split[split.length - 2]);
+        return await PhotoService.getEntryByUrl(entry);
       })
     );
 
     return photos.filter((entry) => entry["state"] === 2);
   }
 
+  const parseTour = async (data) => {
+    let split = data["url"].trim().split("/");
+    const id = split[split.length - 2];
+    const result = { url: data["url"], id: id };
+    const tour = await TourService.getEntryByUrl(data["tour"]);
+    console.log("ping");
+    result["name"] = tour["name"];
+    split = data["tour"].trim().split("/");
+    const buildingIds = await TourService.getBuildingsFromTour(
+      split[split.length - 2]
+    );
+    result["amount"] = 1;
+    if (buildingIds["buildings"].length > 0)
+      result["amount"] = buildingIds["buildings"].length;
+    const scheduleVisits = await ScheduleService.getVisitsFromSchedule(id);
+    let count = 0;
+    scheduleVisits.forEach((visit) => {
+      if (visit_finished(visit.url)) {
+        count++;
+      }
+    });
+    result["finished"] = count;
+    return result;
+  };
+
   useEffect(() => {
     const allTours = async () => {
       if (!router.isReady) return;
       const planning = router.query["pid"];
-      const scheduleResponse = await ScheduleService.getScheduleById(planning);
+      const scheduleResponse = await ScheduleService.getById(planning);
       // Set the week.
       const date = scheduleResponse.date;
       const dateFrom = moment(date).startOf("isoWeek").toDate();
@@ -96,9 +114,16 @@ export default function AdminTourPage() {
       const scheduleVisits = await ScheduleService.getVisitsFromSchedule(
         planning
       );
-      console.log(scheduleResponse);
-      console.log(scheduleVisits);
       setWeek([dateFrom, dateTo]);
+      const schedules = await scheduleService.get({
+        startDate: dateFrom,
+        endDate: dateTo,
+      });
+      const schedulesList = await Promise.all(
+        schedules.map(async (entry) => await parseTour(entry))
+      );
+      console.log(schedulesList);
+      setSchedules(schedulesList);
 
       // counting the amount of visits that are finished
       let count = 0;
@@ -112,9 +137,8 @@ export default function AdminTourPage() {
             building: visit.building_in_tour_data.nickname,
           });
         }
-        const split = visit["building_in_tour"].trim().split("/");
-        const buildInTour = await BuildingInTourService.getBuildingInTourById(
-          split[split.length - 2]
+        const buildInTour = await BuildingInTourService.getEntryByUrl(
+          visit["building_in_tour"]
         );
         time[buildInTour["building"]] = "TBA";
         const photos = await visit_finished(visit.url);
@@ -128,8 +152,6 @@ export default function AdminTourPage() {
           count++;
         }
       }
-      console.log(time);
-      console.log(scheduleVisits);
       setComments(comments);
       setfinished(count);
 
@@ -140,7 +162,7 @@ export default function AdminTourPage() {
       );
       const buildings = [];
       for (let i in buildingIds["buildings"]) {
-        const building = await BuildingService.getBuildingById(
+        const building = await BuildingService.getById(
           buildingIds["buildings"][i]
         );
         let computedTime = time[building["url"]];
@@ -158,7 +180,7 @@ export default function AdminTourPage() {
             (entry) => `${entry.first_name} ${entry.last_name} (${entry.email})`
           )
           .join(", ");
-        console.log(owners);
+
         buildings.push([
           building.nickname,
           `${building.address_line_1}\n${building.address_line_2}`,
@@ -168,60 +190,15 @@ export default function AdminTourPage() {
         ]);
       }
       setBuildings(buildings);
-      console.log(buildings);
 
       // We set the user for this specific tour.
-      split = scheduleResponse["student"].trim().split("/");
-      console.log(scheduleResponse);
-      const userResponse = await UserService.getUserById(
-        split[split.length - 2]
+      const userResponse = await UserService.getEntryByUrl(
+        scheduleResponse["student"]
       );
       setUser(userResponse);
-      console.log(userResponse);
-
-      const response = await TourService.getAll();
-      //setTours(JSON.stringify(response, null, 2))
-      const btResponse = await BuildingInTourService.getAll();
-      const visitResponse = await VisitService.getAll();
-      const tour = [];
-
-      if (
-        response.hasOwnProperty("results") &&
-        btResponse.hasOwnProperty("results") &&
-        visitResponse.hasOwnProperty("results")
-      ) {
-        const list = response["results"];
-        const visits = visitResponse["results"].map(
-          (entry) => entry["building_in_tour"]
-        );
-        console.log(visits);
-
-        for (let i in list) {
-          let finished = 0;
-          const entry = list[i];
-          const url = entry["url"];
-          const buildings = btResponse["results"]
-            .filter((entry) => entry["tour"] === url)
-            .map((entry) => entry["url"]);
-          for (let i = 0; i < buildings.length; i++) {
-            for (let j = 0; j < visits.length; j++) {
-              if (visits[j] === buildings[i]) {
-                finished++;
-              }
-            }
-          }
-          tour.push({
-            url: url,
-            name: entry["name"],
-            amount: buildings.length,
-            finished: finished,
-          });
-        }
-      }
-      setTours(tour);
     };
     allTours().catch();
-  }, [router.isReady]);
+  }, [router.isReady, router]);
 
   return (
     <>
@@ -281,7 +258,10 @@ export default function AdminTourPage() {
                           circleWidth={110}
                           radius={45}
                           className={"flex-shrink"}
-                          fraction={finished / buildings.length}
+                          fraction={
+                            finished /
+                            (buildings.length === 0 ? 1 : buildings.length)
+                          }
                         />
                         <h1 className={"text-light-h-1 font-bold text-base"}>
                           {finished}/{buildings.length} Gebouwen klaar
@@ -297,45 +277,6 @@ export default function AdminTourPage() {
                   className={"h-full w-8/12 flex flex-col"}
                 >
                   <div className={"space-y-2 h-full overflow-auto"}>
-                    {comments.map((entry, index) => (
-                      <div
-                        key={index}
-                        className={"rounded-lg bg-light-bg-1 p-2"}
-                      >
-                        <h1 className={"text-light-h-1 font-bold text-base"}>
-                          {entry.building}
-                        </h1>
-                        <Cell cut cutLen={"[300px]"}>
-                          {entry.comment}
-                        </Cell>
-                      </div>
-                    ))}
-                    {comments.map((entry, index) => (
-                      <div
-                        key={index}
-                        className={"rounded-lg bg-light-bg-1 p-2"}
-                      >
-                        <h1 className={"text-light-h-1 font-bold text-base"}>
-                          {entry.building}
-                        </h1>
-                        <Cell cut cutLen={"[300px]"}>
-                          {entry.comment}
-                        </Cell>
-                      </div>
-                    ))}
-                    {comments.map((entry, index) => (
-                      <div
-                        key={index}
-                        className={"rounded-lg bg-light-bg-1 p-2"}
-                      >
-                        <h1 className={"text-light-h-1 font-bold text-base"}>
-                          {entry.building}
-                        </h1>
-                        <Cell cut cutLen={"[300px]"}>
-                          {entry.comment}
-                        </Cell>
-                      </div>
-                    ))}
                     {comments.map((entry, index) => (
                       <div
                         key={index}
@@ -412,7 +353,7 @@ export default function AdminTourPage() {
               callback={() => {
                 console.log("callback is called!");
               }}
-              elements={tours}
+              elements={schedules}
             />
           </div>
         </div>

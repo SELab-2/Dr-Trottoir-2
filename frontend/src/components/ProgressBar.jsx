@@ -4,7 +4,6 @@ import {
   COLOR_MEH_1,
   COLOR_GOOD_1,
 } from "@/utils/colors";
-import ProgressBar from "react-customizable-progressbar";
 import { clamp } from "@/utils/helpers";
 
 export default function CustomProgressBar({

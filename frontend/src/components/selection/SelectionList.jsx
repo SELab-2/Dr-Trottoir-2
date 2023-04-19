@@ -8,11 +8,7 @@ export default function SelectionList({
   elements,
 }) {
   return (
-    <PrimaryCard
-      title={title}
-      text={""}
-      className={"h-full flex flex-col p-5"}
-    >
+    <PrimaryCard title={title} text={""} className={"h-full flex flex-col p-5"}>
       <div className="h-full overflow-auto space-y-2 rounded-lg">
         <Selection list={elements} Component={Component} callback={callback} />
       </div>
