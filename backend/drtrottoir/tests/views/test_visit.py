@@ -139,7 +139,9 @@ class TestVisitView(APITestCase):
         photos = response.data
         self.assertEqual(len(photos), 1)
         serializer = PhotoSerializer(self.photo, context={'request': response.wsgi_request})
-        self.assertEqual(photos[0], serializer.data)
+        # created_at won't be the same here
+        self.assertEqual({i: photos[0][i] for i in photos[0] if i != 'created_at'},
+                         {i: serializer.data[i] for i in serializer.data if i != 'created_at'})
 
     def test_get_photos_invalid_id(self):
         response = self.client.get('/api/visit/-1/photos/')
