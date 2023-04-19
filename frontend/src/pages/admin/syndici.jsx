@@ -136,7 +136,7 @@ export default function Syndici() {
       (user) => !toBeDeleted.includes(user.pk)
     );
     toBeDeleted.forEach(async (pk) => {
-      await userService.deleteUserById(pk);
+      await userService.deleteById(pk);
     });
     setUsers(usersCopy);
     setModalOpen(false);

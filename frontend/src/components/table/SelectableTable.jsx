@@ -9,6 +9,7 @@ export default function SelectableTable({
   className,
 }) {
   const [selectedIndices, setSelectedIndices] = useState(new Set());
+  const [lastClickedIndex, setLastClickedIndex] = useState(null);
 
   useEffect(() => {
     if (clearSelected) {
@@ -18,10 +19,30 @@ export default function SelectableTable({
 
   const addSelected = (event, index) => {
     const updatedIndiches = new Set(selectedIndices);
-    if (updatedIndiches.has(index)) {
-      updatedIndiches.delete(index);
+    if (event.ctrlKey) {
+      // Add selected row with CTRL key
+      if (updatedIndiches.has(index)) {
+        updatedIndiches.delete(index);
+      } else {
+        updatedIndiches.add(index);
+        setLastClickedIndex(index);
+      }
+    } else if (event.shiftKey && lastClickedIndex != null) {
+      // Add consecutive selected rows with SHIFT key
+      const start = Math.min(lastClickedIndex, index);
+      const end = Math.max(lastClickedIndex, index);
+      for (let i = start; i <= end; i++) {
+        updatedIndiches.add(i);
+      }
+      setLastClickedIndex(index);
     } else {
-      updatedIndiches.add(index);
+      if (updatedIndiches.size == 1 && updatedIndiches.has(index)) {
+        updatedIndiches.delete(index);
+      } else {
+        updatedIndiches.clear(index);
+        updatedIndiches.add(index);
+        setLastClickedIndex(index);
+      }
     }
     setSelectedIndices(updatedIndiches);
   };
@@ -59,14 +80,14 @@ export default function SelectableTable({
                 : "hover:bg-light-bg-2"
             }`}
           >
-            <td>
+            <td className="rounded-l-lg">
               <div className={"w-10 text-center"}>{index}.</div>
             </td>
             {row.map((cell, cellIndex) => {
               const column = columns[cellIndex];
 
               return (
-                <td key={cellIndex}>
+                <td key={cellIndex} className="last:rounded-r-lg">
                   <Cell cut={column.cut}>
                     {column.createCell ? column.createCell(cell) : cell}
                   </Cell>
