@@ -16,7 +16,6 @@ import CustomTable from "@/components/table/Table";
 import { getMonday, getSunday } from "@/utils/helpers";
 import TourService from "@/services/tour.service";
 import UserService from "@/services/user.service";
-import ProgressBar from "react-customizable-progressbar";
 import CustomProgressBar from "@/components/ProgressBar";
 
 // TODO: change this to the implemention from Bert his PR
@@ -72,11 +71,11 @@ export default function AdminDashboardPage() {
   const dummy = () => console.log("Dummy");
 
   return (
-    <>
+    <div className={"w-full h-full p-2"}>
       <Head>
         <title>Rondes</title>
       </Head>
-      <div className={"flex m-2"}>
+      <div className={"flex pb-2"}>
         <CustomWeekPicker
           startDate={startDate}
           endDate={endDate}
@@ -103,10 +102,10 @@ export default function AdminDashboardPage() {
             title={"Aantal opmerkingen"}
             className={"flex-grow m-2"}
           >
-            <p>aantal opmerkingen</p>
+            <p>TODO</p>
           </SecondaryCard>
           <SecondaryCard title={"Overview"} className={"flex-grow m-2"}>
-            <p>Overview</p>
+            <p>TODO</p>
           </SecondaryCard>
         </div>
 
@@ -156,6 +155,6 @@ export default function AdminDashboardPage() {
           </SecondaryCard>
         </div>
       </PrimaryCard>
-    </>
+    </div>
   );
 }
