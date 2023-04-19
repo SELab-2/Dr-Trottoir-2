@@ -10,7 +10,7 @@ import {
 import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SelectionList from "@/components/selection/SelectionList";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import TourService from "@/services/tour.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
 import VisitService from "@/services/visit.service";
@@ -32,7 +32,12 @@ import scheduleService from "@/services/schedule.service";
 import Link from "next/link";
 import MapView from "@/components/MapView";
 
-function SmallTour({ data, callback, setSelected, background }) {
+/**
+ * Return small tour component to place in the selection list.
+ * @param data The object needed to make a SmallTour component.
+ * @param background The object needed to make a SmallTour component.
+ */
+function SmallTour({ data, background }) {
   return (
     <div
       className={"rounded-lg space-y-3"}
@@ -61,6 +66,11 @@ export default function AdminTourPage() {
   const [comments, setComments] = useState([]);
   const router = useRouter();
 
+  /**
+   * We fill the selection list wih new schedule objects based on the given week.
+   * @param dateFrom Start of the week.
+   * @param dateTo End of the week.
+   */
   async function setNewSchedules(dateFrom, dateTo) {
     const schedules = await scheduleService.get({
       startDate: dateFrom,
@@ -74,6 +84,11 @@ export default function AdminTourPage() {
     setEnd(dateTo);
   }
 
+  /**
+   * We put all the photos of state departure of a visit in a list and return it.
+   * @param url The url of the visit object.
+   * @return list The list of photos with state departure.
+   */
   async function visit_finished(url) {
     const split = url.trim().split("/");
     const photoUrls = await VisitService.getPhotosByVisit(
@@ -89,6 +104,11 @@ export default function AdminTourPage() {
     return photos.filter((entry) => entry["state"] === 2);
   }
 
+  /**
+   * We define all the data needed to make a SmallTour component in the selection list.
+   * @param data The schedule object we are getting the needed information from.
+   * @return list The resulting object that will be used in the SmallTour component.
+   */
   const parseTour = async (data) => {
     let split = data["url"].trim().split("/");
     const id = split[split.length - 2];
@@ -124,12 +144,10 @@ export default function AdminTourPage() {
       const date = scheduleResponse.date;
       const dateFrom = moment(date).startOf("isoWeek").toDate();
       const dateTo = moment(date).endOf("isoWeek").toDate();
-      // Looking for all the visits in this tour.
-      const scheduleVisits = await ScheduleService.getVisitsFromSchedule(
-        planning
-      );
       setStart(dateFrom);
       setEnd(dateTo);
+
+      // Using the set week we make the data needed to fill the selection list.
       const schedules = await scheduleService.get({
         startDate: dateFrom,
         endDate: dateTo,
@@ -144,7 +162,10 @@ export default function AdminTourPage() {
       setFinished(selectionObject["finished"]);
       setSchedules(schedulesList);
 
-      // Get all the comments of a visit and calculating the time taken for a finished visit
+      // Get all the comments of a visit and calculating the time taken for a finished visit.
+      const scheduleVisits = await ScheduleService.getVisitsFromSchedule(
+        planning
+      );
       const comments = [];
       const time = {};
       for (const visit of scheduleVisits) {
@@ -175,7 +196,7 @@ export default function AdminTourPage() {
       const buildingIds = await TourService.getBuildingsFromTour(
         split[split.length - 2]
       );
-
+      // All the data needed is being set here to fill the table.
       const buildings = await Promise.all(
         buildingIds.map(async (buildingData) => {
           const building = await BuildingService.getEntryByUrl(
@@ -207,7 +228,7 @@ export default function AdminTourPage() {
       );
       setBuildings(buildings);
 
-      // We set the user for this specific tour.
+      // We set the user that is doing this specific tour.
       const userResponse = await UserService.getEntryByUrl(
         scheduleResponse["student"]
       );
@@ -395,13 +416,7 @@ export default function AdminTourPage() {
             </div>
             <SelectionList
               Component={({ url, background, setSelected, callback, data }) => (
-                <SmallTour
-                  key={url}
-                  background={background}
-                  setSelected={setSelected}
-                  callback={callback}
-                  data={data}
-                />
+                <SmallTour key={url} background={background} data={data} />
               )}
               title={"Rondes"}
               callback={() => {}}
