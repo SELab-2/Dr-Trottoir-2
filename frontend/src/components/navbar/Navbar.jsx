@@ -45,7 +45,7 @@ export default function Navbar() {
             Rondes: { icon: faBicycle, link: "#" },
             Gebouwen: { icon: faBuilding, link: "#" },
             Personeel: { icon: faPeopleGroup, link: "/admin/personeel" },
-            Syndici: { icon: faBriefcase, link: "#" },
+            Syndici: { icon: faBriefcase, link: "/admin/syndici" },
           }}
         />
         <NavbarList
