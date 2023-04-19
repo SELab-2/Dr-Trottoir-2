@@ -136,13 +136,10 @@ class TestVisitView(APITestCase):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
         response = self.client.get(f'/api/visit/{self.visit.pk}/photos/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        photos = response.data["photos"]
+        photos = response.data
         self.assertEqual(len(photos), 1)
-        # fetch photo
-        photoresponse = self.client.get(photos[0])
-        self.assertEqual(photoresponse.status_code, status.HTTP_200_OK)
-        serializer = PhotoSerializer(self.photo, context={'request': photoresponse.wsgi_request})
-        self.assertEqual(photoresponse.data, serializer.data)
+        serializer = PhotoSerializer(self.photo, context={'request': response.wsgi_request})
+        self.assertEqual(photos[0], serializer.data)
 
     def test_get_photos_invalid_id(self):
         response = self.client.get('/api/visit/-1/photos/')
