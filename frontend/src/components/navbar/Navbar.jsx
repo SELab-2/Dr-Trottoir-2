@@ -35,7 +35,7 @@ export default function Navbar() {
         <NavbarList
           name={"Menu"}
           categories={{
-            Planning: { icon: faCalendarWeek, link: "/student/planning" },
+            Planning: { icon: faCalendarWeek, link: "/admin/planning" },
             "Nieuwe data": { icon: faCirclePlus, link: "#" },
           }}
         />
@@ -45,7 +45,7 @@ export default function Navbar() {
             Rondes: { icon: faBicycle, link: "#" },
             Gebouwen: { icon: faBuilding, link: "/admin/gebouwen" },
             Personeel: { icon: faPeopleGroup, link: "#" },
-            Syndici: { icon: faBriefcase, link: "#" },
+            Syndici: { icon: faBriefcase, link: "/admin/syndici" },
           }}
         />
         <NavbarList

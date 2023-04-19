@@ -16,6 +16,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import Emoji from "@/components/Emoji";
+import Layout from "@/components/Layout";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
@@ -87,3 +88,7 @@ export async function getServerSideProps(context) {
     props: { session },
   };
 }
+
+Home.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>;
+};

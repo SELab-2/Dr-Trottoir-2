@@ -4,11 +4,14 @@ export default function CustomTable({ columns, data, className }) {
   return (
     <table className={`${className}`}>
       <thead>
-        <tr className={"bg-accent-1 text-accent-2"}>
-          <th className={"rounded-l-full"}></th>
+        <tr className={"text-accent-2"}>
+          <th className={"rounded-l-lg bg-accent-1"}></th>
           {columns.map((entry, index) => {
             return (
-              <th key={index} className={"last:rounded-r-full p-1 text-left"}>
+              <th
+                key={index}
+                className={"last:rounded-r-lg p-1 text-left bg-accent-1"}
+              >
                 {entry.name}
               </th>
             );
@@ -19,7 +22,7 @@ export default function CustomTable({ columns, data, className }) {
         {data.map((row, index) => (
           <tr key={index}>
             <td>
-              <div className={"w-10 text-center"}>{index}.</div>
+              <div className={"w-10 text-center"}>{index + 1}.</div>
             </td>
             {row.map((cell, cellIndex) => {
               const column = columns[cellIndex];
