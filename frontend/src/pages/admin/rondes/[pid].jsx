@@ -39,15 +39,14 @@ function SmallTour({ data, callback, setSelected, background }) {
 
   return (
     <div
-      className={"p-4 rounded-lg space-y-3 cursor-pointer"}
+      className={"rounded-lg space-y-3"}
       style={{ backgroundColor: background }}
     >
-      <Link
-        href={`/admin/rondes/${encodeURI(data["id"])}/`}
-        className={"h-full w-full bg-dark-bg-2"}
-      >
-        <h1 className={"font-semibold"}>{data["name"]}</h1>
-        <CustomProgressBar fraction={data["finished"] / data["amount"]} />
+      <Link href={`/admin/rondes/${encodeURI(data["id"])}/`}>
+        <div className={"p-4"}>
+          <h1 className={"font-semibold"}>{data["name"]}</h1>
+          <CustomProgressBar fraction={data["finished"] / data["amount"]} />
+        </div>
       </Link>
     </div>
   );
