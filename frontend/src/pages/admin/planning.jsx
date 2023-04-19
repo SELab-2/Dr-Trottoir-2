@@ -18,15 +18,7 @@ import TourService from "@/services/tour.service";
 import UserService from "@/services/user.service";
 import CustomProgressBar from "@/components/ProgressBar";
 import Link from "next/link";
-
-// TODO: change this to the implemention from Bert his PR
-export const urlToPK = (url) => {
-  const regex = /\/(\d+)\/$/;
-  const match = url.match(regex);
-  if (match !== null) {
-    return match[1];
-  }
-};
+import { urlToPK } from "@/utils/urlToPK";
 
 export default function AdminDashboardPage() {
   const [schedule, setSchedule] = useState([]);
