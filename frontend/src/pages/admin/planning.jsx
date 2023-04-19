@@ -75,7 +75,7 @@ export default function AdminDashboardPage() {
       <Head>
         <title>Rondes</title>
       </Head>
-      <div className={"flex pb-2"}>
+      <div className={"flex pb-2 h-1/6 bg-accent-1"}>
         <CustomWeekPicker
           startDate={startDate}
           endDate={endDate}
@@ -86,8 +86,8 @@ export default function AdminDashboardPage() {
         />
       </div>
 
-      <PrimaryCard>
-        <div id={"statistics"} className={"flex flex-row"}>
+      <PrimaryCard className={"h-5/6"}>
+        <div id={"statistics"} className={"flex flex-row h-1/6"}>
           <SecondaryCard
             title={"Aantal Rondes"}
             className={"flex-grow m-2 justify-center items-center"}
@@ -109,51 +109,49 @@ export default function AdminDashboardPage() {
           </SecondaryCard>
         </div>
 
-        <div id={"rondes"}>
-          <SecondaryCard title={"Rondes"} className={"m-2"}>
-            <PrimaryCard className={"my-2"}>
-              <div className={"flex flex-row justify-center items-center"}>
-                <div className={"px-2"}>
-                  <PrimaryButton icon={faFilter} onClick={dummy}>
-                    <p>Filter</p>
-                  </PrimaryButton>
-                </div>
-
-                <div className={"px-2"}>
-                  <PrimaryButton icon={faSort} onClick={dummy}>
-                    <p>Sort</p>
-                  </PrimaryButton>
-                </div>
-
-                <div className={"flex-grow px-2 h-full"}>
-                  <CustomInputField
-                    icon={faMagnifyingGlass}
-                    classNameDiv={"h-6"}
-                  />
-                </div>
-
-                <div className={"px-2"}>
-                  <PrimaryButton text={"Nieuw"} icon={faPlusCircle}>
-                    <p>Nieuw</p>
-                  </PrimaryButton>
-                </div>
+        <SecondaryCard title={"Rondes"} className={"m-2 h-5/6"}>
+          <PrimaryCard className={"my-2 h-1/6"}>
+            <div className={"flex flex-row justify-center items-center"}>
+              <div className={"px-2"}>
+                <PrimaryButton icon={faFilter} onClick={dummy}>
+                  <p>Filter</p>
+                </PrimaryButton>
               </div>
-            </PrimaryCard>
 
-            <PrimaryCard className={"my-2"}>
-              <CustomTable
-                className={"w-full"}
-                columns={[
-                  { name: "Datum" },
-                  { name: "Ronde" },
-                  { name: "Student" },
-                  { name: "Gebouwen" },
-                ]}
-                data={schedule}
-              />
-            </PrimaryCard>
-          </SecondaryCard>
-        </div>
+              <div className={"px-2"}>
+                <PrimaryButton icon={faSort} onClick={dummy}>
+                  <p>Sort</p>
+                </PrimaryButton>
+              </div>
+
+              <div className={"flex-grow px-2 h-full"}>
+                <CustomInputField
+                  icon={faMagnifyingGlass}
+                  classNameDiv={"h-6"}
+                />
+              </div>
+
+              <div className={"px-2"}>
+                <PrimaryButton text={"Nieuw"} icon={faPlusCircle}>
+                  <p>Nieuw</p>
+                </PrimaryButton>
+              </div>
+            </div>
+          </PrimaryCard>
+
+          <PrimaryCard className={"my-2 h-5/6"}>
+            <CustomTable
+              className={"w-full"}
+              columns={[
+                { name: "Datum" },
+                { name: "Ronde" },
+                { name: "Student" },
+                { name: "Gebouwen" },
+              ]}
+              data={schedule}
+            />
+          </PrimaryCard>
+        </SecondaryCard>
       </PrimaryCard>
     </div>
   );
