@@ -1,4 +1,3 @@
-from django.urls import reverse
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -7,7 +6,7 @@ from rest_framework.response import Response
 from drtrottoir.models import Photo
 from drtrottoir.models import Visit
 from drtrottoir.permissions.user_permissions import AnyonePostSuperEditPermission
-from drtrottoir.serializers import VisitSerializer
+from drtrottoir.serializers import VisitSerializer, PhotoSerializer
 
 
 class VisitViewSet(viewsets.ModelViewSet):
@@ -41,12 +40,7 @@ class VisitViewSet(viewsets.ModelViewSet):
         Get all photos inside a visit. Authentication required.
         """
         if pk is not None and Visit.objects.filter(pk=pk).exists():
-
-            urls = []
-            for photo in Photo.objects.filter(visit=pk):
-                url = reverse('photo-detail', args=[photo.id])
-                urls.append(request.build_absolute_uri(url))
-
-            return Response({"photos": urls})
+            photos = Photo.objects.filter(visit=pk)
+            return Response(PhotoSerializer(list(photos), many=True, context={'request': request}).data)
         else:
             return Response("Given visit doesn't exist.", status=status.HTTP_400_BAD_REQUEST)

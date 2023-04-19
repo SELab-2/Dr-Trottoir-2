@@ -71,11 +71,11 @@ export default function AdminDashboardPage() {
   const dummy = () => console.log("Dummy");
 
   return (
-    <div className={"w-full h-full p-2"}>
+    <div className={"w-full h-full p-2 flex flex-col"}>
       <Head>
         <title>Rondes</title>
       </Head>
-      <div className={"flex pb-2 h-1/6 bg-accent-1"}>
+      <div className={"flex pb-2"}>
         <CustomWeekPicker
           startDate={startDate}
           endDate={endDate}
@@ -86,11 +86,11 @@ export default function AdminDashboardPage() {
         />
       </div>
 
-      <PrimaryCard className={"h-5/6"}>
-        <div id={"statistics"} className={"flex flex-row h-1/6"}>
+      <PrimaryCard className={"border-2 border-accent-1"}>
+        <div id={"statistics"} className={"flex flex-row grid grid-cols-3"}>
           <SecondaryCard
             title={"Aantal Rondes"}
-            className={"flex-grow m-2 justify-center items-center"}
+            className={"m-2 justify-center items-center"}
           >
             {schedule.length === 1 ? (
               <p className={"font-bold"}>{schedule.length} Ronde</p>
@@ -98,59 +98,64 @@ export default function AdminDashboardPage() {
               <p className={"font-bold"}>{schedule.length} Rondes</p>
             )}
           </SecondaryCard>
-          <SecondaryCard
-            title={"Aantal opmerkingen"}
-            className={"flex-grow m-2"}
-          >
+          <SecondaryCard title={"Aantal opmerkingen"} className={"m-2"}>
             <p>TODO</p>
           </SecondaryCard>
-          <SecondaryCard title={"Overview"} className={"flex-grow m-2"}>
+          <SecondaryCard title={"Overview"} className={"m-2"}>
             <p>TODO</p>
           </SecondaryCard>
         </div>
 
-        <SecondaryCard title={"Rondes"} className={"m-2 h-5/6"}>
-          <PrimaryCard className={"my-2 h-1/6"}>
-            <div className={"flex flex-row justify-center items-center"}>
-              <div className={"px-2"}>
-                <PrimaryButton icon={faFilter} onClick={dummy}>
-                  <p>Filter</p>
-                </PrimaryButton>
-              </div>
+        <SecondaryCard title={"Rondes"} className={"m-2"}>
+          {schedule.length ? (
+            <div className={"flex flex-col"}>
+              <PrimaryCard>
+                <div className={"flex flex-row justify-center items-center"}>
+                  <div className={"px-2"}>
+                    <PrimaryButton icon={faFilter} onClick={dummy}>
+                      <p>Filter</p>
+                    </PrimaryButton>
+                  </div>
 
-              <div className={"px-2"}>
-                <PrimaryButton icon={faSort} onClick={dummy}>
-                  <p>Sort</p>
-                </PrimaryButton>
-              </div>
+                  <div className={"px-2"}>
+                    <PrimaryButton icon={faSort} onClick={dummy}>
+                      <p>Sort</p>
+                    </PrimaryButton>
+                  </div>
 
-              <div className={"flex-grow px-2 h-full"}>
-                <CustomInputField
-                  icon={faMagnifyingGlass}
-                  classNameDiv={"h-6"}
+                  <div className={"flex-grow px-2 h-full"}>
+                    <CustomInputField
+                      icon={faMagnifyingGlass}
+                      classNameDiv={"h-6"}
+                    />
+                  </div>
+
+                  <div className={"px-2"}>
+                    <PrimaryButton text={"Nieuw"} icon={faPlusCircle}>
+                      <p>Nieuw</p>
+                    </PrimaryButton>
+                  </div>
+                </div>
+              </PrimaryCard>
+
+              <PrimaryCard className={"my-2 flex-grow"}>
+                <CustomTable
+                  className={"w-full"}
+                  columns={[
+                    { name: "Datum" },
+                    { name: "Ronde" },
+                    { name: "Student" },
+                    { name: "Gebouwen" },
+                  ]}
+                  data={schedule}
                 />
-              </div>
-
-              <div className={"px-2"}>
-                <PrimaryButton text={"Nieuw"} icon={faPlusCircle}>
-                  <p>Nieuw</p>
-                </PrimaryButton>
-              </div>
+              </PrimaryCard>
             </div>
-          </PrimaryCard>
-
-          <PrimaryCard className={"my-2 h-5/6"}>
-            <CustomTable
-              className={"w-full"}
-              columns={[
-                { name: "Datum" },
-                { name: "Ronde" },
-                { name: "Student" },
-                { name: "Gebouwen" },
-              ]}
-              data={schedule}
-            />
-          </PrimaryCard>
+          ) : (
+            <div className={"flex items-center justify-center"}>
+              <p className={"font-bold"}>NO SCHEDULES</p>
+            </div>
+          )}
         </SecondaryCard>
       </PrimaryCard>
     </div>
