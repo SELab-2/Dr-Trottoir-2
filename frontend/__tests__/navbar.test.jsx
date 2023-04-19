@@ -35,5 +35,5 @@ test("Direction press Dashboard", async () => {
   const link = screen.getByRole("link", { name: "Planning" });
   expect(link).toBeInTheDocument();
 
-  expect(link).toHaveAttribute("href", "/student/planning");
+  expect(link).toHaveAttribute("href", "/admin/planning");
 });
