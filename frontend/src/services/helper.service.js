@@ -38,7 +38,7 @@ class HelperService {
     }
 
     all = response.data.results;
-    while (response.data.next != null) {
+    while (response.data.next !== null) {
       response = await this.getResponseByUrl(response.data.next);
       if (response.status === 200) {
         all.push(...response.data.results);

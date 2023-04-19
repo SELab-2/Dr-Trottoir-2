@@ -63,7 +63,7 @@ export default function CustomWeekPicker({
       selectsRange={true}
       onChange={(date) => handleValueChange(date)}
       calendarStartDay={1}
-      className={`rounded-full p-2 border-2 border-light-h-2 bg-light-bg-2 ${className}`}
+      className={`rounded-lg p-2 border-2 border-light-h-2 bg-light-bg-2 ${className}`}
     />
   );
 }

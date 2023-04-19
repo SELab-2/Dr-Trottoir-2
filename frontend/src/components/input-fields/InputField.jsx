@@ -9,7 +9,7 @@ export default function CustomInputField({
 }) {
   return (
     <div
-      className={`rounded-full bg-light-bg-2 p-4 border-solid border-4 border-light-h-2 relative flex items-center ${classNameDiv}`}
+      className={`rounded-lg bg-light-bg-2 p-4 border-solid border-2 border-light-h-2 relative flex items-center ${classNameDiv}`}
     >
       <input
         name={"input-field"}

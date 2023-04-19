@@ -79,9 +79,10 @@ export default function AdminTourPage() {
     const photoUrls = await VisitService.getPhotosByVisit(
       split[split.length - 2]
     );
+
     const photos = await Promise.all(
-      photoUrls["photos"].map(async (entry) => {
-        return await PhotoService.getEntryByUrl(entry);
+      photoUrls.map(async (entry) => {
+        return await PhotoService.getEntryByUrl(entry.url);
       })
     );
 
@@ -93,15 +94,14 @@ export default function AdminTourPage() {
     const id = split[split.length - 2];
     const result = { url: data["url"], id: id, date: data["date"] };
     const tour = await TourService.getEntryByUrl(data["tour"]);
-    console.log("ping");
     result["name"] = tour["name"];
     split = data["tour"].trim().split("/");
     const buildingIds = await TourService.getBuildingsFromTour(
       split[split.length - 2]
     );
+
     result["amount"] = 1;
-    if (buildingIds["buildings"].length > 0)
-      result["amount"] = buildingIds["buildings"].length;
+    if (buildingIds.length > 0) result["amount"] = buildingIds.length;
     const scheduleVisits = await ScheduleService.getVisitsFromSchedule(id);
     let count = 0;
     for (const visit of scheduleVisits) {
@@ -175,10 +175,13 @@ export default function AdminTourPage() {
       const buildingIds = await TourService.getBuildingsFromTour(
         split[split.length - 2]
       );
+
       const buildings = await Promise.all(
-        buildingIds["buildings"].map(async (buildingId) => {
-          const building = await BuildingService.getById(buildingId);
-          let computedTime = time[building["url"]];
+        buildingIds.map(async (buildingData) => {
+          const building = await BuildingService.getEntryByUrl(
+            buildingData.building
+          );
+          let computedTime = time[buildingData.building];
           let status = "Onderweg";
           if (computedTime === undefined) {
             computedTime = "TBA";

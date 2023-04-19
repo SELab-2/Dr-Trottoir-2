@@ -41,19 +41,14 @@ class UserService {
     return data;
   }
 
-  async getUserById(id) {
-    let response;
-    try {
-      response = await ApiInstance.getApi().get(`user/${id}/`);
-    } catch (e) {
-      alert(JSON.stringify(e, null, 2));
-      return []; // TODO: what to do when no data can be fetched.
-    }
-
-    if (response.status === 200) {
-      return response.data;
-    }
-    return [];
+  /**
+   * Deletes a user by id.
+   * @param id The ID of the user.
+   * @returns {*} Empty string if the user is deleted.
+   */
+  async deleteById(id) {
+    const response = await ApiInstance.getApi().delete("user/" + id + "/");
+    return response.data;
   }
 }
 
