@@ -30,13 +30,6 @@ import scheduleService from "@/services/schedule.service";
 import Link from "next/link";
 
 function SmallTour({ data, callback, setSelected, background }) {
-  const url = data["url"];
-
-  function handleClick() {
-    setSelected(url);
-    callback();
-  }
-
   return (
     <div
       className={"rounded-lg space-y-3"}
@@ -54,9 +47,11 @@ function SmallTour({ data, callback, setSelected, background }) {
 
 export default function AdminTourPage() {
   const [user, setUser] = useState({});
-  const [week, setWeek] = useState([]);
+  const [name, setName] = useState("");
+  const [startDate, setStart] = useState(new Date());
+  const [endDate, setEnd] = useState(new Date());
   const [schedules, setSchedules] = useState([]);
-  const [finished, setfinished] = useState(0);
+  const [finished, setFinished] = useState(0);
   const [buildings, setBuildings] = useState([]);
   const [comments, setComments] = useState([]);
   const router = useRouter();
@@ -113,7 +108,8 @@ export default function AdminTourPage() {
       const scheduleVisits = await ScheduleService.getVisitsFromSchedule(
         planning
       );
-      setWeek([dateFrom, dateTo]);
+      setStart(dateFrom);
+      setEnd(dateTo);
       const schedules = await scheduleService.get({
         startDate: dateFrom,
         endDate: dateTo,
@@ -121,15 +117,17 @@ export default function AdminTourPage() {
       const schedulesList = await Promise.all(
         schedules.map(async (entry) => await parseTour(entry))
       );
-      console.log(schedulesList);
+      const selectionObject = schedulesList.find(
+        (obj) => obj.url === scheduleResponse.url
+      );
+      setName(selectionObject.name);
+      setFinished(selectionObject["finished"]);
       setSchedules(schedulesList);
 
-      // counting the amount of visits that are finished
-      let count = 0;
+      // Get all the comments of a visit and calculating the time taken for a finished visit
       const comments = [];
       const time = {};
-      for (let i in scheduleVisits) {
-        const visit = scheduleVisits[i];
+      for (const visit of scheduleVisits) {
         if (visit.comment !== "") {
           comments.push({
             comment: visit.comment,
@@ -148,46 +146,42 @@ export default function AdminTourPage() {
           const minutes = Math.round(seconds / 60);
           seconds -= minutes * 60;
           time[buildInTour["building"]] = `${minutes}m${seconds}s`;
-          count++;
         }
       }
       setComments(comments);
-      setfinished(count);
 
       // Searching the buildings of this tour
       let split = scheduleResponse["tour"].trim().split("/");
       const buildingIds = await TourService.getBuildingsFromTour(
         split[split.length - 2]
       );
-      const buildings = [];
-      for (let i in buildingIds["buildings"]) {
-        const building = await BuildingService.getById(
-          buildingIds["buildings"][i]
-        );
-        let computedTime = time[building["url"]];
-        let status = "Onderweg";
-        if (computedTime === undefined) {
-          computedTime = "TBA";
-        } else if (computedTime === "TBA") {
-          status = "Bezig";
-        } else {
-          status = "Klaar";
-        }
-
-        const owners = building["owners"]
-          .map(
-            (entry) => `${entry.first_name} ${entry.last_name} (${entry.email})`
-          )
-          .join(", ");
-
-        buildings.push([
-          building.nickname,
-          `${building.address_line_1}\n${building.address_line_2}`,
-          status,
-          owners,
-          computedTime,
-        ]);
-      }
+      const buildings = await Promise.all(
+        buildingIds["buildings"].map(async (buildingId) => {
+          const building = await BuildingService.getById(buildingId);
+          let computedTime = time[building["url"]];
+          let status = "Onderweg";
+          if (computedTime === undefined) {
+            computedTime = "TBA";
+          } else if (computedTime === "TBA") {
+            status = "Bezig";
+          } else {
+            status = "Klaar";
+          }
+          const owners = building["owners"]
+            .map(
+              ({ first_name, last_name, email }) =>
+                `${first_name} ${last_name} (${email})`
+            )
+            .join(", ");
+          return [
+            building.nickname,
+            `${building.address_line_1}\n${building.address_line_2}`,
+            status,
+            owners,
+            computedTime,
+          ];
+        })
+      );
       setBuildings(buildings);
 
       // We set the user for this specific tour.
@@ -213,9 +207,7 @@ export default function AdminTourPage() {
             title={"Details"}
           >
             <div className={"space-y-4 h-full"}>
-              <h1 className={"text-light-h-1 font-bold text-lg"}>
-                Stations Ronde
-              </h1>
+              <h1 className={"text-light-h-1 font-bold text-lg"}>{name}</h1>
               <div className={"flex flex-row space-x-2 h-3/6"}>
                 <div
                   className={"w-4/12 flex flex-col space-y-2 h-full lg:h-max"}
@@ -335,7 +327,15 @@ export default function AdminTourPage() {
             className={"bg-light-bg-2 flex w-3/12 flex-col space-y-2 h-full"}
           >
             <div className={"flex flex-row space-x-2 w-full"}>
-              <CustomWeekPicker className={"w-11/12"} range={week} />
+              <CustomWeekPicker
+                className={"w-11/12"}
+                startDate={startDate}
+                endDate={endDate}
+                onChange={(beginDate, endDate) => {
+                  setStart(beginDate);
+                  setEnd(endDate);
+                }}
+              />
               <PrimaryButton icon={faCirclePlus}>Nieuw</PrimaryButton>
             </div>
             <SelectionList
