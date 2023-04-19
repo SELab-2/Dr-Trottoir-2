@@ -4,6 +4,8 @@ import {
   faCirclePlus,
   faEnvelope,
   faLocationDot,
+  faTrash,
+  faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
@@ -28,6 +30,7 @@ import ColoredTag from "@/components/Tag";
 import Cell from "@/components/table/Cell";
 import scheduleService from "@/services/schedule.service";
 import Link from "next/link";
+import MapView from "@/components/MapView";
 
 function SmallTour({ data, callback, setSelected, background }) {
   return (
@@ -38,6 +41,7 @@ function SmallTour({ data, callback, setSelected, background }) {
       <Link href={`/admin/rondes/${encodeURI(data["id"])}/`}>
         <div className={"p-4"}>
           <h1 className={"font-semibold"}>{data["name"]}</h1>
+          <h2 className={"text-light-h-2"}> {data["date"]}</h2>
           <CustomProgressBar fraction={data["finished"] / data["amount"]} />
         </div>
       </Link>
@@ -46,6 +50,7 @@ function SmallTour({ data, callback, setSelected, background }) {
 }
 
 export default function AdminTourPage() {
+  const [url, setUrl] = useState("");
   const [user, setUser] = useState({});
   const [name, setName] = useState("");
   const [startDate, setStart] = useState(new Date());
@@ -55,6 +60,19 @@ export default function AdminTourPage() {
   const [buildings, setBuildings] = useState([]);
   const [comments, setComments] = useState([]);
   const router = useRouter();
+
+  async function setNewSchedules(dateFrom, dateTo) {
+    const schedules = await scheduleService.get({
+      startDate: dateFrom,
+      endDate: dateTo,
+    });
+    const schedulesList = await Promise.all(
+      schedules.map(async (entry) => await parseTour(entry))
+    );
+    setSchedules(schedulesList);
+    setStart(dateFrom);
+    setEnd(dateTo);
+  }
 
   async function visit_finished(url) {
     const split = url.trim().split("/");
@@ -73,7 +91,7 @@ export default function AdminTourPage() {
   const parseTour = async (data) => {
     let split = data["url"].trim().split("/");
     const id = split[split.length - 2];
-    const result = { url: data["url"], id: id };
+    const result = { url: data["url"], id: id, date: data["date"] };
     const tour = await TourService.getEntryByUrl(data["tour"]);
     console.log("ping");
     result["name"] = tour["name"];
@@ -86,11 +104,12 @@ export default function AdminTourPage() {
       result["amount"] = buildingIds["buildings"].length;
     const scheduleVisits = await ScheduleService.getVisitsFromSchedule(id);
     let count = 0;
-    scheduleVisits.forEach((visit) => {
-      if (visit_finished(visit.url)) {
+    for (const visit of scheduleVisits) {
+      const response = await visit_finished(visit.url);
+      if (response.length > 0) {
         count++;
       }
-    });
+    }
     result["finished"] = count;
     return result;
   };
@@ -100,6 +119,7 @@ export default function AdminTourPage() {
       if (!router.isReady) return;
       const planning = router.query["pid"];
       const scheduleResponse = await ScheduleService.getById(planning);
+      setUrl(scheduleResponse.url);
       // Set the week.
       const date = scheduleResponse.date;
       const dateFrom = moment(date).startOf("isoWeek").toDate();
@@ -143,7 +163,7 @@ export default function AdminTourPage() {
           const diff =
             new Date(photos[0]["created_at"]) - new Date(visit["arrival"]);
           let seconds = Math.round(diff / 1000);
-          const minutes = Math.round(seconds / 60);
+          const minutes = Math.floor(seconds / 60);
           seconds -= minutes * 60;
           time[buildInTour["building"]] = `${minutes}m${seconds}s`;
         }
@@ -175,7 +195,7 @@ export default function AdminTourPage() {
             .join(", ");
           return [
             building.nickname,
-            `${building.address_line_1}\n${building.address_line_2}`,
+            `${building.address_line_1} ${building.address_line_2}`,
             status,
             owners,
             computedTime,
@@ -207,32 +227,52 @@ export default function AdminTourPage() {
             title={"Details"}
           >
             <div className={"space-y-4 h-full"}>
-              <h1 className={"text-light-h-1 font-bold text-lg"}>{name}</h1>
+              <div className={"flex flex-row"}>
+                <h1 className={"text-light-h-1 font-bold text-lg"}>{name}</h1>
+                <div className={"w-full flex justify-end"}>
+                  <Link href={"#"}>
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      size={"lg"}
+                      className={"mt-1 mx-3"}
+                    />
+                  </Link>
+                  <Link href={"#"}>
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      size={"lg"}
+                      className={"mt-1 "}
+                    />
+                  </Link>
+                </div>
+              </div>
               <div className={"flex flex-row space-x-2 h-3/6"}>
                 <div
-                  className={"w-4/12 flex flex-col space-y-2 h-full lg:h-max"}
+                  className={"w-fit flex flex-col space-y-2 h-full lg:h-max"}
                 >
-                  <SecondaryCard
-                    className={"h-2/6"}
-                    icon={faBriefcase}
-                    title={"Aangeduide student"}
-                  >
-                    <div className={"flex flex-row space-x-4"}>
-                      <ProfilePicture />
-                      <div>
-                        <h1 className={"text-light-h-1 font-bold text-base"}>
-                          {user.first_name} {user.last_name}
-                        </h1>
-                        <div className={"flex flex-row space-x-4"}>
-                          <FontAwesomeIcon
-                            icon={faEnvelope}
-                            className={"h-4 mt-1 mx-2"}
-                          />
-                          {user.email}
+                  <Link href={"#"}>
+                    <SecondaryCard
+                      className={"h-2/6"}
+                      icon={faBriefcase}
+                      title={"Aangeduide student"}
+                    >
+                      <div className={"flex flex-row space-x-4"}>
+                        <ProfilePicture />
+                        <div>
+                          <h1 className={"text-light-h-1 font-bold text-base"}>
+                            {user.first_name} {user.last_name}
+                          </h1>
+                          <div className={"flex flex-row space-x-4"}>
+                            <FontAwesomeIcon
+                              icon={faEnvelope}
+                              className={"h-4 mt-1 mx-2"}
+                            />
+                            {user.email}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </SecondaryCard>
+                    </SecondaryCard>
+                  </Link>
                   <SecondaryCard
                     className={"h-4/6"}
                     icon={faBriefcase}
@@ -265,7 +305,7 @@ export default function AdminTourPage() {
                 <SecondaryCard
                   icon={faLocationDot}
                   title={"Opmerkingen"}
-                  className={"h-full w-8/12 flex flex-col"}
+                  className={"h-full w-1/2 sm:w-2/6 flex flex-col"}
                 >
                   <div className={"space-y-2 h-full overflow-auto"}>
                     {comments.map((entry, index) => (
@@ -284,8 +324,18 @@ export default function AdminTourPage() {
                   </div>
                 </SecondaryCard>
 
-                <SecondaryCard icon={faLocationDot} title={"Wegbeschrijving"}>
-                  <p>The gift card is shattered</p>
+                <SecondaryCard
+                  className={"h-full w-4/5 flex flex-col"}
+                  icon={faLocationDot}
+                  title={"Wegbeschrijving"}
+                >
+                  <div className={"flex justify-center items-center"}>
+                    <MapView
+                      route={buildings.map((building) => building[1])}
+                      mapHeight={500}
+                      mapWidth={800}
+                    />
+                  </div>
                 </SecondaryCard>
               </div>
               <SecondaryCard
@@ -296,7 +346,10 @@ export default function AdminTourPage() {
                 <CustomTable
                   className={"w-full"}
                   columns={[
-                    { name: "Naam" },
+                    {
+                      name: "Naam",
+                      createCell: (name) => <Link href={"#"}>{name}</Link>,
+                    },
                     { name: "Adres", cut: true },
                     {
                       name: "Status",
@@ -331,10 +384,9 @@ export default function AdminTourPage() {
                 className={"w-11/12"}
                 startDate={startDate}
                 endDate={endDate}
-                onChange={(beginDate, endDate) => {
-                  setStart(beginDate);
-                  setEnd(endDate);
-                }}
+                onChange={async (beginDate, endDate) =>
+                  await setNewSchedules(beginDate, endDate)
+                }
               />
               <PrimaryButton icon={faCirclePlus}>Nieuw</PrimaryButton>
             </div>
@@ -349,10 +401,9 @@ export default function AdminTourPage() {
                 />
               )}
               title={"Rondes"}
-              callback={() => {
-                console.log("callback is called!");
-              }}
+              callback={() => {}}
               elements={schedules}
+              selectedStart={url}
             />
           </div>
         </div>
