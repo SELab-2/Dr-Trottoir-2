@@ -4,6 +4,7 @@ import Logo from "/public/images/Logo-Dr-Trottoir-GEEL-01.png";
 import Image from "next/image";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
+import { ROLES } from "@/utils/userRoles";
 
 export default function Login() {
   const router = useRouter();
@@ -30,25 +31,39 @@ export default function Login() {
       return;
     }
 
-    await router.push("/home");
+    const user = (await getSession()).user;
+    if (user.role <= ROLES.SUPERSTUDENT) {
+      // User is developer, admin or super-student
+      await router.push("/admin/home");
+    } else if (user.role === ROLES.STUDENT) {
+      // User is student
+      await router.push("/student/home");
+    } else {
+      console.log(
+        "We found you in our database but unfortunately we don't have a nice ui for you :("
+      );
+    }
   };
 
   return (
     <>
       <Head>
-        <title>Inloggen</title>
+        <title>Dr. Trottoir: Inloggen</title>
       </Head>
-      <main className="h-screen flex flex-col justify-between p-12 text-sm">
-        <div></div>
-        <div className={"flex justify-center pb-10 "}>
-          <div className={"border-2 border-light-h-2 rounded-lg lg:w-1/2"}>
+      <main
+        className={
+          "text-sm h-screen flex items-center justify-center bg-light-bg-1"
+        }
+      >
+        <div className={"w-full max-w-4xl m-4"}>
+          <div className={"border-2 border-light-border rounded-lg "}>
             <div
               className={"bg-dark-bg-1 flex justify-center rounded-t-lg p-8"}
             >
               <Image src={Logo} alt={"logo"} width={128}></Image>
             </div>
             <form
-              className={"bg-light-bg-1 rounded-lg py-12 p-40"}
+              className={"bg-light-bg-1 rounded-lg p-8 sm:py-12 sm:p-40"}
               onSubmit={handleLogin}
             >
               <p
@@ -60,7 +75,7 @@ export default function Login() {
                 <div className={"pb-3"}>
                   <p className={"text-light-text"}>Email</p>
                   <input
-                    className="w-full border-2  border-light-h-2 my-2 p-1 rounded"
+                    className="w-full border-2 border-light-border my-2 p-1 rounded"
                     type="text"
                     id="email"
                     name="username"
@@ -70,7 +85,7 @@ export default function Login() {
                 <div className={"pb-3"}>
                   <p className={"text-gray-600"}>Wachtwoord</p>
                   <input
-                    className="w-full border-2 border-light-h-2 my-2 p-1 rounded"
+                    className="w-full border-2 border-light-border my-2 p-1 rounded"
                     type="password"
                     id="password"
                     name="password"
@@ -91,14 +106,12 @@ export default function Login() {
               </p>
             </form>
           </div>
-        </div>
-        <div>
-          <p className={"text-center"}>
-            In geval van problemen, contacteer: <br />
-            <a className={"text-primary-1"} href={"mail://asdf@dsfs.com"}>
-              ...
-            </a>
-          </p>
+          <div className={"p-8 pb-12 text-center"}>
+            <p>In geval van problemen contacteer: </p>
+            <p>
+              <a className={"text-primary-1"}>bob@bobmail.bob</a>
+            </p>
+          </div>
         </div>
       </main>
     </>
