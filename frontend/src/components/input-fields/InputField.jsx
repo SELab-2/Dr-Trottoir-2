@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  * Custom component for an input field, option for an icon on the right side.
  * @param icon Some FontAwesome icon
  * @param reference A react ref to communicate input state
- * @param onActionCallback Function that will be called when either enter is pressed or the icon is clicked
+ * @param actionCallback Function that will be called when either enter is pressed or the icon is clicked
  * @param iconCallback Function that will be called when the icon is clicked
  * @param keyDownCallback Function that will be called when a key is pressed
  * @param classNameDiv className that will be added to the enclosing div
@@ -15,22 +15,21 @@ export default function CustomInputField({
   reference,
   iconCallback,
   keyDownCallback,
-  onActionCallback,
+  actionCallback,
   classNameDiv,
   classNameInput,
 }) {
-
   const combinedKeyCallback = (event) => {
-    if (event.key === "Enter" && onActionCallback !== undefined) {
-      onActionCallback(event);
+    if (event.key === "Enter" && actionCallback !== undefined) {
+      actionCallback(event);
     }
     if (keyDownCallback !== undefined) keyDownCallback(event);
-  }
+  };
 
   const combinedIconCallback = (event) => {
     if (iconCallback !== undefined) iconCallback(event);
-    if (onActionCallback !== undefined) onActionCallback(event);
-  }
+    if (actionCallback !== undefined) actionCallback(event);
+  };
 
   return (
     <div
@@ -41,7 +40,6 @@ export default function CustomInputField({
         ref={reference}
         type="text"
         onKeyDown={combinedKeyCallback}
-        
         className={`flex-1 bg-light-bg-2 outline-none ${classNameInput}`}
       />
       {icon && (
