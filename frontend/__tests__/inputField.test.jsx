@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import CustomInputField from "@/components/input-fields/InputField";
 
@@ -20,13 +19,14 @@ test("Test if input works and callback is called on click", () => {
 test("Test if input works and callback is called on enter", () => {
   const handleEnter = jest.fn();
 
-  const view = render(
+  render(
     <CustomInputField keyDownCallback={handleEnter} />
   );
   const inputField = screen.getByRole("textbox", { name: "" });
-  userEvent.type(input, "abc{enter}");
+  fireEvent.change(inputField, { target: { value: "abc" } });
+  fireEvent.keyDown(inputField, {key: 'enter', keyCode: 13})
   expect(inputField.value).toBe("abc");
-  expect(handleClick).toHaveBeenCalledTimes(1);
+  expect(handleEnter).toHaveBeenCalledTimes(1);
 });
 
 test("Button does not have to be present", () => {
