@@ -1,16 +1,32 @@
-import Head from "next/head";
-import React from "react";
-import { useState, useEffect, useRef } from "react";
-import BuildingService from "@/services/building.service";
+import Layout from "@/components/Layout";
+import MapView from "@/components/MapView";
+import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
-import PrimaryButton from "@/components/button/PrimaryButton";
-import SelectionList from "@/components/selection/SelectionList";
 import InputField from "@/components/input-fields/InputField";
-import { faPlusCircle, faSearch } from "@fortawesome/free-solid-svg-icons";
-import MapView from "@/components/MapView";
+import SelectionList from "@/components/selection/SelectionList";
+import BuildingService from "@/services/building.service";
+import userService from "@/services/user.service";
+import visitService from "@/services/visit.service";
+import { faPinterest } from "@fortawesome/free-brands-svg-icons";
+import {
+  faPlusCircle,
+  faSearch,
+  faLocation,
+  faLocationPin,
+  faLocationPinLock,
+  faLocationDot,
+  faBriefcase,
+  faPhone,
+  faEnvelope,
+  faImage,
+  faComment,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Head from "next/head";
+import { useEffect, useRef, useState } from "react";
 
-function BuildingSelectionItem({ data, callback, setSelected, background, }) {
+function BuildingSelectionItem({ data, callback, setSelected, background }) {
   const url = data["url"];
   let nickname = "";
   let address = "";
@@ -28,7 +44,7 @@ function BuildingSelectionItem({ data, callback, setSelected, background, }) {
 
   return (
     <div
-      className={"p-4 rounded-lg space-y-3 cursor-pointer grow w-full"}
+      className={"p-2 rounded-lg space-y-1 cursor-pointer"}
       style={{ backgroundColor: background }}
       onClick={handleClick}
     >
@@ -38,31 +54,30 @@ function BuildingSelectionItem({ data, callback, setSelected, background, }) {
   );
 }
 
-function BuildingFilter({ searchStringRef, className, regions, searchFunction }) {
-  function handleChange(event) {
-    setSearchString(event.target.value);
-  }
-
+function BuildingFilter({ searchStringRef, className, searchFunction }) {
   return (
     <div className={className}>
-      <PrimaryCard >
-        <div className={"flex-row"}>
-          <PrimaryButton icon={faPlusCircle} text={"Filter"}></PrimaryButton>
-          <PrimaryButton icon={faPlusCircle} text={"Sort"}></PrimaryButton>
-          <div className="flex items-center">
-            <div className="flex space-x-1">
-              <InputField reference={searchStringRef} icon={faSearch} callback={() => searchFunction()}></InputField>
-            </div>
-          </div>
+      <PrimaryCard>
+        <div className={""}>
+          {/* <PrimaryButton icon={faPlusCircle} text={"Filter"}></PrimaryButton>
+          <PrimaryButton icon={faPlusCircle} text={"Sort"}></PrimaryButton> */}
+          <InputField
+            classNameDiv={"w-80"}
+            reference={searchStringRef}
+            icon={faSearch}
+            actionCallback={() => searchFunction()}
+          />
         </div>
-
       </PrimaryCard>
     </div>
-
   );
 }
 
-function BuildingSelector({ buildingList, updateBuildingSelection, className }) {
+function BuildingSelector({
+  buildingList,
+  updateBuildingSelection,
+  className,
+}) {
   return (
     <div className={className}>
       <PrimaryCard title={"Gebouwen"}>
@@ -92,55 +107,98 @@ function NoBuildingSelected({ className }) {
     <div className={className}>
       <div className={"flex-col grow"}>
         <PrimaryCard title="Details">
-          <h1 className={"text-light-h-1 font-bold text-lg p-3"}>Selecteer een gebouw</h1>
+          <h1 className={"text-light-h-1 font-bold text-lg m-3"}>
+            Selecteer een gebouw
+          </h1>
         </PrimaryCard>
       </div>
-    </div >
+    </div>
   );
 }
 
 function BuildingView({ buildingDetail, className }) {
+  const mapCard = useRef(null);
+
   return (
     <div className={className}>
       <PrimaryCard title="Details">
-        <h1 className={"text-light-h-1 font-bold text-lg p-3"}>{buildingDetail["nickname"]}</h1>
-        <p className={"p-3"}>{buildingDetail["description"]}</p>
+        <h1 className={"text-light-h-1 font-bold text-lg m-3"}>
+          {buildingDetail["nickname"]}
+        </h1>
+        <p className={"m-2"}>{buildingDetail["description"]}</p>
 
-        <div className={"basis-1/3 flex-row"}>
+        <div className={"flex flex-row grid grid-cols-3"}>
+          <div>
+            {buildingDetail["owners"].map((owner) => (
+              <SecondaryCard
+                key={owner["email"]}
+                title={"Verantwoordelijke"}
+                icon={faBriefcase}
+                className={"m-2"}
+              >
+                <p className={"font-bold"}>
+                  {owner["first_name"] + " " + owner["last_name"]}
+                </p>
+                <div className={"flex items-center"}>
+                  <FontAwesomeIcon icon={faEnvelope} className={"p-1"} />
+                  <a
+                    href={"mailto:" + owner["email"]}
+                    className={"underline hover:no-underline"}
+                  >
+                    {owner["email"]}
+                  </a>
+                </div>
+              </SecondaryCard>
+            ))}
 
-          <SecondaryCard title="Locatie">
-            <p>{buildingDetail["address_line_1"]}</p>
-            <p>{buildingDetail["address_line_2"]}</p>
-            <MapView
-              address={buildingDetail["address_line_1"] + " " + buildingDetail["address_line_2"]}
-              mapWidth={300}
-              mapHeight={400} />
-          </SecondaryCard>
-
-          <SecondaryCard title="raw building json">
-            <p>{JSON.stringify(buildingDetail)}</p>
-          </SecondaryCard>
-
-
-        </div>
-        <div className={"basis-2/3"}>
-          <SecondaryCard title='Details'>
-            pni
-          </SecondaryCard>
+            <div ref={mapCard}>
+              <SecondaryCard
+                title="Locatie"
+                icon={faLocationDot}
+                className={"m-2"}
+              >
+                <p>{buildingDetail["address_line_1"]}</p>
+                <p>{buildingDetail["address_line_2"]}</p>
+                <MapView
+                  className={"pt-3"}
+                  address={
+                    buildingDetail["address_line_1"] +
+                    " " +
+                    buildingDetail["address_line_2"]
+                  }
+                  mapWidth={
+                    mapCard.current ? mapCard.current.offsetWidth - 45 : 0
+                  }
+                  mapHeight={400}
+                />
+              </SecondaryCard>
+            </div>
+          </div>
+          <div className={"col-span-2"}>
+            <SecondaryCard
+              title={"Foto's"}
+              icon={faImage}
+              className={"m-2"}
+            ></SecondaryCard>
+            <SecondaryCard
+              title={"Opmerkingen"}
+              icon={faComment}
+              className={"m-2"}
+            ></SecondaryCard>
+          </div>
         </div>
       </PrimaryCard>
-    </div >
-
+    </div>
   );
 }
 
 export default function Buildings() {
   const [buildingList, setBuildingList] = useState([]);
-  const [buildingDetail, setBuildingDetail] = useState("{}");
+  const [buildingDetail, setBuildingDetail] = useState({ owners: [] });
   const [buildingURL, setBuildingURL] = useState("");
   const searchString = useRef("");
   const [searchResults, setSearchResults] = useState([]);
-  const [regions] = useState([]);
+  const [visits, setVisits] = useState([]);
 
   const loadBuildings = async () => {
     const buildings = await BuildingService.get();
@@ -149,7 +207,7 @@ export default function Buildings() {
   };
 
   const updateBuildingSelection = async (url) => {
-    setBuildingURL(url)
+    setBuildingURL(url);
     const building = await BuildingService.getEntryByUrl(url);
     setBuildingDetail(building);
     console.log(buildingDetail);
@@ -160,16 +218,18 @@ export default function Buildings() {
   }, []);
 
   function performSearch() {
-    setSearchResults(buildingList.filter(
-      building => {
-        const search = searchString.current.value.toLowerCase()
+    setSearchResults(
+      buildingList.filter((building) => {
+        const search = searchString.current.value.toLowerCase();
         return (
           building["nickname"].toLowerCase().includes(search) ||
-        building["description"].toLowerCase().includes(search) ||
-        (building["address_line_1"] + " " + building["address_line_2"]).toLowerCase().includes(search)
-        );        
-      }
-    ));
+          building["description"].toLowerCase().includes(search) ||
+          (building["address_line_1"] + " " + building["address_line_2"])
+            .toLowerCase()
+            .includes(search)
+        );
+      })
+    );
   }
 
   return (
@@ -178,19 +238,31 @@ export default function Buildings() {
         <title>Gebouwen</title>
       </Head>
       <div className={"flex-row"}>
-        <BuildingFilter searchStringRef={searchString} searchFunction={performSearch} className={"p-3"} />
+        <BuildingFilter
+          searchStringRef={searchString}
+          searchFunction={performSearch}
+          className={"m-2"}
+        />
         <div className={"flex"}>
-          {
-            (buildingURL === "") ?
-              <NoBuildingSelected className={"p-3 basis-2/3"} /> :
-              <BuildingView buildingDetail={buildingDetail} className={"basis-2/3 p-3"} />
-          }
+          {buildingURL === "" ? (
+            <NoBuildingSelected className={"m-2 basis-3/4"} />
+          ) : (
+            <BuildingView
+              buildingDetail={buildingDetail}
+              className={"basis-3/4 m-2"}
+            />
+          )}
           <BuildingSelector
             buildingList={searchResults}
             updateBuildingSelection={updateBuildingSelection}
-            className={"p-3 grow"} />
+            className={"m-2 grow"}
+          />
         </div>
       </div>
     </>
   );
 }
+
+Buildings.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>;
+};
