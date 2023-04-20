@@ -260,7 +260,7 @@ export default function Syndici() {
               <CustomInputField
                 icon={faMagnifyingGlass}
                 reference={searchRef}
-                callback={() => applySearch(filterSelected)}
+                actionCallback={() => applySearch(filterSelected)}
               ></CustomInputField>
             </div>
             <div className="mt-2">
