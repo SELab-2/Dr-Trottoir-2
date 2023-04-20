@@ -19,6 +19,7 @@ import UserService from "@/services/user.service";
 import CustomProgressBar from "@/components/ProgressBar";
 import Link from "next/link";
 import { urlToPK } from "@/utils/urlToPK";
+import Layout from "@/components/Layout";
 
 export default function AdminDashboardPage() {
   const [schedule, setSchedule] = useState([]);
@@ -168,3 +169,7 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+AdminDashboardPage.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>;
+};

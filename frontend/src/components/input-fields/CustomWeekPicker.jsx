@@ -1,6 +1,6 @@
 import moment from "moment";
 import DatePicker from "react-datepicker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
 /**
@@ -35,6 +35,14 @@ export default function CustomWeekPicker({
   className,
   onChange,
 }) {
+  // const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+  //
+  // useEffect(() => {
+  //   if (startDate && endDate) {
+  //     setDateRange([startDate, endDate]);
+  //   }
+  // }, [startDate, endDate]);
+
   const handleValueChange = (newValue) => {
     const value = newValue[0];
     if (value !== null) {
@@ -42,6 +50,7 @@ export default function CustomWeekPicker({
       const dateTo = moment(value).endOf("isoWeek").toDate();
 
       onChange(dateFrom, dateTo);
+      //setDateRange([dateFrom, dateTo]);
     }
   };
 

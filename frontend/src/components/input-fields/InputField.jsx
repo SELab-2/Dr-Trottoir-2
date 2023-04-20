@@ -33,7 +33,7 @@ export default function CustomInputField({
 
   return (
     <div
-      className={`rounded-lg bg-light-bg-2 p-1 border-solid border-2 border-light-h-2 relative flex items-center ${classNameDiv}`}
+      className={`rounded-lg bg-light-bg-2 p-1 border-2 border-light-border relative flex items-center ${classNameDiv}`}
     >
       <input
         name={"input-field"}
@@ -46,7 +46,7 @@ export default function CustomInputField({
         <FontAwesomeIcon
           data-testid="input-button"
           onClick={combinedIconCallback}
-          className="relative cursor-pointer"
+          className="relative cursor-pointer m-1"
           icon={icon}
         />
       )}

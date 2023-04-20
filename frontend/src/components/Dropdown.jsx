@@ -60,7 +60,7 @@ export default function Dropdown({
       </button>
       {isOpen && (
         <ul
-          className={`absolute z-[100] hover:z-[1000] shadow border-2 rounded-lg bg-light-bg-1 ${listClassName}`}
+          className={`absolute z-[100] hover:z-[1000] border-2 border-light-border mt-2 rounded-lg bg-light-bg-1 ${listClassName}`}
         >
           {options !== null && options.length !== 0 ? (
             options.map((ele, index) => (
@@ -77,7 +77,7 @@ export default function Dropdown({
               </li>
             ))
           ) : (
-            <li className={"text-bad-1"}>No options available</li>
+            <li className={"text-bad-1 m-2"}>No options available</li>
           )}
         </ul>
       )}
