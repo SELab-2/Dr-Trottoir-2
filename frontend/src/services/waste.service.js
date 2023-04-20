@@ -49,9 +49,7 @@ class WasteService {
       );
     }
     if (args.buildings) {
-      data = data.filter((waste) =>
-        args.buildings.includes(waste.building)
-      );
+      data = data.filter((waste) => args.buildings.includes(waste.building));
     }
     return data;
   }
