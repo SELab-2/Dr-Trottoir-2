@@ -43,7 +43,7 @@ export default function Navbar() {
           name={"Data"}
           categories={{
             Rondes: { icon: faBicycle, link: "#" },
-            Gebouwen: { icon: faBuilding, link: "#" },
+            Gebouwen: { icon: faBuilding, link: "/admin/gebouwen" },
             Personeel: { icon: faPeopleGroup, link: "/admin/personeel" },
             Syndici: { icon: faBriefcase, link: "/admin/syndici" },
           }}

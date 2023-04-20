@@ -232,14 +232,14 @@ export default function Syndici() {
           </CustomButton>
         </div>
       </CustomModal>
-      <main className={`h-screen p-8 flex-col justify-between`}>
+      <main className={`h-screen p-2 flex-col justify-between`}>
         <PrimaryCard className={"mb-4"}>
           <div
             className={
-              "space-x-0 flex flex-col lg:justify-center lg:items-start lg:space-x-2 lg:flex-row w-full"
+              "space-x-0 space-y-2 flex flex-col lg:justify-center lg:items-center lg:space-x-2 lg:space-y-0 lg:flex-row w-full"
             }
           >
-            <div className="mt-2">
+            <div>
               <Dropdown
                 icon={faFilter}
                 options={buildings.map((building) => building.nickname)}
@@ -248,7 +248,7 @@ export default function Syndici() {
                 Filter
               </Dropdown>
             </div>
-            <div className="my-2">
+            <div>
               <Dropdown
                 icon={faSort}
                 options={["Voornaam", "Achternaam", "E-mailadres"]}
@@ -261,10 +261,10 @@ export default function Syndici() {
               <CustomInputField
                 icon={faMagnifyingGlass}
                 reference={searchRef}
-                callback={() => applySearch(filterSelected)}
+                actionCallback={() => applySearch(filterSelected)}
               ></CustomInputField>
             </div>
-            <div className="mt-2">
+            <div>
               <PrimaryButton icon={faCirclePlus}>
                 <span className="mx-5-3">Nieuw</span>
               </PrimaryButton>
