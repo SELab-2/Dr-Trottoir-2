@@ -25,6 +25,7 @@ module.exports = {
           2: "#4D4D4D",
         },
         text: "#B2B2B2",
+        border: "#262626",
       },
       accent: {
         1: "#E6E600",

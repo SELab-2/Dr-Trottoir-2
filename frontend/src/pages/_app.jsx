@@ -10,11 +10,11 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 config.autoAddCss = false;
 
 export default function App({ session, Component, pageProps }) {
+  const getLayout = Component.getLayout || ((page) => page);
+
   return (
     <SessionProvider session={session} basePath="/next/auth">
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      {getLayout(<Component {...pageProps} />)}
     </SessionProvider>
   );
 }
