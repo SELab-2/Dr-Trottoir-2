@@ -12,9 +12,13 @@ import tourService from "@/services/tour.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
 import VisitService from "@/services/visit.service";
 import PhotoService from "@/services/photo.service";
+import ProgressBar from "react-customizable-progressbar";
+import CustomProgressBar from "@/components/ProgressBar";
 
 export default function StudentPlanningPage() {
+  const [name, setName] = useState("");
   const [buildings, setBuildings] = useState([]);
+  const [fraction, setFraction] = useState(0);
   const [names, setNames] = useState([]);
   const [schedules, setSchedules] = useState([]);
 
@@ -34,31 +38,38 @@ export default function StudentPlanningPage() {
   }
 
   async function setSchedule(item) {
-    const url = item[0][1];
-    console.log(url);
-    const schedule = await scheduleService.getEntryByUrl(url);
-    let split = url.trim().split("/");
-    const visits = await scheduleService.getVisitsFromSchedule(
-      split[split.length - 2]
-    );
-    let count = 0;
-    for (const visit of visits) {
-      const buildInTour = await BuildingInTourService.getEntryByUrl(
-        visit["building_in_tour"]
+    const content = item[0];
+    if (content) {
+      const url = content[1];
+      const schedule = await scheduleService.getEntryByUrl(url);
+      let split = url.trim().split("/");
+      const visits = await scheduleService.getVisitsFromSchedule(
+        split[split.length - 2]
       );
-      const photos = await visit_finished(visit.url);
-      if (photos.length > 0) {
-        count++;
+      let count = 0;
+      for (const visit of visits) {
+        const buildInTour = await BuildingInTourService.getEntryByUrl(
+          visit["building_in_tour"]
+        );
+        const photos = await visit_finished(visit.url);
+        if (photos.length > 0) {
+          count++;
+        }
       }
+
+      split = schedule.tour.trim().split("/");
+      let buildings = await tourService.getBuildingsFromTour(
+        split[split.length - 2]
+      );
+      if (buildings.length > 0) {
+        const building_names = buildings.map(
+          (entry) => entry["building_data"]["nickname"]
+        );
+        setBuildings(building_names);
+        setName(buildings[0].tour_name);
+      }
+      console.log(buildings);
     }
-
-    split = schedule.tour.trim().split("/");
-    let buildings = await tourService.getBuildingsFromTour(
-      split[split.length - 2]
-    );
-    console.log(buildings);
-
-    console.log(visits);
   }
 
   useEffect(() => {
@@ -102,20 +113,24 @@ export default function StudentPlanningPage() {
         >
           <div
             className={
-              "flex flex-col justify-start items-center content-start space-y-3"
+              "flex flex-col w-full justify-start items-center content-start space-y-3"
             }
           >
             <h1 className={"text-[35px] font-bold text-dark-text"}>Planning</h1>
-            <h3 className={"text-lg font-bold text-dark-text"}>
-              Stations ronde
-            </h3>
+            <h3 className={"text-lg font-bold text-dark-text"}>{name}</h3>
+            <Dropdown
+              icon={faBicycle}
+              options={names}
+              optionsValues={schedules}
+              onClick={async (item) => await setSchedule(item)}
+            >
+              {name}
+            </Dropdown>
           </div>
-          <Dropdown
-            icon={faBicycle}
-            options={names}
-            optionsValues={schedules}
-            onClick={async (item) => await setSchedule(item)}
-          />
+          <div className={"w-full"}>
+            <CustomProgressBar fraction={fraction} />
+          </div>
+          <div className={"flex flex-col"}>{buildings}</div>
         </div>
       </div>
     </>
