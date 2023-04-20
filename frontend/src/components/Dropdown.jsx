@@ -57,7 +57,7 @@ export default function Dropdown({
   return (
     <div className={`${className}`}>
       <button
-        className={`align-middle border-2 py-2 px-3 text-center rounded-lg font-bold w-fit mb-2 ${
+        className={`align-middle border-2 border-light-border py-2 px-3 text-center rounded-lg font-bold w-fit ${
           selectedIndices.length !== 0 ? `bg-primary-2 text-primary-1` : ``
         }`}
         onClick={onButtonPressed}
@@ -70,7 +70,7 @@ export default function Dropdown({
       </button>
       {isOpen && (
         <ul
-          className={`absolute z-[100] hover:z-[1000] shadow border-2 rounded-lg bg-light-bg-1 ${listClassName}`}
+          className={`absolute z-[100] hover:z-[1000] border-2 border-light-border mt-2 rounded-lg bg-light-bg-1 ${listClassName}`}
         >
           {options !== null && options.length !== 0 ? (
             options.map((ele, index) => (
@@ -87,7 +87,7 @@ export default function Dropdown({
               </li>
             ))
           ) : (
-            <li className={"text-bad-1"}>No options available</li>
+            <li className={"text-bad-1 m-2"}>No options available</li>
           )}
         </ul>
       )}
