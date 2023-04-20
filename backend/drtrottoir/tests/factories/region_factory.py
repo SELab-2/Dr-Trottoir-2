@@ -9,3 +9,4 @@ class RegionFactory(DjangoModelFactory):
 
     class Meta:
         model = Region
+        django_get_or_create = ('region_name',)

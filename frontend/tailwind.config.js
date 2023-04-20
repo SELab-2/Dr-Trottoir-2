@@ -13,6 +13,7 @@ module.exports = {
           2: "#B2B2B2",
         },
         text: "#4D4D4D",
+        border: "#E6E6E6",
       },
       dark: {
         bg: {
@@ -24,6 +25,7 @@ module.exports = {
           2: "#4D4D4D",
         },
         text: "#B2B2B2",
+        border: "#262626",
       },
       accent: {
         1: "#E6E600",
@@ -54,8 +56,32 @@ module.exports = {
     fontSize: {
       base: "14px",
       lg: "21px",
+      xl: "27px",
+      xxl: "32px",
     },
-    extend: {},
+    extend: {
+      strokeLinecap: {
+        square: "square",
+        round: "round",
+        butt: "butt",
+      },
+    },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        ".stroke-linecap-square": {
+          "stroke-linecap": "square",
+        },
+        ".stroke-linecap-round": {
+          "stroke-linecap": "round",
+        },
+        ".stroke-linecap-butt": {
+          "stroke-linecap": "butt",
+        },
+      };
+
+      addUtilities(newUtilities, ["responsive", "hover"]);
+    },
+  ],
 };

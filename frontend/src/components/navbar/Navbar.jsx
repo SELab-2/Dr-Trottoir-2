@@ -35,7 +35,7 @@ export default function Navbar() {
         <LinkList
           name={"Menu"}
           categories={{
-            Planning: { icon: faCalendarWeek, link: "/student/planning" },
+            Planning: { icon: faCalendarWeek, link: "/admin/planning" },
             "Nieuwe data": {
               icon: faCirclePlus,
               link: "/admin/data_toevoegen",
@@ -48,9 +48,9 @@ export default function Navbar() {
           name={"Data"}
           categories={{
             Rondes: { icon: faBicycle, link: "#" },
-            Gebouwen: { icon: faBuilding, link: "#" },
+            Gebouwen: { icon: faBuilding, link: "/admin/gebouwen" },
             Personeel: { icon: faPeopleGroup, link: "#" },
-            Syndici: { icon: faBriefcase, link: "#" },
+            Syndici: { icon: faBriefcase, link: "/admin/syndici" },
           }}
           className={"text-dark-text bg-dark-bg-1 mt-6 mb-6 "}
           linkClassName={"hover: hover:bg-dark-bg-2"}

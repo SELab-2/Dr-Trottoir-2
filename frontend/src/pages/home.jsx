@@ -16,18 +16,20 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import Emoji from "@/components/Emoji";
+import Layout from "@/components/Layout";
+import CustomProgressBar from "@/components/ProgressBar";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
   const router = useRouter();
 
   const allBuildings = async () => {
-    const response = await BuildingService.getAll();
+    const response = await BuildingService.get();
     setResponse(JSON.stringify(response, null, 2));
   };
 
   const allUsers = async () => {
-    const response = await UserService.getAll();
+    const response = await UserService.get();
     setResponse(JSON.stringify(response, null, 2));
   };
 
@@ -65,9 +67,16 @@ export default function Home() {
           </PrimaryCard>
         </SecondaryCard>
       </PrimaryCard>
+      <PrimaryCard className={"mx-4"} title={"Testing Ground"}></PrimaryCard>
       <PrimaryCard icon={faCreditCard} className={"m-4"}>
         <p className={"font-bold"}>By team 2</p>
       </PrimaryCard>
+      <CustomProgressBar
+        fraction={1 / 3}
+        is_wheel={true}
+        circleWidth={120}
+        radius={120}
+      />
     </>
   );
 }
@@ -86,3 +95,7 @@ export async function getServerSideProps(context) {
     props: { session },
   };
 }
+
+Home.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>;
+};
