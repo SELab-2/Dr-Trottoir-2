@@ -1,24 +1,25 @@
 import MobileLayout from "@/components/MobileLayout";
-import buildingService from "@/services/building.service";
+import BuildingService from "@/services/building.service";
 import { useEffect, useState } from "react";
-import { faBuilding, faLocationDot, faBriefcase, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faBuilding, faLocationDot, faComment, faImage } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
 import Dropdown from "@/components/Dropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CustomButton from "@/components/button/Button";
+import BuildingImage from "/public/images/buildingimage.jpg";
 
 export default function StudentBuilding() {
   const [buildings, setBuildings] = useState([]);
   const [selectedBuilding, setSelectedBuilding] = useState(null);
 
   useEffect(() => {
-    async function fetchBuildings() {
-      const response = await buildingService.get();
-      console.log(response)
+    async function fetchData() {
+      const response = await BuildingService.get();
       setBuildings(response);
     }
-    fetchBuildings()
+    fetchData();
   }, []);  
 
   // Needs to change because nicknames aren't unique
@@ -35,6 +36,9 @@ export default function StudentBuilding() {
   return (
     <>
       <div className="w-full p-2">
+        <PrimaryCard className="mx-1 my-2 h-36 flex justify-center items-center">
+          <Image src={BuildingImage} className="h-28 object-cover" alt="logo" />
+        </PrimaryCard>
         <Dropdown 
           icon={faBuilding} 
           options={buildings.map(building => building.nickname)}
@@ -65,7 +69,7 @@ export default function StudentBuilding() {
               </div>
             </div>
             <SecondaryCard className="my-3"></SecondaryCard>
-            <SecondaryCard title="Opmerkingen" icon={faBriefcase} className="my-3">
+            <SecondaryCard title="Opmerkingen" icon={faComment} className="my-3">
 
             </SecondaryCard>
             <SecondaryCard title="Foto's" icon={faImage} className="my-2">
@@ -76,9 +80,6 @@ export default function StudentBuilding() {
           </PrimaryCard>
           </div>
         }
-        
-
-        
       </div>
     </>
   );
