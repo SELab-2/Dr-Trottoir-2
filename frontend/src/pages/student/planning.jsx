@@ -8,9 +8,58 @@ import { getSession, useSession } from "next-auth/react";
 import scheduleService from "@/services/schedule.service";
 import moment from "moment";
 import userService from "@/services/user.service";
+import tourService from "@/services/tour.service";
+import BuildingInTourService from "@/services/buildingInTour.service";
+import VisitService from "@/services/visit.service";
+import PhotoService from "@/services/photo.service";
 
 export default function StudentPlanningPage() {
-  const [schedule, setSchedules] = useState([]);
+  const [buildings, setBuildings] = useState([]);
+  const [names, setNames] = useState([]);
+  const [schedules, setSchedules] = useState([]);
+
+  async function visit_finished(url) {
+    const split = url.trim().split("/");
+    const photoUrls = await VisitService.getPhotosByVisit(
+      split[split.length - 2]
+    );
+
+    const photos = await Promise.all(
+      photoUrls.map(async (entry) => {
+        return await PhotoService.getEntryByUrl(entry.url);
+      })
+    );
+
+    return photos.filter((entry) => entry["state"] === 2);
+  }
+
+  async function setSchedule(item) {
+    const url = item[0][1];
+    console.log(url);
+    const schedule = await scheduleService.getEntryByUrl(url);
+    let split = url.trim().split("/");
+    const visits = await scheduleService.getVisitsFromSchedule(
+      split[split.length - 2]
+    );
+    let count = 0;
+    for (const visit of visits) {
+      const buildInTour = await BuildingInTourService.getEntryByUrl(
+        visit["building_in_tour"]
+      );
+      const photos = await visit_finished(visit.url);
+      if (photos.length > 0) {
+        count++;
+      }
+    }
+
+    split = schedule.tour.trim().split("/");
+    let buildings = await tourService.getBuildingsFromTour(
+      split[split.length - 2]
+    );
+    console.log(buildings);
+
+    console.log(visits);
+  }
 
   useEffect(() => {
     const allSchedules = async () => {
@@ -25,6 +74,14 @@ export default function StudentPlanningPage() {
         startDate: dateFrom,
         endDate: dateTo,
       });
+      const names = await Promise.all(
+        schedules.map(async (entry) => {
+          const tour = await tourService.getEntryByUrl(entry.tour);
+          return tour.name;
+        })
+      );
+      console.log(names);
+      setNames(names);
       const scheduleUrls = schedules.map((entry) => entry.url);
       console.log(schedules);
       setSchedules(scheduleUrls);
@@ -53,7 +110,12 @@ export default function StudentPlanningPage() {
               Stations ronde
             </h3>
           </div>
-          <Dropdown icon={faBicycle} options={schedule} />
+          <Dropdown
+            icon={faBicycle}
+            options={names}
+            optionsValues={schedules}
+            onClick={async (item) => await setSchedule(item)}
+          />
         </div>
       </div>
     </>

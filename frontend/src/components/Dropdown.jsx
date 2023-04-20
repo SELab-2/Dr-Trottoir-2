@@ -12,6 +12,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
  * @param onClick Function that is executed when element in the dropdown is selected.
  *        This function expects 1 argument, a list of all selected elements.
  * @param options List of all the options. These needs to be strings/components.
+ * @param optionsValues List of the hidden value of every option.
  * @param multi Indicates if multiple elements can be selected.
  * @returns {JSX.Element}
  * @constructor
@@ -23,6 +24,7 @@ export default function Dropdown({
   icon,
   onClick,
   options,
+  optionsValues,
   multi = false,
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +43,15 @@ export default function Dropdown({
       ? [...selectedIndices, index]
       : [index];
     setSelectedIndices(selected);
-    onClick && onClick(selected.sort().map((i) => options[i]));
+    onClick &&
+      onClick(
+        selected.sort().map((i) => {
+          if (optionsValues) {
+            return [options[i], optionsValues[i]];
+          }
+          return options[i];
+        })
+      );
   };
 
   return (
