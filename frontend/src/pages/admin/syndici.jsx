@@ -22,6 +22,7 @@ import CustomModal from "@/components/CustomModal";
 import SelectableTable from "@/components/table/SelectableTable";
 import Layout from "@/components/Layout";
 import { urlToPK } from "@/utils/urlToPK";
+import Layout from "@/components/Layout";
 
 const initialContextMenu = {
   show: false,
@@ -150,11 +151,11 @@ export default function Syndici() {
   };
 
   const closeContextMenu = (option) => {
-    if (option == "Wijzig") {
+    if (option === "Wijzig") {
       editUser();
-    } else if (option == "Verwijder") {
+    } else if (option === "Verwijder") {
       setModalOpen(true);
-    } else if (option == "Mail") {
+    } else if (option === "Mail") {
       mailUsers();
     }
     setContextMenu(initialContextMenu);
