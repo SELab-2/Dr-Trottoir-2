@@ -62,20 +62,20 @@ export default function Employees() {
     allUsers();
   }, []);
 
-  const createRoleCell = (role) => {
-    return (
-      <ColoredTag className={roleToClassName[role]}>
-        {roleToString[role]}
-      </ColoredTag>
-    );
-  };
-
   // Tailwindcss can't construct class names dynamically
   const roleToClassName = {
     1: "bg-tags-1",
     2: "bg-tags-2",
     3: "bg-tags-3",
     5: "bg-tags-5",
+  };
+
+  const createRoleCell = (role) => {
+    return (
+      <ColoredTag className={roleToClassName[role]}>
+        {roleToString[role]}
+      </ColoredTag>
+    );
   };
 
   const columns = [
