@@ -6,12 +6,22 @@ export default function SelectionList({
   title,
   Component,
   callback,
+  selectedStart,
   elements,
 }) {
   return (
-    <PrimaryCard className={className} title={title} text={""}>
-      <div className="h-full overflow-auto space-y-2 rounded-lg">
-        <Selection list={elements} Component={Component} callback={callback} />
+    <PrimaryCard
+      className={"flex flex-col " + className}
+      title={title}
+      text={""}
+    >
+      <div className="overflow-y-scroll space-y-2 rounded-lg h-40 grow">
+        <Selection
+          list={elements}
+          Component={Component}
+          callback={callback}
+          selectedStart={selectedStart}
+        />
       </div>
     </PrimaryCard>
   );
