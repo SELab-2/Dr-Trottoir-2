@@ -1,10 +1,19 @@
 import { COLOR_LIGHT_BG_2, COLOR_ACCENT_1 } from "@/utils/colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Selection({ list, Component, callback }) {
+export default function Selection({
+  list,
+  Component,
+  selectedStart,
+  callback,
+}) {
   const defaultBG = COLOR_LIGHT_BG_2;
   const selectedBG = COLOR_ACCENT_1;
   const [selected, setSelected] = useState("");
+
+  useEffect(() => {
+    setSelected(selectedStart || "");
+  }, [selectedStart]);
 
   return (
     <>
