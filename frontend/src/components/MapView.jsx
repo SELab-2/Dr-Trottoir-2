@@ -61,6 +61,8 @@ export default function MapView({
   transportationMode,
   className,
 }) {
+  console.log(process.env);
+
   if (address === undefined && (route === undefined || route.length === 0)) {
     return (
       <iframe
