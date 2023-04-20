@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import MobileLayout from "@/components/MobileLayout";
 import Head from "next/head";
 import Dropdown from "@/components/Dropdown";
-import { faBicycle } from "@fortawesome/free-solid-svg-icons";
+import { faBicycle, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { getSession, useSession } from "next-auth/react";
 import scheduleService from "@/services/schedule.service";
@@ -14,6 +14,7 @@ import VisitService from "@/services/visit.service";
 import PhotoService from "@/services/photo.service";
 import ProgressBar from "react-customizable-progressbar";
 import CustomProgressBar from "@/components/ProgressBar";
+import buildingService from "@/services/building.service";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -62,10 +63,22 @@ export default function StudentPlanningPage() {
         split[split.length - 2]
       );
       if (buildings.length > 0) {
-        const building_names = buildings.map(
-          (entry) => entry["building_data"]["nickname"]
+        const building_data = await Promise.all(
+          buildings.map(async (entry) => {
+            const result = {};
+            const building = await buildingService.getEntryByUrl(
+              entry["building"]
+            );
+            console.log(building);
+            result["name"] = entry["building_data"]["nickname"];
+            result[
+              "address"
+            ] = `${building["address_line_1"]} ${building["address_line_2"]}`;
+
+            return result;
+          })
         );
-        setBuildings(building_names);
+        setBuildings(building_data);
         setName(buildings[0].tour_name);
         setFraction(count / buildings.length);
       }
@@ -139,13 +152,16 @@ export default function StudentPlanningPage() {
             </div>
           </div>
           <div className={"w-full flex flex-col space-y-3"}>
-            {buildings.map((name, index) => {
+            {buildings.map((data, index) => {
               return (
                 <div
                   className={"font-bold rounded-lg w-full bg-light-h-2 p-3"}
                   key={index}
                 >
-                  {name}
+                  <h1>{data["name"]}</h1>
+                  <div className={"flex flex-row"}>
+                    <FrontAwesomeIcon icon={faLocationDot} />
+                  </div>
                 </div>
               );
             })}
