@@ -47,7 +47,7 @@ export default function Dropdown({
   return (
     <div className={`${className}`}>
       <button
-        className={`align-middle border-2 py-2 px-3 text-center rounded-lg font-bold w-fit mb-2 ${
+        className={`align-middle border-2 py-2 px-3 text-center rounded-lg font-bold w-full mb-2 ${
           selectedIndices.length !== 0 ? `bg-primary-2 text-primary-1` : ``
         }`}
         onClick={onButtonPressed}
