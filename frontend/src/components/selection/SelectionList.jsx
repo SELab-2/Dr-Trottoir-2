@@ -10,8 +10,12 @@ export default function SelectionList({
   elements,
 }) {
   return (
-    <PrimaryCard className={className} title={title} text={""}>
-      <div className="overflow-auto space-y-2 rounded-lg">
+    <PrimaryCard
+      className={"flex flex-col " + className}
+      title={title}
+      text={""}
+    >
+      <div className="overflow-y-scroll space-y-2 rounded-lg h-40 grow">
         <Selection
           list={elements}
           Component={Component}

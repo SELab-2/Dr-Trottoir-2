@@ -245,203 +245,196 @@ export default function AdminTourPage() {
       <Head>
         <title>Rondes</title>
       </Head>
-      <main className={"max-h-screen"}>
-        <PrimaryCard className={"m-2"}>
-          <div className={"flex justify-between"}>
-            <div className={"flex"}>
-              <Dropdown
-                icon={faFilter}
-                text={"Filter"}
-                className={"mr-2"}
-                options={[]}
-              >
-                Filter
-              </Dropdown>
-              <Dropdown
-                icon={faSort}
-                text={"Sort"}
-                className={"mr-2"}
-                options={[]}
-              >
-                Sort
-              </Dropdown>
-              <InputField
-                classNameDiv={"w-80"}
-                reference={() => {}}
-                icon={faSearch}
-                actionCallback={() => {}}
-              />
-            </div>
-            <PrimaryButton icon={faPlusCircle} text={"Sort"}>
-              Nieuw
-            </PrimaryButton>
+      <PrimaryCard className={"m-2"}>
+        <div className={"flex justify-between"}>
+          <div className={"flex"}>
+            <Dropdown
+              icon={faFilter}
+              text={"Filter"}
+              className={"mr-2"}
+              options={[]}
+            >
+              Filter
+            </Dropdown>
+            <Dropdown
+              icon={faSort}
+              text={"Sort"}
+              className={"mr-2"}
+              options={[]}
+            >
+              Sort
+            </Dropdown>
+            <InputField
+              classNameDiv={"w-80"}
+              reference={() => {}}
+              icon={faSearch}
+              actionCallback={() => {}}
+            />
           </div>
-        </PrimaryCard>
-        <div className={"flex"}>
-          <PrimaryCard
-            className={"m-2 basis-3/4 h-3/5 overflow-auto"}
-            title={"Details"}
-          >
-            <div>
-              <div className={"flex flex items-center"}>
-                <h1 className={"w-full text-light-h-1 font-bold text-xl my-2"}>
-                  {name}
-                </h1>
-                <div className={"flex space-x-2"}>
-                  <SecondaryButton icon={faPenToSquare} className={"h-fit"}>
-                    Bewerk
-                  </SecondaryButton>
-                  <SecondaryButton icon={faTrash} className={"h-fit"}>
-                    Verwijder
-                  </SecondaryButton>
-                </div>
+          <PrimaryButton icon={faPlusCircle} text={"Sort"}>
+            Nieuw
+          </PrimaryButton>
+        </div>
+      </PrimaryCard>
+      <div className={"flex"}>
+        <PrimaryCard
+          className={"m-2 basis-3/4 h-3/5 overflow-auto"}
+          title={"Details"}
+        >
+          <div>
+            <div className={"flex flex items-center"}>
+              <h1 className={"w-full text-light-h-1 font-bold text-xl my-2"}>
+                {name}
+              </h1>
+              <div className={"flex space-x-2"}>
+                <SecondaryButton icon={faPenToSquare} className={"h-fit"}>
+                  Bewerk
+                </SecondaryButton>
+                <SecondaryButton icon={faTrash} className={"h-fit"}>
+                  Verwijder
+                </SecondaryButton>
               </div>
-              <div className={"flex space-x-2 my-4"}>
-                <div className={"flex flex-col space-y-2 basis-1/3"}>
-                  <SecondaryCard
-                    className={"basis-2/5"}
-                    icon={faBriefcase}
-                    title={"Aangeduide student"}
-                  >
-                    <div className={"flex space-x-4 my-2"}>
-                      <ProfilePicture />
-                      <div>
-                        <h1 className={"text-light-h-1 font-bold text-base"}>
-                          {user.first_name} {user.last_name}
-                        </h1>
-                        <div className={"flex flex-row space-x-4"}>
-                          <FontAwesomeIcon
-                            icon={faEnvelope}
-                            className={"h-4 mt-1 mr-2"}
-                          />
-                          {user.email}
-                        </div>
-                      </div>
-                    </div>
-                  </SecondaryCard>
-                  <SecondaryCard
-                    className={"basis-3/5"}
-                    icon={faBriefcase}
-                    title={"Progress"}
-                  >
-                    <div
-                      className={"flex justify-center items-center h-4/5 pb-2"}
-                    >
-                      <div
-                        className={"flex items-center justify-center space-x-2"}
-                      >
-                        <CustomProgressBar
-                          is_wheel
-                          circleWidth={110}
-                          radius={45}
-                          className={"flex-shrink"}
-                          fraction={
-                            finished /
-                            (buildings.length === 0 ? 1 : buildings.length)
-                          }
-                        />
-                        <h1 className={"text-light-h-1 font-bold text-base"}>
-                          {finished}/{buildings.length} klaar
-                        </h1>
-                      </div>
-                    </div>
-                  </SecondaryCard>
-                </div>
-
+            </div>
+            <div className={"flex space-x-2 my-4"}>
+              <div className={"flex flex-col space-y-2 basis-1/3"}>
                 <SecondaryCard
-                  icon={faLocationDot}
-                  title={"Opmerkingen"}
-                  className={"sm:w-2/6 basis-1/3"}
+                  className={"basis-2/5"}
+                  icon={faBriefcase}
+                  title={"Aangeduide student"}
                 >
-                  <div className={"space-y-2 overflow-auto h-full"}>
-                    {comments.map((entry, index) => (
-                      <div
-                        key={index}
-                        className={"rounded-lg bg-light-bg-1 p-2"}
-                      >
-                        <h1 className={"text-light-h-1 font-bold text-base"}>
-                          {entry.building}
-                        </h1>
-                        <Cell cut cutLen={"[300px]"}>
-                          {entry.comment}
-                        </Cell>
+                  <div className={"flex space-x-4 my-2"}>
+                    <ProfilePicture />
+                    <div>
+                      <h1 className={"text-light-h-1 font-bold text-base"}>
+                        {user.first_name} {user.last_name}
+                      </h1>
+                      <div className={"flex flex-row space-x-4"}>
+                        <FontAwesomeIcon
+                          icon={faEnvelope}
+                          className={"h-4 mt-1 mr-2"}
+                        />
+                        {user.email}
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </SecondaryCard>
-
                 <SecondaryCard
-                  className={"basis-1/3"}
-                  icon={faLocationDot}
-                  title={"Wegbeschrijving"}
+                  className={"basis-3/5"}
+                  icon={faBriefcase}
+                  title={"Progress"}
                 >
-                  <MapView
-                    route={buildings.map((building) => building[1])}
-                    className={"w-full h-[84%]"}
-                  />
+                  <div
+                    className={"flex justify-center items-center h-4/5 pb-2"}
+                  >
+                    <div
+                      className={"flex items-center justify-center space-x-2"}
+                    >
+                      <CustomProgressBar
+                        is_wheel
+                        circleWidth={110}
+                        radius={45}
+                        className={"flex-shrink"}
+                        fraction={
+                          finished /
+                          (buildings.length === 0 ? 1 : buildings.length)
+                        }
+                      />
+                      <h1 className={"text-light-h-1 font-bold text-base"}>
+                        {finished}/{buildings.length} klaar
+                      </h1>
+                    </div>
+                  </div>
                 </SecondaryCard>
               </div>
 
               <SecondaryCard
-                className={"h-full"}
-                icon={faBriefcase}
-                title={"Gebouwen"}
+                icon={faLocationDot}
+                title={"Opmerkingen"}
+                className={"sm:w-2/6 basis-1/3"}
               >
-                <CustomTable
-                  className={"w-full"}
-                  columns={[
-                    {
-                      name: "Naam",
-                      createCell: (name) => <Link href={"#"}>{name}</Link>,
-                    },
-                    { name: "Adres", cut: true },
-                    {
-                      name: "Status",
-                      createCell: (status) => {
-                        let className = "font-bold text-good-1 bg-good-2";
-                        if (status === "Onderweg") {
-                          className = "font-bold text-bad-1 bg-bad-2";
-                        } else if (status === "Bezig") {
-                          className = "font-bold text-meh-1 bg-meh-2";
-                        }
-                        return (
-                          <ColoredTag className={className}>
-                            {status}
-                          </ColoredTag>
-                        );
-                      },
-                    },
-                    { name: "Verantwoordelijke", cut: true },
-                    { name: "Tijd" },
-                  ]}
-                  data={buildings}
+                <div className={"space-y-2 overflow-auto h-full"}>
+                  {comments.map((entry, index) => (
+                    <div key={index} className={"rounded-lg bg-light-bg-1 p-2"}>
+                      <h1 className={"text-light-h-1 font-bold text-base"}>
+                        {entry.building}
+                      </h1>
+                      <Cell cut cutLen={"[300px]"}>
+                        {entry.comment}
+                      </Cell>
+                    </div>
+                  ))}
+                </div>
+              </SecondaryCard>
+
+              <SecondaryCard
+                className={"basis-1/3"}
+                icon={faLocationDot}
+                title={"Wegbeschrijving"}
+              >
+                <MapView
+                  route={buildings.map((building) => building[1])}
+                  className={"w-full h-[84%]"}
                 />
               </SecondaryCard>
             </div>
-          </PrimaryCard>
 
-          <div className={"space-y-2 basis-1/4 m-2 h-4/5 max-h-screen"}>
-            <CustomWeekPicker
-              className={"w-full"}
-              startDate={startDate}
-              endDate={endDate}
-              onChange={async (beginDate, endDate) =>
-                await setNewSchedules(beginDate, endDate)
-              }
-            />
-            <SelectionList
-              Component={({ url, background, setSelected, callback, data }) => (
-                <SmallTour key={url} background={background} data={data} />
-              )}
-              callback={() => {}}
-              elements={schedules}
-              selectedStart={url}
-              className={""}
-              title={"Rondes"}
-            />
+            <SecondaryCard
+              className={"h-full"}
+              icon={faBriefcase}
+              title={"Gebouwen"}
+            >
+              <CustomTable
+                className={"w-full"}
+                columns={[
+                  {
+                    name: "Naam",
+                    createCell: (name) => <Link href={"#"}>{name}</Link>,
+                  },
+                  { name: "Adres", cut: true },
+                  {
+                    name: "Status",
+                    createCell: (status) => {
+                      let className = "font-bold text-good-1 bg-good-2";
+                      if (status === "Onderweg") {
+                        className = "font-bold text-bad-1 bg-bad-2";
+                      } else if (status === "Bezig") {
+                        className = "font-bold text-meh-1 bg-meh-2";
+                      }
+                      return (
+                        <ColoredTag className={className}>{status}</ColoredTag>
+                      );
+                    },
+                  },
+                  { name: "Verantwoordelijke", cut: true },
+                  { name: "Tijd" },
+                ]}
+                data={buildings}
+              />
+            </SecondaryCard>
           </div>
+        </PrimaryCard>
+
+        <div className={"space-y-2 basis-1/4 m-2 flex flex-col"}>
+          <CustomWeekPicker
+            className={"w-full"}
+            startDate={startDate}
+            endDate={endDate}
+            onChange={async (beginDate, endDate) =>
+              await setNewSchedules(beginDate, endDate)
+            }
+          />
+          <SelectionList
+            Component={({ url, background, setSelected, callback, data }) => (
+              <SmallTour key={url} background={background} data={data} />
+            )}
+            callback={() => {}}
+            elements={schedules}
+            selectedStart={url}
+            className={"grow"}
+            title={"Rondes"}
+          />
         </div>
-      </main>
+      </div>
     </>
   );
 }
