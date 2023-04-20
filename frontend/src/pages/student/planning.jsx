@@ -67,6 +67,7 @@ export default function StudentPlanningPage() {
         );
         setBuildings(building_names);
         setName(buildings[0].tour_name);
+        setFraction(count / buildings.length);
       }
       console.log(buildings);
     }
@@ -108,7 +109,7 @@ export default function StudentPlanningPage() {
       <div className={"h-full bg-dark-bg-2 flex flex-col py-6 px-3 space-y-4"}>
         <div
           className={
-            "h-full w-full bg-dark-bg-1 rounded-lg p-6 flex flex-col justify-start items-center content-start space-y-3"
+            "h-full w-full bg-dark-bg-1 rounded-lg p-6 flex flex-col justify-start items-center content-start space-y-12"
           }
         >
           <div
@@ -118,19 +119,37 @@ export default function StudentPlanningPage() {
           >
             <h1 className={"text-[35px] font-bold text-dark-text"}>Planning</h1>
             <h3 className={"text-lg font-bold text-dark-text"}>{name}</h3>
-            <Dropdown
-              icon={faBicycle}
-              options={names}
-              optionsValues={schedules}
-              onClick={async (item) => await setSchedule(item)}
+
+            <div
+              className={
+                "w-full flex flex-col justify-start items-center content-start space-y-6 mt-5"
+              }
             >
-              {name}
-            </Dropdown>
+              <Dropdown
+                icon={faBicycle}
+                options={names}
+                optionsValues={schedules}
+                onClick={async (item) => await setSchedule(item)}
+              >
+                {name}
+              </Dropdown>
+              <div className={"w-full"}>
+                <CustomProgressBar fraction={fraction} />
+              </div>
+            </div>
           </div>
-          <div className={"w-full"}>
-            <CustomProgressBar fraction={fraction} />
+          <div className={"w-full flex flex-col space-y-3"}>
+            {buildings.map((name, index) => {
+              return (
+                <div
+                  className={"font-bold rounded-lg w-full bg-light-h-2 p-3"}
+                  key={index}
+                >
+                  {name}
+                </div>
+              );
+            })}
           </div>
-          <div className={"flex flex-col"}>{buildings}</div>
         </div>
       </div>
     </>
