@@ -1,11 +1,14 @@
 import Head from "next/head";
 import {
   faBriefcase,
-  faCirclePlus,
   faEnvelope,
   faLocationDot,
   faTrash,
   faPenToSquare,
+  faFilter,
+  faSort,
+  faSearch,
+  faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
@@ -31,6 +34,10 @@ import Cell from "@/components/table/Cell";
 import scheduleService from "@/services/schedule.service";
 import Link from "next/link";
 import MapView from "@/components/MapView";
+import Layout from "@/components/Layout";
+import Dropdown from "@/components/Dropdown";
+import InputField from "@/components/input-fields/InputField";
+import SecondaryButton from "@/components/button/SecondaryButton";
 
 /**
  * Return small tour component to place in the selection list.
@@ -39,15 +46,11 @@ import MapView from "@/components/MapView";
  */
 function SmallTour({ data, background }) {
   return (
-    <div
-      className={"rounded-lg space-y-3"}
-      style={{ backgroundColor: background }}
-    >
-      <Link href={`/admin/rondes/${encodeURI(data["id"])}/`}>
-        <div className={"p-4"}>
-          <h1 className={"font-semibold"}>{data["name"]}</h1>
-          <h2 className={"text-light-h-2"}> {data["date"]}</h2>
-          <CustomProgressBar fraction={data["finished"] / data["amount"]} />
+    <div className={"rounded-lg"} style={{ backgroundColor: background }}>
+      <Link href={`/admin/planningen/${encodeURI(data.id)}/`}>
+        <div className={"px-4 py-4"}>
+          <h1 className={"font-semibold pb-2"}>{data.name}</h1>
+          <CustomProgressBar fraction={data.finished / data.amount} />
         </div>
       </Link>
     </div>
@@ -242,73 +245,90 @@ export default function AdminTourPage() {
       <Head>
         <title>Rondes</title>
       </Head>
-      <div className={"h-full bg-light-bg-2 flex flex-col py-6 px-3 space-y-4"}>
-        <div className={"h-full bg-light-bg-2 flex flex-row space-x-2"}>
+      <main className={"max-h-screen"}>
+        <PrimaryCard className={"m-2"}>
+          <div className={"flex justify-between"}>
+            <div className={"flex"}>
+              <Dropdown
+                icon={faFilter}
+                text={"Filter"}
+                className={"mr-2"}
+                options={[]}
+              >
+                Filter
+              </Dropdown>
+              <Dropdown
+                icon={faSort}
+                text={"Sort"}
+                className={"mr-2"}
+                options={[]}
+              >
+                Sort
+              </Dropdown>
+              <InputField
+                classNameDiv={"w-80"}
+                reference={() => {}}
+                icon={faSearch}
+                actionCallback={() => {}}
+              />
+            </div>
+            <PrimaryButton icon={faPlusCircle} text={"Sort"}>
+              Nieuw
+            </PrimaryButton>
+          </div>
+        </PrimaryCard>
+        <div className={"flex"}>
           <PrimaryCard
-            className={
-              "w-9/12 h-full lg:overflow-y-hidden max-h-max flex flex-col"
-            }
+            className={"m-2 basis-3/4 h-3/5 overflow-auto"}
             title={"Details"}
           >
-            <div className={"space-y-4 h-full"}>
-              <div className={"flex flex-row"}>
-                <h1 className={"w-full text-light-h-1 font-bold text-lg"}>
+            <div>
+              <div className={"flex flex items-center"}>
+                <h1 className={"w-full text-light-h-1 font-bold text-xl my-2"}>
                   {name}
                 </h1>
-                <div className={"w-full flex justify-end"}>
-                  <Link href={"#"}>
-                    <FontAwesomeIcon
-                      icon={faPenToSquare}
-                      size={"lg"}
-                      className={"mt-1 mx-3"}
-                    />
-                  </Link>
-                  <Link href={"#"}>
-                    <FontAwesomeIcon
-                      icon={faTrash}
-                      size={"lg"}
-                      className={"mt-1 "}
-                    />
-                  </Link>
+                <div className={"flex space-x-2"}>
+                  <SecondaryButton icon={faPenToSquare} className={"h-fit"}>
+                    Bewerk
+                  </SecondaryButton>
+                  <SecondaryButton icon={faTrash} className={"h-fit"}>
+                    Verwijder
+                  </SecondaryButton>
                 </div>
               </div>
-              <div className={"flex flex-row space-x-2 h-3/6"}>
-                <div
-                  className={"w-fit flex flex-col space-y-2 h-full lg:h-max"}
-                >
-                  <Link href={"#"}>
-                    <SecondaryCard
-                      className={"h-2/6"}
-                      icon={faBriefcase}
-                      title={"Aangeduide student"}
-                    >
-                      <div className={"flex flex-row space-x-4"}>
-                        <ProfilePicture />
-                        <div>
-                          <h1 className={"text-light-h-1 font-bold text-base"}>
-                            {user.first_name} {user.last_name}
-                          </h1>
-                          <div className={"flex flex-row space-x-4"}>
-                            <FontAwesomeIcon
-                              icon={faEnvelope}
-                              className={"h-4 mt-1 mx-2"}
-                            />
-                            {user.email}
-                          </div>
+              <div className={"flex space-x-2 my-4"}>
+                <div className={"flex flex-col space-y-2 basis-1/3"}>
+                  <SecondaryCard
+                    className={"basis-2/5"}
+                    icon={faBriefcase}
+                    title={"Aangeduide student"}
+                  >
+                    <div className={"flex space-x-4 my-2"}>
+                      <ProfilePicture />
+                      <div>
+                        <h1 className={"text-light-h-1 font-bold text-base"}>
+                          {user.first_name} {user.last_name}
+                        </h1>
+                        <div className={"flex flex-row space-x-4"}>
+                          <FontAwesomeIcon
+                            icon={faEnvelope}
+                            className={"h-4 mt-1 mr-2"}
+                          />
+                          {user.email}
                         </div>
                       </div>
-                    </SecondaryCard>
-                  </Link>
+                    </div>
+                  </SecondaryCard>
                   <SecondaryCard
-                    className={"h-4/6"}
+                    className={"basis-3/5"}
                     icon={faBriefcase}
                     title={"Progress"}
                   >
-                    <div className={"h-4/5 flex justify-center items-center"}>
+                    <div
+                      className={"flex justify-center items-center h-4/5 pb-2"}
+                    >
                       <div
-                        className={
-                          "flex flex-row content-center items-center justify-center space-x-2"
-                        }
+                        className={"flex items-center justify-center space-x-2"}
                       >
                         <CustomProgressBar
                           is_wheel
@@ -321,7 +341,7 @@ export default function AdminTourPage() {
                           }
                         />
                         <h1 className={"text-light-h-1 font-bold text-base"}>
-                          {finished}/{buildings.length} Gebouwen klaar
+                          {finished}/{buildings.length} klaar
                         </h1>
                       </div>
                     </div>
@@ -331,9 +351,9 @@ export default function AdminTourPage() {
                 <SecondaryCard
                   icon={faLocationDot}
                   title={"Opmerkingen"}
-                  className={"h-full w-1/2 sm:w-2/6 flex flex-col"}
+                  className={"sm:w-2/6 basis-1/3"}
                 >
-                  <div className={"space-y-2 h-full overflow-auto"}>
+                  <div className={"space-y-2 overflow-auto h-full"}>
                     {comments.map((entry, index) => (
                       <div
                         key={index}
@@ -351,21 +371,19 @@ export default function AdminTourPage() {
                 </SecondaryCard>
 
                 <SecondaryCard
-                  className={"h-full w-4/5 flex flex-col"}
+                  className={"basis-1/3"}
                   icon={faLocationDot}
                   title={"Wegbeschrijving"}
                 >
-                  <div className={"flex justify-center items-center"}>
-                    <MapView
-                      route={buildings.map((building) => building[1])}
-                      mapHeight={500}
-                      mapWidth={800}
-                    />
-                  </div>
+                  <MapView
+                    route={buildings.map((building) => building[1])}
+                    className={"w-full h-[84%]"}
+                  />
                 </SecondaryCard>
               </div>
+
               <SecondaryCard
-                className={"lg:h-2/6 h-3/6"}
+                className={"h-full"}
                 icon={faBriefcase}
                 title={"Gebouwen"}
               >
@@ -402,32 +420,32 @@ export default function AdminTourPage() {
             </div>
           </PrimaryCard>
 
-          <div
-            className={"bg-light-bg-2 flex w-3/12 flex-col space-y-2 h-full"}
-          >
-            <div className={"flex flex-row space-x-2 w-full"}>
-              <CustomWeekPicker
-                className={"w-11/12"}
-                startDate={startDate}
-                endDate={endDate}
-                onChange={async (beginDate, endDate) =>
-                  await setNewSchedules(beginDate, endDate)
-                }
-              />
-              <PrimaryButton icon={faCirclePlus}>Nieuw</PrimaryButton>
-            </div>
+          <div className={"space-y-2 basis-1/4 m-2 h-4/5 max-h-screen"}>
+            <CustomWeekPicker
+              className={"w-full"}
+              startDate={startDate}
+              endDate={endDate}
+              onChange={async (beginDate, endDate) =>
+                await setNewSchedules(beginDate, endDate)
+              }
+            />
             <SelectionList
               Component={({ url, background, setSelected, callback, data }) => (
                 <SmallTour key={url} background={background} data={data} />
               )}
-              title={"Rondes"}
               callback={() => {}}
               elements={schedules}
               selectedStart={url}
+              className={""}
+              title={"Rondes"}
             />
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }
+
+AdminTourPage.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>;
+};

@@ -18,11 +18,14 @@ import {
   faFilter,
   faSort,
   faFileText,
+  faPenToSquare,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import Dropdown from "@/components/Dropdown";
+import SecondaryButton from "@/components/button/SecondaryButton";
 
 export default function Buildings() {
   const [buildingList, setBuildingList] = useState([]);
@@ -146,9 +149,23 @@ export default function Buildings() {
           >
             {buildingURL !== "" && (
               <div>
-                <h1 className={"text-light-h-1 font-bold text-lg my-3"}>
-                  {buildingDetail.nickname}
-                </h1>
+                <div>
+                  <div className={"flex flex items-center"}>
+                    <h1
+                      className={"w-full text-light-h-1 font-bold text-xl my-5"}
+                    >
+                      {buildingDetail.nickname}
+                    </h1>
+                    <div className={"flex space-x-2"}>
+                      <SecondaryButton icon={faPenToSquare} className={"h-fit"}>
+                        Bewerk
+                      </SecondaryButton>
+                      <SecondaryButton icon={faTrash} className={"h-fit"}>
+                        Verwijder
+                      </SecondaryButton>
+                    </div>
+                  </div>
+                </div>
                 <div className={"flex"}>
                   <div className={"basis-1/3 mr-1"}>
                     <SecondaryCard
@@ -191,7 +208,7 @@ export default function Buildings() {
                         <p>{buildingDetail.address_line_1}</p>
                         <p>{buildingDetail.address_line_2}</p>
                         <MapView
-                          className={"pt-3"}
+                          className={"pt-3  h-[420px]"}
                           address={
                             buildingDetail.address_line_1 +
                             " " +

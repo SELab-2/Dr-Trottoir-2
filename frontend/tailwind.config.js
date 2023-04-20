@@ -56,6 +56,8 @@ module.exports = {
     fontSize: {
       base: "14px",
       lg: "21px",
+      xl: "27px",
+      xxl: "32px",
     },
     extend: {
       strokeLinecap: {

@@ -11,7 +11,7 @@ export default function SelectionList({
 }) {
   return (
     <PrimaryCard className={className} title={title} text={""}>
-      <div className="h-full overflow-auto space-y-2 rounded-lg">
+      <div className="overflow-auto space-y-2 rounded-lg">
         <Selection
           list={elements}
           Component={Component}
