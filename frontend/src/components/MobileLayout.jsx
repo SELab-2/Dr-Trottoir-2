@@ -8,7 +8,7 @@ export default function MobileLayout({ children }) {
   return (
     <div className={"h-screen w-screen flex flex-col"}>
       <Head>
-        <link rel="icon" href="/favicon_beer.ico" />
+        <link rel="icon" href="./favicon.ico" />
       </Head>
 
       <main className={"grow overflow-auto relative"}>{children}</main>
