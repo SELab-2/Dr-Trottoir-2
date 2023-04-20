@@ -44,7 +44,7 @@ export default function CustomProgressBar({
           cx={circleWidth / 2}
           cy={circleWidth / 2}
           strokeWidth={"10px"}
-          r={radius}
+          r={radius || 0}
           className={"stroke-linecap-round fill-none"}
           style={{
             strokeDasharray: dashArray,

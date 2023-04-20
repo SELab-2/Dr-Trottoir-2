@@ -371,10 +371,14 @@ export default function AdminTourPage() {
                 icon={faLocationDot}
                 title={"Wegbeschrijving"}
               >
-                <MapView
-                  route={buildings.map((building) => building[1])}
-                  className={"w-full h-[84%]"}
-                />
+                <div className={"w-full h-[84%] relative overflow-hidden"}>
+                  <MapView
+                    route={buildings.map((building) => building[1])}
+                    className={
+                      "w-[150%] h-[200%] absolute top-[-50%] left-[-25%]"
+                    }
+                  />
+                </div>
               </SecondaryCard>
             </div>
 

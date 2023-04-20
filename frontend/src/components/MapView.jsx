@@ -33,6 +33,8 @@ function buildUrl(address, route, transportationMode) {
     params += "&mode=" + transportationMode;
   }
 
+  params += "&zoom=" + 13;
+
   return (
     "https://www.google.com/maps/embed/v1/" +
     map_type +
@@ -54,11 +56,11 @@ function buildUrl(address, route, transportationMode) {
  * @param mapHeight Height of iframe
  */
 export default function MapView({
-  address,
-  route,
-  transportationMode,
-  className,
-}) {
+                                  address,
+                                  route,
+                                  transportationMode,
+                                  className
+                                }) {
   if (address === undefined && (route === undefined || route.length === 0)) {
     return (
       <iframe
