@@ -19,7 +19,8 @@ from .views import (
     WasteViewSet,
     RegisterView,
     PhotoViewSet,
-    MeView
+    MeView,
+    TemplateViewSet
 )
 
 router = routers.DefaultRouter()
@@ -32,6 +33,7 @@ router.register(r'user', UserViewSet)
 router.register(r'schedule', ScheduleViewSet)
 router.register(r'photo', PhotoViewSet)
 router.register(r'waste', WasteViewSet)
+router.register(r'template', TemplateViewSet)
 
 urlpatterns = [
     path('user/auth/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
