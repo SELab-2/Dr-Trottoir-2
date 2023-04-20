@@ -1,5 +1,6 @@
 import ApiInstance from "@/services/ApiInstance";
 import HelperService from "@/services/helper.service";
+import { baseUrl } from "@/utils/baseUrl";
 
 class TemplateService {
   /**
@@ -62,6 +63,13 @@ class TemplateService {
       data = data.filter((template) => template.body.contains(args.to));
     }
     return data;
+  }
+  async putEntry(data) {
+    return HelperService.putModelEntryByUrl("/api/template", "template", data);
+  }
+
+  async postEntryByUrl(url, data) {
+    return HelperService.postModelEntryByUrl(url, "template", data);
   }
 }
 

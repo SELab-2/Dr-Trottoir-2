@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
+import CustomInputField from "@/components/input-fields/InputField";
 import InputField from "@/components/input-fields/InputField";
 import SelectionList from "@/components/selection/SelectionList";
 import TemplateService from "@/services/template.service";
@@ -10,6 +11,7 @@ import {
   faEnvelope,
   faFilter,
   faPlusCircle,
+  faSave,
   faSearch,
   faSort,
 } from "@fortawesome/free-solid-svg-icons";
@@ -22,12 +24,24 @@ export default function Templates() {
   const searchString = useRef("");
   const [searchResults, setSearchResults] = useState([]);
   const [templateURL, setTemplateURL] = useState("");
-  const [templateDetail, setTemplateDetail] = useState({});
+  const [saveState, setSaveState] = useState("clean"); // states: "clean", "dirty", "new"
+  const fieldTo = useRef("");
+  const fieldCc = useRef("");
+  const fieldBcc = useRef("");
+  const fieldSubject = useRef("");
+  const fieldBody = useRef("");
 
   const updateTemplateSelection = async (url) => {
     setTemplateURL(url);
     const template = await TemplateService.getEntryByUrl(url);
-    setTemplateDetail(template);
+    fieldTo.current.value = template["to"] !== undefined ? template["to"] : "";
+    fieldCc.current.value = template["cc"] !== undefined ? template["cc"] : "";
+    fieldBcc.current.value =
+      template["bcc"] !== undefined ? template["bcc"] : "";
+    fieldSubject.current.value =
+      template["subject"] !== undefined ? template["subject"] : "";
+    fieldBody.current.value =
+      template["body"] !== undefined ? template["body"] : "";
   };
 
   const loadTemplates = async () => {
@@ -37,26 +51,27 @@ export default function Templates() {
     await updateTemplateSelection(templates[0].url);
   };
 
-  const mailtoURL = (template) => {
+  const mailtoURL = () => {
     let url = "mailto:";
     let putQM = false;
 
-    const addOption = (option) => {
-      if (template[option] !== undefined && template[option] !== "") {
+    const addOption = (optionRef, optionName) => {
+      const value = optionRef.current.value;
+      if (value !== undefined && value !== "") {
         if (putQM) url += "&";
         else {
           url += "?";
           putQM = true;
         }
-        url += option + "=" + encodeURIComponent(template[option]);
+        url += optionName + "=" + encodeURIComponent(value);
       }
     };
 
-    if (template["to"] !== undefined) url += template["to"];
-    addOption("cc");
-    addOption("bcc");
-    addOption("subject");
-    addOption("body");
+    if (fieldTo.current.value !== undefined) url += fieldTo.current.value;
+    addOption(fieldCc, "cc");
+    addOption(fieldBcc, "bcc");
+    addOption(fieldSubject, "subject");
+    addOption(fieldBody, "body");
     return url;
   };
 
@@ -77,6 +92,21 @@ export default function Templates() {
         );
       })
     );
+  };
+
+  const saveTemplate = async () => {
+    const data = {};
+    data["to"] = fieldTo.current.value;
+    data["cc"] = fieldCc.current.value;
+    data["bcc"] = fieldBcc.current.value;
+    data["subject"] = fieldSubject.current.value;
+    data["body"] = fieldBody.current.value;
+
+    if (saveState === "dirty") {
+      await TemplateService.postEntryByUrl(templateURL, data);
+    } else if (saveState === "new") {
+      await TemplateService.putEntry(data);
+    }
   };
 
   const TemplateSelectionItem = ({
@@ -144,15 +174,48 @@ export default function Templates() {
         </PrimaryCard>
         <div className={"flex"}>
           <PrimaryCard className={"m-2 basis-3/4"}>
-            <SecondaryButton
-              icon={faEnvelope}
-              onClick={(event) => {
-                window.location.href = mailtoURL(templateDetail);
-                event.preventDefault();
-              }}
+            <p>Ontvangers</p>
+            <CustomInputField classNameDiv={"my-2"} reference={fieldTo} />
+            <p>Cc.</p>
+            <CustomInputField classNameDiv={"my-2"} reference={fieldCc} />
+            <p>Bcc.</p>
+            <CustomInputField classNameDiv={"my-2"} reference={fieldBcc} />
+            <p>Onderwerp</p>
+            <CustomInputField classNameDiv={"my-2"} reference={fieldSubject} />
+            <p>E-mail</p>
+            <div
+              className={
+                "rounded-lg bg-light-bg-2 p-1 border-2 border-light-border relative flex items-center my-2"
+              }
             >
-              Stuur e-mail
-            </SecondaryButton>
+              <textarea
+                rows={12}
+                name={"input-field"}
+                ref={fieldBody}
+                type="text"
+                className={"flex-1 bg-light-bg-2 outline-none"}
+                onChange={() => {
+                  setSaveState("dirty");
+                }}
+              />
+            </div>
+            <div className={"flex"}>
+              <SecondaryButton
+                icon={faEnvelope}
+                onClick={() => {
+                  window.open(mailtoURL(), "_blank", "noreferrer");
+                }}
+              >
+                Stuur e-mail
+              </SecondaryButton>
+              <SecondaryButton
+                backgroundColor={"#ffffff"}
+                icon={faSave}
+                onClick={() => saveTemplate()}
+              >
+                Bewaren
+              </SecondaryButton>
+            </div>
           </PrimaryCard>
           <SelectionList
             title={"Templates"}
