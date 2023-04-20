@@ -73,7 +73,7 @@ class CustomUser(AbstractBaseUser):
 
     @property
     def is_super(self):
-        # Is this a superuser, student or a developer
+        # Is this a superuser, admin or a developer
         return self.role <= Roles.SUPERSTUDENT
 
     @property

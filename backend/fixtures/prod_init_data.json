@@ -107,8 +107,9 @@
     "pk": 1,
     "fields": {
         "arrival": "2023-03-08T16:00:33Z",
-        "building": 1,
+        "building_in_tour": 1,
         "user": 2,
+        "schedule": 1,
         "comment": "Vuilbakken zijn buitengezet"
     }
 },
@@ -118,7 +119,8 @@
     "fields": {
         "date": "2023-03-14",
         "waste_type": "afvaltype",
-        "building": 1
+        "building": 1,
+        "action": "Binnenzetten"
     }
 }
 ]

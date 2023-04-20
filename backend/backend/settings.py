@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -163,7 +164,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'uploads'
 
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -172,3 +172,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 API_DOCS_TITLE = 'DrTrottoir API'
 API_DOCS_DESCRIPTION = 'This is an overview of all API endpoints on the DrTrottoir API, what you see depends on your ' \
                        'level of authentication, go to /admin to log in first. '
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(os.environ.get("ACCES_TOKEN_LIFETIME", "1"), )),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}

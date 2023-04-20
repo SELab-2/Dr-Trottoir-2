@@ -5,18 +5,65 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-	font-family: 'Inter', sans-serif;
+:root {
+    --color-light-bg-1: #FFFFFF;
+    --color-light-bg-2: #F6F8FA;
+    --color-light-h-1: #000000;
+    --color-light-h-2: #B2B2B2;
+    --color-light-text: #4D4D4D;
+
+    --color-dark-bg-1: #101010;
+    --color-dark-bg-2: #1c1c1c;
+    --color-dark-h-1: #FFFFFF;
+    --color-dark-h-2: #4D4D4D;
+    --color-dark-text: #B2B2B2;
+
+    --color-accent-1: #E6E600;
+    --color-accent-2: #585936;
+
+    --color-primary-1: #377DFF;
+    --color-primary-2: #D7E5FF;
+    --color-primary-3: #2c66d3;
+
+    --color-done-1: #8250DF;
+    --color-done-2: #D6CCED;
+
+    --color-good-1: #2DA44C;
+    --color-good-2: #CEF5D2;
+
+    --color-meh-1: #D29922;
+    --color-meh-2: #FFDCCC;
+
+    --color-bad-1: #CF222E;
+    --color-bad-2: #FFD4DF;
 }
 
 
-
-.bg-yellow {
-	background: #E6E600;
+html {
+    font-family: 'Inter', sans-serif;
 }
 
 .emoji {
-		font-family: 'Noto Color Emoji', sans-serif;
+    font-family: 'Noto Color Emoji', sans-serif;
 }
 
+body {
+    @apply bg-light-bg-2;
+    @apply text-light-text;
+    @apply text-base;
+}
 
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: var(--color-light-h-2);
+    border: 1px solid #cacaca;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: var(--color-dark-h-2);
+}

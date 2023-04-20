@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from drtrottoir.models import CustomUser
-from drtrottoir.permissions.user_permissions import AdminPermissionOrReadOnly
+from drtrottoir.permissions.user_permissions import UserViewSetPermission
 from drtrottoir.serializers import UserSerializer
 
 
@@ -28,4 +28,4 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated & AdminPermissionOrReadOnly]
+    permission_classes = [IsAuthenticated & UserViewSetPermission]
