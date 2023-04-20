@@ -4,7 +4,8 @@ import Selection from "@/components/selection/Selection";
 export default function SelectionList({
   title,
   Component,
-  callback, selectedStart,
+  callback,
+  selectedStart,
   elements,
 }) {
   return (
@@ -14,7 +15,12 @@ export default function SelectionList({
       className={"h-full w-1/6 p-5 flex flex-col p-5"}
     >
       <div className="h-full overflow-auto space-y-2 rounded-lg">
-        <Selection list={elements} Component={Component} callback={callback} selectedStart={selectedStart}/>
+        <Selection
+          list={elements}
+          Component={Component}
+          callback={callback}
+          selectedStart={selectedStart}
+        />
       </div>
     </PrimaryCard>
   );
