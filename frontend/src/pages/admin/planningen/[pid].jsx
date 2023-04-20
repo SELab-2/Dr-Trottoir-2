@@ -323,9 +323,7 @@ export default function AdminTourPage() {
                   icon={faBriefcase}
                   title={"Progress"}
                 >
-                  <div
-                    className={"flex justify-center items-center pb-2"}
-                  >
+                  <div className={"flex justify-center items-center pb-2"}>
                     <div
                       className={"flex items-center justify-center space-x-2"}
                     >
