@@ -56,11 +56,11 @@ function buildUrl(address, route, transportationMode) {
  * @param mapHeight Height of iframe
  */
 export default function MapView({
-                                  address,
-                                  route,
-                                  transportationMode,
-                                  className
-                                }) {
+  address,
+  route,
+  transportationMode,
+  className,
+}) {
   if (address === undefined && (route === undefined || route.length === 0)) {
     return (
       <iframe
