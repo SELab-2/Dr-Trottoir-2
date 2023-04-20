@@ -41,11 +41,6 @@ class BuildingService {
 
     return data;
   }
-
-  async getOne(url) {
-    const response = await ApiInstance.getApi().get(url);
-    return response.data;
-  }
 }
 
 export default new BuildingService();
