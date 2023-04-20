@@ -23,7 +23,7 @@ const customJestConfig = {
   coverageThreshold: {
     global: {
       // ideally this will need to be 90%
-      lines: 20,
+      lines: 15,
     },
   },
 

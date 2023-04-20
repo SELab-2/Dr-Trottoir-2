@@ -9,7 +9,7 @@ export default function CustomCard({ children, title, className, icon }) {
           {title && <p>{title}</p>}
         </div>
       )}
-      <div>{children}</div>
+      {children}
     </div>
   );
 }

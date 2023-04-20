@@ -10,7 +10,7 @@ function buildUrl(address, route, transportationMode) {
 
   // determine type of embed: if it's a single address or a 'route' with length 1, a single pin is enough
   // otherwise, embed a route
-  if (address !== undefined || (route !== undefined && route.length == 1)) {
+  if (address !== undefined || (route !== undefined && route.length === 1)) {
     map_type = "place";
     params +=
       "&q=" + encodeURIComponent(address !== undefined ? address : route[0]);
@@ -32,6 +32,8 @@ function buildUrl(address, route, transportationMode) {
   if (transportationMode !== undefined) {
     params += "&mode=" + transportationMode;
   }
+
+  params += "&zoom=" + 13;
 
   return (
     "https://www.google.com/maps/embed/v1/" +
@@ -58,18 +60,11 @@ export default function MapView({
   route,
   transportationMode,
   className,
-  mapWidth,
-  mapHeight,
 }) {
-  if (mapWidth === undefined) mapWidth = 400;
-  if (mapHeight === undefined) mapHeight = 250;
-
-  if (address === undefined && (route === undefined || route.length == 0)) {
+  if (address === undefined && (route === undefined || route.length === 0)) {
     return (
       <iframe
         className={className}
-        width={mapWidth}
-        height={mapHeight}
         style={{ border: 0 }}
         loading="lazy"
         allowFullScreen
@@ -85,8 +80,6 @@ export default function MapView({
   return (
     <iframe
       className={className}
-      width={mapWidth}
-      height={mapHeight}
       style={{ border: 0 }}
       loading="lazy"
       allowFullScreen
