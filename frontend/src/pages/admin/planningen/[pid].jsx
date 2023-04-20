@@ -319,12 +319,12 @@ export default function AdminTourPage() {
                   </div>
                 </SecondaryCard>
                 <SecondaryCard
-                  className={"basis-3/5"}
+                  className={"basis-3/5 overflow-hidden"}
                   icon={faBriefcase}
                   title={"Progress"}
                 >
                   <div
-                    className={"flex justify-center items-center h-4/5 pb-2"}
+                    className={"flex justify-center items-center pb-2"}
                   >
                     <div
                       className={"flex items-center justify-center space-x-2"}
@@ -352,7 +352,7 @@ export default function AdminTourPage() {
                 title={"Opmerkingen"}
                 className={"sm:w-2/6 basis-1/3"}
               >
-                <div className={"space-y-2 overflow-auto h-full"}>
+                <div className={"space-y-2 overflow-auto"}>
                   {comments.map((entry, index) => (
                     <div key={index} className={"rounded-lg bg-light-bg-1 p-2"}>
                       <h1 className={"text-light-h-1 font-bold text-base"}>
