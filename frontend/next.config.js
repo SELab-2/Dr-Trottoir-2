@@ -8,7 +8,7 @@ const nextConfig = {
     };
     return config;
   },
-  env: {
+  publicRuntimeConfig: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_URL_INTERNAL: process.env.NEXTAUTH_URL_INTERNAL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
