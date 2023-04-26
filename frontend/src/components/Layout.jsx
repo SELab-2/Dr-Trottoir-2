@@ -8,7 +8,7 @@ export default function Layout({ children }) {
   return (
     <div className={"h-screen w-screen flex"}>
       <Head>
-        <link rel="icon" href="/favicon_beer.ico" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {status === "authenticated" && <Navbar />}

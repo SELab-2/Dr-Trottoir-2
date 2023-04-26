@@ -15,7 +15,7 @@ export default function SelectionList({
       title={title}
       text={""}
     >
-      <div className="overflow-y-scroll space-y-2 rounded-lg h-40 grow">
+      <div className="overflow-y-scroll space-y-2 rounded-lg h-40 grow pr-1">
         <Selection
           list={elements}
           Component={Component}
