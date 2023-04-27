@@ -5,6 +5,8 @@ on:
 jobs:
   docker-runs:
     runs-on: self-hosted
+    env:
+
     steps:
       - uses: actions/checkout@v3
       - name: Remove artifacts
