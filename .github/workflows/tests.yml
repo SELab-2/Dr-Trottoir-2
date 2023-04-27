@@ -9,22 +9,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Create and populate .env.dev file
         run: |
-          touch .env.dev
-          echo DEBUG=1 >> .env.dev
-          echo SECRET_KEY=foo >> .env.dev
-          echo DJANGO_ALLOWED_HOSTS='localhost 127.0.0.1 [::1] django' >> .env.dev
-          echo SQL_ENGINE=django.db.backends.postgresql >> .env.dev
-          echo SQL_DATABASE=drtrottoir_dev >> .env.dev
-          echo SQL_USER=drtrottoir_dev >> .env.dev
-          echo SQL_PASSWORD=foo >> .env.dev
-          echo SQL_HOST=db >> .env.dev
-          echo SQL_PORT=5432 >> .env.dev
-          echo DATABASE=postgres >> .env.dev
-          echo DJANGO_SUPERUSER_PASSWORD=admin >> .env.dev
-          echo DJANGO_SUPERUSER_EMAIL=admin@admin.com >> .env.dev
-          echo NEXTAUTH_SECRET="132464ffab4a6b19c85f7e3d98243edb" >> .env.dev
-          echo NEXTAUTH_URL=http://localhost/next/auth >> .env.dev
-          echo NEXTAUTH_URL_INTERNAL=http://next:3000/next/auth >> .env.dev
+          echo "${{ secrets.CI_ENV_FILE }}" > .env.dev
       - name: Remove artifacts
         run: docker-compose down -v
       - name: Build the image
