@@ -3,7 +3,7 @@ on:
   - pull_request
 
 jobs:
-  docker-runs:
+  build:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
@@ -29,17 +29,38 @@ jobs:
         run: docker-compose down -v
       - name: Build the image
         run: docker-compose up -d --build
+
+  backend-tests:
+    runs-on: self-hosted
+    needs: build
+    steps:
       - name: Test Django unittest
         run: docker exec DrTrottoir-be python manage.py test
+
+  frontend-tests:
+    runs-on: self-hosted
+    needs: build
+    steps:
       - name: Test NEXT.js Jest
         run: docker exec DrTrottoir-fe npm run jest:workflow
       - name: Test NEXT.js Cypress component
         run: docker exec DrTrottoir-fe npm run component:headless
       - name: Test NEXT.js Cypress e2e
         run: docker exec DrTrottoir-fe npm run e2e:headless
+
+  linting:
+    runs-on: self-hosted
+    needs: build
+    steps:
       - name: Linter Python
         run: docker exec DrTrottoir-be flake8 backend/ drtrottoir/
       - name: Linter Javascript
         run: docker exec DrTrottoir-fe npm run lint
+
+  remove:
+    runs-on: self-hosted
+    if: ${{ always() }}
+    needs: [ build, backend-tests, frontend-tests, linting]
+    steps:
       - name: remove artifacts
         run: docker-compose down -v
