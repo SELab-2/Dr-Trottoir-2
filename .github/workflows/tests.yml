@@ -1,4 +1,4 @@
-name: "All CI"
+name: "Test CI"
 on:
   - pull_request
 
