@@ -50,13 +50,9 @@ export default function Login() {
       <Head>
         <title>Dr. Trottoir: Inloggen</title>
       </Head>
-      <main
-        className={
-          "text-sm h-screen flex items-center justify-center bg-light-bg-1"
-        }
-      >
-        <div className={"w-full max-w-4xl m-4"}>
-          <div className={"border-2 border-light-border rounded-lg "}>
+      <div className={"text-sm h-screen flex items-center justify-center"}>
+        <div className={"w-full max-w-3xl m-4"}>
+          <div className={"border-2 border-light-border rounded-lg shadow-lg"}>
             <div
               className={"bg-dark-bg-1 flex justify-center rounded-t-lg p-8"}
             >
@@ -113,7 +109,7 @@ export default function Login() {
             </p>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

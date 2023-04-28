@@ -1,47 +1,115 @@
 import Head from "next/head";
-
 import Logo from "/public/images/Logo-Dr-Trottoir-GEEL-01.png";
 import Image from "next/image";
 import { getSession, signIn } from "next-auth/react";
-import { useRouter } from "next/router";
-import { ROLES } from "@/utils/userRoles";
+import { useState } from "react";
+
+function SignupInput({ field, updateField, id, type, autocomplete }) {
+  return (
+    <div>
+      <input
+        id={id}
+        type={type}
+        autoComplete={autocomplete}
+        className={`w-full bg-light-bg-2 border-2 my-2 p-1 rounded ${
+          field.error
+            ? `text-bad-1 border-bad-1 focus:outline-bad-1`
+            : `border-light-border`
+        }`}
+        value={field.value}
+        onChange={(event) => {
+          updateField({ value: event.target.value, error: null });
+        }}
+      />
+      {field.error && <p className={"text-bad-1"}>{field.error}</p>}
+    </div>
+  );
+}
 
 export default function Signup() {
-  const router = useRouter();
+  const [firstname, setFirstname] = useState({ value: "", error: null });
+  const [lastname, setLastname] = useState({ value: "", error: null });
+  const [email, setEmail] = useState({ value: "", error: null });
+  const [tel, setTel] = useState({ value: "", error: null });
+  const [password, setPassword] = useState({ value: "", error: null });
+  const [repeatPassword, setRepeatPassword] = useState({
+    value: "",
+    error: null,
+  });
+
+  const validateRequired = (value) => {
+    if (value.length < 1) {
+      return `Dit veld is verplicht`;
+    }
+  };
+
+  const validateMustMatch = (value, source, message) => {
+    if (value !== source) {
+      return message ? message : "Veld is niet gelijk";
+    }
+  };
+
+  const validateLength = (value, min, max) => {
+    if (min === max) {
+      if (value.length !== max) {
+        return `Veld moet ${max} characters lang zijn.`;
+      }
+    } else if (value.length < min) {
+      return `Veld moet minstens ${min} characters lang zijn.`;
+    } else if (value.length > max) {
+      return `Veld mag maximum ${max} characters lang zijn`;
+    }
+  };
+
+  const allValid = (field, setField, validations) => {
+    for (let i = 0; i < validations.length; ++i) {
+      const error = validations[i](field.value);
+      if (error) {
+        setField({ value: field.value, error: error });
+        return;
+      }
+    }
+  };
 
   const handleSignup = async (event) => {
     event.preventDefault();
 
-    const email = event.target.email.value;
-    const password = event.target.password.value;
+    const valid = true;
+    valid &&
+      allValid(firstname, setFirstname, [
+        validateRequired,
+        (v) => validateLength(v, 2, 64),
+      ]);
+    valid &&
+      allValid(lastname, setLastname, [
+        validateRequired,
+        (v) => validateLength(v, 2, 64),
+      ]);
+    valid &&
+      allValid(email, setEmail, [
+        validateRequired,
+        (v) => validateLength(v, 2, 128),
+        (v) => (!v.includes("@") ? `Geen geldige email` : null),
+      ]);
+    valid &&
+      allValid(tel, setTel, [
+        validateRequired,
+        (v) => validateLength(v, 12, 12),
+      ]);
+    valid &&
+      allValid(password, setPassword, [
+        validateRequired,
+        (v) => validateLength(v, 8, 40),
+      ]);
+    valid &&
+      allValid(repeatPassword, setRepeatPassword, [
+        validateRequired,
+        (v) =>
+          validateMustMatch(v, password.value, "Wachtwoorden zijn niet gelijk"),
+      ]);
 
-    if (!email || !password) {
-      console.log("Invalid input");
+    if (!valid) {
       return;
-    }
-
-    const response = await signIn("mail-login", {
-      email,
-      password,
-      redirect: false,
-    });
-
-    if (response?.error) {
-      console.log("something went wrong... failed to login :(");
-      return;
-    }
-
-    const user = (await getSession()).user;
-    if (user.role <= ROLES.SUPERSTUDENT) {
-      // User is developer, admin or super-student
-      await router.push("/admin/home");
-    } else if (user.role === ROLES.STUDENT) {
-      // User is student
-      await router.push("/student/home");
-    } else {
-      console.log(
-        "We found you in our database but unfortunately we don't have a nice ui for you :("
-      );
     }
   };
 
@@ -50,7 +118,7 @@ export default function Signup() {
       <Head>
         <title>Dr. Trottoir: Registeren</title>
       </Head>
-      <main className={"text-sm min-h-screen flex items-center justify-center"}>
+      <div className={"text-sm min-h-screen flex items-center justify-center"}>
         <div className={"w-full max-w-4xl m-4"}>
           <div className={"border-2 border-light-border rounded-lg shadow-lg"}>
             <div
@@ -67,66 +135,65 @@ export default function Signup() {
               >
                 Registeren
               </p>
-              <div>
-                <div className={"block sm:flex"}>
-                  <div className={"pb-3 basis-1/2 pr-0 sm:pr-1"}>
+              <div className={""}>
+                <div className={"block sm:flex pb-3"}>
+                  <div className={"basis-1/2 pr-0 sm:pr-1"}>
                     <p className={"text-light-text"}>Voornaam</p>
-                    <input
-                      className="w-full border-2 border-light-border my-2 p-1 rounded"
-                      type="text"
-                      id="voornaam"
-                      name="voornaam"
+                    <SignupInput
+                      id={"voornaam"}
+                      type={"text"}
+                      field={firstname}
+                      updateField={setFirstname}
                     />
                   </div>
                   <div className={"basis-1/2 pl-0 sm:pl-1"}>
                     <p className={"text-light-text"}>Achternaam</p>
-                    <input
-                      className="w-full border-2 border-light-border my-2 p-1 rounded"
-                      type="text"
-                      id="achternaam"
-                      name="achternaam"
+                    <SignupInput
+                      id={"achternaam"}
+                      type={"text"}
+                      field={lastname}
+                      updateField={setLastname}
                     />
                   </div>
                 </div>
                 <div className={"pb-3"}>
                   <p className={"text-light-text"}>Email</p>
-                  <input
-                    className="w-full border-2 border-light-border my-2 p-1 rounded"
-                    type="text"
-                    id="email"
-                    name="username"
-                    autoComplete={"email"}
+                  <SignupInput
+                    id={"email"}
+                    type={"text"}
+                    field={email}
+                    updateField={setEmail}
                   />
                   <p className={"text-light-text"}>Telefoon</p>
-                  <input
-                    className="w-full border-2 border-light-border my-2 p-1 rounded"
-                    type="tel"
-                    id="tel"
-                    name="tel"
-                    autoComplete={"tel"}
+                  <SignupInput
+                    id={"tel"}
+                    type={"tel"}
+                    autocomplete={"tel"}
+                    field={tel}
+                    updateField={setTel}
                   />
                 </div>
                 <div className={"pb-3"}>
                   <p className={"text-gray-600"}>Wachtwoord</p>
-                  <input
-                    className="w-full border-2 border-light-border my-2 p-1 rounded"
-                    type="password"
-                    id="password"
-                    name="password"
-                    autoComplete={"current-password"}
+                  <SignupInput
+                    id={"password"}
+                    type={"password"}
+                    autocomplete={"new-password"}
+                    field={password}
+                    updateField={setPassword}
                   />
                   <p className={"text-gray-600"}>Herhaal wachtwoord</p>
-                  <input
-                    className="w-full border-2 border-light-border my-2 p-1 rounded"
-                    type="password"
-                    id="password"
-                    name="password"
-                    autoComplete={"current-password"}
+                  <SignupInput
+                    id={"repeatpassword"}
+                    type={"password"}
+                    autocomplete={"new-password"}
+                    field={repeatPassword}
+                    updateField={setRepeatPassword}
                   />
                 </div>
               </div>
               <button
-                className="bg-accent-1 mt-5 mb-8 py-1 text-center w-full rounded font-bold"
+                className="bg-accent-1 mt-5 mb-8 py-1 text-center w-full rounded font-bold rounded"
                 type="submit"
               >
                 Registreer
@@ -140,7 +207,7 @@ export default function Signup() {
             </p>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }
