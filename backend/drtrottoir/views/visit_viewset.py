@@ -3,10 +3,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from drtrottoir.models import Photo
-from drtrottoir.models import Visit
+from drtrottoir.models import Photo, Visit, VisitComment
 from drtrottoir.permissions.user_permissions import AnyonePostSuperEditPermission
-from drtrottoir.serializers import VisitSerializer, PhotoSerializer
+from drtrottoir.serializers import VisitSerializer, PhotoSerializer, VisitCommentSerializer
 
 
 class VisitViewSet(viewsets.ModelViewSet):
@@ -44,3 +43,12 @@ class VisitViewSet(viewsets.ModelViewSet):
             return Response(PhotoSerializer(list(photos), many=True, context={'request': request}).data)
         else:
             return Response("Given visit doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['get'])
+    def comments(self, request, pk=None):
+        # Check if schedule id is valid
+        if pk is None or not Visit.visit.filter(pk=pk).exists():
+            return Response("Given schedule does not exist.", status=status.HTTP_400_BAD_REQUEST)
+        # Get visits corresponding with visit
+        visitComments = VisitComment.objects.filter(schedule=pk)
+        return Response(VisitCommentSerializer(list(visitComments), many=True, context={'request': request}).data)

@@ -3,7 +3,7 @@ from .custom_user import CustomUser
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from datetime import datetime
-
+from pytz import timezone
 
 class Comment(models.Model):
     user = models.ForeignKey(CustomUser, verbose_name="user who wrote comment", on_delete=models.PROTECT)
@@ -14,10 +14,16 @@ class Comment(models.Model):
     def __str__(self):
         return f'{self.user}: {self.text}'
 
+    class Meta:
+        abstract = True
 
-@receiver(post_save, sender=Comment)
+
+@receiver(post_save)
 def post_save_callback(sender, instance, created, *args, **kwargs):
-    if created:
-        instance.created_at = datetime.now()
-    else:
-        instance.updated_at = datetime.now()
+    if issubclass(sender, Comment) and not hasattr(instance, 'skip_signal'):
+        if created:
+            instance.created_at = datetime.now(tz=timezone('CET'))
+        else:
+            instance.updated_at = datetime.now(tz=timezone('CET'))
+        instance.skip_signal = True
+        instance.save()

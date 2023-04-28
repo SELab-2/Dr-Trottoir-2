@@ -1,12 +1,22 @@
-from drtrottoir.models import Comment, Building
+from drtrottoir.models import Schedule, ScheduleComment, VisitComment, Building, CustomUser
 from rest_framework import serializers
 
 
-class CommentSerializer(serializers.HyperlinkedModelSerializer):
+class ScheduleCommentSerializer(serializers.HyperlinkedModelSerializer):
     """
-    A serializer for comment model
+    A serializer for schedule_comment model
     """
-    
+
     class Meta:
-        model = Comment
+        model = ScheduleComment
+        fields = '__all__'
+
+
+class VisitCommentSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    A serializer for visit_comment model
+    """
+
+    class Meta:
+        model = VisitComment
         fields = '__all__'
