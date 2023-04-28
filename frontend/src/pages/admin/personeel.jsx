@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
+import { BG_LIGHT_SECONDARY } from "@/utils/colors";
 import {
   faCirclePlus,
   faMagnifyingGlass,
@@ -8,20 +9,19 @@ import {
   faTrash,
   faBan,
 } from "@fortawesome/free-solid-svg-icons";
+import ContextMenu from "@/components/ContextMenu";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import CustomInputField from "@/components/input-fields/InputField";
 import userService from "@/services/user.service";
 import ColoredTag from "@/components/Tag";
 import Dropdown from "@/components/Dropdown";
-import ContextMenu from "@/components/ContextMenu";
-import buildingService from "@/services/building.service";
+import CustomModal from "@/components/CustomModal";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import CustomButton from "@/components/button/Button";
-import CustomModal from "@/components/CustomModal";
 import SelectableTable from "@/components/table/SelectableTable";
-import { urlToPK } from "@/utils/urlToPK";
 import Layout from "@/components/Layout";
+import { urlToPK } from "@/utils/urlToPK";
 
 const initialContextMenu = {
   show: false,
@@ -30,10 +30,9 @@ const initialContextMenu = {
   rowOptions: [],
 };
 
-export default function Syndici() {
+export default function Employees() {
   const [users, setUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
-  const [buildings, setBuildings] = useState([]);
   const [contextMenu, setContextMenu] = useState(initialContextMenu);
   const [filterSelected, setFilterSelected] = useState([]);
   const [clearSelected, setClearSelected] = useState(0);
@@ -47,57 +46,35 @@ export default function Syndici() {
       let user = [];
       for (let i in response) {
         let entry = response[i];
-        if (entry["role"] === 4) {
+        if (entry["role"] !== 4) {
           user.push({
             pk: urlToPK(entry["url"]),
             first_name: entry["first_name"],
             last_name: entry["last_name"],
             email: entry["email"],
             role: entry["role"],
-            buildings: entry["buildings"],
           });
         }
       }
       setUsers(user);
       setAllUsers(user);
     };
-
-    const allBuildings = async () => {
-      const response = await buildingService.get();
-      let buildings = [];
-      for (let i in response) {
-        let entry = response[i];
-        buildings.push({
-          pk: urlToPK(entry["url"]),
-          nickname: entry["nickname"],
-          region_name: entry["region_name"],
-        });
-      }
-      setBuildings(buildings);
-    };
     allUsers();
-    allBuildings();
   }, []);
 
-  const stringToField = {
-    Voornaam: "first_name",
-    Achternaam: "last_name",
-    "E-mailadres": "email",
-    Gebouwen: "buildings",
+  // Tailwindcss can't construct class names dynamically
+  const roleToClassName = {
+    1: "bg-tags-1",
+    2: "bg-tags-2",
+    3: "bg-tags-3",
+    5: "bg-tags-5",
   };
 
-  const createBuildingCell = (buildings) => {
+  const createRoleCell = (role) => {
     return (
-      <div>
-        {buildings.map((building, index) => (
-          <ColoredTag
-            key={index}
-            className={`cursor-pointer bg-light-bg-2 border-2 border-light-h-2`}
-          >
-            {building.nickname}
-          </ColoredTag>
-        ))}
-      </div>
+      <ColoredTag className={roleToClassName[role]}>
+        {roleToString[role]}
+      </ColoredTag>
     );
   };
 
@@ -105,8 +82,22 @@ export default function Syndici() {
     { name: "Voornaam", cut: false },
     { name: "Achternaam", cut: false },
     { name: "E-mailadres", cut: false },
-    { name: "Gebouwen", cut: false, createCell: createBuildingCell },
+    { name: "Rol", cut: false, createCell: createRoleCell },
   ];
+
+  const roleToString = {
+    1: "Developer",
+    2: "Admin",
+    3: "Superstudent",
+    5: "Student",
+  };
+
+  const stringToField = {
+    Voornaam: "first_name",
+    Achternaam: "last_name",
+    "E-mailadres": "email",
+    Rol: "role",
+  };
 
   const handleRightClick = (event, selectedIndiches) => {
     event.preventDefault();
@@ -150,11 +141,11 @@ export default function Syndici() {
   };
 
   const closeContextMenu = (option) => {
-    if (option === "Wijzig") {
+    if (option == "Wijzig") {
       editUser();
-    } else if (option === "Verwijder") {
+    } else if (option == "Verwijder") {
       setModalOpen(true);
-    } else if (option === "Mail") {
+    } else if (option == "Mail") {
       mailUsers();
     }
     setContextMenu(initialContextMenu);
@@ -165,6 +156,7 @@ export default function Syndici() {
   const multipleRowOptions = ["Verwijder", "Mail"];
 
   const changeSortSelected = (selected) => {
+    console.log(selected);
     setUsers(
       users.sort(function (a, b) {
         const field = stringToField[selected[0]];
@@ -192,15 +184,10 @@ export default function Syndici() {
       );
     }
     if (newFilterSelected.length !== 0) {
-      // Checks if a user is the owner of at least 1 of the selected buildings
-      usersCopy = usersCopy.filter((user) => {
-        const userBuildings = user.buildings.map(
-          (building) => building.nickname
-        );
-        return newFilterSelected.some((building) =>
-          userBuildings.includes(building)
-        );
-      });
+      // Checks if user has a role that is in the selected roles
+      usersCopy = usersCopy.filter((user) =>
+        newFilterSelected.includes(roleToString[user.role])
+      );
     }
     setClearSelected(clearSelected + 1);
     setUsers(usersCopy);
@@ -209,9 +196,9 @@ export default function Syndici() {
   return (
     <>
       <Head>
-        <title>Syndici</title>
+        <title>Personeel</title>
       </Head>
-      <CustomModal isOpen={modalOpen} className="z-20">
+      <CustomModal isOpen={modalOpen} className="z-20 bg-light-bg-1">
         <h2 className="text-lg font-bold mb-4">
           Weet u zeker dat u de geselecteerde gebruikers wilt verwijderen?
         </h2>
@@ -232,7 +219,10 @@ export default function Syndici() {
           </CustomButton>
         </div>
       </CustomModal>
-      <main className={`h-screen p-2 flex-col justify-between`}>
+      <main
+        className={`h-screen p-2 flex-col justify-between`}
+        style={{ backgroundColor: BG_LIGHT_SECONDARY }}
+      >
         <PrimaryCard className={"mb-4"}>
           <div
             className={
@@ -242,8 +232,9 @@ export default function Syndici() {
             <div>
               <Dropdown
                 icon={faFilter}
-                options={buildings.map((building) => building.nickname)}
+                options={["Developer", "Admin", "Student", "Superstudent"]}
                 onClick={applySearch}
+                multi={true}
               >
                 Filter
               </Dropdown>
@@ -251,7 +242,7 @@ export default function Syndici() {
             <div>
               <Dropdown
                 icon={faSort}
-                options={["Voornaam", "Achternaam", "E-mailadres"]}
+                options={["Voornaam", "Achternaam", "E-mailadres", "Rol"]}
                 onClick={changeSortSelected}
               >
                 Sorteer
@@ -261,7 +252,7 @@ export default function Syndici() {
               <CustomInputField
                 icon={faMagnifyingGlass}
                 reference={searchRef}
-                actionCallback={() => applySearch(filterSelected)}
+                callback={() => applySearch(filterSelected)}
               ></CustomInputField>
             </div>
             <div>
@@ -278,7 +269,7 @@ export default function Syndici() {
               user.first_name,
               user.last_name,
               user.email,
-              user.buildings,
+              user.role,
             ])}
             rightClick={handleRightClick}
             clearSelected={clearSelected}
@@ -298,6 +289,6 @@ export default function Syndici() {
   );
 }
 
-Syndici.getLayout = function getLayout(page) {
+Employees.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>;
 };

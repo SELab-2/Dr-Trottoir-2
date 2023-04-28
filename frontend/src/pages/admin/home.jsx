@@ -16,6 +16,8 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import Emoji from "@/components/Emoji";
+import Layout from "@/components/Layout";
+import CustomProgressBar from "@/components/ProgressBar";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
@@ -69,6 +71,12 @@ export default function Home() {
       <PrimaryCard icon={faCreditCard} className={"m-4"}>
         <p className={"font-bold"}>By team 2</p>
       </PrimaryCard>
+      <CustomProgressBar
+        fraction={1 / 3}
+        is_wheel={true}
+        circleWidth={120}
+        radius={120}
+      />
     </>
   );
 }
@@ -87,3 +95,7 @@ export async function getServerSideProps(context) {
     props: { session },
   };
 }
+
+Home.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>;
+};
