@@ -25,7 +25,12 @@ export default function LinkButton({ children, icon, link, className }) {
         href={link}
         className={`flex py-2 px-2 items-center rounded-lg ${style} `}
       >
-        <FontAwesomeIcon icon={icon} className={"flex-shrink-0 w-4 h-4 ml-4"} />
+        {icon && (
+          <FontAwesomeIcon
+            icon={icon}
+            className={"flex-shrink-0 w-4 h-4 ml-4"}
+          />
+        )}
         <div className={"ml-3"}>{children}</div>
       </Link>
     </div>

@@ -1,6 +1,12 @@
 import PrimaryButton from "@/components/button/PrimaryButton";
 import CustomButton from "@/components/button/Button";
 import { faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import ScheduleService from "@/services/schedule.service";
+import TourService from "@/services/tour.service";
+import BuildingService from "@/services/building.service";
+import UserService from "@/services/user.service";
+import { useRouter } from "next/router";
 
 /**
  *
@@ -9,7 +15,22 @@ import { faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function BuildingForm({ onSubmit, data }) {
+export default function BuildingForm({ onSubmit, id }) {
+  const [data, setData] = useState({});
+  const router = useRouter();
+
+  useEffect(() => {
+    // fetch all the data needed for the page
+    async function fetchData() {
+      if (router.query.id) {
+        setData(await BuildingService.getById(router.query.id));
+      }
+    }
+
+    fetchData().catch();
+    console.log(data);
+  }, [router.query.id]);
+
   return (
     <form onSubmit={onSubmit} className={"flex flex-col space-y-2"}>
       <div className={"flex flex-col space-y-2"}>
@@ -23,9 +44,8 @@ export default function BuildingForm({ onSubmit, data }) {
           className={
             "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
           }
-        >
-          {data && data.nickname}
-        </input>
+          value={data ? data.nickname : ""}
+        />
       </div>
 
       <div className={"flex flex-col space-y-2"}>
@@ -38,9 +58,8 @@ export default function BuildingForm({ onSubmit, data }) {
           className={
             "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
           }
-        >
-          {data && data.description}
-        </textarea>
+          value={data ? data.description : ""}
+        />
       </div>
 
       <div className={"flex flex-col space-y-2"}>
@@ -54,9 +73,8 @@ export default function BuildingForm({ onSubmit, data }) {
           className={
             "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
           }
-        >
-          {data && data.address_line_1}
-        </input>
+          value={data ? data.address_line_1 : ""}
+        />
       </div>
 
       <div className={"flex flex-col space-y-2"}>
@@ -70,9 +88,8 @@ export default function BuildingForm({ onSubmit, data }) {
           className={
             "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
           }
-        >
-          {data && data.address_line_2}
-        </input>
+          value={data ? data.address_line_2 : ""}
+        />
       </div>
 
       <div className={"flex flex-col space-y-2"}>
@@ -86,9 +103,8 @@ export default function BuildingForm({ onSubmit, data }) {
           className={
             "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
           }
-        >
-          {data && data.country}
-        </input>
+          value={data ? data.country : ""}
+        />
       </div>
 
       <div className={"flex flex-col space-y-2"}>
@@ -102,9 +118,7 @@ export default function BuildingForm({ onSubmit, data }) {
           className={
             "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
           }
-        >
-          {data && data.manual}
-        </input>
+        />
       </div>
 
       <div className={"flex flex-row space-x-2"}>
