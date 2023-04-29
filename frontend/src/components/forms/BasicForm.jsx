@@ -3,8 +3,7 @@ import PrimaryButton from "@/components/button/PrimaryButton";
 import { faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import CustomButton from "@/components/button/Button";
 
-export default function BasicForm({ children, onSubmit, className, loading}) {
-
+export default function BasicForm({ children, onSubmit, className, loading }) {
   if (loading) {
     return (
       <div className={"flex justify-center items-center h-fit w-full"}>

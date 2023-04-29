@@ -8,17 +8,18 @@ import BuildingService from "@/services/building.service";
 import UserService from "@/services/user.service";
 import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
+import BasicForm from "@/components/forms/BasicForm";
+import InputForm from "@/components/forms/forms-input/InputForm";
+import TextAreaForm from "@/components/forms/forms-input/TextAreaForm";
 
 /**
  *
  * @param onSubmit
- * @param data
  * @returns {JSX.Element}
  * @constructor
  */
 export default function BuildingForm({ id }) {
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   // DATA ////////////////////////////////////////
   const [name, setName] = useState("");
@@ -38,8 +39,8 @@ export default function BuildingForm({ id }) {
     // fetch all the data needed for the page
     async function fetchData() {
       setLoading(true);
-      if (router.query.id) {
-        const data = await BuildingService.getById(router.query.id);
+      if (id) {
+        const data = await BuildingService.getById(id);
         setName(data.nickname);
         setDescription(data.description);
         setAddress1(data.address_line_1);
@@ -52,7 +53,7 @@ export default function BuildingForm({ id }) {
       .then(() => setLoading(false))
       .catch();
     setLoading(false);
-  }, [router.query.id]);
+  }, [id]);
 
   if (loading) {
     return (
@@ -63,85 +64,41 @@ export default function BuildingForm({ id }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className={"flex flex-col space-y-2"}>
-      <div className={"flex flex-col space-y-2"}>
-        <label htmlFor="name" className={"font-bold"}>
-          Name
-        </label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          className={
-            "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
-          }
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
+    <BasicForm loading={loading} onSubmit={onSubmit}>
+      <InputForm
+        label={"Name"}
+        id={"name"}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
-      <div className={"flex flex-col space-y-2"}>
-        <label htmlFor="description" className={"font-bold"}>
-          Description
-        </label>
-        <textarea
-          name="description"
-          id="description"
-          className={
-            "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
-          }
-          value={description}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
+      <TextAreaForm
+        id={"description"}
+        label={"Description"}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
 
-      <div className={"flex flex-col space-y-2"}>
-        <label htmlFor="address1" className={"font-bold"}>
-          Address line 1
-        </label>
-        <input
-          type="text"
-          name="address1"
-          id="address1"
-          className={
-            "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
-          }
-          value={address1}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
+      <InputForm
+        label={"Address line 1"}
+        id={"address1"}
+        value={address1}
+        onChange={(e) => setAddress1(e.target.value)}
+      />
 
-      <div className={"flex flex-col space-y-2"}>
-        <label htmlFor="address2" className={"font-bold"}>
-          Address line 2
-        </label>
-        <input
-          type="text"
-          name="address2"
-          id="address2"
-          className={
-            "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
-          }
-          value={address2}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
+      <InputForm
+        label={"Address line 2"}
+        id={"address2"}
+        value={address2}
+        onChange={(e) => setAddress2(e.target.value)}
+      />
 
-      <div className={"flex flex-col space-y-2"}>
-        <label htmlFor="country" className={"font-bold"}>
-          Country
-        </label>
-        <input
-          type="text"
-          name="country"
-          id="country"
-          className={
-            "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
-          }
-          value={country}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
+      <InputForm
+        label={"Country"}
+        id={"country"}
+        value={country}
+        onChange={(e) => setCountry(e.target.value)}
+      />
 
       <div className={"flex flex-col space-y-2"}>
         <label htmlFor="manual" className={"font-bold"}>
@@ -156,20 +113,6 @@ export default function BuildingForm({ id }) {
           }
         />
       </div>
-
-      <div className={"flex flex-row space-x-2"}>
-        <PrimaryButton icon={faPlusCircle} type={"submit"}>
-          Opslaan
-        </PrimaryButton>
-        <CustomButton
-          icon={faMinusCircle}
-          className={
-            "bg-bad-1 text-dark-h-1 hover:bg-bad-1 active:bg-bad-2 active:text-bad-1"
-          }
-        >
-          Verwijder
-        </CustomButton>
-      </div>
-    </form>
+    </BasicForm>
   );
 }
