@@ -13,9 +13,11 @@ export default function LinkButton({ children, icon, link, className }) {
   // Background is the accent colour if it is the current page.
   const router = useRouter();
 
+  const path = router.asPath.replace(/\/$/g, "") + "/";
+
   //change style of the selected link
   let style = "";
-  if (router.asPath.startsWith(link)) {
+  if (path.startsWith(link.replace(/\/$/g, "") + "/")) {
     style = "bg-accent-1 hover:bg-accent-1 text-accent-2 font-bold";
   }
 
