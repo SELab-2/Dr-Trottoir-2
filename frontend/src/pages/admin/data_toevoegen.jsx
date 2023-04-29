@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 
 export default function AdminDataAddPage() {
   const router = useRouter();
-  router.push("/admin/data_toevoegen/planning");
+  router.push("/admin/data_toevoegen/planningen");
 }
 
 AdminDataAddPage.getLayout = function getLayout(page) {

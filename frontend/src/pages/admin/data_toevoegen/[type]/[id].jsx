@@ -18,7 +18,7 @@ export default function AdminDataUpdatePage() {
       </Head>
 
       <LayoutDataAdd route={router.query.type}>
-        {router.query.type === "planning" && <ScheduleForm />}
+        {router.query.type === "planningen" && <ScheduleForm />}
         {router.query.type === "rondes" && <TourForm />}
         {router.query.type === "gebouwen" && <BuildingForm />}
         {router.query.type === "personeel" && <StaffForm />}

@@ -16,16 +16,49 @@ import TourService from "@/services/tour.service";
 import BuildingService from "@/services/building.service";
 import UserService from "@/services/user.service";
 import { urlToPK } from "@/utils/urlToPK";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import LinkButton from "@/components/navbar/LinkButton";
+import Loading from "@/components/Loading";
 
 function scheduleList(data) {
-  return <p>TODO</p>;
+  return data.map((data) => {
+    const id = urlToPK(data.url);
+    return (
+      <LinkButton
+        key={id}
+        link={`/admin/data_toevoegen/planningen/${id}`}
+        className={"truncate"}
+      >
+        <div className={"text-light-h-1"}>
+          <p>{data.date}</p>
+          {data.student && (
+            <p className={"text-light-h-2"}>
+              {data.student.first_name + " " + data.student.last_name}
+            </p>
+          )}
+        </div>
+      </LinkButton>
+    );
+  });
 }
 
 function tourList(data) {
-  return <p>TODO</p>;
+  return data.map((data) => {
+    const id = urlToPK(data.url);
+
+    return (
+      <LinkButton
+        key={id}
+        link={`/admin/data_toevoegen/rondes/${id}`}
+        className={"truncate"}
+      >
+        <div className={"text-light-h-1"}>
+          <p>{data.name}</p>
+          <p className={"text-light-h-2"}>{data.region_name}</p>
+        </div>
+      </LinkButton>
+    );
+  });
 }
 
 function buildingList(data) {
@@ -40,8 +73,8 @@ function buildingList(data) {
       >
         <div className={"text-light-h-1"}>
           <p> {data.nickname}</p>
-          <p className={"truncate"}>
-            {data.address_line_1 + data.address_line_2}
+          <p className={"text-light-h-2"}>
+            {data.address_line_1 + " " + data.address_line_2}
           </p>
         </div>
       </LinkButton>
@@ -50,24 +83,70 @@ function buildingList(data) {
 }
 
 function personeelList(data) {
-  return <p>TODO</p>;
+  return data.map((data) => {
+    const id = urlToPK(data.url);
+
+    if (data.role !== 4) {
+      return (
+        <LinkButton
+          key={id}
+          link={`/admin/data_toevoegen/personeel/${id}`}
+          className={"truncate"}
+        >
+          <div className={"text-light-h-1"}>
+            <p>{data.first_name + " " + data.last_name}</p>
+            <p className={"text-light-h-2"}>{data.email}</p>
+            <p></p>
+          </div>
+        </LinkButton>
+      );
+    }
+  });
 }
 
 function syndiciList(data) {
-  return <p>TODO</p>;
+  return data.map((data) => {
+    const id = urlToPK(data.url);
+
+    if (data.role === 4) {
+      return (
+        <LinkButton
+          key={id}
+          link={`/admin/data_toevoegen/syndici/${id}`}
+          className={"truncate"}
+        >
+          <div className={"text-light-h-1"}>
+            <p>{data.first_name + " " + data.last_name}</p>
+            <p className={"text-light-h-2"}>{data.email}</p>
+          </div>
+        </LinkButton>
+      );
+    }
+  });
 }
 
-export default function LayoutDataAdd({ children, route }) {
+export default function LayoutDataAdd({ children }) {
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
+    setLoading(true);
+
     // fetch all the data needed for the page
     async function fetchData() {
-      console.log(route);
-      switch (route) {
-        case "planning":
-          setData(await ScheduleService.get());
+      switch (router.query.type) {
+        case "planningen": {
+          let data = await ScheduleService.get();
+          data = await Promise.all(
+            data.map(async (entry) => {
+              entry.student = await UserService.getEntryByUrl(entry.student);
+              return entry;
+            })
+          );
+          setData(data);
           break;
+        }
         case "rondes":
           setData(await TourService.get());
           break;
@@ -85,8 +164,10 @@ export default function LayoutDataAdd({ children, route }) {
       }
     }
 
-    fetchData().catch();
-  }, [route]);
+    fetchData()
+      .then(() => setLoading(false))
+      .catch((err) => alert(err));
+  }, [router.query.type]);
 
   return (
     <div className={"flex flex-row h-full w-full p-2 space-x-2"}>
@@ -94,9 +175,9 @@ export default function LayoutDataAdd({ children, route }) {
         <PrimaryCard title={"Data types"}>
           <LinkList
             categories={{
-              Planning: {
+              Planningen: {
                 icon: faCalendarWeek,
-                link: "/admin/data_toevoegen/planning",
+                link: "/admin/data_toevoegen/planningen",
               },
               Rondes: {
                 icon: faBicycle,
@@ -118,7 +199,13 @@ export default function LayoutDataAdd({ children, route }) {
             linkClassName={"hover: hover:bg-light-bg-2"}
           />
         </PrimaryCard>
-        <PrimaryButton icon={faPlusCircle} className={"w-full"}>
+        <PrimaryButton
+          icon={faPlusCircle}
+          className={"w-full"}
+          onClick={() =>
+            router.push(`/admin/data_toevoegen/${router.query.type}`)
+          }
+        >
           Nieuw Item
         </PrimaryButton>
         <SecondaryButton icon={faPlusCircle} className={"w-full"}>
@@ -127,13 +214,19 @@ export default function LayoutDataAdd({ children, route }) {
       </div>
 
       <PrimaryCard className={`h-full w-1/5`} title={"Huidige"}>
-        <div className={"flex flex-col space-y-4"}>
-          {route === "planning" && scheduleList(data)}
-          {route === "rondes" && tourList(data)}
-          {route === "gebouwen" && buildingList(data)}
-          {route === "personeel" && personeelList(data)}
-          {route === "syndici" && syndiciList(data)}
-        </div>
+        {loading ? (
+          <div className={"flex justify-center items-center h-fit w-full"}>
+            <Loading className={"w-10 h-10"} />
+          </div>
+        ) : (
+          <div className={"flex flex-col space-y-4"}>
+            {router.query.type === "planningen" && scheduleList(data)}
+            {router.query.type === "rondes" && tourList(data)}
+            {router.query.type === "gebouwen" && buildingList(data)}
+            {router.query.type === "personeel" && personeelList(data)}
+            {router.query.type === "syndici" && syndiciList(data)}
+          </div>
+        )}
       </PrimaryCard>
 
       <PrimaryCard className={`h-full w-3/5`} title={"Bewerken"}>

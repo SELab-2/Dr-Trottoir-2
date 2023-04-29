@@ -10,7 +10,7 @@ import LayoutDataAdd from "@/components/LayoutDataToevoegen";
 
 export async function getStaticPaths() {
   const paths = [
-    { params: { type: "planning" } },
+    { params: { type: "planningen" } },
     { params: { type: "rondes" } },
     { params: { type: "gebouwen" } },
     { params: { type: "personeel" } },
@@ -39,7 +39,7 @@ export default function AdminDataAddPage() {
       </Head>
 
       <LayoutDataAdd route={router.query.type}>
-        {router.query.type === "planning" && <ScheduleForm />}
+        {router.query.type === "planningen" && <ScheduleForm />}
         {router.query.type === "rondes" && <TourForm />}
         {router.query.type === "gebouwen" && <BuildingForm />}
         {router.query.type === "personeel" && <StaffForm />}

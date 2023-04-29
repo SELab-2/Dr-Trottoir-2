@@ -7,6 +7,7 @@ import TourService from "@/services/tour.service";
 import BuildingService from "@/services/building.service";
 import UserService from "@/services/user.service";
 import { useRouter } from "next/router";
+import Loading from "@/components/Loading";
 
 /**
  *
@@ -15,21 +16,51 @@ import { useRouter } from "next/router";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function BuildingForm({ onSubmit, id }) {
-  const [data, setData] = useState({});
+export default function BuildingForm({ id }) {
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  // DATA ////////////////////////////////////////
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [address1, setAddress1] = useState("");
+  const [address2, setAddress2] = useState("");
+  const [country, setCountry] = useState("");
+
+  ////////////////////////////////////////////////
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    alert(`You have submitted the form.`);
+  };
 
   useEffect(() => {
     // fetch all the data needed for the page
     async function fetchData() {
+      setLoading(true);
       if (router.query.id) {
-        setData(await BuildingService.getById(router.query.id));
+        const data = await BuildingService.getById(router.query.id);
+        setName(data.nickname);
+        setDescription(data.description);
+        setAddress1(data.address_line_1);
+        setAddress2(data.address_line_2);
+        setCountry(data.country);
       }
     }
 
-    fetchData().catch();
-    console.log(data);
+    fetchData()
+      .then(() => setLoading(false))
+      .catch();
+    setLoading(false);
   }, [router.query.id]);
+
+  if (loading) {
+    return (
+      <div className={"flex justify-center items-center h-fit w-full"}>
+        <Loading className={"w-10 h-10"} />
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={onSubmit} className={"flex flex-col space-y-2"}>
@@ -44,7 +75,8 @@ export default function BuildingForm({ onSubmit, id }) {
           className={
             "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
           }
-          value={data ? data.nickname : ""}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
       </div>
 
@@ -58,7 +90,8 @@ export default function BuildingForm({ onSubmit, id }) {
           className={
             "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
           }
-          value={data ? data.description : ""}
+          value={description}
+          onChange={(e) => setName(e.target.value)}
         />
       </div>
 
@@ -73,7 +106,8 @@ export default function BuildingForm({ onSubmit, id }) {
           className={
             "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
           }
-          value={data ? data.address_line_1 : ""}
+          value={address1}
+          onChange={(e) => setName(e.target.value)}
         />
       </div>
 
@@ -88,7 +122,8 @@ export default function BuildingForm({ onSubmit, id }) {
           className={
             "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
           }
-          value={data ? data.address_line_2 : ""}
+          value={address2}
+          onChange={(e) => setName(e.target.value)}
         />
       </div>
 
@@ -103,7 +138,8 @@ export default function BuildingForm({ onSubmit, id }) {
           className={
             "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
           }
-          value={data ? data.country : ""}
+          value={country}
+          onChange={(e) => setName(e.target.value)}
         />
       </div>
 
