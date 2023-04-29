@@ -52,12 +52,42 @@ module.exports = {
         1: "#CF222E",
         2: "#FFD4DF",
       },
+      tags: {
+        1: "#FFEAB6",
+        2: "#FFEAB6",
+        3: "#E2D5F7",
+        5: "#FCCCF0",
+      },
     },
     fontSize: {
       base: "14px",
       lg: "21px",
+      xl: "27px",
+      xxl: "32px",
     },
-    extend: {},
+    extend: {
+      strokeLinecap: {
+        square: "square",
+        round: "round",
+        butt: "butt",
+      },
+    },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        ".stroke-linecap-square": {
+          "stroke-linecap": "square",
+        },
+        ".stroke-linecap-round": {
+          "stroke-linecap": "round",
+        },
+        ".stroke-linecap-butt": {
+          "stroke-linecap": "butt",
+        },
+      };
+
+      addUtilities(newUtilities, ["responsive", "hover"]);
+    },
+  ],
 };

@@ -44,7 +44,7 @@ export default function Navbar() {
           categories={{
             Rondes: { icon: faBicycle, link: "#" },
             Gebouwen: { icon: faBuilding, link: "/admin/gebouwen" },
-            Personeel: { icon: faPeopleGroup, link: "#" },
+            Personeel: { icon: faPeopleGroup, link: "/admin/personeel" },
             Syndici: { icon: faBriefcase, link: "/admin/syndici" },
           }}
         />
