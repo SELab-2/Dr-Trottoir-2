@@ -6,7 +6,8 @@ class WasteService {
    * Returns all wastes that match the filters (args). If args is empty, all wastes will be returned.
    *
    * FILTERS:
-   * - date (date)
+   * - startDate (date)
+   * - endDate (date)
    * - building (List id's of building)
    *
    * @param args Dictionary with the filters. The allowed filters are given above.
@@ -43,10 +44,13 @@ class WasteService {
    * @returns {*} The filtered data.
    */
   #filterWaste(data, args) {
-    if (args.date) {
+    if (args.startDate) {
       data = data.filter(
-        (waste) => new Date(waste.date).getDate() == args.date.getDate()
+        (schedule) => new Date(schedule.date) >= args.startDate
       );
+    }
+    if (args.endDate) {
+      data = data.filter((schedule) => new Date(schedule.date) <= args.endDate);
     }
     if (args.buildings) {
       data = data.filter((waste) => args.buildings.includes(waste.building));

@@ -60,6 +60,7 @@ module.exports = {
       },
     },
     fontSize: {
+      xs: "10px",
       base: "14px",
       lg: "21px",
       xl: "27px",

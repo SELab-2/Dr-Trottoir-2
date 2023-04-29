@@ -14,13 +14,34 @@ import Dropdown from "@/components/Dropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CustomButton from "@/components/button/Button";
 import BuildingImage from "/public/images/buildingimage.jpg";
+import wasteService from "@/services/waste.service";
+import { getMonday, getSunday } from "@/utils/helpers";
+import ColoredTag from "@/components/Tag";
 
 export default function StudentBuilding() {
   const [buildings, setBuildings] = useState([]);
   const [selectedBuilding, setSelectedBuilding] = useState(null);
+  // list with as elements a list of the waste entries with the index as the day
+  const [wasteSchedule, setWasteSchedule] = useState([]);
+
+  const monday = getMonday(new Date());
+  const sunday = getSunday(new Date());
 
   useEffect(() => {
     async function fetchData() {
+      const wastes = await wasteService.get({
+        startDate: monday,
+        endDate: sunday,
+      });
+      let wasteDays = [];
+      for (let i = 0; i < 5; i++) {
+        wasteDays.push([]);
+      }
+      for (let i in wastes) {
+        let wasteEntry = wastes[i];
+        wasteDays[new Date(wasteEntry["date"]).getDay() - 1].push(wasteEntry); // -1 because sunday is defined as day 0
+      }
+      setWasteSchedule(wasteDays);
       const response = await BuildingService.get();
       setBuildings(response);
     }
@@ -59,7 +80,7 @@ export default function StudentBuilding() {
 
         {selectedBuilding !== null && (
           <div>
-            <PrimaryCard className="m-1">
+            <PrimaryCard>
               <div>
                 <div className="flex items-center">
                   <div className="font-bold text-lg text-light-h-1">
@@ -77,7 +98,22 @@ export default function StudentBuilding() {
                   </div>
                 </div>
               </div>
-              <SecondaryCard className="my-3"></SecondaryCard>
+              <SecondaryCard className="my-3 flex space-x-1">
+                {wasteSchedule.map((dayWaste, index) => (
+                  <PrimaryCard key={index} className="w-full !p-1">
+                    {dayWaste.map((waste, innerIndex) =>
+                      waste["building"] == selectedBuilding.url ? (
+                        <ColoredTag
+                          key={innerIndex}
+                          className="rounded-md w-full justify-center flex bg-dark-bg-2 text-dark-h-1 text-xs !mx-0 !my-1"
+                        >
+                          {waste["waste_type"].toUpperCase()}
+                        </ColoredTag>
+                      ) : null
+                    )}
+                  </PrimaryCard>
+                ))}
+              </SecondaryCard>
               <SecondaryCard
                 title="Opmerkingen"
                 icon={faComment}
