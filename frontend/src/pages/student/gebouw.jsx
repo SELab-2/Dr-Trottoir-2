@@ -6,6 +6,10 @@ import {
   faLocationDot,
   faComment,
   faImage,
+  faSquareCheck,
+  faSquare,
+  faSquarePlus,
+  faSquareRegular,
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
@@ -120,9 +124,27 @@ export default function StudentBuilding() {
                 className="my-3"
               ></SecondaryCard>
               <SecondaryCard title="Foto's" icon={faImage} className="my-2">
-                <PrimaryCard title="Binnen" className="my-2"></PrimaryCard>
-                <PrimaryCard title="Lokaal" className="my-2"></PrimaryCard>
-                <PrimaryCard title="Vertrek" className="my-2"></PrimaryCard>
+                <PrimaryCard className="my-2 font-bold flex">
+                  <div>Aankomst</div>
+                  <div className="ml-auto">
+                    <FontAwesomeIcon icon={faSquare} className="pr-1" />
+                    <FontAwesomeIcon icon={faSquarePlus} className="pr-1" />
+                  </div>
+                </PrimaryCard>
+                <PrimaryCard className="my-2 font-bold flex">
+                  <div>Binnen</div>
+                  <div className="ml-auto">
+                    <FontAwesomeIcon icon={faSquare} className="pr-1" />
+                    <FontAwesomeIcon icon={faSquarePlus} className="pr-1" />
+                  </div>
+                </PrimaryCard>
+                <PrimaryCard className="my-2 font-bold flex">
+                  <div>Vertrek</div>
+                  <div className="ml-auto">
+                    <FontAwesomeIcon icon={faSquare} className="pr-1" />
+                    <FontAwesomeIcon icon={faSquarePlus} className="pr-1" />
+                  </div>
+                </PrimaryCard>
               </SecondaryCard>
             </PrimaryCard>
           </div>
