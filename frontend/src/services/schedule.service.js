@@ -65,7 +65,6 @@ class ScheduleService {
     if (args.endDate) {
       data = data.filter((schedule) => new Date(schedule.date) <= args.endDate);
     }
-    
     if (args.students) {
       data = data.filter((schedule) =>
         args.students.includes(schedule.student)
