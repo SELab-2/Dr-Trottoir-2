@@ -1,23 +1,10 @@
-import PrimaryButton from "@/components/button/PrimaryButton";
-import CustomButton from "@/components/button/Button";
-import { faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import ScheduleService from "@/services/schedule.service";
-import TourService from "@/services/tour.service";
 import BuildingService from "@/services/building.service";
-import UserService from "@/services/user.service";
-import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
 import BasicForm from "@/components/forms/BasicForm";
 import InputForm from "@/components/forms/forms-input/InputForm";
 import TextAreaForm from "@/components/forms/forms-input/TextAreaForm";
 
-/**
- *
- * @param onSubmit
- * @returns {JSX.Element}
- * @constructor
- */
 export default function BuildingForm({ id }) {
   const [loading, setLoading] = useState(true);
 
