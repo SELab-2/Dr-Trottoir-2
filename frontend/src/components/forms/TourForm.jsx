@@ -6,7 +6,12 @@ import InputForm from "@/components/forms/forms-input/InputForm";
 import TourService from "@/services/tour.service";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronDown,
+  faChevronUp,
+  faPlus,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import SelectForm from "@/components/forms/forms-input/SelectForm";
 
 export default function TourForm({ id }) {
@@ -49,9 +54,33 @@ export default function TourForm({ id }) {
 
   // remove building from active list
   const onRemoveBuilding = (id) => {
+    console.log(id);
+    console.log(buildings);
     const newBuildings = [...buildings];
     newBuildings.splice(id, 1);
+    //update order index for elements after the removed element
+    for (let i = id; i < newBuildings.length; i++) {
+      newBuildings[i].order_index--;
+    }
     setBuildings(newBuildings);
+  };
+
+  const onMoveUp = (index) => {
+    const newBuildings = [...buildings];
+    if (index !== 0) {
+      newBuildings[index].order_index--;
+      newBuildings[index - 1].order_index++;
+    }
+    setBuildings(newBuildings.sort((a, b) => a.order_index > b.order_index));
+  };
+
+  const onMoveDown = (index) => {
+    const newBuildings = [...buildings];
+    if (index < buildings.length - 1) {
+      newBuildings[index].order_index++;
+      newBuildings[index + 1].order_index--;
+    }
+    setBuildings(newBuildings.sort((a, b) => a.order_index > b.order_index));
   };
 
   useEffect(() => {
@@ -65,7 +94,9 @@ export default function TourForm({ id }) {
 
         // set buildings in Tour
         const newBuildings = await TourService.getBuildingsFromTour(id);
-        setBuildings(newBuildings);
+        setBuildings(
+          newBuildings.sort((a, b) => a.order_index > b.order_index)
+        );
 
         // get all Buildings that are not in the tour
         const allBuildings = await BuildingService.get();
@@ -113,9 +144,7 @@ export default function TourForm({ id }) {
               onChange={(e) => setAddBuilding(e.target.value)}
               className={"flex-grow"}
             >
-              <option value={undefined} selected={true}>
-                --Please pick a building--
-              </option>
+              <option value={undefined}>--Please pick a building--</option>
               {allBuildings.map((building, index) => {
                 return (
                   <option key={index} value={index}>
@@ -139,16 +168,31 @@ export default function TourForm({ id }) {
                 <div
                   key={index}
                   className={
-                    "bg-light-bg-1 w-full rounded-lg p-2 flex justify-center items-center"
+                    "bg-light-bg-1 w-full rounded-lg p-2 flex justify-center items-center space-x-5"
                   }
                 >
                   <p className={"flex-grow"}>
-                    {building.building_data.nickname}
+                    {building.order_index +
+                      1 +
+                      ". " +
+                      building.building_data.nickname}
                   </p>
+                  <div className={"flex flex-col"}>
+                    <FontAwesomeIcon
+                      icon={faChevronUp}
+                      onClick={() => onMoveUp(index)}
+                      className={"cursor-pointer"}
+                    />
+                    <FontAwesomeIcon
+                      icon={faChevronDown}
+                      onClick={() => onMoveDown(index)}
+                      className={"cursor-pointer"}
+                    />
+                  </div>
                   <FontAwesomeIcon
                     icon={faXmark}
                     className={"h-full cursor-pointer"}
-                    onClick={(index) => onRemoveBuilding(index)}
+                    onClick={() => onRemoveBuilding(index)}
                   />
                 </div>
               );
