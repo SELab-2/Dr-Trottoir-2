@@ -23,6 +23,8 @@ import buildingService from "@/services/building.service";
 import visit_finished from "@/utils/visit_finished";
 import ColoredTag from "@/components/Tag";
 import { COLOR_BAD_1, COLOR_DONE_1 } from "@/utils/colors";
+import WasteService from "@/services/waste.service";
+import Cell from "@/components/table/Cell";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -30,6 +32,7 @@ export default function StudentPlanningPage() {
   const [fraction, setFraction] = useState(0);
   const [names, setNames] = useState([]);
   const [schedules, setSchedules] = useState([]);
+  const [dates, setDates] = useState([]);
 
   async function setSchedule(item) {
     const content = item[0];
@@ -52,13 +55,17 @@ export default function StudentPlanningPage() {
             const building = await buildingService.getEntryByUrl(
               entry["building"]
             );
-            console.log(building);
             result["url"] = entry["building"];
             result["name"] = entry["building_data"]["nickname"];
             result[
               "address"
             ] = `${building["address_line_1"]} ${building["address_line_2"]}`;
             result["finished"] = false;
+            result["waste"] = await WasteService.get({
+              building: entry["building"],
+              startDate: moment(new Date()).startOf("isoWeek").toDate(),
+              endDate: moment(new Date()).endOf("isoWeek").toDate(),
+            });
             return result;
           })
         );
@@ -81,7 +88,6 @@ export default function StudentPlanningPage() {
         setName(buildings[0].tour_name);
         setFraction(count / buildings.length);
       }
-      console.log(buildings);
     }
   }
 
@@ -93,6 +99,13 @@ export default function StudentPlanningPage() {
       const date = new Date();
       const dateFrom = moment(date).startOf("isoWeek").toDate();
       const dateTo = moment(date).endOf("isoWeek").toDate();
+      const dates = [];
+      let currentDate = new Date(dateFrom);
+      while (currentDate <= dateTo) {
+        dates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      setDates(dates);
       const schedules = await scheduleService.get({
         students: [user.url],
         startDate: dateFrom,
@@ -104,10 +117,8 @@ export default function StudentPlanningPage() {
           return tour.name;
         })
       );
-      console.log(names);
       setNames(names);
       const scheduleUrls = schedules.map((entry) => entry.url);
-      console.log(schedules);
       setSchedules(scheduleUrls);
     };
     allSchedules().catch();
@@ -150,11 +161,13 @@ export default function StudentPlanningPage() {
               </div>
             </div>
           </div>
-          <div className={"w-full flex flex-col space-y-3"}>
+          <div className={"w-full flex flex-col space-y-3 overflow-auto"}>
             {buildings.map((data, index) => {
               return (
                 <div
-                  className={"font-bold rounded-lg w-full bg-light-h-2 p-3"}
+                  className={
+                    "font-bold rounded-lg w-full h-full bg-light-h-2 p-3 space-y-2"
+                  }
                   key={index}
                 >
                   <div className={"flex flex-row"}>
@@ -187,6 +200,64 @@ export default function StudentPlanningPage() {
                   <div className={"flex flex-row space-x-2"}>
                     <FontAwesomeIcon icon={faLocationDot} />
                     <p>{data["address"]}</p>
+                  </div>
+                  <div className={"flex flex-row space-x-2 w-full h-auto"}>
+                    {dates.map((date, i) => {
+                      const waste = data["waste"].filter((entry) => {
+                        const wasteDate = new Date(entry.date);
+                        const day = wasteDate.getDay();
+                        const month = wasteDate.getMonth();
+                        const year = wasteDate.getFullYear();
+                        return (
+                          day === date.getDay() &&
+                          month === date.getMonth() &&
+                          year === date.getFullYear()
+                        );
+                      });
+                      return (
+                        <div
+                          key={i}
+                          className={
+                            "flex flex-col flex-auto bg-light-bg-1 w-full p-1 rounded-lg items-center"
+                          }
+                        >
+                          {waste.map((entry, index) => {
+                            let classname = "bg-waste-other text-light-bg-1";
+                            let cut = true;
+                            if (entry.waste_type.toUpperCase() === "PMD") {
+                              classname = "bg-waste-PMD text-light-text";
+                              cut = false;
+                            } else if (
+                              entry.waste_type.toUpperCase() === "GLAS"
+                            ) {
+                              classname = "bg-waste-glass text-light-text";
+                              cut = false;
+                            } else if (
+                              entry.waste_type.toUpperCase() === "PAPIER"
+                            ) {
+                              classname = "bg-waste-paper text-light-bg-1";
+                            } else if (
+                              entry.waste_type.toUpperCase() === "REST"
+                            ) {
+                              classname = "bg-waste-rest text-light-bg-1";
+                              cut = false;
+                            }
+                            return (
+                              <ColoredTag
+                                key={index}
+                                className={`rounded-lg w-full text-center overflow-hidden ${classname}`}
+                              >
+                                <Cell cut={cut} maxWidth={"30"}>
+                                  <p className={classname}>
+                                    {entry.waste_type}
+                                  </p>
+                                </Cell>
+                              </ColoredTag>
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );

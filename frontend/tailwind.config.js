@@ -58,6 +58,13 @@ module.exports = {
         3: "#E2D5F7",
         5: "#FCCCF0",
       },
+      waste: {
+        paper: "#0041c2",
+        PMD: "#c8d7ff",
+        rest: "#282825",
+        glass: "#ffd500",
+        other: "#000000",
+      },
     },
     fontSize: {
       base: "14px",
