@@ -30,6 +30,7 @@ export default function TourForm({ id }) {
     alert(`You have submitted the form.`);
   };
 
+  // add the selected building to the active list
   const onAddBuilding = () => {
     console.log(addBuilding);
     if (addBuilding !== undefined) {
@@ -39,8 +40,18 @@ export default function TourForm({ id }) {
       // remove from not active buildings
       const newAllBuildings = [...allBuildings];
       newAllBuildings.splice(addBuilding, 1);
-      setAddBuilding(newAllBuildings);
+      setAllBuildings(newAllBuildings);
+      setAddBuilding(undefined);
+      const $select = document.querySelector("#addGebouw");
+      $select.value = undefined;
     }
+  };
+
+  // remove building from active list
+  const onRemoveBuilding = (id) => {
+    const newBuildings = [...buildings];
+    newBuildings.splice(id, 1);
+    setBuildings(newBuildings);
   };
 
   useEffect(() => {
@@ -102,6 +113,9 @@ export default function TourForm({ id }) {
               onChange={(e) => setAddBuilding(e.target.value)}
               className={"flex-grow"}
             >
+              <option value={undefined} selected={true}>
+                --Please pick a building--
+              </option>
               {allBuildings.map((building, index) => {
                 return (
                   <option key={index} value={index}>
@@ -119,23 +133,29 @@ export default function TourForm({ id }) {
           </div>
 
           <p className={"font-bold pt-4"}>Actieve gebouw(en)</p>
-          {buildings.map((building, index) => {
-            return (
-              <div
-                key={index}
-                className={
-                  "bg-light-bg-1 w-full rounded-lg p-2 flex justify-center items-center"
-                }
-              >
-                <p className={"flex-grow"}>{building.building_data.nickname}</p>
-                <FontAwesomeIcon
-                  icon={faXmark}
-                  className={"h-full cursor-pointer"}
-                  onClick={() => alert("Implement remove")}
-                />
-              </div>
-            );
-          })}
+          {buildings.length > 0 ? (
+            buildings.map((building, index) => {
+              return (
+                <div
+                  key={index}
+                  className={
+                    "bg-light-bg-1 w-full rounded-lg p-2 flex justify-center items-center"
+                  }
+                >
+                  <p className={"flex-grow"}>
+                    {building.building_data.nickname}
+                  </p>
+                  <FontAwesomeIcon
+                    icon={faXmark}
+                    className={"h-full cursor-pointer"}
+                    onClick={(index) => onRemoveBuilding(index)}
+                  />
+                </div>
+              );
+            })
+          ) : (
+            <p>Geen actieve gebouwen</p>
+          )}
         </SecondaryCard>
       </div>
     </BasicForm>
