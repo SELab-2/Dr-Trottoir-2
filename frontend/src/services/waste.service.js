@@ -37,8 +37,15 @@ class WasteService {
    * @returns {*} The filtered data.
    */
   #filterWaste(data, args) {
-    //TODO: add filters
-
+    if (args.building) {
+      data = data.filter((entry) => args.building === entry.building);
+    }
+    if (args.startDate) {
+      data = data.filter((entry) => new Date(entry.date) >= args.startDate);
+    }
+    if (args.endDate) {
+      data = data.filter((entry) => new Date(entry.date) <= args.endDate);
+    }
     return data;
   }
 }
