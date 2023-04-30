@@ -3,6 +3,10 @@ import HelperService from "@/services/helper.service";
 class WasteService {
   /**
    * Returns all waste entry that match the filters (args). If args is empty, all waste entry will be returned.
+   * FILTERS:
+   * - startDate (date)
+   * - endDate (date)
+   * - building (URL of a building)
    * @param args Dictionary with the filters.
    * @returns {Promise<*>} A list with waste entries.
    */
