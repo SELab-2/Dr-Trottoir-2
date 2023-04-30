@@ -38,7 +38,7 @@ import Layout from "@/components/Layout";
 import Dropdown from "@/components/Dropdown";
 import InputField from "@/components/input-fields/InputField";
 import SecondaryButton from "@/components/button/SecondaryButton";
-import visit_finished from "@/services/visit_finished";
+import visit_finished from "@/utils/visit_finished";
 
 /**
  * Return small tour component to place in the selection list.

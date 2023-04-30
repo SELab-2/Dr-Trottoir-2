@@ -6,6 +6,7 @@ import {
   faBicycle,
   faCheck,
   faLocationDot,
+  faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
@@ -17,12 +18,11 @@ import tourService from "@/services/tour.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
 import VisitService from "@/services/visit.service";
 import PhotoService from "@/services/photo.service";
-import ProgressBar from "react-customizable-progressbar";
 import CustomProgressBar from "@/components/ProgressBar";
 import buildingService from "@/services/building.service";
-import visit_finished from "@/services/visit_finished";
+import visit_finished from "@/utils/visit_finished";
 import ColoredTag from "@/components/Tag";
-import { COLOR_DONE_1 } from "@/utils/colors";
+import { COLOR_BAD_1, COLOR_DONE_1 } from "@/utils/colors";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -158,23 +158,30 @@ export default function StudentPlanningPage() {
                   key={index}
                 >
                   <div className={"flex flex-row"}>
-                    <h1 className={"font-bold text-lg"}>{data["name"]}</h1>
+                    <h1 className={"font-bold text-lg w-full"}>
+                      {data["name"]}
+                    </h1>
                     {data["finished"] ? (
                       <ColoredTag
                         className={
-                          "bg-done-2 border-4 border-done-1 rounded-lg"
+                          "bg-done-2 border-4 border-done-1 rounded-lg w-hidden"
                         }
                       >
                         <FontAwesomeIcon
                           icon={faCheck}
-                          size="lg"
                           style={{ color: COLOR_DONE_1 }}
                         />
                       </ColoredTag>
                     ) : (
                       <ColoredTag
                         className={"bg-bad-2 border-4 border-bad-1 rounded-lg"}
-                      />
+                      >
+                        <FontAwesomeIcon
+                          icon={faX}
+                          size={"lg"}
+                          style={{ color: COLOR_BAD_1 }}
+                        />
+                      </ColoredTag>
                     )}
                   </div>
                   <div className={"flex flex-row space-x-2"}>
