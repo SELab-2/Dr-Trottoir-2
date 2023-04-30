@@ -2,7 +2,12 @@ import Layout from "@/components/Layout";
 import MobileLayout from "@/components/MobileLayout";
 import Head from "next/head";
 import Dropdown from "@/components/Dropdown";
-import { faBicycle, faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBicycle,
+  faCheck,
+  faLocationDot,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { getSession, useSession } from "next-auth/react";
 import scheduleService from "@/services/schedule.service";
@@ -15,6 +20,9 @@ import PhotoService from "@/services/photo.service";
 import ProgressBar from "react-customizable-progressbar";
 import CustomProgressBar from "@/components/ProgressBar";
 import buildingService from "@/services/building.service";
+import visit_finished from "@/services/visit_finished";
+import ColoredTag from "@/components/Tag";
+import { COLOR_DONE_1 } from "@/utils/colors";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -22,21 +30,6 @@ export default function StudentPlanningPage() {
   const [fraction, setFraction] = useState(0);
   const [names, setNames] = useState([]);
   const [schedules, setSchedules] = useState([]);
-
-  async function visit_finished(url) {
-    const split = url.trim().split("/");
-    const photoUrls = await VisitService.getPhotosByVisit(
-      split[split.length - 2]
-    );
-
-    const photos = await Promise.all(
-      photoUrls.map(async (entry) => {
-        return await PhotoService.getEntryByUrl(entry.url);
-      })
-    );
-
-    return photos.filter((entry) => entry["state"] === 2);
-  }
 
   async function setSchedule(item) {
     const content = item[0];
@@ -47,16 +40,6 @@ export default function StudentPlanningPage() {
       const visits = await scheduleService.getVisitsFromSchedule(
         split[split.length - 2]
       );
-      let count = 0;
-      for (const visit of visits) {
-        const buildInTour = await BuildingInTourService.getEntryByUrl(
-          visit["building_in_tour"]
-        );
-        const photos = await visit_finished(visit.url);
-        if (photos.length > 0) {
-          count++;
-        }
-      }
 
       split = schedule.tour.trim().split("/");
       let buildings = await tourService.getBuildingsFromTour(
@@ -70,14 +53,30 @@ export default function StudentPlanningPage() {
               entry["building"]
             );
             console.log(building);
+            result["url"] = entry["building"];
             result["name"] = entry["building_data"]["nickname"];
             result[
               "address"
             ] = `${building["address_line_1"]} ${building["address_line_2"]}`;
-
+            result["finished"] = false;
             return result;
           })
         );
+
+        let count = 0;
+        for (const visit of visits) {
+          const buildInTour = await BuildingInTourService.getEntryByUrl(
+            visit["building_in_tour"]
+          );
+          const photos = await visit_finished(visit.url);
+          if (photos.length > 0) {
+            const building = building_data.find(
+              (entry) => entry["url"] === buildInTour["building"]
+            );
+            building["finished"] = true;
+            count++;
+          }
+        }
         setBuildings(building_data);
         setName(buildings[0].tour_name);
         setFraction(count / buildings.length);
@@ -158,9 +157,29 @@ export default function StudentPlanningPage() {
                   className={"font-bold rounded-lg w-full bg-light-h-2 p-3"}
                   key={index}
                 >
-                  <h1>{data["name"]}</h1>
                   <div className={"flex flex-row"}>
-                    <FrontAwesomeIcon icon={faLocationDot} />
+                    <h1 className={"font-bold text-lg"}>{data["name"]}</h1>
+                    {data["finished"] ? (
+                      <ColoredTag
+                        className={
+                          "bg-done-2 border-4 border-done-1 rounded-lg"
+                        }
+                      >
+                        <FontAwesomeIcon
+                          icon={faCheck}
+                          size="lg"
+                          style={{ color: COLOR_DONE_1 }}
+                        />
+                      </ColoredTag>
+                    ) : (
+                      <ColoredTag
+                        className={"bg-bad-2 border-4 border-bad-1 rounded-lg"}
+                      />
+                    )}
+                  </div>
+                  <div className={"flex flex-row space-x-2"}>
+                    <FontAwesomeIcon icon={faLocationDot} />
+                    <p>{data["address"]}</p>
                   </div>
                 </div>
               );
