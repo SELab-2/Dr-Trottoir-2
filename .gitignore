@@ -9,6 +9,7 @@ backend/uploads
 
 # passwords
 .env.prod*
+.env.dev
 
 # node things
 node_modules/
