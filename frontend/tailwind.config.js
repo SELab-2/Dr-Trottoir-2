@@ -59,7 +59,7 @@ module.exports = {
         5: "#FCCCF0",
       },
       waste: {
-        paper: "#0041c2",
+        paper: "#003088",
         PMD: "#c8d7ff",
         rest: "#282825",
         glass: "#ffd500",

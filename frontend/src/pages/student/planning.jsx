@@ -25,6 +25,9 @@ import ColoredTag from "@/components/Tag";
 import { COLOR_BAD_1, COLOR_DONE_1 } from "@/utils/colors";
 import WasteService from "@/services/waste.service";
 import Cell from "@/components/table/Cell";
+import CustomCard from "@/components/custom-card/CustomCard";
+import PrimaryCard from "@/components/custom-card/PrimaryCard";
+import SecondaryCard from "@/components/custom-card/SecondaryCard";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -85,7 +88,7 @@ export default function StudentPlanningPage() {
           }
         }
         setBuildings(building_data);
-        setName(buildings[0].tour_name);
+        setName(content[0]);
         setFraction(count / buildings.length);
       }
     }
@@ -114,12 +117,13 @@ export default function StudentPlanningPage() {
       const names = await Promise.all(
         schedules.map(async (entry) => {
           const tour = await tourService.getEntryByUrl(entry.tour);
-          return tour.name;
+          return `${tour.name} (${entry.date})`;
         })
       );
       setNames(names);
       const scheduleUrls = schedules.map((entry) => entry.url);
       setSchedules(scheduleUrls);
+      await setSchedule([[names[0], scheduleUrls[0]]]);
     };
     allSchedules().catch();
   }, []);
@@ -129,10 +133,10 @@ export default function StudentPlanningPage() {
       <Head>
         <title>Rondes</title>
       </Head>
-      <div className={"h-full bg-dark-bg-2 flex flex-col py-6 px-3 space-y-4"}>
-        <div
+      <div className={"h-full flex flex-col py-6 px-3 space-y-4"}>
+        <PrimaryCard
           className={
-            "h-full w-full bg-dark-bg-1 rounded-lg p-6 flex flex-col justify-start items-center content-start space-y-12"
+            "h-full w-full rounded-lg p-6 flex flex-col justify-start items-center content-start space-y-12"
           }
         >
           <div
@@ -140,8 +144,10 @@ export default function StudentPlanningPage() {
               "flex flex-col w-full justify-start items-center content-start space-y-3"
             }
           >
-            <h1 className={"text-[35px] font-bold text-dark-text"}>Planning</h1>
-            <h3 className={"text-lg font-bold text-dark-text"}>{name}</h3>
+            <h1 className={"text-[35px] font-bold text-light-text"}>
+              Planning
+            </h1>
+            <h3 className={"text-lg font-bold text-light-text"}>{name}</h3>
 
             <div
               className={
@@ -164,10 +170,8 @@ export default function StudentPlanningPage() {
           <div className={"w-full flex flex-col space-y-3 overflow-auto"}>
             {buildings.map((data, index) => {
               return (
-                <div
-                  className={
-                    "font-bold rounded-lg w-full h-full bg-light-h-2 p-3 space-y-2"
-                  }
+                <SecondaryCard
+                  className={"font-bold rounded-lg w-full h-full p-3 space-y-2"}
                   key={index}
                 >
                   <div className={"flex flex-row"}>
@@ -259,11 +263,11 @@ export default function StudentPlanningPage() {
                       );
                     })}
                   </div>
-                </div>
+                </SecondaryCard>
               );
             })}
           </div>
-        </div>
+        </PrimaryCard>
       </div>
     </>
   );
