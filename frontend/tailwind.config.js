@@ -63,6 +63,7 @@ module.exports = {
         PMD: "#c8d7ff",
         rest: "#282825",
         glass: "#ffd500",
+        GFT: "#165e00",
         other: "#000000",
       },
     },

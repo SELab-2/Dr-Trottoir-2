@@ -28,6 +28,7 @@ import Cell from "@/components/table/Cell";
 import CustomCard from "@/components/custom-card/CustomCard";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
+import WasteCalendar from "@/components/Wastecalendar";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -123,7 +124,9 @@ export default function StudentPlanningPage() {
       setNames(names);
       const scheduleUrls = schedules.map((entry) => entry.url);
       setSchedules(scheduleUrls);
-      await setSchedule([[names[0], scheduleUrls[0]]]);
+      if (scheduleUrls.length > 0) {
+        await setSchedule([[names[0], scheduleUrls[0]]]);
+      }
     };
     allSchedules().catch();
   }, []);
@@ -205,64 +208,7 @@ export default function StudentPlanningPage() {
                     <FontAwesomeIcon icon={faLocationDot} />
                     <p>{data["address"]}</p>
                   </div>
-                  <div className={"flex flex-row space-x-2 w-full h-auto"}>
-                    {dates.map((date, i) => {
-                      const waste = data["waste"].filter((entry) => {
-                        const wasteDate = new Date(entry.date);
-                        const day = wasteDate.getDay();
-                        const month = wasteDate.getMonth();
-                        const year = wasteDate.getFullYear();
-                        return (
-                          day === date.getDay() &&
-                          month === date.getMonth() &&
-                          year === date.getFullYear()
-                        );
-                      });
-                      return (
-                        <div
-                          key={i}
-                          className={
-                            "flex flex-col flex-auto bg-light-bg-1 w-full p-1 rounded-lg items-center"
-                          }
-                        >
-                          {waste.map((entry, index) => {
-                            let classname = "bg-waste-other text-light-bg-1";
-                            let cut = true;
-                            if (entry.waste_type.toUpperCase() === "PMD") {
-                              classname = "bg-waste-PMD text-light-text";
-                              cut = false;
-                            } else if (
-                              entry.waste_type.toUpperCase() === "GLAS"
-                            ) {
-                              classname = "bg-waste-glass text-light-text";
-                              cut = false;
-                            } else if (
-                              entry.waste_type.toUpperCase() === "PAPIER"
-                            ) {
-                              classname = "bg-waste-paper text-light-bg-1";
-                            } else if (
-                              entry.waste_type.toUpperCase() === "REST"
-                            ) {
-                              classname = "bg-waste-rest text-light-bg-1";
-                              cut = false;
-                            }
-                            return (
-                              <ColoredTag
-                                key={index}
-                                className={`rounded-lg w-full text-center overflow-hidden ${classname}`}
-                              >
-                                <Cell cut={cut} maxWidth={"30"}>
-                                  <p className={classname}>
-                                    {entry.waste_type}
-                                  </p>
-                                </Cell>
-                              </ColoredTag>
-                            );
-                          })}
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <WasteCalendar dates={dates} waste={data["waste"]} />
                 </SecondaryCard>
               );
             })}
