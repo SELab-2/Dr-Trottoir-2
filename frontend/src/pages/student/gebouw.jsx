@@ -6,9 +6,8 @@ import {
   faLocationDot,
   faComment,
   faImage,
-  faSquareCheck,
-  faSquareXmark,
   faSquarePlus,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
@@ -16,7 +15,6 @@ import SecondaryCard from "@/components/custom-card/SecondaryCard";
 import Dropdown from "@/components/Dropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CustomButton from "@/components/button/Button";
-import BuildingImage from "/public/images/buildingimage.jpg";
 import wasteService from "@/services/waste.service";
 import { getMonday, getSunday } from "@/utils/helpers";
 import scheduleService from "@/services/schedule.service";
@@ -26,6 +24,8 @@ import WasteCalendar from "@/components/Wastecalendar";
 import moment from "moment";
 import tourService from "@/services/tour.service";
 import visitService from "@/services/visit.service";
+import { faSquare } from "@fortawesome/free-solid-svg-icons";
+import Cell from "@/components/table/Cell";
 
 export default function StudentBuilding() {
   const [buildings, setBuildings] = useState([]);
@@ -37,6 +37,8 @@ export default function StudentBuilding() {
   const [arrival, setArrival] = useState(false);
   const [inside, setInside] = useState(false);
   const [departure, setDeparture] = useState(false);
+  const [visitPhotos, setVisitPhotos] = useState([]);
+  const [buildingVisit, setBuildingVisit] = useState(null);
 
   const monday = getMonday(new Date());
   const sunday = getSunday(new Date());
@@ -71,15 +73,17 @@ export default function StudentBuilding() {
         (building) => building.nickname == nicknameSelected
       );
       setSelectedBuilding(building);
-      loadWaste(building);
+      loadSchedule(building);
     }
   };
 
-  async function loadWaste(building) {
+  async function loadSchedule(building) {
     setScheduleToday(false);
     setArrival(false);
     setInside(false);
     setDeparture(false);
+    setBuildingVisit(null);
+    setVisitPhotos([]);
     const wastes = await wasteService.get({
       startDate: monday,
       endDate: sunday,
@@ -93,17 +97,20 @@ export default function StudentBuilding() {
 
     let i = 0;
     let schedulePlanned = false;
-    while (i < schedules.length && !schedulePlanned){
+    while (i < schedules.length && !schedulePlanned) {
       let schedule = schedules[i];
-      let buildingsInTour = await tourService.getBuildingsFromTour(urlToPK(schedule.tour));
+      let buildingsInTour = await tourService.getBuildingsFromTour(
+        urlToPK(schedule.tour)
+      );
       // Checks if building is in the scheduled tour
-      schedulePlanned = buildingsInTour.some((buildingInTour) => buildingInTour.building == building.url);
-      if (schedulePlanned){
-        // Gets all visits from that specific schedule 
+      schedulePlanned = buildingsInTour.some(
+        (buildingInTour) => buildingInTour.building == building.url
+      );
+      if (schedulePlanned) {
+        // Gets all visits from that specific schedule
         const visits = await scheduleService.getVisitsFromSchedule(
           urlToPK(schedule.url)
         );
-        console.log(visits);
         for (let j in visits) {
           let visit = visits[j];
           let visited_building = await buildingInTourService.getEntryByUrl(
@@ -119,39 +126,95 @@ export default function StudentBuilding() {
     setScheduleToday(schedulePlanned);
   }
 
-  async function checkVisitPhotos(visit){
+  async function checkVisitPhotos(visit) {
     const photos = await visitService.getPhotosByVisit(urlToPK(visit.url));
-    for (let i in photos){
+    setBuildingVisit(visit);
+    setVisitPhotos(photos);
+    for (let i in photos) {
       let photo = photos[i];
       let state = photo.state;
-      if (state == "1"){
+      if (state == 1) {
         setArrival(true);
-      } else if (state == 2){
+      } else if (state == 2) {
         setDeparture(true);
-      } else if (state == 3){
+      } else if (state == 3) {
         setInside(true);
       }
     }
   }
 
   function renderCompletedIcon(isCompleted) {
-    if (isCompleted){
+    if (isCompleted) {
       return (
-        <FontAwesomeIcon icon={faSquareCheck} className="pr-1 text-done-1 text-lg"/>
-      )
+        <FontAwesomeIcon
+          icon={faCheck}
+          className="bg-done-2 border-2 border-done-1 mr-1 p-0.5 text-md text-done-1 rounded-md"
+        />
+      );
     } else {
       return (
-        <FontAwesomeIcon icon={faSquareXmark} className="pr-1 text-bad-1 text-lg"/>
-      )
+        <FontAwesomeIcon
+          icon={faSquare}
+          className="bg-bad-2 border-2 border-bad-1 mr-1 p-0.5 text-sm text-bad-2 rounded-md"
+        />
+      );
+    }
+  }
+
+  function renderPhotos(state) {
+    let filtered = visitPhotos.filter((photo) => photo.state == state);
+    return (
+      <div className="flex flex-wrap">
+        {filtered.map((photo, index) => (
+          <div key={index} className="p-2">
+            <Image
+              src={photo.image}
+              alt={index}
+              width={75}
+              height={75}
+              unoptimized={true}
+              className="rounded-md"
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  function renderComments() {
+    if (buildingVisit != null) {
+      return (
+        <div className={"rounded-lg bg-light-bg-1 p-2 w-full"}>
+          <Cell cut cutLen={"[300px]"}>
+            {buildingVisit.comment}
+          </Cell>
+        </div>
+      );
+    }
+  }
+
+  function addPhoto(state) {
+    // Redirect to the photo taking page
+    // If this is the first (arrival) photo, a visit object will have to be made with a POST-request
+    console.log("Add photo");
+  }
+
+  function addComment() {
+    // Redirect to the comment adding page
+    console.log("Add comment");
+  }
+
+  function openManual() {
+    if (selectedBuilding != null) {
+      const manualUrl = selectedBuilding.manual;
+      console.log("Open manual");
+      // let the manual view on a page
     }
   }
 
   return (
     <>
       <div className="w-full p-2">
-        <PrimaryCard className="mx-1 my-2 h-36 flex justify-center items-center">
-          <Image src={BuildingImage} className="h-28 object-cover" alt="logo" />
-        </PrimaryCard>
         <Dropdown
           icon={faBuilding}
           options={buildings.map((building) => building.nickname)}
@@ -171,10 +234,13 @@ export default function StudentBuilding() {
                 <div className="flex items-center">
                   <div className="font-bold text-lg text-light-h-1 flex items-center gap-x-2">
                     {selectedBuilding.nickname}
-                    {scheduleToday && renderCompletedIcon(arrival && inside && departure)}
+                    {scheduleToday &&
+                      renderCompletedIcon(arrival && inside && departure)}
                   </div>
                   <div className="ml-auto">
-                    <CustomButton className="-p-2">Handleiding</CustomButton>
+                    <CustomButton className="-p-2" onClick={() => openManual()}>
+                      Handleiding
+                    </CustomButton>
                   </div>
                 </div>
                 <div className="flex text-light-h-1 items-center">
@@ -186,49 +252,65 @@ export default function StudentBuilding() {
                 </div>
               </div>
               <SecondaryCard>
-                <WasteCalendar waste={wasteSchedule} dates={dates}></WasteCalendar>
+                <WasteCalendar waste={wasteSchedule} dates={dates} />
               </SecondaryCard>
-              <SecondaryCard
-                title="Opmerkingen"
-                icon={faComment}
-                className="my-3 flex"
-              >
-                <FontAwesomeIcon
-                  icon={faSquarePlus}
-                  className=" ml-auto pr-1 text-primary-1 text-lg"
-                />
+              <SecondaryCard className="my-3">
+                <div className="flex">
+                  <div className="font-bold text-light-h-2 mb-4 items-center">
+                    <FontAwesomeIcon
+                      icon={faComment}
+                      className={"h-4 ml-1 mr-2"}
+                    />
+                    Opmerkingen
+                  </div>
+                  <FontAwesomeIcon
+                    icon={faSquarePlus}
+                    className="ml-auto pr-1 text-primary-1 text-lg cursor-pointer"
+                    onClick={() => addComment()}
+                  />
+                </div>
+                {renderComments()}
               </SecondaryCard>
               {scheduleToday ? (
                 <SecondaryCard title="Foto's" icon={faImage} className="my-2">
-                  <PrimaryCard className="my-2 font-bold flex">
-                    <div>Aankomst</div>
-                    <div className="ml-auto">
-                      {renderCompletedIcon(arrival)}
-                      <FontAwesomeIcon
-                        icon={faSquarePlus}
-                        className="pr-1 text-primary-1 text-lg"
-                      />
+                  <PrimaryCard className="my-2">
+                    <div className="font-bold flex">
+                      Aankomst
+                      <div className="ml-auto" onClick={() => addPhoto(1)}>
+                        {renderCompletedIcon(arrival)}
+                        <FontAwesomeIcon
+                          icon={faSquarePlus}
+                          className="pr-1 text-primary-1 text-lg cursor-pointer"
+                        />
+                      </div>
                     </div>
+                    {renderPhotos(1)}
                   </PrimaryCard>
-                  <PrimaryCard className="my-2 font-bold flex">
-                    <div>Binnen</div>
-                    <div className="ml-auto">
-                      {renderCompletedIcon(inside)}
-                      <FontAwesomeIcon
-                        icon={faSquarePlus}
-                        className="pr-1 text-primary-1 text-lg"
-                      />
+                  <PrimaryCard className="my-2">
+                    <div className="font-bold flex">
+                      Binnen
+                      <div className="ml-auto" onClick={() => addPhoto(3)}>
+                        {renderCompletedIcon(inside)}
+                        <FontAwesomeIcon
+                          icon={faSquarePlus}
+                          className="pr-1 text-primary-1 text-lg cursor-pointer"
+                        />
+                      </div>
                     </div>
+                    {renderPhotos(3)}
                   </PrimaryCard>
-                  <PrimaryCard className="my-2 font-bold flex">
-                    <div>Vertrek</div>
-                    <div className="ml-auto">
-                      {renderCompletedIcon(departure)}
-                      <FontAwesomeIcon
-                        icon={faSquarePlus}
-                        className="pr-1 text-primary-1 text-lg"
-                      />
+                  <PrimaryCard className="my-2">
+                    <div className="font-bold flex">
+                      Vertrek
+                      <div className="ml-auto" onClick={() => addPhoto(2)}>
+                        {renderCompletedIcon(departure)}
+                        <FontAwesomeIcon
+                          icon={faSquarePlus}
+                          className="pr-1 text-primary-1 text-lg cursor-pointer"
+                        />
+                      </div>
                     </div>
+                    {renderPhotos(2)}
                   </PrimaryCard>
                 </SecondaryCard>
               ) : (

@@ -58,7 +58,9 @@ class ScheduleService {
    */
   #filterSchedule(data, args) {
     if (args.startDate) {
-      data = data.filter((schedule) => new Date(schedule.date) >= args.startDate);
+      data = data.filter(
+        (schedule) => new Date(schedule.date) >= args.startDate
+      );
     }
     if (args.endDate) {
       data = data.filter((schedule) => new Date(schedule.date) <= args.endDate);
