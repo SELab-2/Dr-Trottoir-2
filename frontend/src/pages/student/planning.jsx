@@ -24,6 +24,7 @@ import WasteService from "@/services/waste.service";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
 import WasteCalendar from "@/components/Wastecalendar";
+import MapView from "@/components/MapView";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -142,6 +143,10 @@ export default function StudentPlanningPage() {
         <title>Rondes</title>
       </Head>
       <div className={"h-full flex flex-col py-6 px-3 space-y-4"}>
+        <MapView
+          route={buildings.map((building) => building["address"])}
+          transportationMode={"bicycling"}
+        />
         <PrimaryCard
           className={
             "h-full w-full rounded-lg p-6 flex flex-col justify-start items-center content-start space-y-12"
@@ -175,11 +180,17 @@ export default function StudentPlanningPage() {
               </div>
             </div>
           </div>
-          <div className={"w-full flex flex-col space-y-3 overflow-auto"}>
+          <div
+            className={
+              "w-full h-full flex flex-col space-y-3 overflow-y-scroll"
+            }
+          >
             {buildings.map((data, index) => {
               return (
                 <SecondaryCard
-                  className={"font-bold rounded-lg w-full h-full p-3 space-y-2"}
+                  className={
+                    "font-bold rounded-lg w-full h-full p-3 space-y-2 flex flex-col overflow-visible"
+                  }
                   key={index}
                 >
                   <div className={"flex flex-row"}>
