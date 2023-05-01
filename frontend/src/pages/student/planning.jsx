@@ -1,4 +1,3 @@
-import Layout from "@/components/Layout";
 import MobileLayout from "@/components/MobileLayout";
 import Head from "next/head";
 import Dropdown from "@/components/Dropdown";
@@ -10,22 +9,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import scheduleService from "@/services/schedule.service";
 import moment from "moment";
 import userService from "@/services/user.service";
 import tourService from "@/services/tour.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
-import VisitService from "@/services/visit.service";
-import PhotoService from "@/services/photo.service";
 import CustomProgressBar from "@/components/ProgressBar";
 import buildingService from "@/services/building.service";
 import visit_finished from "@/utils/visit_finished";
 import ColoredTag from "@/components/Tag";
 import { COLOR_BAD_1, COLOR_DONE_1 } from "@/utils/colors";
 import WasteService from "@/services/waste.service";
-import Cell from "@/components/table/Cell";
-import CustomCard from "@/components/custom-card/CustomCard";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
 import WasteCalendar from "@/components/Wastecalendar";
@@ -38,6 +33,13 @@ export default function StudentPlanningPage() {
   const [schedules, setSchedules] = useState([]);
   const [dates, setDates] = useState([]);
 
+  /**
+   * Will set the need information of a selected schedule like
+   * which buildings are in the schedule and which kind of waste needs to be handled on a certain day.
+   * @param item A 2d list with only on list in it (because of dropdown component).
+   *             The first element in the list is the name of the schedule + date and the second element is the url of the schedule
+   *             Example: [[Station ronde (2023-05-01), http://localhost:8000/api/schedule/2/]]
+   */
   async function setSchedule(item) {
     const content = item[0];
     if (content) {
@@ -52,6 +54,7 @@ export default function StudentPlanningPage() {
       let buildings = await tourService.getBuildingsFromTour(
         split[split.length - 2]
       );
+      // For every building it'll collect all the needed data to display on screen
       if (buildings.length > 0) {
         const building_data = await Promise.all(
           buildings.map(async (entry) => {
@@ -75,6 +78,7 @@ export default function StudentPlanningPage() {
         );
 
         let count = 0;
+        // It'll also look at which buildings are finished
         for (const visit of visits) {
           const buildInTour = await BuildingInTourService.getEntryByUrl(
             visit["building_in_tour"]
@@ -110,6 +114,7 @@ export default function StudentPlanningPage() {
         currentDate.setDate(currentDate.getDate() + 1);
       }
       setDates(dates);
+      // Get every schedule assigned to the current user in this week
       const schedules = await scheduleService.get({
         students: [user.url],
         startDate: dateFrom,
