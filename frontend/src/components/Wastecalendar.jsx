@@ -31,7 +31,7 @@ export default function WasteCalendar({ waste, dates }) {
               "flex flex-col flex-auto bg-light-bg-1 w-full p-1 rounded-lg items-center"
             }
           >
-            {waste.map((entry, index) => {
+            {wasteRest.map((entry, index) => {
               let classname = "bg-waste-other text-light-bg-1";
               let cut = true;
               if (entry.waste_type.toUpperCase() === "PMD") {

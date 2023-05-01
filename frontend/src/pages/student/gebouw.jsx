@@ -9,7 +9,6 @@ import {
   faSquareCheck,
   faSquareXmark,
   faSquarePlus,
-  faSquareRegular,
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
@@ -20,18 +19,24 @@ import CustomButton from "@/components/button/Button";
 import BuildingImage from "/public/images/buildingimage.jpg";
 import wasteService from "@/services/waste.service";
 import { getMonday, getSunday } from "@/utils/helpers";
-import ColoredTag from "@/components/Tag";
 import scheduleService from "@/services/schedule.service";
 import { urlToPK } from "@/utils/urlToPK";
 import buildingInTourService from "@/services/buildingInTour.service";
+import WasteCalendar from "@/components/Wastecalendar";
+import moment from "moment";
+import tourService from "@/services/tour.service";
+import visitService from "@/services/visit.service";
 
 export default function StudentBuilding() {
   const [buildings, setBuildings] = useState([]);
   const [selectedBuilding, setSelectedBuilding] = useState(null);
   // list with as elements a list of the waste entries with the index as the day
   const [wasteSchedule, setWasteSchedule] = useState([]);
-  const [completed, setCompleted] = useState(false);
-  const [wasteToday, setWasteToday] = useState(true);
+  const [scheduleToday, setScheduleToday] = useState(false);
+  const [dates, setDates] = useState([]);
+  const [arrival, setArrival] = useState(false);
+  const [inside, setInside] = useState(false);
+  const [departure, setDeparture] = useState(false);
 
   const monday = getMonday(new Date());
   const sunday = getSunday(new Date());
@@ -43,6 +48,17 @@ export default function StudentBuilding() {
       setBuildings(response);
     }
     fetchData();
+
+    const date = new Date();
+    const dateFrom = moment(date).startOf("isoWeek").toDate();
+    const dateTo = moment(date).endOf("isoWeek").toDate();
+    const dates = [];
+    let currentDate = new Date(dateFrom);
+    while (currentDate <= dateTo) {
+      dates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    setDates(dates);
   }, []);
 
   // Needs to change because nicknames aren't unique
@@ -60,45 +76,73 @@ export default function StudentBuilding() {
   };
 
   async function loadWaste(building) {
+    setScheduleToday(false);
+    setArrival(false);
+    setInside(false);
+    setDeparture(false);
     const wastes = await wasteService.get({
       startDate: monday,
       endDate: sunday,
       building: building.url,
     });
-    let wasteDays = [];
-    for (let i = 0; i < 5; i++) {
-      wasteDays.push([]);
-    }
-    for (let i in wastes) {
-      let wasteEntry = wastes[i];
-      wasteDays[new Date(wasteEntry["date"]).getDay() - 1].push(wasteEntry); // -1 because sunday is defined as day 0
-    }
-    setWasteSchedule(wasteDays);
-
-    const today = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 1);
+    setWasteSchedule(wastes);
     const schedules = await scheduleService.get({
-      startDate: today,
-      endDate: tomorrow,
+      startDate: moment().startOf("day").toDate(),
+      endDate: moment().endOf("day").toDate(),
     });
 
-    if (schedules.length != 0) {
-      let schedule = schedules[0];
-      console.log(schedule);
-      const visits = await scheduleService.getVisitsFromSchedule(
-        urlToPK(schedule.url)
-      );
-      for (let i in visits) {
-        let visit = visits[i];
-        let visited_building = await buildingInTourService.getEntryByUrl(
-          visit.building_in_tour
+    let i = 0;
+    let schedulePlanned = false;
+    while (i < schedules.length && !schedulePlanned){
+      let schedule = schedules[i];
+      let buildingsInTour = await tourService.getBuildingsFromTour(urlToPK(schedule.tour));
+      // Checks if building is in the scheduled tour
+      schedulePlanned = buildingsInTour.some((buildingInTour) => buildingInTour.building == building.url);
+      if (schedulePlanned){
+        // Gets all visits from that specific schedule 
+        const visits = await scheduleService.getVisitsFromSchedule(
+          urlToPK(schedule.url)
         );
-        if (visited_building.building == building.url) {
-          console.log("setcompleted wordt true");
-          setCompleted(true);
+        console.log(visits);
+        for (let j in visits) {
+          let visit = visits[j];
+          let visited_building = await buildingInTourService.getEntryByUrl(
+            visit.building_in_tour
+          );
+          if (visited_building.building == building.url) {
+            checkVisitPhotos(visit);
+          }
         }
       }
+      i++;
+    }
+    setScheduleToday(schedulePlanned);
+  }
+
+  async function checkVisitPhotos(visit){
+    const photos = await visitService.getPhotosByVisit(urlToPK(visit.url));
+    for (let i in photos){
+      let photo = photos[i];
+      let state = photo.state;
+      if (state == "1"){
+        setArrival(true);
+      } else if (state == 2){
+        setDeparture(true);
+      } else if (state == 3){
+        setInside(true);
+      }
+    }
+  }
+
+  function renderCompletedIcon(isCompleted) {
+    if (isCompleted){
+      return (
+        <FontAwesomeIcon icon={faSquareCheck} className="pr-1 text-done-1 text-lg"/>
+      )
+    } else {
+      return (
+        <FontAwesomeIcon icon={faSquareXmark} className="pr-1 text-bad-1 text-lg"/>
+      )
     }
   }
 
@@ -125,20 +169,9 @@ export default function StudentBuilding() {
             <PrimaryCard>
               <div>
                 <div className="flex items-center">
-                  <div className="font-bold text-lg text-light-h-1">
+                  <div className="font-bold text-lg text-light-h-1 flex items-center gap-x-2">
                     {selectedBuilding.nickname}
-                    {wasteToday &&
-                      (completed ? (
-                        <FontAwesomeIcon
-                          icon={faSquareCheck}
-                          className="mx-1 text-done-1"
-                        />
-                      ) : (
-                        <FontAwesomeIcon
-                          icon={faSquareXmark}
-                          className="mx-1 text-bad-1"
-                        />
-                      ))}
+                    {scheduleToday && renderCompletedIcon(arrival && inside && departure)}
                   </div>
                   <div className="ml-auto">
                     <CustomButton className="-p-2">Handleiding</CustomButton>
@@ -152,21 +185,8 @@ export default function StudentBuilding() {
                   </div>
                 </div>
               </div>
-              <SecondaryCard className="my-3 !p-2 flex space-x-1">
-                {wasteSchedule.map((dayWaste, index) => (
-                  <PrimaryCard key={index} className="w-full !p-1">
-                    {dayWaste.map((waste, innerIndex) =>
-                      waste["building"] == selectedBuilding.url ? (
-                        <ColoredTag
-                          key={innerIndex}
-                          className="rounded-md overflow-clip w-full justify-center flex bg-dark-bg-2 text-dark-h-1 text-xs !mx-0 !my-1"
-                        >
-                          {waste["waste_type"].toUpperCase()}
-                        </ColoredTag>
-                      ) : null
-                    )}
-                  </PrimaryCard>
-                ))}
+              <SecondaryCard>
+                <WasteCalendar waste={wasteSchedule} dates={dates}></WasteCalendar>
               </SecondaryCard>
               <SecondaryCard
                 title="Opmerkingen"
@@ -178,15 +198,12 @@ export default function StudentBuilding() {
                   className=" ml-auto pr-1 text-primary-1 text-lg"
                 />
               </SecondaryCard>
-              {wasteToday ? (
+              {scheduleToday ? (
                 <SecondaryCard title="Foto's" icon={faImage} className="my-2">
                   <PrimaryCard className="my-2 font-bold flex">
                     <div>Aankomst</div>
                     <div className="ml-auto">
-                      <FontAwesomeIcon
-                        icon={faSquareCheck}
-                        className="pr-1 text-done-1 text-lg"
-                      />
+                      {renderCompletedIcon(arrival)}
                       <FontAwesomeIcon
                         icon={faSquarePlus}
                         className="pr-1 text-primary-1 text-lg"
@@ -196,10 +213,7 @@ export default function StudentBuilding() {
                   <PrimaryCard className="my-2 font-bold flex">
                     <div>Binnen</div>
                     <div className="ml-auto">
-                      <FontAwesomeIcon
-                        icon={faSquareXmark}
-                        className="pr-1 text-bad-1 text-lg"
-                      />
+                      {renderCompletedIcon(inside)}
                       <FontAwesomeIcon
                         icon={faSquarePlus}
                         className="pr-1 text-primary-1 text-lg"
@@ -209,10 +223,7 @@ export default function StudentBuilding() {
                   <PrimaryCard className="my-2 font-bold flex">
                     <div>Vertrek</div>
                     <div className="ml-auto">
-                      <FontAwesomeIcon
-                        icon={faSquareXmark}
-                        className="pr-1 text-bad-1 text-lg"
-                      />
+                      {renderCompletedIcon(departure)}
                       <FontAwesomeIcon
                         icon={faSquarePlus}
                         className="pr-1 text-primary-1 text-lg"
