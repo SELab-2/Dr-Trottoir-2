@@ -1,4 +1,4 @@
-from drtrottoir.models import Schedule, ScheduleComment, VisitComment, Building, CustomUser
+from drtrottoir.models import ScheduleComment, VisitComment
 from rest_framework import serializers
 
 
