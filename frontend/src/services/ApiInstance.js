@@ -3,11 +3,11 @@ import { baseUrl } from "@/utils/baseUrl";
 import getAuthHeader from "@/utils/getAuthHeader";
 
 class ApiInstance {
-  getApi() {
+  getApi(contentType = "application/json") {
     const instance = axios.create({
       baseURL: baseUrl,
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": contentType,
       },
     });
 

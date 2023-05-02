@@ -5,6 +5,7 @@
  * @returns {Promise<*>}
  */
 import ApiInstance from "@/services/ApiInstance";
+import { error } from "next/dist/build/output/log";
 
 class HelperService {
   async getResponseByUrl(url) {
@@ -22,6 +23,12 @@ class HelperService {
     return response;*/
   }
 
+  async getPostResponse(url, data) {
+    return await ApiInstance.getApi("application/x-www-form-urlencoded").post(
+      url,
+      data
+    );
+  }
   /**
    * Return all entries from a page with pagination.
    * If an error occurs, an empty list will be returned.
