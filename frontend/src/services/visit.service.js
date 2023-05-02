@@ -40,6 +40,11 @@ class VisitService {
     return response.status === 200 ? response.data : [];
   }
 
+  async postVisit(data) {
+    const response = await HelperService.getPostResponse(`visit/`, data);
+    return response.status === 200 ? response.data : {};
+  }
+
   /**
    * Filter the data with the filters given in args.
    * @param data List of visit entries.

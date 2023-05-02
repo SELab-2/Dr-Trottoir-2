@@ -9,6 +9,9 @@ import ScheduleService from "@/services/schedule.service";
 import TourService from "@/services/tour.service";
 import BuildingService from "@/services/building.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
+import { getSession } from "next-auth/react";
+import userService from "@/services/user.service";
+import VisitService from "@/services/visit.service";
 
 export default function PhotoCreation({
   scheduleUrl,
@@ -65,8 +68,29 @@ export default function PhotoCreation({
         );
         const response = await PhotoService.postPhoto(formData);
         console.log(response);
+        close();
       }
     } else if (result.length === 0 && state === 1) {
+      let { user } = await getSession();
+      let split = user.url.trim().split("/");
+      user = await userService.getById(split[split.length - 2]);
+      const schedule = await ScheduleService.getEntryByUrl(scheduleUrl);
+      split = schedule.tour.trim().split("/");
+      const buildingInTours = await TourService.getBuildingsFromTour(
+        split[split.length - 2]
+      );
+      const result = buildingInTours.filter(
+        (entry) => entry.building === buildingUrl
+      );
+      console.log(buildingInTours);
+      const response = await VisitService.postVisit({
+        user: user.url,
+        arrival: moment(new Date()).format("YYYY-MM-DD[T]HH:mm:ss"),
+        comment: "",
+        schedule: scheduleUrl,
+      });
+      console.log(user);
+      close();
     }
   }
 
