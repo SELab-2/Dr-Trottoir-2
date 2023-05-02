@@ -46,9 +46,9 @@ class VisitViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def comments(self, request, pk=None):
-        # Check if schedule id is valid
-        if pk is None or not Visit.visit.filter(pk=pk).exists():
-            return Response("Given schedule does not exist.", status=status.HTTP_400_BAD_REQUEST)
+        # Check if visit id is valid
+        if pk is None or not Visit.objects.filter(pk=pk).exists():
+            return Response("Given visit does not exist.", status=status.HTTP_400_BAD_REQUEST)
         # Get visits corresponding with visit
-        visitComments = VisitComment.objects.filter(schedule=pk)
+        visitComments = VisitComment.objects.filter(visit=pk)
         return Response(VisitCommentSerializer(list(visitComments), many=True, context={'request': request}).data)

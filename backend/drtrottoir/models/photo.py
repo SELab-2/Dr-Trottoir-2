@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.db.models.signals import pre_delete, post_save
 from PIL import Image
 from datetime import datetime
+from pytz import timezone
 
 IMAGE_STATES = ((1, 'Arrival'), (2, 'Departure'), (3, 'Extra'))
 
@@ -26,10 +27,12 @@ def pre_delete(sender, instance: Photo, **kwargs):
 
 @receiver(post_save, sender=Photo)
 def post_save_callback(sender, instance, created, *args, **kwargs):
-    if created:
+    if created and not hasattr(instance, 'skip_signal'):
         try:
             # exif tag 36867 is DateTimeOriginal
             # https://www.awaresystems.be/imaging/tiff/tifftags/privateifd/exif.html
             instance.created_at = Image.open(instance.image.path)._getexif()[36867]
         except Exception:  # When DateTimeOriginal is not found in the metadata store current time
-            instance.created_at = datetime.now()
+            instance.created_at = datetime.now(tz=timezone('CET')).isoformat()
+        instance.skip_signal = True
+        instance.save()

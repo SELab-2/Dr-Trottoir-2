@@ -7,9 +7,7 @@ from .schedule import Schedule
 from .tour import Tour
 from .visit import Visit
 from .waste import Waste
-from .comment import Comment
-from .schedule_comment import ScheduleComment
-from .visit_comment import VisitComment
+from .comment import Comment, ScheduleComment, VisitComment
 
 __all__ = [
     CustomUser,
