@@ -13,7 +13,7 @@ class Photo(models.Model):
     image = models.ImageField(verbose_name="image", upload_to="images/", null=True)
     visit = models.ForeignKey(Visit, verbose_name="id of visit", on_delete=models.CASCADE)
     state = models.IntegerField(verbose_name="type of photo", choices=IMAGE_STATES)
-    comment = models.TextField(verbose_name="comment on the photo")
+    comment = models.TextField(verbose_name="comment on the photo", null=True)
     created_at = models.DateTimeField(verbose_name="time of creation", null=True)
 
     def __str__(self):
