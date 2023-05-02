@@ -1,5 +1,4 @@
 import MobileLayout from "@/components/MobileLayout";
-import BuildingService from "@/services/building.service";
 import { useEffect, useState } from "react";
 import {
   faBuilding,
@@ -8,6 +7,7 @@ import {
   faImage,
   faSquarePlus,
   faCheck,
+  faX,
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
@@ -24,15 +24,16 @@ import WasteCalendar from "@/components/Wastecalendar";
 import moment from "moment";
 import tourService from "@/services/tour.service";
 import visitService from "@/services/visit.service";
-import { faSquare } from "@fortawesome/free-solid-svg-icons";
 import Cell from "@/components/table/Cell";
+import { getSession } from "next-auth/react";
+import userService from "@/services/user.service";
+import buildingService from "@/services/building.service";
 
 export default function StudentBuilding() {
   const [buildings, setBuildings] = useState([]);
   const [selectedBuilding, setSelectedBuilding] = useState(null);
   // list with as elements a list of the waste entries with the index as the day
   const [wasteSchedule, setWasteSchedule] = useState([]);
-  const [scheduleToday, setScheduleToday] = useState(false);
   const [dates, setDates] = useState([]);
   const [arrival, setArrival] = useState(false);
   const [inside, setInside] = useState(false);
@@ -45,9 +46,31 @@ export default function StudentBuilding() {
 
   useEffect(() => {
     async function fetchData() {
-      // Buildings
-      const response = await BuildingService.get();
-      setBuildings(response);
+      let { user } = await getSession();
+      const userId = urlToPK(user.url);
+      user = await userService.getById(userId);
+
+      const schedules = await scheduleService.get({
+        startDate: moment().startOf("day").toDate(),
+        endDate: moment().endOf("day").toDate(),
+        students: [user.url],
+      });
+
+      let scheduledBuildings = [];
+      for (let i in schedules) {
+        let schedule = schedules[i];
+        let buildingsInTour = await tourService.getBuildingsFromTour(
+          urlToPK(schedule.tour)
+        );
+        scheduledBuildings = scheduledBuildings.concat(
+          buildingsInTour.map((buildingInTour) => ({
+            url: buildingInTour.building,
+            nickname: buildingInTour.building_data.nickname,
+            schedule: schedule.url,
+          }))
+        );
+      }
+      setBuildings(scheduledBuildings);
     }
     fetchData();
 
@@ -63,8 +86,7 @@ export default function StudentBuilding() {
     setDates(dates);
   }, []);
 
-  // Needs to change because nicknames aren't unique
-  const changeBuilding = (selected) => {
+  async function changeBuilding(selected) {
     if (selected.length == 0) {
       setSelectedBuilding(null);
     } else {
@@ -72,13 +94,14 @@ export default function StudentBuilding() {
       let building = buildings.find(
         (building) => building.nickname == nicknameSelected
       );
-      setSelectedBuilding(building);
-      loadSchedule(building);
+      selected = await buildingService.getEntryByUrl(building.url);
+      selected["schedule"] = building.schedule;
+      setSelectedBuilding(selected);
+      loadSchedule(selected);
     }
-  };
+  }
 
   async function loadSchedule(building) {
-    setScheduleToday(false);
     setArrival(false);
     setInside(false);
     setDeparture(false);
@@ -90,40 +113,21 @@ export default function StudentBuilding() {
       building: building.url,
     });
     setWasteSchedule(wastes);
-    const schedules = await scheduleService.get({
-      startDate: moment().startOf("day").toDate(),
-      endDate: moment().endOf("day").toDate(),
-    });
 
-    let i = 0;
-    let schedulePlanned = false;
-    while (i < schedules.length && !schedulePlanned) {
-      let schedule = schedules[i];
-      let buildingsInTour = await tourService.getBuildingsFromTour(
-        urlToPK(schedule.tour)
+    // Get visits of the schedule of the selected building
+    const visits = await scheduleService.getVisitsFromSchedule(
+      urlToPK(building.schedule)
+    );
+    for (let j in visits) {
+      let visit = visits[j];
+      let visited_building = await buildingInTourService.getEntryByUrl(
+        visit.building_in_tour
       );
-      // Checks if building is in the scheduled tour
-      schedulePlanned = buildingsInTour.some(
-        (buildingInTour) => buildingInTour.building == building.url
-      );
-      if (schedulePlanned) {
-        // Gets all visits from that specific schedule
-        const visits = await scheduleService.getVisitsFromSchedule(
-          urlToPK(schedule.url)
-        );
-        for (let j in visits) {
-          let visit = visits[j];
-          let visited_building = await buildingInTourService.getEntryByUrl(
-            visit.building_in_tour
-          );
-          if (visited_building.building == building.url) {
-            checkVisitPhotos(visit);
-          }
-        }
+      if (visited_building.building == building.url) {
+        // Call if selected building already has a visit
+        checkVisitPhotos(visit);
       }
-      i++;
     }
-    setScheduleToday(schedulePlanned);
   }
 
   async function checkVisitPhotos(visit) {
@@ -154,8 +158,8 @@ export default function StudentBuilding() {
     } else {
       return (
         <FontAwesomeIcon
-          icon={faSquare}
-          className="bg-bad-2 border-2 border-bad-1 mr-1 p-0.5 text-sm text-bad-2 rounded-md"
+          icon={faX}
+          className="bg-bad-2 border-2 border-bad-1 mr-1 py-0.5 px-1 text-sm text-bad-1 rounded-md"
         />
       );
     }
@@ -182,7 +186,7 @@ export default function StudentBuilding() {
   }
 
   function renderComments() {
-    if (buildingVisit != null) {
+    if (buildingVisit != null && buildingVisit.comment) {
       return (
         <div className={"rounded-lg bg-light-bg-1 p-2 w-full"}>
           <Cell cut cutLen={"[300px]"}>
@@ -234,8 +238,7 @@ export default function StudentBuilding() {
                 <div className="flex items-center">
                   <div className="font-bold text-lg text-light-h-1 flex items-center gap-x-2">
                     {selectedBuilding.nickname}
-                    {scheduleToday &&
-                      renderCompletedIcon(arrival && inside && departure)}
+                    {renderCompletedIcon(arrival && inside && departure)}
                   </div>
                   <div className="ml-auto">
                     <CustomButton className="-p-2" onClick={() => openManual()}>
@@ -271,51 +274,50 @@ export default function StudentBuilding() {
                 </div>
                 {renderComments()}
               </SecondaryCard>
-              {scheduleToday ? (
-                <SecondaryCard title="Foto's" icon={faImage} className="my-2">
-                  <PrimaryCard className="my-2">
-                    <div className="font-bold flex">
-                      Aankomst
-                      <div className="ml-auto" onClick={() => addPhoto(1)}>
-                        {renderCompletedIcon(arrival)}
-                        <FontAwesomeIcon
-                          icon={faSquarePlus}
-                          className="pr-1 text-primary-1 text-lg cursor-pointer"
-                        />
-                      </div>
+              <SecondaryCard title="Foto's" icon={faImage} className="my-2">
+                <PrimaryCard className="my-2">
+                  <div className="font-bold flex">
+                    Aankomst
+                    <div
+                      className="ml-auto flex items-center justify-center"
+                      onClick={() => addPhoto(1)}
+                    >
+                      {renderCompletedIcon(arrival)}
+                      <FontAwesomeIcon
+                        icon={faSquarePlus}
+                        className="pr-1 text-primary-1 text-lg cursor-pointer"
+                      />
                     </div>
-                    {renderPhotos(1)}
-                  </PrimaryCard>
-                  <PrimaryCard className="my-2">
-                    <div className="font-bold flex">
-                      Binnen
-                      <div className="ml-auto" onClick={() => addPhoto(3)}>
-                        {renderCompletedIcon(inside)}
-                        <FontAwesomeIcon
-                          icon={faSquarePlus}
-                          className="pr-1 text-primary-1 text-lg cursor-pointer"
-                        />
-                      </div>
+                  </div>
+                  {renderPhotos(1)}
+                </PrimaryCard>
+                <PrimaryCard className="my-2">
+                  <div className="font-bold flex">
+                    Binnen
+                    <div className="ml-auto" onClick={() => addPhoto(3)}>
+                      {renderCompletedIcon(inside)}
+                      <FontAwesomeIcon
+                        icon={faSquarePlus}
+                        className="pr-1 text-primary-1 text-lg cursor-pointer"
+                      />
                     </div>
-                    {renderPhotos(3)}
-                  </PrimaryCard>
-                  <PrimaryCard className="my-2">
-                    <div className="font-bold flex">
-                      Vertrek
-                      <div className="ml-auto" onClick={() => addPhoto(2)}>
-                        {renderCompletedIcon(departure)}
-                        <FontAwesomeIcon
-                          icon={faSquarePlus}
-                          className="pr-1 text-primary-1 text-lg cursor-pointer"
-                        />
-                      </div>
+                  </div>
+                  {renderPhotos(3)}
+                </PrimaryCard>
+                <PrimaryCard className="my-2">
+                  <div className="font-bold flex">
+                    Vertrek
+                    <div className="ml-auto" onClick={() => addPhoto(2)}>
+                      {renderCompletedIcon(departure)}
+                      <FontAwesomeIcon
+                        icon={faSquarePlus}
+                        className="pr-1 text-primary-1 text-lg cursor-pointer"
+                      />
                     </div>
-                    {renderPhotos(2)}
-                  </PrimaryCard>
-                </SecondaryCard>
-              ) : (
-                <></>
-              )}
+                  </div>
+                  {renderPhotos(2)}
+                </PrimaryCard>
+              </SecondaryCard>
             </PrimaryCard>
           </div>
         )}
