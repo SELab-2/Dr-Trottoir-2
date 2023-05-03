@@ -25,28 +25,37 @@ export default function TourForm({ id }) {
 
   // index of selected building in allBuildings
   const [addBuilding, setAddBuilding] = useState(undefined);
-  const [buildings, setBuildings] = useState({});
+
+  // All selected building, one building is listed in following format:
+  // {building: <info_building>, order_index: <index>}
+  const [selectedBuildings, setSelectedBuildings] = useState({});
 
   ////////////////////////////////////////////////
 
   const onSubmit = (event) => {
     event.preventDefault();
-    console.log(addBuilding);
     alert(`You have submitted the form.`);
   };
 
   // add the selected building to the active list
   const onAddBuilding = () => {
-    console.log(addBuilding);
     if (addBuilding !== undefined) {
-      // add building to the active buildings
-      //TODO
+      // add building to the active selectedBuildings
+      const newSelectedBuildings = [...selectedBuildings];
+      newSelectedBuildings.push({
+        building: allBuildings[addBuilding],
+        order_index:
+          newSelectedBuildings[newSelectedBuildings.length - 1].order_index + 1, // calculate last used index
+      });
+      setSelectedBuildings(newSelectedBuildings);
 
       // remove from not active buildings
       const newAllBuildings = [...allBuildings];
       newAllBuildings.splice(addBuilding, 1);
       setAllBuildings(newAllBuildings);
       setAddBuilding(undefined);
+
+      // set the selected element to none
       const $select = document.querySelector("#addGebouw");
       $select.value = undefined;
     }
@@ -54,33 +63,42 @@ export default function TourForm({ id }) {
 
   // remove building from active list
   const onRemoveBuilding = (id) => {
-    console.log(id);
-    console.log(buildings);
-    const newBuildings = [...buildings];
-    newBuildings.splice(id, 1);
+    // Add element to not selected buildings
+    const newAllBuildings = [...allBuildings];
+    newAllBuildings.push(selectedBuildings[id].building);
+    setAllBuildings(newAllBuildings);
+
+
+    // remove the element from the not selected buildings
+    const newSelectedBuildings = [...selectedBuildings];
+    newSelectedBuildings.splice(id, 1);
     //update order index for elements after the removed element
-    for (let i = id; i < newBuildings.length; i++) {
-      newBuildings[i].order_index--;
+    for (let i = id; i < newSelectedBuildings.length; i++) {
+      newSelectedBuildings[i].order_index--;
     }
-    setBuildings(newBuildings);
+    setSelectedBuildings(newSelectedBuildings);
   };
 
   const onMoveUp = (index) => {
-    const newBuildings = [...buildings];
+    const newBuildings = [...selectedBuildings];
     if (index !== 0) {
       newBuildings[index].order_index--;
       newBuildings[index - 1].order_index++;
     }
-    setBuildings(newBuildings.sort((a, b) => a.order_index > b.order_index));
+    setSelectedBuildings(
+      newBuildings.sort((a, b) => a.order_index - b.order_index)
+    );
   };
 
   const onMoveDown = (index) => {
-    const newBuildings = [...buildings];
-    if (index < buildings.length - 1) {
+    const newBuildings = [...selectedBuildings];
+    if (index < selectedBuildings.length - 1) {
       newBuildings[index].order_index++;
       newBuildings[index + 1].order_index--;
     }
-    setBuildings(newBuildings.sort((a, b) => a.order_index > b.order_index));
+    setSelectedBuildings(
+      newBuildings.sort((a, b) => a.order_index - b.order_index)
+    );
   };
 
   useEffect(() => {
@@ -92,16 +110,28 @@ export default function TourForm({ id }) {
         const data = await TourService.getById(id);
         setName(data.name);
 
-        // set buildings in Tour
-        const newBuildings = await TourService.getBuildingsFromTour(id);
-        setBuildings(
-          newBuildings.sort((a, b) => a.order_index > b.order_index)
+        // set selectedBuildings in Tour
+        const selectedBuildings = await TourService.getBuildingsFromTour(id);
+
+        // Fix the format of the data, change it to {building: <info building>, order_index: <order>}
+        const fixed_format = await Promise.all(
+          selectedBuildings.map(async (building_in_tour) => ({
+            building: await BuildingService.getEntryByUrl(
+              building_in_tour.building
+            ),
+            order_index: building_in_tour.order_index,
+          }))
+        );
+        // Yes it's a one liner
+        setSelectedBuildings(
+          fixed_format.sort((a, b) => a.order_index - b.order_index)
         );
 
         // get all Buildings that are not in the tour
         const allBuildings = await BuildingService.get();
         const filtered = allBuildings.filter(
-          (building) => !newBuildings.some((b) => b.building === building.url)
+          (building) =>
+            !selectedBuildings.some((b) => b.building === building.url)
         );
         setAllBuildings(filtered);
         if (filtered.length > 0) {
@@ -162,8 +192,8 @@ export default function TourForm({ id }) {
           </div>
 
           <p className={"font-bold pt-4"}>Actieve gebouw(en)</p>
-          {buildings.length > 0 ? (
-            buildings.map((building, index) => {
+          {selectedBuildings.length > 0 ? (
+            selectedBuildings.map((data, index) => {
               return (
                 <div
                   key={index}
@@ -172,10 +202,7 @@ export default function TourForm({ id }) {
                   }
                 >
                   <p className={"flex-grow"}>
-                    {building.order_index +
-                      1 +
-                      ". " +
-                      building.building_data.nickname}
+                    {data.order_index + 1 + ". " + data.building.nickname}
                   </p>
                   <div className={"flex flex-col"}>
                     <FontAwesomeIcon
