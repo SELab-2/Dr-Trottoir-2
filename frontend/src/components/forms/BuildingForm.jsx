@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import BuildingService from "@/services/building.service";
 import Loading from "@/components/Loading";
 import BasicForm from "@/components/forms/BasicForm";
-import InputForm from "@/components/forms/forms-input/InputForm";
-import TextAreaForm from "@/components/forms/forms-input/TextAreaForm";
+import InputForm from "@/components/forms/forms-components/forms-input/InputForm";
+import TextAreaForm from "@/components/forms/forms-components/forms-input/TextAreaForm";
 
 export default function BuildingForm({ id }) {
   const [loading, setLoading] = useState(true);
