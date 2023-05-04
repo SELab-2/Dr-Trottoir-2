@@ -51,8 +51,10 @@ export default function Navbar() {
         <NavbarList
           name={"Communicatie"}
           categories={{
-            Berichten: { icon: faEnvelope, link: "#" },
-            Templates: { icon: faEnvelopeOpenText, link: "/admin/templates" },
+            "Mail-templates": {
+              icon: faEnvelopeOpenText,
+              link: "/admin/templates",
+            },
           }}
         />
       </div>
