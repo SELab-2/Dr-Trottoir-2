@@ -42,7 +42,7 @@ class VisitService {
 
   async postVisit(data) {
     const response = await HelperService.getPostResponse(`visit/`, data);
-    return response.status === 200 ? response.data : {};
+    return response.status === 201 ? response.data : {};
   }
 
   /**

@@ -34,63 +34,74 @@ export default function PhotoCreation({
     setFiles(newFiles);
   }
 
-  async function savePictures() {
-    let comment = CommentRef.current.value;
-    if (CommentRef.current.value === null || CommentRef.current.value === "") {
-      comment = "<Geen commentaar>";
+  async function savePhoto(visit, comment, date) {
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("visit", visit.url);
+      formData.append("state", state);
+      formData.append("comment", comment);
+      formData.append("created_at", date);
+      const response = await PhotoService.postPhoto(formData);
+      console.log(response);
+      close();
     }
+  }
 
-    let split = scheduleUrl.trim().split("/");
-    const visits = await ScheduleService.getVisitsFromSchedule(
-      split[split.length - 2]
-    );
-    const buildings = await Promise.all(
-      visits.map(async (entry) => {
-        const building = await BuildingInTourService.getEntryByUrl(
-          entry["building_in_tour"]
-        );
-        return { building: building.building, visit: entry };
-      })
-    );
-    const result = buildings.filter((b) => b.building === buildingUrl);
-    console.log(result);
-    if (result.length === 1 && state !== 1) {
-      const visit = result[0].visit;
-      for (const file of files) {
-        const formData = new FormData();
-        formData.append("image", file);
-        formData.append("visit", visit.url);
-        formData.append("state", state);
-        formData.append("comment", comment);
-        formData.append(
-          "created_at",
-          moment(new Date()).format("YYYY-MM-DD[T]HH:mm:ss")
-        );
-        const response = await PhotoService.postPhoto(formData);
-        console.log(response);
-        close();
+  async function savePictures() {
+    if (photos.length > 0) {
+      let comment = CommentRef.current.value;
+      if (
+        CommentRef.current.value === null ||
+        CommentRef.current.value === ""
+      ) {
+        comment = "<Geen commentaar>";
       }
-    } else if (result.length === 0 && state === 1) {
-      let { user } = await getSession();
-      let split = user.url.trim().split("/");
-      user = await userService.getById(split[split.length - 2]);
-      const schedule = await ScheduleService.getEntryByUrl(scheduleUrl);
-      split = schedule.tour.trim().split("/");
-      const buildingInTours = await TourService.getBuildingsFromTour(
+
+      let split = scheduleUrl.trim().split("/");
+      const visits = await ScheduleService.getVisitsFromSchedule(
         split[split.length - 2]
       );
-      const result = buildingInTours.filter(
-        (entry) => entry.building === buildingUrl
+      const buildings = await Promise.all(
+        visits.map(async (entry) => {
+          const building = await BuildingInTourService.getEntryByUrl(
+            entry["building_in_tour"]
+          );
+          return { building: building.building, visit: entry };
+        })
       );
-      console.log(buildingInTours);
-      const response = await VisitService.postVisit({
-        user: user.url,
-        arrival: moment(new Date()).format("YYYY-MM-DD[T]HH:mm:ss"),
-        comment: "",
-        schedule: scheduleUrl,
-      });
-      console.log(user);
-      close();
+      const result = buildings.filter((b) => b.building === buildingUrl);
+      console.log(result);
+      if (result.length === 1 && state !== 1) {
+        const visit = result[0].visit;
+        await savePhoto(
+          visit,
+          comment,
+          moment(new Date()).format("YYYY-MM-DD[T]HH:mm:ss")
+        );
+      } else if (result.length === 0 && state === 1) {
+        let { user } = await getSession();
+        let split = user.url.trim().split("/");
+        user = await userService.getById(split[split.length - 2]);
+        const schedule = await ScheduleService.getEntryByUrl(scheduleUrl);
+        split = schedule.tour.trim().split("/");
+        const buildingInTours = await TourService.getBuildingsFromTour(
+          split[split.length - 2]
+        );
+        const result = buildingInTours.filter(
+          (entry) => entry.building === buildingUrl
+        );
+        const date = moment(new Date()).format("YYYY-MM-DD[T]HH:mm:ss");
+        const response = await VisitService.postVisit({
+          user: user.url,
+          arrival: date,
+          comment: "",
+          schedule: scheduleUrl,
+          building_in_tour: result[0].url,
+        });
+        await savePhoto(response.url, comment, date);
+        console.log(response);
+      }
     }
   }
 

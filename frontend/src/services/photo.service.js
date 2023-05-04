@@ -32,7 +32,7 @@ class PhotoService {
 
   async postPhoto(data) {
     const response = await HelperService.getPostResponse(`photo/`, data);
-    return response.status === 200 ? response.data : {};
+    return response.status === 201 ? response.data : {};
   }
 
   /**
