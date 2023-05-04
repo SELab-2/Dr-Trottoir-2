@@ -29,7 +29,7 @@ export default function TourBuildingAdd({ tourId }) {
         // set selectedBuildings in Tour
         selectedBuildings = await TourService.getBuildingsFromTour(tourId);
         console.log(selectedBuildings);
-        // Fix the format of the data, change it to {building: <info building>, order_index: <order>}
+        // Fix the format of the data, change it to [{building: <info building>, order_index: <order>}...]
         const fixed_format = await Promise.all(
           selectedBuildings.map(async (building_in_tour) => ({
             building: await BuildingService.getEntryByUrl(
@@ -54,7 +54,7 @@ export default function TourBuildingAdd({ tourId }) {
     fetchData().then().catch();
   }, [tourId]);
 
-  // add the selected building to the active list
+  // add building to the active building list
   const onAddBuilding = () => {
     if (addBuilding !== undefined) {
       // add building to the active selectedBuildings
@@ -81,7 +81,7 @@ export default function TourBuildingAdd({ tourId }) {
     }
   };
 
-  // remove building from active list
+  // remove building from the active building list
   const onRemoveBuilding = (index) => {
     // Add element to not selected buildings
     const newAllBuildings = [...allBuildings];
@@ -98,6 +98,7 @@ export default function TourBuildingAdd({ tourId }) {
     setSelectedBuildings(newSelectedBuildings);
   };
 
+  // function activates when someone tries to move a building up the list
   const onMoveUp = (index) => {
     const newBuildings = [...selectedBuildings];
     if (index !== 0) {
@@ -109,6 +110,7 @@ export default function TourBuildingAdd({ tourId }) {
     );
   };
 
+  // function activates when someone tries to move a building down the list
   const onMoveDown = (index) => {
     const newBuildings = [...selectedBuildings];
     if (index < selectedBuildings.length - 1) {
