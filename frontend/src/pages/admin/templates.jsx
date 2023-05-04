@@ -52,14 +52,17 @@ export default function Templates() {
   };
 
   const loadTemplates = async () => {
-    setTemplateList(await TemplateService.get());
+    const templates = await TemplateService.get();
+    setTemplateList(templates);
+    return templates;
   };
 
   const loadPage = async () => {
-    await loadTemplates();
-    setSearchResults(templateList);
-    if (templateList.size > 0)
-      await updateTemplateSelection(templateList[0].url);
+    const templates = await loadTemplates();
+    setSearchResults(templates);
+    if (templates.length > 0) {
+      await updateTemplateSelection(templates[0].url);
+    }
   };
 
   useEffect(() => {
@@ -90,9 +93,9 @@ export default function Templates() {
     return url;
   };
 
-  const performSearch = () => {
+  const performSearch = async (templates = templateList) => {
     setSearchResults(
-      templateList.filter((template) => {
+      templates.filter((template) => {
         const search = searchString.current.value.toLowerCase();
         return (
           template["to"].toLowerCase().includes(search) ||
@@ -123,9 +126,23 @@ export default function Templates() {
     } else if (saveState === SaveState.New) {
       response = await TemplateService.postEntry(data);
     }
-    await loadTemplates();
+    const templates = await loadTemplates();
     await updateTemplateSelection(response.url);
+
+    if (saveState === SaveState.New) performSearch(templates);
+
     setSaveState(SaveState.Clean);
+  };
+
+  const newTemplate = async () => {
+    setTemplateURL("");
+    fieldTo.current.value = "";
+    fieldCc.current.value = "";
+    fieldBcc.current.value = "";
+    fieldSubject.current.value = "";
+    fieldBody.current.value = "";
+
+    setSaveState(SaveState.New);
   };
 
   const TemplateSelectionItem = ({
@@ -160,7 +177,7 @@ export default function Templates() {
   return (
     <>
       <Head>
-        <title>Dr. Trottoir: Templates</title>
+        <title>Dr. Trottoir: Mail-templates</title>
       </Head>
 
       <div className={"h-4/5"}>
@@ -187,19 +204,17 @@ export default function Templates() {
                 classNameDiv={"w-80"}
                 reference={searchString}
                 icon={faSearch}
-                actionCallback={() => performSearch()}
+                actionCallback={performSearch}
               />
             </div>
-            <PrimaryButton icon={faPlusCircle} text={"Sort"}>
+            <PrimaryButton
+              icon={faPlusCircle}
+              text={"Sort"}
+              onClick={newTemplate}
+            >
               Nieuw
             </PrimaryButton>
           </div>
-        </PrimaryCard>
-        <PrimaryCard title={"Debug"}>
-          <p>{JSON.stringify(templateList)}</p>
-          <p>{JSON.stringify(templateList)}</p>
-          <p>{templateURL}</p>
-          <p>{saveState}</p>
         </PrimaryCard>
         <div className={"flex"}>
           <PrimaryCard className={"m-2 basis-3/4"}>

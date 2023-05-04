@@ -17,7 +17,6 @@ class TemplateService {
    */
   async get(args = {}) {
     let all = await HelperService.getAllPagination("template/");
-    console.log(all);
     return this.#filterTemplate(all, args);
   }
 
