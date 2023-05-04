@@ -19,26 +19,29 @@ export default function TourBuildingAdd({ tourId }) {
 
   // All selected building, one building is listed in following format:
   // {building: <info_building>, order_index: <index>}
-  const [selectedBuildings, setSelectedBuildings] = useState({});
+  const [selectedBuildings, setSelectedBuildings] = useState([]);
 
   useEffect(() => {
     // fetch all the data needed for the page
     async function fetchData() {
-      // set selectedBuildings in Tour
-      const selectedBuildings = await TourService.getBuildingsFromTour(tourId);
-      // Fix the format of the data, change it to {building: <info building>, order_index: <order>}
-      const fixed_format = await Promise.all(
-        selectedBuildings.map(async (building_in_tour) => ({
-          building: await BuildingService.getEntryByUrl(
-            building_in_tour.building
-          ),
-          order_index: building_in_tour.order_index,
-        }))
-      );
-      setSelectedBuildings(
-        fixed_format.sort((a, b) => a.order_index - b.order_index)
-      );
-
+      let selectedBuildings = [];
+      if (tourId) {
+        // set selectedBuildings in Tour
+        selectedBuildings = await TourService.getBuildingsFromTour(tourId);
+        console.log(selectedBuildings);
+        // Fix the format of the data, change it to {building: <info building>, order_index: <order>}
+        const fixed_format = await Promise.all(
+          selectedBuildings.map(async (building_in_tour) => ({
+            building: await BuildingService.getEntryByUrl(
+              building_in_tour.building
+            ),
+            order_index: building_in_tour.order_index,
+          }))
+        );
+        setSelectedBuildings(
+          fixed_format.sort((a, b) => a.order_index - b.order_index)
+        );
+      }
       // get all Buildings that are not in the tour
       const allBuildings = await BuildingService.get();
       const filtered = allBuildings.filter(
@@ -59,7 +62,10 @@ export default function TourBuildingAdd({ tourId }) {
       newSelectedBuildings.push({
         building: allBuildings[addBuilding],
         order_index:
-          newSelectedBuildings[newSelectedBuildings.length - 1].order_index + 1, // calculate last used index
+          newSelectedBuildings.length !== 0
+            ? newSelectedBuildings[newSelectedBuildings.length - 1]
+                .order_index + 1
+            : 0, // calculate last used index
       });
       setSelectedBuildings(newSelectedBuildings);
 
@@ -76,17 +82,17 @@ export default function TourBuildingAdd({ tourId }) {
   };
 
   // remove building from active list
-  const onRemoveBuilding = (id) => {
+  const onRemoveBuilding = (index) => {
     // Add element to not selected buildings
     const newAllBuildings = [...allBuildings];
-    newAllBuildings.push(selectedBuildings[id].building);
+    newAllBuildings.push(selectedBuildings[index].building);
     setAllBuildings(newAllBuildings);
 
     // remove the element from the not selected buildings
     const newSelectedBuildings = [...selectedBuildings];
-    newSelectedBuildings.splice(id, 1);
+    newSelectedBuildings.splice(index, 1);
     //update order index for elements after the removed element
-    for (let i = id; i < newSelectedBuildings.length; i++) {
+    for (let i = index; i < newSelectedBuildings.length; i++) {
       newSelectedBuildings[i].order_index--;
     }
     setSelectedBuildings(newSelectedBuildings);
