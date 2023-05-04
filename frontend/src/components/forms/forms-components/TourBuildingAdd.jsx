@@ -28,7 +28,6 @@ export default function TourBuildingAdd({ tourId }) {
       if (tourId) {
         // set selectedBuildings in Tour
         selectedBuildings = await TourService.getBuildingsFromTour(tourId);
-        console.log(selectedBuildings);
         // Fix the format of the data, change it to [{building: <info building>, order_index: <order>}...]
         const fixed_format = await Promise.all(
           selectedBuildings.map(async (building_in_tour) => ({

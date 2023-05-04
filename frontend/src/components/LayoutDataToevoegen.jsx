@@ -61,6 +61,24 @@ function tourList(data) {
   });
 }
 
+function regioList(data) {
+  return data.map((data) => {
+    const id = urlToPK(data.url);
+
+    return (
+      <LinkButton
+        key={id}
+        link={`/admin/data_toevoegen/rondes/${id}`}
+        className={"truncate"}
+      >
+        <div className={"text-light-h-1"}>
+          <p>text</p>
+        </div>
+      </LinkButton>
+    );
+  });
+}
+
 function buildingList(data) {
   return data.map((data) => {
     const id = urlToPK(data.url);
@@ -159,6 +177,9 @@ export default function LayoutDataAdd({ children }) {
         case "syndici":
           setData(await UserService.get());
           break;
+        case "regio":
+          setData([]);
+          break;
         default:
           setData([]);
       }
@@ -182,6 +203,10 @@ export default function LayoutDataAdd({ children }) {
               Rondes: {
                 icon: faBicycle,
                 link: "/admin/data_toevoegen/rondes",
+              },
+              Regio: {
+                icon: faBicycle,
+                link: "/admin/data_toevoegen/regio",
               },
               Gebouwen: {
                 icon: faBuilding,
@@ -222,6 +247,7 @@ export default function LayoutDataAdd({ children }) {
           <div className={"flex flex-col space-y-4"}>
             {router.query.type === "planningen" && scheduleList(data)}
             {router.query.type === "rondes" && tourList(data)}
+            {router.query.type === "regio" && regioList(data)}
             {router.query.type === "gebouwen" && buildingList(data)}
             {router.query.type === "personeel" && personeelList(data)}
             {router.query.type === "syndici" && syndiciList(data)}
