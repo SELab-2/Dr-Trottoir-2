@@ -20,11 +20,17 @@ import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
 export default function Templates() {
+  const SaveState = Object.freeze({
+    New: "new",
+    Clean: "clean",
+    Dirty: "dirty",
+  });
+
   const [templateList, setTemplateList] = useState([]);
   const searchString = useRef("");
   const [searchResults, setSearchResults] = useState([]);
   const [templateURL, setTemplateURL] = useState("");
-  const [saveState, setSaveState] = useState("clean"); // states: "clean", "dirty", "new"
+  const [saveState, setSaveState] = useState(SaveState.New);
   const fieldTo = useRef("");
   const fieldCc = useRef("");
   const fieldBcc = useRef("");
@@ -42,26 +48,35 @@ export default function Templates() {
       template["subject"] !== undefined ? template["subject"] : "";
     fieldBody.current.value =
       template["body"] !== undefined ? template["body"] : "";
+    setSaveState(SaveState.Clean);
   };
 
   const loadTemplates = async () => {
-    const templates = await TemplateService.get();
-    setTemplateList(templates);
-    setSearchResults(templates);
-    await updateTemplateSelection(templates[0].url);
+    setTemplateList(await TemplateService.get());
   };
+
+  const loadPage = async () => {
+    await loadTemplates();
+    setSearchResults(templateList);
+    if (templateList.size > 0)
+      await updateTemplateSelection(templateList[0].url);
+  };
+
+  useEffect(() => {
+    loadPage();
+  }, []);
 
   const mailtoURL = () => {
     let url = "mailto:";
-    let putQM = false;
+    let putQuestionMark = false;
 
     const addOption = (optionRef, optionName) => {
       const value = optionRef.current.value;
       if (value !== undefined && value !== "") {
-        if (putQM) url += "&";
+        if (putQuestionMark) url += "&";
         else {
           url += "?";
-          putQM = true;
+          putQuestionMark = true;
         }
         url += optionName + "=" + encodeURIComponent(value);
       }
@@ -74,10 +89,6 @@ export default function Templates() {
     addOption(fieldBody, "body");
     return url;
   };
-
-  useEffect(() => {
-    loadTemplates();
-  }, []);
 
   const performSearch = () => {
     setSearchResults(
@@ -95,18 +106,26 @@ export default function Templates() {
   };
 
   const saveTemplate = async () => {
-    const data = {};
-    data["to"] = fieldTo.current.value;
-    data["cc"] = fieldCc.current.value;
-    data["bcc"] = fieldBcc.current.value;
-    data["subject"] = fieldSubject.current.value;
-    data["body"] = fieldBody.current.value;
+    if (saveState === SaveState.Clean) return;
 
-    if (saveState === "dirty") {
-      await TemplateService.postEntryByUrl(templateURL, data);
-    } else if (saveState === "new") {
-      await TemplateService.putEntry(data);
+    const data = {
+      to: fieldTo.current.value,
+      cc: fieldCc.current.value,
+      bcc: fieldBcc.current.value,
+      subject: fieldSubject.current.value,
+      body: fieldBody.current.value,
+    };
+
+    let response = null;
+
+    if (saveState === SaveState.Dirty) {
+      response = await TemplateService.patchEntryByUrl(templateURL, data);
+    } else if (saveState === SaveState.New) {
+      response = await TemplateService.postEntry(data);
     }
+    await loadTemplates();
+    await updateTemplateSelection(response.url);
+    setSaveState(SaveState.Clean);
   };
 
   const TemplateSelectionItem = ({
@@ -128,10 +147,14 @@ export default function Templates() {
         style={{ backgroundColor: background }}
         onClick={handleClick}
       >
-        <h1 className={"font-semibold"}>{data["to"]}</h1>
-        <p>{data["subject"]}</p>
+        <h1>{data["to"]}</h1>
+        <p className={"font-semibold"}>{data["subject"]}</p>
       </div>
     );
+  };
+
+  const handleTextChange = () => {
+    if (saveState === SaveState.Clean) setSaveState(SaveState.Dirty);
   };
 
   return (
@@ -172,16 +195,38 @@ export default function Templates() {
             </PrimaryButton>
           </div>
         </PrimaryCard>
+        <PrimaryCard title={"Debug"}>
+          <p>{JSON.stringify(templateList)}</p>
+          <p>{JSON.stringify(templateList)}</p>
+          <p>{templateURL}</p>
+          <p>{saveState}</p>
+        </PrimaryCard>
         <div className={"flex"}>
           <PrimaryCard className={"m-2 basis-3/4"}>
             <p>Ontvangers</p>
-            <CustomInputField classNameDiv={"my-2"} reference={fieldTo} />
+            <CustomInputField
+              classNameDiv={"my-2"}
+              reference={fieldTo}
+              onChange={handleTextChange}
+            />
             <p>Cc.</p>
-            <CustomInputField classNameDiv={"my-2"} reference={fieldCc} />
+            <CustomInputField
+              classNameDiv={"my-2"}
+              reference={fieldCc}
+              onChange={handleTextChange}
+            />
             <p>Bcc.</p>
-            <CustomInputField classNameDiv={"my-2"} reference={fieldBcc} />
+            <CustomInputField
+              classNameDiv={"my-2"}
+              reference={fieldBcc}
+              onChange={handleTextChange}
+            />
             <p>Onderwerp</p>
-            <CustomInputField classNameDiv={"my-2"} reference={fieldSubject} />
+            <CustomInputField
+              classNameDiv={"my-2"}
+              reference={fieldSubject}
+              onChange={handleTextChange}
+            />
             <p>E-mail</p>
             <div
               className={
@@ -194,9 +239,7 @@ export default function Templates() {
                 ref={fieldBody}
                 type="text"
                 className={"flex-1 bg-light-bg-2 outline-none"}
-                onChange={() => {
-                  setSaveState("dirty");
-                }}
+                onChange={handleTextChange}
               />
             </div>
             <div className={"flex"}>
