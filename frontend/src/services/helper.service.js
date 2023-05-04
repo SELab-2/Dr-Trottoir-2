@@ -56,26 +56,6 @@ class HelperService {
       throw new Error(`${url} is not an entry of ${model}.`);
     }
   }
-
-  async putModelEntryByUrl(url, model, data) {
-    const regex = new RegExp(`\/api\/${model.toLowerCase()}\/[0-9]+\/?$`);
-    if (regex.test(url)) {
-      const response = await ApiInstance.getApi().put(url, data);
-      return response.status === 200 ? response.data : {};
-    } else {
-      throw new Error(`${url} is not an entry of ${model}.`);
-    }
-  }
-
-  async postModelEntryByUrl(url, model, data) {
-    const regex = new RegExp(`\/api\/${model.toLowerCase()}\/[0-9]+\/?$`);
-    if (regex.test(url)) {
-      const response = await ApiInstance.getApi().post(url + "change/", data);
-      return response.status === 200 ? response.data : {};
-    } else {
-      throw new Error(`${url} is not an entry of ${model}.`);
-    }
-  }
 }
 
 export default new HelperService();

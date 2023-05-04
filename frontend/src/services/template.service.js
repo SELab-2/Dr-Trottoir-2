@@ -64,12 +64,15 @@ class TemplateService {
     }
     return data;
   }
-  async putEntry(data) {
-    return HelperService.putModelEntryByUrl("/api/template", "template", data);
+
+  async patchEntryByUrl(url, data) {
+    const response = await ApiInstance.getApi().patch(url, data);
+    return response.data;
   }
 
-  async postEntryByUrl(url, data) {
-    return HelperService.postModelEntryByUrl(url, "template", data);
+  async postEntry(data) {
+    const response = await ApiInstance.getApi().post("template/", data);
+    return response.data;
   }
 }
 
