@@ -1,4 +1,5 @@
 import HelperService from "@/services/helper.service";
+import ApiInstance from "@/services/ApiInstance";
 
 class RegionService {
   /**
@@ -28,6 +29,51 @@ class RegionService {
    */
   async getEntryByUrl(url) {
     return HelperService.getModelEntryByUrl(url, "region");
+  }
+
+  /**
+   * Update a region by id.
+   *
+   * The data dict can have the following keys.
+   * - Name of the region
+   *
+   * @param id ID of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchById(id, data) {
+    const response = await ApiInstance.getApi().patch(`region/${id}/`, data);
+    return response.data;
+  }
+
+  /**
+   * Update a region by url.
+   *
+   * The data dict can have the following keys.
+   * - Name of the region
+   *
+   * @param url url of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchByUrl(url, data) {
+    if (HelperService.isCorrectModelUrl(url, "region")) {
+      return await ApiInstance.getApi().patch(url, data);
+    }
+  }
+
+  /**
+   * Add a new entry to the region endpoint.
+   *
+   * The data dict can have the following keys.
+   * - Name of the region
+   *
+   * @param data dict with the data.
+   * @returns {Promise<*>}
+   */
+  async post(data) {
+    const response = await ApiInstance.getApi().post("region/", data);
+    return response.data;
   }
 
   /**
