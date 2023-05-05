@@ -21,7 +21,7 @@ function SignupInput({ field, updateField, id, type, autocomplete }) {
           updateField({ value: event.target.value, error: null });
         }}
       />
-      {field.error && <p className={"text-bad-1"}>{field.error}</p>}
+      {field.error && <p className={"text-bad-1 pb-3"}>{field.error}</p>}
     </div>
   );
 }
@@ -193,7 +193,7 @@ export default function Signup() {
                 </div>
               </div>
               <button
-                className="bg-accent-1 mt-5 mb-8 py-1 text-center w-full rounded font-bold rounded"
+                className="bg-accent-1 mt-5 mb-8 py-1 text-center w-full rounded font-bold rounded hover:bg-accent-3 active:bg-accent-2 active:text-dark-h-1"
                 type="submit"
               >
                 Registreer
