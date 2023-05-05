@@ -33,8 +33,6 @@ export default function Home() {
     setResponse(JSON.stringify(response, null, 2));
   };
 
-  console.log(process.env.NEXT_PUBLIC_GOOGLE_API);
-
   return (
     <>
       <PrimaryCard icon={faHome} title={"Home"} className={"m-4"}>
