@@ -75,54 +75,56 @@ export default function Registreren() {
       const error = validations[i](field.value);
       if (error) {
         setField({ value: field.value, error: error });
-        return;
+        return false;
       }
     }
+    return true;
   };
 
   const handleSignup = async (event) => {
     event.preventDefault();
     setRegistrationStatus({ complete: false, loading: true, error: false });
 
-    const valid = true;
-    valid &&
+    let valid = true;
+    valid =
       allValid(firstname, setFirstname, [
         validateRequired,
         (v) => validateLength(v, 2, 64),
-      ]);
-    valid &&
+      ]) && valid;
+    valid =
       allValid(lastname, setLastname, [
         validateRequired,
         (v) => validateLength(v, 2, 64),
-      ]);
-    valid &&
+      ]) && valid;
+    valid =
       allValid(email, setEmail, [
         validateRequired,
         (v) => validateLength(v, 2, 128),
         (v) => (!v.includes("@") ? `Geen geldige email` : null),
-      ]);
-    valid &&
+      ]) && valid;
+    valid =
       allValid(tel, setTel, [
         validateRequired,
         (v) => validateLength(v, 12, 12),
-      ]);
-    valid &&
+      ]) && valid;
+    valid =
       allValid(password, setPassword, [
         validateRequired,
         (v) => validateLength(v, 8, 40),
-      ]);
-    valid &&
+      ]) && valid;
+    valid =
       allValid(repeatPassword, setRepeatPassword, [
         validateRequired,
         (v) =>
           validateMustMatch(v, password.value, "Wachtwoorden zijn niet gelijk"),
-      ]);
+      ]) && valid;
 
     if (!valid) {
+      setRegistrationStatus({ complete: false, loading: false, error: null });
       return;
     }
 
-    const okay = await UserService.register({
+    const response = await UserService.register({
       first_name: firstname.value,
       last_name: lastname.value,
       email: email.value,
@@ -130,15 +132,16 @@ export default function Registreren() {
       password2: repeatPassword.value,
     });
 
-    if (okay) {
-      setRegistrationStatus({ complete: true, loading: false, error: null });
-    } else {
+    if (response.error) {
       setRegistrationStatus({
         complete: false,
         loading: false,
         error: "Er ging iets mis... probeer het opnieuw.",
       });
+      return;
     }
+
+    setRegistrationStatus({ complete: true, loading: false, error: null });
   };
 
   let boxBody;
@@ -161,6 +164,15 @@ export default function Registreren() {
         <p className={"font-bold text-center mb-8 text-lg text-light-h-1"}>
           Registeren
         </p>
+        {registrationStatus.error && (
+          <p
+            className={
+              "text-bad-1 mt-3 text-center bg-bad-2 rounded py-2 border-bad-1 border-1 mb-5 border-[1px]"
+            }
+          >
+            {registrationStatus.error}
+          </p>
+        )}
         <div className={""}>
           <div className={"block sm:flex pb-3"}>
             <div className={"basis-1/2 pr-0 sm:pr-1"}>
@@ -234,11 +246,6 @@ export default function Registreren() {
             >
               Registreer
             </button>
-          )}
-          {registrationStatus.error && (
-            <p className={"text-bad-1 mt-3 text-center font-bold"}>
-              {registrationStatus.error}
-            </p>
           )}
         </div>
       </form>

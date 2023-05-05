@@ -5,11 +5,18 @@ import Image from "next/image";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { ROLES } from "@/utils/userRoles";
+import { useState } from "react";
+import { COLOR_ACCENT_2, COLOR_LIGHT_H_2 } from "@/utils/colors";
+import Loading from "@/components/Loading";
 
 export default function Login() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const router = useRouter();
 
   const handleLogin = async (event) => {
+    setIsLoading(true);
     event.preventDefault();
 
     const email = event.target.email.value;
@@ -17,6 +24,8 @@ export default function Login() {
 
     if (!email || !password) {
       console.log("Invalid input");
+      setIsLoading(false);
+      setError("Vul alle velden in");
       return;
     }
 
@@ -28,21 +37,22 @@ export default function Login() {
 
     if (response?.error) {
       console.log("something went wrong... failed to login :(");
+      setIsLoading(false);
+      setError("Onbekende gebruiker");
       return;
     }
 
     const user = (await getSession()).user;
     if (user.role <= ROLES.SUPERSTUDENT) {
-      // User is developer, admin or super-student
       await router.push("/admin/home");
     } else if (user.role === ROLES.STUDENT) {
-      // User is student
       await router.push("/student/home");
-    } else {
-      console.log(
-        "We found you in our database but unfortunately we don't have a nice ui for you :("
-      );
+    } else if (user.role === ROLES.SYNDICUS) {
+      console.error("user not supported");
+      setError("Gebruiker is nog niet ondersteund.");
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -67,6 +77,15 @@ export default function Login() {
               >
                 Inloggen
               </p>
+              {error && (
+                <p
+                  className={
+                    "text-bad-1 mt-3 text-center bg-bad-2 rounded py-2 border-bad-1 border-1 mb-5 border-[1px]"
+                  }
+                >
+                  {error}
+                </p>
+              )}
               <div>
                 <div className={"pb-3"}>
                   <p className={"text-light-text"}>Email</p>
@@ -89,17 +108,24 @@ export default function Login() {
                   />
                 </div>
               </div>
-              <button
-                className="bg-accent-1 mt-5 mb-8 py-1 text-center w-full rounded font-bold"
-                type="submit"
-              >
-                Log in
-              </button>
-              <p className={"text-center"}>
-                <a className={"text-primary-1"} href={"mail://asdf@dsfs.com"}>
-                  Wachtwoord Vergeten?
-                </a>
-              </p>
+              <div className={"mt-5 mb-8"}>
+                {isLoading ? (
+                  <div className="flex justify-center items-center py-1 h-8 text-center w-full rounded font-bold rounded bg-accent-2 text-dark-h-1">
+                    <Loading
+                      className={"w-6 h-6 "}
+                      color={COLOR_LIGHT_H_2}
+                      backgroundColor={COLOR_ACCENT_2}
+                    ></Loading>
+                  </div>
+                ) : (
+                  <button
+                    className="flex justify-center items-center bg-accent-1 py-1 h-8 text-center w-full rounded font-bold rounded hover:bg-accent-3 active:bg-accent-2 active:text-dark-h-1"
+                    type="submit"
+                  >
+                    Registreer
+                  </button>
+                )}
+              </div>
             </form>
           </div>
         </div>
