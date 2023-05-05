@@ -1,11 +1,10 @@
 import axios from "axios";
-import { baseUrl } from "@/utils/baseUrl";
 import getAuthHeader from "@/utils/getAuthHeader";
 
 class ApiInstance {
   getApi() {
     const instance = axios.create({
-      baseURL: baseUrl,
+      baseURL: process.env.NEXT_PUBLIC_GOOGLE_API,
       headers: {
         "Content-Type": "application/json",
       },
