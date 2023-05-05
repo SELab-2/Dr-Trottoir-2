@@ -122,7 +122,7 @@ export default function Login() {
                     className="flex justify-center items-center bg-accent-1 py-1 h-8 text-center w-full rounded font-bold rounded hover:bg-accent-3 active:bg-accent-2 active:text-dark-h-1"
                     type="submit"
                   >
-                    Registreer
+                    Log in
                   </button>
                 )}
               </div>
