@@ -8,7 +8,10 @@ import ApiInstance from "@/services/ApiInstance";
 
 class HelperService {
   async getResponseByUrl(url) {
+    console.log(url);
+    console.log(process.env.NEXT_PUBLIC_API_URL);
     if (process.env.NEXT_PUBLIC_API_URL.includes("https:")) {
+      console.log("replacing");
       url = url.replace("http:", "https:");
     }
 
