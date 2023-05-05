@@ -2,6 +2,11 @@ import ApiInstance from "@/services/ApiInstance";
 import HelperService from "@/services/helper.service";
 
 class UserService {
+  async register(args = {}) {
+    let response = await HelperService.post("use/auth/register/");
+    return response.status === 200;
+  }
+
   /**
    * Returns all users that match the filters (args). If args is empty, all users will be returned.
    * @param args Dictionary with the filters. No filters implemented for user.
