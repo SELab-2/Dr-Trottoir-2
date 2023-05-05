@@ -3,8 +3,10 @@ import HelperService from "@/services/helper.service";
 
 class UserService {
   async register(args = {}) {
-    let response = await HelperService.post("use/auth/register/");
-    return response.status === 200;
+    let response = null; // await HelperService.post("use/auth/register/");
+    return response
+      ? response.error
+      : { error: "Deze functionaliteit is nog in ontwikkeling!" };
   }
 
   /**

@@ -44,9 +44,9 @@ export default function Login() {
 
     const user = (await getSession()).user;
     if (user.role <= ROLES.SUPERSTUDENT) {
-      await router.push("/admin/home");
+      await router.push("/admin/dashboard");
     } else if (user.role === ROLES.STUDENT) {
-      await router.push("/student/home");
+      await router.push("/student/planning");
     } else if (user.role === ROLES.SYNDICUS) {
       console.error("user not supported");
       setError("Gebruiker is nog niet ondersteund.");
@@ -136,15 +136,10 @@ export default function Login() {
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
-  if (session) {
-    return {
-      redirect: {
-        destination: "/home",
-        permanent: false,
-      },
-    };
+  if (session?.user?.role === ROLES.STUDENT) {
+    return { redirect: { destination: "/student/planning", permanent: false } };
+  } else if (session?.user?.role <= ROLES.SUPERSTUDENT) {
+    return { redirect: { destination: "/admin/dashboard", permanent: false } };
   }
-  return {
-    props: { session },
-  };
+  return { props: { session } };
 }

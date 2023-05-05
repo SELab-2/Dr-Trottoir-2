@@ -136,7 +136,7 @@ export default function Registreren() {
       setRegistrationStatus({
         complete: false,
         loading: false,
-        error: "Er ging iets mis... probeer het opnieuw.",
+        error: response.error,
       });
       return;
     }
