@@ -11,7 +11,6 @@ class Visit(models.Model):
                                          verbose_name="id of building in tour",
                                          on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, verbose_name="id of user", on_delete=models.PROTECT)
-    comment = models.TextField(verbose_name="Comment on the visit", blank=True)
     schedule = models.ForeignKey(Schedule, verbose_name="schedule linked to visit", on_delete=models.PROTECT)
 
     def __str__(self):

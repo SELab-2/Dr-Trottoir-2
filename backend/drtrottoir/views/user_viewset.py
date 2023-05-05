@@ -26,6 +26,6 @@ class UserViewSet(viewsets.ModelViewSet):
     destroy:
     API endpoint that allows a user to be deleted. Superadmin role or above required.
     """
-    queryset = CustomUser.objects.all()
+    queryset = CustomUser.objects.all().order_by('id')
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated & UserViewSetPermission]
