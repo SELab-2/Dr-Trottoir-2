@@ -136,7 +136,7 @@ export default function Registreren() {
       setRegistrationStatus({
         complete: false,
         loading: false,
-        error: "Er ging iets mis! Probeer het opnieuw.",
+        error: "Er ging iets mis... probeer het opnieuw.",
       });
     }
   };
@@ -147,7 +147,7 @@ export default function Registreren() {
       <>
         <div className={"flex flex-col justify-center items-center h-56"}>
           <p className={"font-bold text-lg pb-3 text-center text-light-h-1"}>
-            Registratie ingediend!
+            Registratie ingediend
           </p>
           <p className={"text-center"}>
             Een beheerder zal zo snel mogelijk de registratie goedkeuren.
@@ -262,29 +262,8 @@ export default function Registreren() {
               {boxBody}
             </div>
           </div>
-          <div className={"p-8 pb-12 text-center"}>
-            <p>In geval van problemen contacteer: </p>
-            <p>
-              <a className={"text-primary-1"}>bob@bobmail.bob</a>
-            </p>
-          </div>
         </div>
       </div>
     </>
   );
-}
-
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
-  if (session) {
-    return {
-      redirect: {
-        destination: "/home",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: { session },
-  };
 }

@@ -51,7 +51,7 @@ export default function Login() {
         <title>Dr. Trottoir: Inloggen</title>
       </Head>
       <div className={"text-sm h-screen flex items-center justify-center"}>
-        <div className={"w-full max-w-3xl m-4"}>
+        <div className={"w-full max-w-3xl m-4 pb-10"}>
           <div className={"border-2 border-light-border rounded-lg shadow-lg"}>
             <div
               className={"bg-dark-bg-1 flex justify-center rounded-t-lg p-8"}
@@ -101,12 +101,6 @@ export default function Login() {
                 </a>
               </p>
             </form>
-          </div>
-          <div className={"p-8 pb-12 text-center"}>
-            <p>In geval van problemen contacteer: </p>
-            <p>
-              <a className={"text-primary-1"}>bob@bobmail.bob</a>
-            </p>
           </div>
         </div>
       </div>
