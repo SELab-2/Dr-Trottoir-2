@@ -35,7 +35,7 @@ class RegionService {
    * Update a region by id.
    *
    * The data dict can have the following keys.
-   * - Name of the region
+   * - region_name
    *
    * @param id ID of the entry you want to update.
    * @param data Dict, data you want to chance.
@@ -50,7 +50,7 @@ class RegionService {
    * Update a region by url.
    *
    * The data dict can have the following keys.
-   * - Name of the region
+   * - region_name
    *
    * @param url url of the entry you want to update.
    * @param data Dict, data you want to chance.
@@ -66,7 +66,7 @@ class RegionService {
    * Add a new entry to the region endpoint.
    *
    * The data dict can have the following keys.
-   * - Name of the region
+   * - region_name
    *
    * @param data dict with the data.
    * @returns {Promise<*>}
