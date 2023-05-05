@@ -1,9 +1,11 @@
 import Head from "next/head";
 import Logo from "/public/images/Logo-Dr-Trottoir-GEEL-01.png";
 import Image from "next/image";
-import { getSession, signIn } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { useState } from "react";
 import UserService from "@/services/user.service";
+import Loading from "@/components/Loading";
+import { COLOR_ACCENT_2, COLOR_LIGHT_H_2 } from "@/utils/colors";
 
 function SignupInput({ field, updateField, id, type, autocomplete }) {
   return (
@@ -27,9 +29,11 @@ function SignupInput({ field, updateField, id, type, autocomplete }) {
   );
 }
 
-export default function Signup() {
+export default function Registreren() {
   const [registrationStatus, setRegistrationStatus] = useState({
     complete: false,
+    loading: false,
+    error: null,
   });
 
   const [firstname, setFirstname] = useState({ value: "", error: null });
@@ -78,6 +82,7 @@ export default function Signup() {
 
   const handleSignup = async (event) => {
     event.preventDefault();
+    setRegistrationStatus({ complete: false, loading: true, error: false });
 
     const valid = true;
     valid &&
@@ -117,7 +122,6 @@ export default function Signup() {
       return;
     }
 
-    /*
     const okay = await UserService.register({
       first_name: firstname.value,
       last_name: lastname.value,
@@ -125,26 +129,24 @@ export default function Signup() {
       password: password.value,
       password2: repeatPassword.value,
     });
-    */
-
-    const okay = true;
 
     if (okay) {
-      setRegistrationStatus({ complete: true });
+      setRegistrationStatus({ complete: true, loading: false, error: null });
     } else {
       setRegistrationStatus({
         complete: false,
+        loading: false,
         error: "Er ging iets mis! Probeer het opnieuw.",
       });
     }
   };
 
-  let boxBody = <></>;
+  let boxBody;
   if (registrationStatus.complete) {
     boxBody = (
       <>
         <div className={"flex flex-col justify-center items-center h-56"}>
-          <p className={"font-bold text-lg pb-2 text-center"}>
+          <p className={"font-bold text-lg pb-3 text-center text-light-h-1"}>
             Registratie ingediend!
           </p>
           <p className={"text-center"}>
@@ -216,12 +218,29 @@ export default function Signup() {
             />
           </div>
         </div>
-        <button
-          className="bg-accent-1 mt-5 mb-8 py-1 text-center w-full rounded font-bold rounded hover:bg-accent-3 active:bg-accent-2 active:text-dark-h-1"
-          type="submit"
-        >
-          Registreer
-        </button>
+        <div className={"mt-5 mb-8"}>
+          {registrationStatus.loading ? (
+            <div className="flex justify-center items-center py-1 h-8 text-center w-full rounded font-bold rounded bg-accent-2 text-dark-h-1">
+              <Loading
+                className={"w-6 h-6 "}
+                color={COLOR_LIGHT_H_2}
+                backgroundColor={COLOR_ACCENT_2}
+              ></Loading>
+            </div>
+          ) : (
+            <button
+              className="flex justify-center items-center bg-accent-1 py-1 h-8 text-center w-full rounded font-bold rounded hover:bg-accent-3 active:bg-accent-2 active:text-dark-h-1"
+              type="submit"
+            >
+              Registreer
+            </button>
+          )}
+          {registrationStatus.error && (
+            <p className={"text-bad-1 mt-3 text-center font-bold"}>
+              {registrationStatus.error}
+            </p>
+          )}
+        </div>
       </form>
     );
   }
