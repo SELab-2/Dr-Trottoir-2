@@ -39,7 +39,7 @@ function buildUrl(address, route, transportationMode) {
     "https://www.google.com/maps/embed/v1/" +
     map_type +
     "?key=" +
-    process.env.NEXT_PUBLIC_GOOGLE_API_KEY +
+    process.env.NEXT_PUBLIC_GOOGLE_API +
     params
   );
 }
@@ -70,7 +70,7 @@ export default function MapView({
         allowFullScreen
         src={
           "https://www.google.com/maps/embed/v1/view?key=" +
-          process.env.NEXT_PUBLIC_GOOGLE_API_KEY +
+          process.env.NEXT_PUBLIC_GOOGLE_API +
           "&center=50.5508573,4.3932513&zoom=8.75"
         }
       />
