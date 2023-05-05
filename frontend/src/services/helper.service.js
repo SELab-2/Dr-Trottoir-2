@@ -9,7 +9,7 @@ import ApiInstance from "@/services/ApiInstance";
 class HelperService {
   async getResponseByUrl(url) {
     if (process.env.NEXT_PUBLIC_API_URL.includes("https:")) {
-      url.replace("http:", "https:");
+      url = url.replace("http:", "https:");
     }
 
     return await ApiInstance.getApi().get(url);
