@@ -16,7 +16,7 @@ RUN  npm install
 FROM node:18-alpine AS builder
 WORKDIR /usr/src/app
 COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY ../.env.prod .env
+RUN printenv
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
