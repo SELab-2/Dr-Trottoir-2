@@ -17,8 +17,7 @@ FROM node:18-alpine AS builder
 WORKDIR /usr/src/app
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY . .
-
-ENV NEXT_PUBLIC_GOOGLE_API test_maps
+COPY ../.env.dev ./.env.local
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
