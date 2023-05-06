@@ -4,6 +4,7 @@ export default function SelectForm({
   id,
   className,
   onChange,
+  value,
 }) {
   return (
     <div className={`flex flex-col space-y-2 ${className}`}>
@@ -13,12 +14,13 @@ export default function SelectForm({
       <select
         name={id}
         id={id}
+        value={value}
         className={
           "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
         }
         onChange={onChange}
       >
-        <option value={undefined}>--Please pick a building--</option>
+        <option value={-1}>--Please pick a building--</option>
         {children}
       </select>
     </div>

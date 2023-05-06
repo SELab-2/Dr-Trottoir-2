@@ -14,7 +14,7 @@ import RemoveModal from "@/components/Modals/RemoveModal";
 
 export default function BasicForm({
   model,
-  editForm = false,
+  editMode = false,
   children,
   onSubmit,
   onDelete,
@@ -45,7 +45,7 @@ export default function BasicForm({
           <PrimaryButton icon={faPlusCircle} type={"submit"}>
             Opslaan
           </PrimaryButton>
-          {editForm && (
+          {editMode && (
             <CustomButton
               icon={faMinusCircle}
               type="button"

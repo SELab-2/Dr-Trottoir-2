@@ -15,7 +15,7 @@ export default function TourBuildingAdd({ tourId, callback }) {
   const [allBuildings, setAllBuildings] = useState([]);
 
   // index of selected building in allBuildings
-  const [addBuilding, setAddBuilding] = useState(undefined);
+  const [addBuilding, setAddBuilding] = useState(-1);
 
   // All selected building, one building is listed in following format:
   // {building: <info_building>, order_index: <index>}
@@ -58,7 +58,7 @@ export default function TourBuildingAdd({ tourId, callback }) {
 
   // add building to the active building list
   const onAddBuilding = () => {
-    if (addBuilding !== undefined) {
+    if (addBuilding !== -1) {
       // add building to the active selectedBuildings
       const newSelectedBuildings = [...selectedBuildings];
       newSelectedBuildings.push({
@@ -76,11 +76,7 @@ export default function TourBuildingAdd({ tourId, callback }) {
       const newAllBuildings = [...allBuildings];
       newAllBuildings.splice(addBuilding, 1);
       setAllBuildings(newAllBuildings);
-      setAddBuilding(undefined);
-
-      // set the selected element to none
-      const $select = document.querySelector("#addGebouw");
-      $select.value = undefined;
+      setAddBuilding(-1);
     }
   };
 
@@ -136,6 +132,7 @@ export default function TourBuildingAdd({ tourId, callback }) {
             label={"Nieuw Gebouw"}
             onChange={(e) => setAddBuilding(e.target.value)}
             className={"flex-grow"}
+            value={addBuilding}
           >
             {allBuildings.map((building, index) => {
               return (

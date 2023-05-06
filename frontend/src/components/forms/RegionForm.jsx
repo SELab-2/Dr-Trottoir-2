@@ -52,7 +52,7 @@ export default function RegionForm({ id }) {
       loading={loading}
       onSubmit={onSubmit}
       model={"regio"}
-      editForm={id !== undefined}
+      editMode={id !== undefined}
     >
       <InputForm
         label={"Region Name"}

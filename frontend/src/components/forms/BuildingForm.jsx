@@ -55,7 +55,7 @@ export default function BuildingForm({ id }) {
       loading={loading}
       onSubmit={onSubmit}
       model={"gebouw"}
-      editForm={id !== undefined}
+      editMode={id !== undefined}
     >
       <InputForm
         label={"Name"}

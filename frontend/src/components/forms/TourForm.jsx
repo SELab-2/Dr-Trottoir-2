@@ -16,7 +16,7 @@ export default function TourForm({ id }) {
   const [name, setName] = useState("");
   const [selectedB, setSelectedB] = useState([]);
   const [allRegions, setAllRegions] = useState([]);
-  const [region, setRegion] = useState(undefined);
+  const [region, setRegion] = useState(-1);
   ////////////////////////////////////////////////
 
   const onSubmit = (event) => {
@@ -45,6 +45,7 @@ export default function TourForm({ id }) {
         //set Name tour
         const data = await TourService.getById(id);
         setName(data.name);
+        setRegion(urlToPK(data.region));
       }
       setAllRegions(await RegionService.get());
     }
@@ -67,7 +68,7 @@ export default function TourForm({ id }) {
       loading={loading}
       onSubmit={onSubmit}
       model={"ronde"}
-      editForm={id !== undefined}
+      editMode={id !== undefined}
     >
       <InputForm
         label={"Name"}
@@ -79,18 +80,20 @@ export default function TourForm({ id }) {
       <TourBuildingAdd tourId={id} callback={changeSelected} />
 
       <SelectForm
-        id={"addGebouw"}
-        label={"Nieuw Gebouw"}
+        id={"regio"}
+        label={"Regio"}
         onChange={(e) => setRegion(e.target.value)}
         className={"flex-grow"}
+        value={region}
       >
-        {allRegions.map((region, index) => {
+        {allRegions.map((reg, index) => {
           return (
-            <option key={index} value={index}>
-              {region.region_name}
+            <option key={urlToPK(reg.url)} value={urlToPK(reg.url)}>
+              {reg.region_name}
             </option>
           );
         })}
+        )
       </SelectForm>
     </BasicForm>
   );
