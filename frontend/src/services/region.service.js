@@ -58,7 +58,8 @@ class RegionService {
    */
   async patchByUrl(url, data) {
     if (HelperService.isCorrectModelUrl(url, "region")) {
-      return await ApiInstance.getApi().patch(url, data);
+      const response = await ApiInstance.getApi().patch(url, data);
+      return response.data;
     }
   }
 
