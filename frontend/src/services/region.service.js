@@ -64,6 +64,30 @@ class RegionService {
   }
 
   /**
+   * Delete a region by id.
+   *
+   * @param id ID of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteById(id) {
+    const response = await ApiInstance.getApi().delete(`region/${id}/`);
+    return response.data;
+  }
+
+  /**
+   * Delete a region by url.
+   *
+   * @param url url of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteByUrl(url) {
+    if (HelperService.isCorrectModelUrl(url, "region")) {
+      const response = await ApiInstance.getApi().delete(url);
+      return response.data;
+    }
+  }
+
+  /**
    * Add a new entry to the region endpoint.
    *
    * The data dict can have the following keys.
