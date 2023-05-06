@@ -157,8 +157,6 @@ export default function StudentPlanningPage() {
               "flex flex-col w-full justify-start items-center content-start space-y-3"
             }
           >
-            <h1 className={"text-[35px] font-bold text-light-text"}>{name}</h1>
-
             <div
               className={
                 "w-full flex flex-col justify-start items-center content-start space-y-6 mt-5"
@@ -169,6 +167,7 @@ export default function StudentPlanningPage() {
                 options={names}
                 optionsValues={schedules}
                 onClick={async (item) => await setSchedule(item)}
+                className={"w-full"}
               >
                 {name}
               </Dropdown>
@@ -202,6 +201,7 @@ export default function StudentPlanningPage() {
                       >
                         <FontAwesomeIcon
                           icon={faCheck}
+                          size={"2xs"}
                           style={{ color: COLOR_DONE_1 }}
                         />
                       </ColoredTag>
@@ -211,7 +211,7 @@ export default function StudentPlanningPage() {
                       >
                         <FontAwesomeIcon
                           icon={faX}
-                          size={"lg"}
+                          size={"2xs"}
                           style={{ color: COLOR_BAD_1 }}
                         />
                       </ColoredTag>
