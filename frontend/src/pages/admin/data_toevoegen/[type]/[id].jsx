@@ -7,7 +7,7 @@ import StaffForm from "@/components/forms/StaffForm";
 import SyndiciForm from "@/components/forms/SyndiciForm";
 import Layout from "@/components/Layout";
 import LayoutDataAdd from "@/components/LayoutDataToevoegen";
-import RegioForm from "@/components/forms/RegioForm";
+import RegionForm from "@/components/forms/RegionForm";
 
 export default function AdminDataUpdatePage() {
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function AdminDataUpdatePage() {
       <LayoutDataAdd route={router.query.type}>
         {router.query.type === "planningen" && <ScheduleForm />}
         {router.query.type === "rondes" && <TourForm id={router.query.id} />}
-        {router.query.type === "rondes" && <RegioForm id={router.query.id} />}
+        {router.query.type === "rondes" && <RegionForm id={router.query.id} />}
         {router.query.type === "gebouwen" && (
           <BuildingForm id={router.query.id} />
         )}

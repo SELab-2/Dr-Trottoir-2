@@ -7,7 +7,7 @@ import ScheduleForm from "@/components/forms/ScheduleForm";
 import StaffForm from "@/components/forms/StaffForm";
 import SyndiciForm from "@/components/forms/SyndiciForm";
 import LayoutDataAdd from "@/components/LayoutDataToevoegen";
-import RegioForm from "@/components/forms/RegioForm";
+import RegionForm from "@/components/forms/RegionForm";
 
 export async function getStaticPaths() {
   const paths = [
@@ -43,7 +43,7 @@ export default function AdminDataAddPage() {
       <LayoutDataAdd route={router.query.type}>
         {router.query.type === "planningen" && <ScheduleForm />}
         {router.query.type === "rondes" && <TourForm />}
-        {router.query.type === "regio" && <RegioForm />}
+        {router.query.type === "regio" && <RegionForm />}
         {router.query.type === "gebouwen" && <BuildingForm />}
         {router.query.type === "personeel" && <StaffForm />}
         {router.query.type === "syndici" && <SyndiciForm />}

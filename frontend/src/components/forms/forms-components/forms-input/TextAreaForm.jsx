@@ -1,4 +1,10 @@
-export default function TextAreaForm({ label, id, className, onChange, value }) {
+export default function TextAreaForm({
+  label,
+  id,
+  className,
+  onChange,
+  value,
+}) {
   return (
     <div className={`flex flex-col space-y-2 ${className}`}>
       <label htmlFor={id} className={"font-bold"}>

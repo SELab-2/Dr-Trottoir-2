@@ -5,6 +5,7 @@ import {
   faBriefcase,
   faBuilding,
   faCalendarWeek,
+  faLocationDot,
   faPeopleGroup,
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
@@ -205,7 +206,7 @@ export default function LayoutDataAdd({ children }) {
                 link: "/admin/data_toevoegen/rondes",
               },
               Regio: {
-                icon: faBicycle,
+                icon: faLocationDot,
                 link: "/admin/data_toevoegen/regio",
               },
               Gebouwen: {

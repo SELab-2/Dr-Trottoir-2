@@ -1,6 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function CustomButton({ children, onClick, className, icon, type }) {
+export default function CustomButton({
+  children,
+  onClick,
+  className,
+  icon,
+  type,
+}) {
   return (
     <button
       className={`align-middle border-2 py-2 px-3 text-center rounded-lg font-bold w-fit ${className}`}

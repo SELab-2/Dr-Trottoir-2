@@ -1,6 +1,12 @@
 import CustomButton from "@/components/button/Button";
 
-export default function PrimaryButton({ children, onClick, className, icon, type }) {
+export default function PrimaryButton({
+  children,
+  onClick,
+  className,
+  icon,
+  type,
+}) {
   return (
     <CustomButton
       onClick={onClick}
