@@ -38,6 +38,7 @@ export default function StudentBuilding() {
   const [arrival, setArrival] = useState(false);
   const [inside, setInside] = useState(false);
   const [departure, setDeparture] = useState(false);
+  const [visitComments, setVisitComments] = useState(false);
   const [visitPhotos, setVisitPhotos] = useState([]);
   const [buildingVisit, setBuildingVisit] = useState(null);
 
@@ -107,6 +108,7 @@ export default function StudentBuilding() {
     setDeparture(false);
     setBuildingVisit(null);
     setVisitPhotos([]);
+    setVisitComments([]);
     const wastes = await wasteService.get({
       startDate: monday,
       endDate: sunday,
@@ -126,6 +128,7 @@ export default function StudentBuilding() {
       if (visited_building.building == building.url) {
         // Call if selected building already has a visit
         checkVisitPhotos(visit);
+        loadComments(visit);
       }
     }
   }
@@ -145,6 +148,11 @@ export default function StudentBuilding() {
         setInside(true);
       }
     }
+  }
+
+  async function loadComments(visit){
+    const comments = await visitService.getCommentsByVisit(urlToPK(visit.url));
+    setVisitComments(comments);
   }
 
   function renderCompletedIcon(isCompleted) {
@@ -186,13 +194,23 @@ export default function StudentBuilding() {
   }
 
   function renderComments() {
-    if (buildingVisit != null && buildingVisit.comment) {
+    if (visitComments.length > 0) {
       return (
-        <div className={"rounded-lg bg-light-bg-1 p-2 w-full"}>
-          <Cell cut cutLen={"[300px]"}>
-            {buildingVisit.comment}
-          </Cell>
-        </div>
+          <div className="space-y-2">
+          {visitComments.map((comment, index) => {
+            const date = new Date(comment.updated_at);
+            return (
+              <div key={index} className="rounded-lg bg-light-bg-1 p-2 w-full">
+                <div className="text-xs font-bold text-light-h-2">
+                  {`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`}
+                </div>
+                <Cell cut cutLen={"[300px]"}>
+                  {comment.text}
+                </Cell>
+              </div>
+              );
+            })}
+          </div>
       );
     }
   }
