@@ -6,21 +6,42 @@ import InputForm from "@/components/forms/forms-components/forms-input/InputForm
 import TourBuildingAdd from "@/components/forms/forms-components/TourBuildingAdd";
 import VisitService from "@/services/visit.service";
 import RegionService from "@/services/region.service";
+import { urlToPK } from "@/utils/urlToPK";
+import { useRouter } from "next/router";
 
 export default function RegionForm({ id }) {
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   // DATA ////////////////////////////////////////
   const [name, setName] = useState("");
   ////////////////////////////////////////////////
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     const data = { region_name: name };
-    alert(
-      `You have submitted the form. 
-      The data you want to submit is: ${JSON.stringify(data)}`
-    );
+    try {
+      if (id) {
+        await RegionService.patchById(id, data);
+      } else {
+        await RegionService.post(data);
+      }
+
+      //TODO: change to better reload
+      router.reload();
+    } catch (e) {
+      alert(e);
+    }
+  };
+
+  const onDelete = async () => {
+    try {
+      await RegionService.deleteById(id);
+      await router.push(`/admin/data_toevoegen/regio`);
+    } catch (e) {
+      console.log(e);
+      alert(e);
+    }
   };
 
   useEffect(() => {
@@ -51,6 +72,7 @@ export default function RegionForm({ id }) {
     <BasicForm
       loading={loading}
       onSubmit={onSubmit}
+      onDelete={onDelete}
       model={"regio"}
       editMode={id !== undefined}
     >

@@ -23,6 +23,11 @@ export default function BasicForm({
 }) {
   const [modalOpen, setModalOpen] = useState(false);
 
+  const onClickDelete = () => {
+    setModalOpen(false);
+    onDelete();
+  };
+
   if (loading) {
     return (
       <div className={"flex justify-center items-center h-fit w-full"}>
@@ -35,7 +40,7 @@ export default function BasicForm({
     <div>
       <RemoveModal
         element={model}
-        onDelete={onDelete}
+        onDelete={onClickDelete}
         onCancel={() => setModalOpen(false)}
         open={modalOpen}
       />
