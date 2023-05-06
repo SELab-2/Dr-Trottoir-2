@@ -157,10 +157,7 @@ export default function StudentPlanningPage() {
               "flex flex-col w-full justify-start items-center content-start space-y-3"
             }
           >
-            <h1 className={"text-[35px] font-bold text-light-text"}>
-              Planning
-            </h1>
-            <h3 className={"text-lg font-bold text-light-text"}>{name}</h3>
+            <h1 className={"text-[35px] font-bold text-light-text"}>{name}</h1>
 
             <div
               className={
