@@ -9,7 +9,7 @@ export default function CustomButton({
 }) {
   return (
     <button
-      className={`align-middle border-2 py-2 px-3 text-center rounded-lg font-bold w-fit ${className}`}
+      className={`align-middle border-2 py-2 px-3 text-center rounded-lg font-bold ${className}`}
       onClick={onClick}
       type={type}
     >
