@@ -18,6 +18,7 @@ export default function SelectForm({
         }
         onChange={onChange}
       >
+        <option value={undefined}>--Please pick a building--</option>
         {children}
       </select>
     </div>

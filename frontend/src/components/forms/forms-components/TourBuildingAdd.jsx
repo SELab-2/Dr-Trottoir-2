@@ -11,7 +11,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
-export default function TourBuildingAdd({ tourId }) {
+export default function TourBuildingAdd({ tourId, callback }) {
   const [allBuildings, setAllBuildings] = useState([]);
 
   // index of selected building in allBuildings
@@ -37,9 +37,12 @@ export default function TourBuildingAdd({ tourId }) {
             order_index: building_in_tour.order_index,
           }))
         );
-        setSelectedBuildings(
-          fixed_format.sort((a, b) => a.order_index - b.order_index)
+        const sorted = fixed_format.sort(
+          (a, b) => a.order_index - b.order_index
         );
+
+        setSelectedBuildings(sorted);
+        callback(sorted);
       }
       // get all Buildings that are not in the tour
       const allBuildings = await BuildingService.get();
@@ -67,6 +70,7 @@ export default function TourBuildingAdd({ tourId }) {
             : 0, // calculate last used index
       });
       setSelectedBuildings(newSelectedBuildings);
+      callback(newSelectedBuildings);
 
       // remove from not active buildings
       const newAllBuildings = [...allBuildings];
@@ -95,30 +99,31 @@ export default function TourBuildingAdd({ tourId }) {
       newSelectedBuildings[i].order_index--;
     }
     setSelectedBuildings(newSelectedBuildings);
+    callback(newSelectedBuildings);
   };
 
   // function activates when someone tries to move a building up the list
   const onMoveUp = (index) => {
-    const newBuildings = [...selectedBuildings];
+    let newBuildings = [...selectedBuildings];
     if (index !== 0) {
       newBuildings[index].order_index--;
       newBuildings[index - 1].order_index++;
     }
-    setSelectedBuildings(
-      newBuildings.sort((a, b) => a.order_index - b.order_index)
-    );
+    newBuildings = newBuildings.sort((a, b) => a.order_index - b.order_index);
+    setSelectedBuildings(newBuildings);
+    callback(newBuildings);
   };
 
   // function activates when someone tries to move a building down the list
   const onMoveDown = (index) => {
-    const newBuildings = [...selectedBuildings];
+    let newBuildings = [...selectedBuildings];
     if (index < selectedBuildings.length - 1) {
       newBuildings[index].order_index++;
       newBuildings[index + 1].order_index--;
     }
-    setSelectedBuildings(
-      newBuildings.sort((a, b) => a.order_index - b.order_index)
-    );
+    newBuildings = newBuildings.sort((a, b) => a.order_index - b.order_index);
+    setSelectedBuildings(newBuildings);
+    callback(newBuildings);
   };
 
   return (
@@ -132,7 +137,6 @@ export default function TourBuildingAdd({ tourId }) {
             onChange={(e) => setAddBuilding(e.target.value)}
             className={"flex-grow"}
           >
-            <option value={undefined}>--Please pick a building--</option>
             {allBuildings.map((building, index) => {
               return (
                 <option key={index} value={index}>

@@ -4,6 +4,8 @@ import Loading from "@/components/Loading";
 import BasicForm from "@/components/forms/BasicForm";
 import InputForm from "@/components/forms/forms-components/forms-input/InputForm";
 import TourBuildingAdd from "@/components/forms/forms-components/TourBuildingAdd";
+import VisitService from "@/services/visit.service";
+import RegionService from "@/services/region.service";
 
 export default function RegionForm({ id }) {
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ export default function RegionForm({ id }) {
       setLoading(true);
       if (id) {
         //set Name tour
-        const data = await RegionForm.getById(id);
+        const data = await RegionService.getById(id);
         setName(data.region_name);
       }
     }

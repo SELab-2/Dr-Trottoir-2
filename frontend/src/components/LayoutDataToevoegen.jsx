@@ -20,6 +20,7 @@ import { urlToPK } from "@/utils/urlToPK";
 import { useRouter } from "next/router";
 import LinkButton from "@/components/navbar/LinkButton";
 import Loading from "@/components/Loading";
+import RegionService from "@/services/region.service";
 
 function scheduleList(data) {
   return data.map((data) => {
@@ -62,18 +63,18 @@ function tourList(data) {
   });
 }
 
-function regioList(data) {
+function regionList(data) {
   return data.map((data) => {
     const id = urlToPK(data.url);
 
     return (
       <LinkButton
         key={id}
-        link={`/admin/data_toevoegen/rondes/${id}`}
+        link={`/admin/data_toevoegen/regio/${id}`}
         className={"truncate"}
       >
         <div className={"text-light-h-1"}>
-          <p>text</p>
+          <p>{data.region_name}</p>
         </div>
       </LinkButton>
     );
@@ -179,7 +180,7 @@ export default function LayoutDataAdd({ children }) {
           setData(await UserService.get());
           break;
         case "regio":
-          setData([]);
+          setData(await RegionService.get());
           break;
         default:
           setData([]);
@@ -248,7 +249,7 @@ export default function LayoutDataAdd({ children }) {
           <div className={"flex flex-col space-y-4"}>
             {router.query.type === "planningen" && scheduleList(data)}
             {router.query.type === "rondes" && tourList(data)}
-            {router.query.type === "regio" && regioList(data)}
+            {router.query.type === "regio" && regionList(data)}
             {router.query.type === "gebouwen" && buildingList(data)}
             {router.query.type === "personeel" && personeelList(data)}
             {router.query.type === "syndici" && syndiciList(data)}
