@@ -63,7 +63,12 @@ export default function TourForm({ id }) {
   }
 
   return (
-    <BasicForm loading={loading} onSubmit={onSubmit}>
+    <BasicForm
+      loading={loading}
+      onSubmit={onSubmit}
+      model={"ronde"}
+      editForm={id !== undefined}
+    >
       <InputForm
         label={"Name"}
         id={"name"}

@@ -1,9 +1,28 @@
 import Loading from "@/components/Loading";
 import PrimaryButton from "@/components/button/PrimaryButton";
-import { faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBan,
+  faMinusCircle,
+  faPlusCircle,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import CustomButton from "@/components/button/Button";
+import SecondaryButton from "@/components/button/SecondaryButton";
+import CustomModal from "@/components/Modals/CustomModal";
+import { useState } from "react";
+import RemoveModal from "@/components/Modals/RemoveModal";
 
-export default function BasicForm({ children, onSubmit, className, loading }) {
+export default function BasicForm({
+  model,
+  editForm = false,
+  children,
+  onSubmit,
+  onDelete,
+  className,
+  loading,
+}) {
+  const [modalOpen, setModalOpen] = useState(false);
+
   if (loading) {
     return (
       <div className={"flex justify-center items-center h-fit w-full"}>
@@ -13,21 +32,33 @@ export default function BasicForm({ children, onSubmit, className, loading }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className={"flex flex-col space-y-2"}>
-      {children}
-      <div className={"flex flex-row space-x-2"}>
-        <PrimaryButton icon={faPlusCircle} type={"submit"}>
-          Opslaan
-        </PrimaryButton>
-        <CustomButton
-          icon={faMinusCircle}
-          className={
-            "bg-bad-1 text-dark-h-1 hover:bg-bad-1 active:bg-bad-2 active:text-bad-1"
-          }
-        >
-          Verwijder
-        </CustomButton>
-      </div>
-    </form>
+    <div>
+      <RemoveModal
+        element={model}
+        onDelete={onDelete}
+        onCancel={() => setModalOpen(false)}
+        open={modalOpen}
+      />
+      <form onSubmit={onSubmit} className={"flex flex-col space-y-2"}>
+        {children}
+        <div className={"flex flex-row space-x-2"}>
+          <PrimaryButton icon={faPlusCircle} type={"submit"}>
+            Opslaan
+          </PrimaryButton>
+          {editForm && (
+            <CustomButton
+              icon={faMinusCircle}
+              type="button"
+              className={
+                "bg-bad-1 text-dark-h-1 hover:bg-bad-1 active:bg-bad-2 active:text-bad-1"
+              }
+              onClick={() => setModalOpen(true)}
+            >
+              Verwijder
+            </CustomButton>
+          )}
+        </div>
+      </form>
+    </div>
   );
 }

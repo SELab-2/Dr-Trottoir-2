@@ -51,7 +51,12 @@ export default function BuildingForm({ id }) {
   }
 
   return (
-    <BasicForm loading={loading} onSubmit={onSubmit}>
+    <BasicForm
+      loading={loading}
+      onSubmit={onSubmit}
+      model={"gebouw"}
+      editForm={id !== undefined}
+    >
       <InputForm
         label={"Name"}
         id={"name"}

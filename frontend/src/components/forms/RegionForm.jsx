@@ -48,7 +48,12 @@ export default function RegionForm({ id }) {
   }
 
   return (
-    <BasicForm loading={loading} onSubmit={onSubmit}>
+    <BasicForm
+      loading={loading}
+      onSubmit={onSubmit}
+      model={"regio"}
+      editForm={id !== undefined}
+    >
       <InputForm
         label={"Region Name"}
         id={"region_name"}
