@@ -41,14 +41,12 @@ class VisitService {
   }
 
   /**
-   * Returns photos of given visit.
-   * @param id The ID of the visit you want photos of.
+   * Returns visit comments of given visit.
+   * @param id The ID of the visit you want the visit comments of.
    * @returns {Promise<*|*[]>}
    */
-  async getCommentsByVisit(id) {
-    let response = await HelperService.getResponseByUrl(
-      `visit/${id}/comments/`
-    );
+  async getCommentsFromVisit(id) {
+    let response = await HelperService.getResponseByUrl(`visit/${id}/comments`);
     return response.status === 200 ? response.data : [];
   }
 

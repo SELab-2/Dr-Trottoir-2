@@ -51,8 +51,8 @@ class ScheduleService {
   }
 
   /**
-   * Returns all the visit for a specific schedule.
-   * @param id The ID of the schedule you want the visits of.
+   * Returns all the schedule comments for a specific schedule.
+   * @param id The ID of the schedule you want the schedule comments of.
    * @returns {Promise<*|*[]>}
    */
   async getCommentsFromSchedule(id) {

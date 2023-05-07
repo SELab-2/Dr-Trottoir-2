@@ -180,7 +180,9 @@ export default function AdminTourPage() {
       for (const visit of scheduleVisits) {
         let split = visit.url.trim().split("/");
         const id = split[split.length - 2];
-        const visitCommentResponse = await VisitService.getCommentsByVisit(id);
+        const visitCommentResponse = await VisitService.getCommentsFromVisit(
+          id
+        );
         for (const comment of visitCommentResponse) {
           const user = await UserService.getEntryByUrl(comment.user);
           if (comment.text !== "") {
