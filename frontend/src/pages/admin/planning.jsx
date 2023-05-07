@@ -12,7 +12,7 @@ import {
   faBicycle,
 } from "@fortawesome/free-solid-svg-icons";
 import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ScheduleService from "@/services/schedule.service";
 import CustomTable from "@/components/table/Table";
 import { getMonday, getSunday } from "@/utils/helpers";
@@ -25,6 +25,8 @@ import Layout from "@/components/Layout";
 import VisitService from "@/services/visit.service";
 import ColoredTag from "@/components/Tag";
 import PieChart from "@/components/PieChart";
+import Dropdown from "@/components/Dropdown";
+import moment from "moment";
 
 export default function AdminDashboardPage() {
   const [schedule, setSchedule] = useState([]);
@@ -33,20 +35,25 @@ export default function AdminDashboardPage() {
   const [amountOfComments, setAmountOfComments] = useState(0);
   const [amountOfCompleted, setAmountOfCompleted] = useState(0);
   const [amountOfStarted, setAmountOfStarted] = useState(0);
+  const [entries, setEntries] = useState([]);
+  const searchString = useRef("");
+  const [sortString, setSortString] = useState("");
+  const [filterString, setFilterString] = useState("");
 
   useEffect(() => {
     // fetch all the data needed for the page
     async function fetchData() {
+      const newEndDate = endDate.setHours(23, 59, 59, 999);
       let schedules = await ScheduleService.get({
         startDate: startDate,
-        endDate: endDate,
+        endDate: newEndDate,
       });
       let totalComments = 0;
       let completed = 0;
       let started = 0;
 
       // construct the data for the table
-      const columns = await Promise.all(
+      const scheduleEntries = await Promise.all(
         schedules.map(async (schedule) => {
           const tour = await TourService.getEntryByUrl(schedule.tour);
           const student = await UserService.getEntryByUrl(schedule.student);
@@ -77,45 +84,117 @@ export default function AdminDashboardPage() {
               started += 1;
             }
           }
-          return [
-            schedule.date,
-            tour.name,
-            student.first_name,
-            <div key={schedule.url} className={"flex flex-row space-x-4"}>
-              <div className={"flex-grow"}>
-                <CustomProgressBar
-                  fraction={visits.length / buildings.length}
-                  is_wheel={false}
-                />
-              </div>
-              <p>
-                {visits.length} / {buildings.length}
-              </p>
-            </div>,
-            comments > 0 && (
-              <ColoredTag className={"text-primary-1 bg-primary-2"}>
-                {comments}
-              </ColoredTag>
-            ),
-            <Link
-              key={schedule.url}
-              href={`/admin/planningen/${urlToPK(schedule.url)}`}
-              className={"bg-primary-2 border-2 rounded-lg p-1"}
-            >
-              Details
-            </Link>,
-          ];
+          return {
+            url: schedule.url,
+            date: schedule.date,
+            tour: tour.name,
+            student: student.first_name,
+            visits: visits.length,
+            buildings: buildings.length,
+            comments: comments,
+          };
         })
       );
       setAmountOfComments(totalComments);
       setAmountOfCompleted(completed);
       setAmountOfStarted(started);
-      setSchedule(columns);
+      performSearch(scheduleEntries, sortString, filterString);
+      setEntries(scheduleEntries);
     }
     fetchData().catch();
   }, [endDate, startDate]);
 
-  const dummy = () => console.log("Dummy");
+  // Renders the table
+  const performSearch = (scheduleEntries, sortField, filtering) => {
+    // Filters on input field
+    if (searchString.current !== "") {
+      const search = searchString.current.value.toLowerCase();
+      scheduleEntries = scheduleEntries.filter(
+        (entry) =>
+          entry.tour.toLowerCase().includes(search) ||
+          entry.student.toLowerCase().includes(search)
+      );
+    }
+
+    // Sorts based on the given sortField
+    if (sortField !== "") {
+      scheduleEntries = scheduleEntries.sort(function (a, b) {
+        const field = stringToField[sortField];
+        return a[field].localeCompare(b[field]);
+      });
+    }
+
+    // Perform filtering based on completeness
+    scheduleEntries = filterSchedules(scheduleEntries, filtering);
+
+    // Renders the table rows
+    setSchedule(
+      scheduleEntries.map((entry) => [
+        entry.date,
+        entry.tour,
+        entry.student,
+        <div key={entry.url} className={"flex flex-row space-x-4"}>
+          <div className={"flex-grow"}>
+            <CustomProgressBar
+              fraction={entry.visits / entry.buildings}
+              is_wheel={false}
+            />
+          </div>
+          <p>
+            {entry.visits} / {entry.buildings}
+          </p>
+        </div>,
+        entry.comments > 0 && (
+          <ColoredTag className={"text-primary-1 bg-primary-2"}>
+            {entry.comments}
+          </ColoredTag>
+        ),
+        <Link
+          key={entry.url}
+          href={`/admin/planningen/${urlToPK(entry.url)}`}
+          className={"bg-primary-2 border-2 rounded-lg p-1"}
+        >
+          Details
+        </Link>,
+      ])
+    );
+  };
+
+  const performSort = (sort) => {
+    const newSort = sort.length > 0 ? sort[0] : "";
+    setSortString(newSort);
+    performSearch(entries, newSort, filterString);
+  };
+
+  const performFilter = (filtering) => {
+    const newFilter = filtering.length > 0 ? filtering[0] : "";
+    setFilterString(newFilter);
+    performSearch(entries, sortString, newFilter);
+  };
+
+  const filterSchedules = (schedules, filtering) => {
+    if (filtering === "Nog niet begonnen") {
+      return schedules.filter((schedule) => schedule.visits === 0);
+    }
+    if (filtering === "Onderweg") {
+      return schedules.filter((schedule) => {
+        const completeness = schedule.visits / schedule.buildings;
+        return completeness > 0 && completeness < 1;
+      });
+    }
+    if (filtering === "Compleet") {
+      return schedules.filter(
+        (schedule) => schedule.visits / schedule.buildings === 1
+      );
+    }
+    return schedules;
+  };
+
+  const stringToField = {
+    Student: "student",
+    Ronde: "tour",
+    Datum: "date",
+  };
 
   return (
     <div className={"w-full h-full p-2 flex flex-col"}>
@@ -140,10 +219,10 @@ export default function AdminDashboardPage() {
             className={"m-2 justify-center items-center"}
             icon={faBicycle}
           >
-            {schedule.length === 1 ? (
-              <p className={"font-bold"}>{schedule.length} Ronde</p>
+            {entries.length === 1 ? (
+              <p className={"font-bold"}>{entries.length} Ronde</p>
             ) : (
-              <p className={"font-bold"}>{schedule.length} Rondes</p>
+              <p className={"font-bold"}>{entries.length} Rondes</p>
             )}
           </SecondaryCard>
           <SecondaryCard
@@ -154,21 +233,21 @@ export default function AdminDashboardPage() {
             <p className={"font-bold"}>{amountOfComments} opmerkingen</p>
           </SecondaryCard>
           <SecondaryCard title={"Overzicht"} className={"m-2"}>
-            {schedule.length > 0 && (
+            {entries.length > 0 && (
               <div className={"flex flex-col lg:flex-row items-center"}>
                 <PieChart
                   fractions={[
-                    (schedule.length - amountOfCompleted - amountOfStarted) /
-                      schedule.length,
-                    amountOfStarted / schedule.length,
-                    amountOfCompleted / schedule.length,
+                    (entries.length - amountOfCompleted - amountOfStarted) /
+                      entries.length,
+                    amountOfStarted / entries.length,
+                    amountOfCompleted / entries.length,
                   ]}
                   circleWidth={150}
                   radius={50}
                 />
                 <div>
                   <p className={"text-bad-1 font-bold"}>
-                    {schedule.length - amountOfCompleted - amountOfStarted}
+                    {entries.length - amountOfCompleted - amountOfStarted}
                     {" Nog niet begonnen"}
                   </p>
                   <p className={"text-meh-1 font-bold"}>
@@ -184,26 +263,38 @@ export default function AdminDashboardPage() {
         </div>
 
         <SecondaryCard icon={faBicycle} title={"Rondes"} className={"m-2"}>
-          {schedule.length ? (
+          {entries.length ? (
             <div className={"flex flex-col"}>
               <PrimaryCard>
                 <div className={"flex flex-row justify-center items-center"}>
                   <div className={"px-2"}>
-                    <PrimaryButton icon={faFilter} onClick={dummy}>
+                    <Dropdown
+                      icon={faFilter}
+                      options={["Nog niet begonnen", "Onderweg", "Compleet"]}
+                      onClick={performFilter}
+                    >
                       <p>Filter</p>
-                    </PrimaryButton>
+                    </Dropdown>
                   </div>
 
                   <div className={"px-2"}>
-                    <PrimaryButton icon={faSort} onClick={dummy}>
+                    <Dropdown
+                      icon={faSort}
+                      options={["Datum", "Ronde", "Student"]}
+                      onClick={performSort}
+                    >
                       <p>Sort</p>
-                    </PrimaryButton>
+                    </Dropdown>
                   </div>
 
                   <div className={"flex-grow px-2 h-full"}>
                     <CustomInputField
                       icon={faMagnifyingGlass}
+                      reference={searchString}
                       classNameDiv={"h-6"}
+                      actionCallback={() =>
+                        performSearch(entries, sortString, filterString)
+                      }
                     />
                   </div>
 
