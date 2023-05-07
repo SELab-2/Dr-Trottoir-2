@@ -51,6 +51,18 @@ class ScheduleService {
   }
 
   /**
+   * Returns all the visit for a specific schedule.
+   * @param id The ID of the schedule you want the visits of.
+   * @returns {Promise<*|*[]>}
+   */
+  async getCommentsFromSchedule(id) {
+    let response = await HelperService.getResponseByUrl(
+      `schedule/${id}/comments/`
+    );
+    return response.status === 200 ? response.data : [];
+  }
+
+  /**
    * Filter the data with the filters given in args.
    * @param data List of schedule entries.
    * @param args Dictionary that contains filters.

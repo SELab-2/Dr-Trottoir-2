@@ -38,6 +38,7 @@ import Layout from "@/components/Layout";
 import Dropdown from "@/components/Dropdown";
 import InputField from "@/components/input-fields/InputField";
 import SecondaryButton from "@/components/button/SecondaryButton";
+import { urlToPK } from "@/utils/urlToPK";
 
 /**
  * Return small tour component to place in the selection list.
@@ -149,6 +150,11 @@ export default function AdminTourPage() {
       const dateTo = moment(date).endOf("isoWeek").toDate();
       setStart(dateFrom);
       setEnd(dateTo);
+      // We set the user that is doing this specific tour.
+      const userResponse = await UserService.getEntryByUrl(
+        scheduleResponse["student"]
+      );
+      setUser(userResponse);
 
       // Using the set week we make the data needed to fill the selection list.
       const schedules = await scheduleService.get({
@@ -172,26 +178,71 @@ export default function AdminTourPage() {
       const comments = [];
       const time = {};
       for (const visit of scheduleVisits) {
-        if (visit.comment !== "") {
-          comments.push({
-            comment: visit.comment,
-            building: visit.building_in_tour_data.nickname,
-          });
+        let split = visit.url.trim().split("/");
+        const id = split[split.length - 2];
+        const visitCommentResponse = await VisitService.getCommentsByVisit(id);
+        for (const comment of visitCommentResponse) {
+          const user = await UserService.getEntryByUrl(comment.user);
+          if (comment.text !== "") {
+            comments.push({
+              comment: comment.text,
+              building: visit.building_in_tour_data.nickname,
+              user: `${user.first_name} ${user.last_name}`,
+              last_update: new Date(comment.updated_at),
+            });
+          }
         }
+        split = url.trim().split("/");
+        const photoUrls = await VisitService.getPhotosByVisit(
+          urlToPK(visit.url)
+        );
+
+        const photos = await Promise.all(
+          photoUrls.map(async (entry) => {
+            return await PhotoService.getEntryByUrl(entry.url);
+          })
+        );
+
+        for (const photo of photos) {
+          if (photo.comment !== "") {
+            comments.push({
+              comment: photo.comment,
+              building: visit.building_in_tour_data.nickname,
+              user: `${userResponse.first_name} ${userResponse.last_name}`,
+              last_update: new Date(photo.created_at),
+            });
+          }
+        }
+
         const buildInTour = await BuildingInTourService.getEntryByUrl(
           visit["building_in_tour"]
         );
         time[buildInTour["building"]] = "TBA";
-        const photos = await visit_finished(visit.url);
-        if (photos.length > 0) {
+        const departurePhotos = await visit_finished(visit.url);
+        if (departurePhotos.length > 0) {
           const diff =
-            new Date(photos[0]["created_at"]) - new Date(visit["arrival"]);
+            new Date(departurePhotos[0]["created_at"]) -
+            new Date(visit["arrival"]);
           let seconds = Math.round(diff / 1000);
           const minutes = Math.floor(seconds / 60);
           seconds -= minutes * 60;
           time[buildInTour["building"]] = `${minutes}m${seconds}s`;
         }
       }
+      const scheduleCommentResponse =
+        await ScheduleService.getCommentsFromSchedule(planning);
+      for (const comment of scheduleCommentResponse) {
+        const building = await BuildingService.getEntryByUrl(comment.building);
+        const user = await UserService.getEntryByUrl(comment.user);
+        console.log(user);
+        comments.push({
+          comment: comment.text,
+          building: building.nickname,
+          user: `${user.first_name} ${user.last_name}`,
+          last_update: new Date(comment.updated_at),
+        });
+      }
+      console.log(comments);
       setComments(comments);
 
       // Searching the buildings of this tour
@@ -230,12 +281,6 @@ export default function AdminTourPage() {
         })
       );
       setBuildings(buildings);
-
-      // We set the user that is doing this specific tour.
-      const userResponse = await UserService.getEntryByUrl(
-        scheduleResponse["student"]
-      );
-      setUser(userResponse);
     };
     allTours().catch();
   }, [router.isReady, router]);
@@ -353,9 +398,23 @@ export default function AdminTourPage() {
                 <div className={"space-y-2 overflow-auto"}>
                   {comments.map((entry, index) => (
                     <div key={index} className={"rounded-lg bg-light-bg-1 p-2"}>
-                      <h1 className={"text-light-h-1 font-bold text-base"}>
-                        {entry.building}
-                      </h1>
+                      <div className={"flex flex-row"}>
+                        <h1 className={"w-full font-bold"}>{entry.user}</h1>
+                        <h1
+                          className={
+                            "text-dark-text text-base w-full text-right"
+                          }
+                        >
+                          {entry.building}
+                        </h1>
+                      </div>
+                      <p className={"text-dark-text"}>
+                        Laats aangepast:{" "}
+                        {new Date(entry.last_update).toDateString()}{" "}
+                        {new Date(entry.last_update).getHours()}:
+                        {new Date(entry.last_update).getMinutes()}:
+                        {new Date(entry.last_update).getSeconds()}
+                      </p>
                       <Cell cut cutLen={"[300px]"}>
                         {entry.comment}
                       </Cell>
