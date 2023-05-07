@@ -45,7 +45,7 @@ class VisitService {
    * @param id The ID of the visit you want the visit comments of.
    * @returns {Promise<*|*[]>}
    */
-  async getCommentsByVisit(id) {
+  async getCommentsFromVisit(id) {
     let response = await HelperService.getResponseByUrl(`visit/${id}/comments`);
     return response.status === 200 ? response.data : [];
   }

@@ -55,7 +55,7 @@ class ScheduleService {
    * @param id The ID of the schedule you want the schedule comments of.
    * @returns {Promise<*|*[]>}
    */
-  async getCommentsBySchedule(id) {
+  async getCommentsFromSchedule(id) {
     let response = await HelperService.getResponseByUrl(
       `schedule/${id}/comments/`
     );
