@@ -8,6 +8,8 @@ import {
   faMagnifyingGlass,
   faPlusCircle,
   faSort,
+  faComment,
+  faBicycle,
 } from "@fortawesome/free-solid-svg-icons";
 import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
 import { useEffect, useState } from "react";
@@ -20,11 +22,17 @@ import CustomProgressBar from "@/components/ProgressBar";
 import Link from "next/link";
 import { urlToPK } from "@/utils/urlToPK";
 import Layout from "@/components/Layout";
+import VisitService from "@/services/visit.service";
+import ColoredTag from "@/components/Tag";
+import PieChart from "@/components/PieChart";
 
 export default function AdminDashboardPage() {
   const [schedule, setSchedule] = useState([]);
   const [startDate, setStartDate] = useState(getMonday(new Date()));
   const [endDate, setEndDate] = useState(getSunday(new Date()));
+  const [amountOfComments, setAmountOfComments] = useState(0);
+  const [amountOfCompleted, setAmountOfCompleted] = useState(0);
+  const [amountOfStarted, setAmountOfStarted] = useState(0);
 
   useEffect(() => {
     // fetch all the data needed for the page
@@ -33,6 +41,9 @@ export default function AdminDashboardPage() {
         startDate: startDate,
         endDate: endDate,
       });
+      let totalComments = 0;
+      let completed = 0;
+      let started = 0;
 
       // construct the data for the table
       const columns = await Promise.all(
@@ -42,9 +53,30 @@ export default function AdminDashboardPage() {
           const visits = await ScheduleService.getVisitsFromSchedule(
             urlToPK(schedule.url)
           );
+          let comments = 0;
+          visits.map(async (visit) => {
+            const visitComments = await VisitService.getCommentsFromVisit(
+              urlToPK(visit.url)
+            );
+            comments += visitComments.length;
+          });
+          const scheduleComments =
+            await ScheduleService.getCommentsFromSchedule(
+              urlToPK(schedule.url)
+            );
+          comments += scheduleComments.length;
+          totalComments += comments;
           const buildings = await TourService.getBuildingsFromTour(
             urlToPK(tour.url)
           );
+
+          if (visits.length > 0) {
+            if (visits.length === buildings.length) {
+              completed += 1;
+            } else {
+              started += 1;
+            }
+          }
           return [
             schedule.date,
             tour.name,
@@ -60,9 +92,14 @@ export default function AdminDashboardPage() {
                 {visits.length} / {buildings.length}
               </p>
             </div>,
+            comments > 0 && (
+              <ColoredTag className={"text-primary-1 bg-primary-2"}>
+                {comments}
+              </ColoredTag>
+            ),
             <Link
               key={schedule.url}
-              href={`/admin/planning/${urlToPK(schedule.url)}`}
+              href={`/admin/planningen/${urlToPK(schedule.url)}`}
               className={"bg-primary-2 border-2 rounded-lg p-1"}
             >
               Details
@@ -70,6 +107,9 @@ export default function AdminDashboardPage() {
           ];
         })
       );
+      setAmountOfComments(totalComments);
+      setAmountOfCompleted(completed);
+      setAmountOfStarted(started);
       setSchedule(columns);
     }
     fetchData().catch();
@@ -98,6 +138,7 @@ export default function AdminDashboardPage() {
           <SecondaryCard
             title={"Aantal Rondes"}
             className={"m-2 justify-center items-center"}
+            icon={faBicycle}
           >
             {schedule.length === 1 ? (
               <p className={"font-bold"}>{schedule.length} Ronde</p>
@@ -105,15 +146,44 @@ export default function AdminDashboardPage() {
               <p className={"font-bold"}>{schedule.length} Rondes</p>
             )}
           </SecondaryCard>
-          <SecondaryCard title={"Aantal opmerkingen"} className={"m-2"}>
-            <p>TODO</p>
+          <SecondaryCard
+            icon={faComment}
+            title={"Aantal opmerkingen"}
+            className={"m-2"}
+          >
+            <p className={"font-bold"}>{amountOfComments} opmerkingen</p>
           </SecondaryCard>
-          <SecondaryCard title={"Overview"} className={"m-2"}>
-            <p>TODO</p>
+          <SecondaryCard title={"Overzicht"} className={"m-2"}>
+            {schedule.length > 0 && (
+              <div className={"flex flex-col lg:flex-row items-center"}>
+                <PieChart
+                  fractions={[
+                    (schedule.length - amountOfCompleted - amountOfStarted) /
+                      schedule.length,
+                    amountOfStarted / schedule.length,
+                    amountOfCompleted / schedule.length,
+                  ]}
+                  circleWidth={150}
+                  radius={50}
+                />
+                <div>
+                  <p className={"text-bad-1 font-bold"}>
+                    {schedule.length - amountOfCompleted - amountOfStarted}
+                    {" Nog niet begonnen"}
+                  </p>
+                  <p className={"text-meh-1 font-bold"}>
+                    {amountOfStarted} Onderweg
+                  </p>
+                  <p className={"text-done-1 font-bold"}>
+                    {amountOfCompleted} Compleet
+                  </p>
+                </div>
+              </div>
+            )}
           </SecondaryCard>
         </div>
 
-        <SecondaryCard title={"Rondes"} className={"m-2"}>
+        <SecondaryCard icon={faBicycle} title={"Rondes"} className={"m-2"}>
           {schedule.length ? (
             <div className={"flex flex-col"}>
               <PrimaryCard>
@@ -153,6 +223,7 @@ export default function AdminDashboardPage() {
                     { name: "Ronde" },
                     { name: "Student" },
                     { name: "Gebouwen" },
+                    { name: "Opmerkingen" },
                     { name: "Detail" },
                   ]}
                   data={schedule}
