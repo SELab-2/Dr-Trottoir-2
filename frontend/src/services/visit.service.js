@@ -41,6 +41,16 @@ class VisitService {
   }
 
   /**
+   * Returns visit comments of given visit.
+   * @param id The ID of the visit you want the visit comments of.
+   * @returns {Promise<*|*[]>}
+   */
+  async getCommentsByVisit(id) {
+    let response = await HelperService.getResponseByUrl(`visit/${id}/comments`);
+    return response.status === 200 ? response.data : [];
+  }
+
+  /**
    * Filter the data with the filters given in args.
    * @param data List of visit entries.
    * @param args Dictionary that contains filters.
