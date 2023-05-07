@@ -34,6 +34,87 @@ class BuildingInTourService {
   }
 
   /**
+   * Add a new entry to the BuildingInTour endpoint.
+   *
+   * The data dict can have the following keys.
+   * - tour (url)
+   * - building (url)
+   * - order_index (int)
+   *
+   * @param data dict with the data.
+   * @returns {Promise<*>}
+   */
+  async post(data) {
+    const response = await ApiInstance.getApi().post("building_in_tour/", data);
+    return response.data;
+  }
+
+  /**
+   * Update a BuildingInTour by id.
+   *
+   * The data dict can have the following keys.
+   * - tour (url)
+   * - building (url)
+   * - order_index (int)
+   *
+   * @param id ID of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchById(id, data) {
+    const response = await ApiInstance.getApi().patch(
+      `building_in_tour/${id}/`,
+      data
+    );
+    return response.data;
+  }
+
+  /**
+   * Update a BuildingInTour by url.
+   *
+   * The data dict can have the following keys.
+   * - tour (url)
+   * - building (url)
+   * - order_index (int)
+   *
+   * @param url url of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchByUrl(url, data) {
+    if (HelperService.isCorrectModelUrl(url, "building_in_tour")) {
+      const response = await ApiInstance.getApi().patch(url, data);
+      return response.data;
+    }
+  }
+
+  /**
+   * Delete a BuildingInTour by id.
+   *
+   * @param id ID of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteById(id) {
+    const response = await ApiInstance.getApi().delete(
+      `building_in_tour/${id}/`
+    );
+    return response.data;
+  }
+
+  /**
+   * Delete a BuildingInTour by url.
+   *
+   * @param url url of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteByUrl(url) {
+    if (HelperService.isCorrectModelUrl(url, "building_in_tour")) {
+      const response = await ApiInstance.getApi().delete(url);
+      return response.data;
+    }
+  }
+
+  /**
    * Filter the data with the filters given in args.
    * @param data List of BuildingInTour entries.
    * @param args Dictionary that contains filters.

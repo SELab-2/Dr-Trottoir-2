@@ -44,6 +44,69 @@ class TourService {
   }
 
   /**
+   * Update a tour by id. This creates a new tour entry.
+   *
+   * The data dict can have the following keys.
+   * - TODO
+   *
+   * @param id ID of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchById(id, data) {
+    //TODO
+  }
+
+  /**
+   * Update a tour by url. This creates a new tour entry.
+   *
+   * The data dict can have the following keys.
+   * - TODO
+   *
+   * @param url url of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchByUrl(url, data) {
+    if (HelperService.isCorrectModelUrl(url, "tour")) {
+      //TODO
+    }
+  }
+
+  /**
+   * Delete a tour by id. Deleting a Tour is not possible.
+   *
+   * @param id ID of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteById(id) {
+    throw new Error(`A tour can't be deleted`);
+  }
+
+  /**
+   * Delete a tour by url. Deleting a Tour is not possible.
+   *
+   * @param url url of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteByUrl(url) {
+    throw new Error(`A tour can't be deleted`);
+  }
+
+  /**
+   * Add a new entry to the tour endpoint.
+   *
+   * The data dict can have the following keys.
+   * - TODO
+   *
+   * @param data dict with the data.
+   * @returns {Promise<*>}
+   */
+  async post(data) {
+    //TODO
+  }
+
+  /**
    * Filter the data with the filters given in args.
    * @param data List of tour entries.
    * @param args Dictionary that contains filters.
