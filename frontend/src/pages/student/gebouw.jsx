@@ -150,7 +150,7 @@ export default function StudentBuilding() {
     }
   }
 
-  async function loadComments(visit){
+  async function loadComments(visit) {
     const comments = await visitService.getCommentsByVisit(urlToPK(visit.url));
     setVisitComments(comments);
   }
@@ -196,21 +196,23 @@ export default function StudentBuilding() {
   function renderComments() {
     if (visitComments.length > 0) {
       return (
-          <div className="space-y-2">
+        <div className="space-y-2">
           {visitComments.map((comment, index) => {
             const date = new Date(comment.updated_at);
             return (
               <div key={index} className="rounded-lg bg-light-bg-1 p-2 w-full">
                 <div className="text-xs font-bold text-light-h-2">
-                  {`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`}
+                  {`${date.getDate()}-${
+                    date.getMonth() + 1
+                  }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`}
                 </div>
                 <Cell cut cutLen={"[300px]"}>
                   {comment.text}
                 </Cell>
               </div>
-              );
-            })}
-          </div>
+            );
+          })}
+        </div>
       );
     }
   }
