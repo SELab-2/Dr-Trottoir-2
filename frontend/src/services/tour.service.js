@@ -1,5 +1,6 @@
 import ApiInstance from "@/services/ApiInstance";
 import HelperService from "@/services/helper.service";
+import Error from "next/error";
 
 class TourService {
   /**

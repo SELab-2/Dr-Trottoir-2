@@ -1,5 +1,6 @@
 import ApiInstance from "@/services/ApiInstance";
 import HelperService from "@/services/helper.service";
+import Error from "next/error";
 
 class BuildingInTourService {
   /**
@@ -89,29 +90,35 @@ class BuildingInTourService {
   }
 
   /**
-   * Delete a BuildingInTour by id.
+   * Delete a BuildingInTour by id. Deleting a BuildingInTour is not possible.
    *
    * @param id ID of the entry you want to delete.
    * @returns {Promise<*>}
    */
   async deleteById(id) {
-    const response = await ApiInstance.getApi().delete(
+    throw new Error(`A BuildingInTour can't be deleted`);
+
+    // If deleting would be possible
+    /*const response = await ApiInstance.getApi().delete(
       `building_in_tour/${id}/`
     );
-    return response.data;
+    return response.data;*/
   }
 
   /**
-   * Delete a BuildingInTour by url.
+   * Delete a BuildingInTour by url. Deleting a BuildingInTour is not possible.
    *
    * @param url url of the entry you want to delete.
    * @returns {Promise<*>}
    */
   async deleteByUrl(url) {
-    if (HelperService.isCorrectModelUrl(url, "building_in_tour")) {
+    throw new Error(`A BuildingInTour can't be deleted`);
+
+    // If deleting would be possible
+    /*if (HelperService.isCorrectModelUrl(url, "building_in_tour")) {
       const response = await ApiInstance.getApi().delete(url);
       return response.data;
-    }
+    }*/
   }
 
   /**
