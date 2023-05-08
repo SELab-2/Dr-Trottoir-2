@@ -26,7 +26,6 @@ import VisitService from "@/services/visit.service";
 import ColoredTag from "@/components/Tag";
 import PieChart from "@/components/PieChart";
 import Dropdown from "@/components/Dropdown";
-import moment from "moment";
 
 export default function AdminDashboardPage() {
   const [schedule, setSchedule] = useState([]);
@@ -61,12 +60,22 @@ export default function AdminDashboardPage() {
             urlToPK(schedule.url)
           );
           let comments = 0;
-          visits.map(async (visit) => {
-            const visitComments = await VisitService.getCommentsFromVisit(
-              urlToPK(visit.url)
-            );
-            comments += visitComments.length;
-          });
+          let departures = 0;
+          await Promise.all(
+            visits.map(async (visit) => {
+              const visitComments = await VisitService.getCommentsFromVisit(
+                urlToPK(visit.url)
+              );
+              comments += visitComments.length;
+              const visitPhotos = await VisitService.getPhotosByVisit(
+                urlToPK(visit.url)
+              );
+              // visit complete if there is a departure photo
+              if (visitPhotos.some((photo) => photo.state === 2)) {
+                departures += 1;
+              }
+            })
+          );
           const scheduleComments =
             await ScheduleService.getCommentsFromSchedule(
               urlToPK(schedule.url)
@@ -77,8 +86,8 @@ export default function AdminDashboardPage() {
             urlToPK(tour.url)
           );
 
-          if (visits.length > 0) {
-            if (visits.length === buildings.length) {
+          if (departures > 0) {
+            if (departures === buildings.length) {
               completed += 1;
             } else {
               started += 1;
@@ -89,7 +98,7 @@ export default function AdminDashboardPage() {
             date: schedule.date,
             tour: tour.name,
             student: student.first_name,
-            visits: visits.length,
+            visits: departures,
             buildings: buildings.length,
             comments: comments,
           };
@@ -115,7 +124,6 @@ export default function AdminDashboardPage() {
           entry.student.toLowerCase().includes(search)
       );
     }
-
     // Sorts based on the given sortField
     if (sortField !== "") {
       scheduleEntries = scheduleEntries.sort(function (a, b) {
@@ -123,10 +131,8 @@ export default function AdminDashboardPage() {
         return a[field].localeCompare(b[field]);
       });
     }
-
     // Perform filtering based on completeness
     scheduleEntries = filterSchedules(scheduleEntries, filtering);
-
     // Renders the table rows
     setSchedule(
       scheduleEntries.map((entry) => [
