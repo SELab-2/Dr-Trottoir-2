@@ -9,8 +9,9 @@ from drtrottoir.tests.factories import (
     SuperStudentUserFactory,
     OwnerUserFactory,
     StudentUserFactory,
+    RegionFactory
 )
-from drtrottoir.serializers import TourSerializer
+from drtrottoir.serializers import TourSerializer, RegionSerializer
 from drtrottoir.models.custom_user import Roles
 
 
@@ -39,41 +40,28 @@ class TestTourAPIView(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def correct_add_DB(self, response):
-        self.assertTrue("tour" in response.data and "url" in response.data["tour"])
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        url = response.data["tour"]["url"]
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue("url" in response.data)
+        url = response.data["url"]
         response2 = self.client.get(url, follow=True)
-        self.assertEqual(response2.data, response.data["tour"])
+        self.assertEqual(response2.data, response.data)
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
         return response2
 
     def test_post(self):
-        response = self.client.post('/api/tour/', data={"region": self.region.pk, "name": "test"}, follow=True)
-        self.correct_add_DB(response)
+        serializer_region = self.client.get(f'/api/region/{self.region.pk}', follow=True)
+        r = self.client.post('/api/tour/', data={"region": serializer_region.data["url"], "name": "test"}, follow=True)
+        self.correct_add_DB(r)
 
-        response3 = self.client.post('/api/tour/', data={}, follow=True)
-        self.assertEqual(response3.status_code, status.HTTP_400_BAD_REQUEST)
-        response4 = self.client.post('/api/tour/', data={"region": -1, "name": "test"}, follow=True)  # Region
-        # should not exist in this case
-        self.assertEqual(response4.status_code, status.HTTP_400_BAD_REQUEST)
+        r = self.client.post('/api/tour/', data={}, follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+        r = self.client.post('/api/tour/', data={"region": -1, "name": "test"}, follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_post_unauthorized(self):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
         response = self.client.post('/api/tour/', data={}, follow=True)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_post_from_existing(self):
-        response = self.client.post('/api/tour/', data={"id": self.tour.pk}, follow=True)
-        response2 = self.correct_add_DB(response)
-
-        response_get = self.client.get(f'/api/tour/{self.tour.pk}/', follow=True)
-        self.assertEqual(response_get.status_code, status.HTTP_200_OK)
-        self.assertEqual(response_get.data["name"], response2.data["name"])
-        self.assertEqual(response_get.data["region"], response2.data["region"])
-        self.assertNotEqual(response_get.data["url"], response2.data["url"])
-
-        response_fault = self.client.post('/api/tour/', data={"id": -1}, follow=True)  # tour should not exist
-        self.assertEqual(response_fault.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_delete(self):
         self.client.delete(f'/api/tour/{self.tour.pk}/', follow=True)
@@ -111,3 +99,28 @@ class TestTourAPIView(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         buildings = response.data
         self.assertEqual(len(buildings), 0)
+
+    def test_post_from_existing(self):
+        r = self.client.post(f'/api/tour/{self.tour.pk}/duplicate/', follow=True)
+        r = self.correct_add_DB(r)
+        self.assertEqual(self.tour.name, r.data["name"])
+        serializer_region = RegionSerializer(self.tour.region, context={'request': r.wsgi_request})
+        self.assertEqual(serializer_region.data["url"], r.data["region"])
+
+        new_region = RegionSerializer(RegionFactory(), context={'request': r.wsgi_request}).data["url"]
+        d = {"name": "TEST", "region": new_region}
+        r = self.client.post(f'/api/tour/{self.tour.pk}/duplicate/', data=d, follow=True)
+        r = self.correct_add_DB(r)
+        self.assertEqual(d["name"], r.data["name"])
+        self.assertEqual(d["region"], r.data["region"])
+
+        # Check linked buildings
+        b1 = self.client.get(f'/api/tour/{self.tour.pk}/buildings/', follow=True)
+        self.assertEqual(b1.status_code, status.HTTP_200_OK)
+        b2 = self.client.get(f'{r.data["url"]}buildings/', follow=True)
+        self.assertEqual(b2.status_code, status.HTTP_200_OK)
+        self.assertTrue(all(map(lambda x, y: x["building"] == y["building"], b1.data, b2.data)))
+
+        # wrong region
+        r = self.client.post(f'/api/tour/{self.tour.pk}/duplicate/', data={"region": -1}, follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
