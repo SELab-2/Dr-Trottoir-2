@@ -3,7 +3,7 @@ from rest_framework import status, viewsets
 from drtrottoir.models import Tour, Region, BuildingInTour
 from drtrottoir.permissions import SuperPermissionOrReadOnly
 
-from drtrottoir.serializers import TourSerializer, RegionSerializer, BuildingInTourPartialSerializer
+from drtrottoir.serializers import TourSerializer, BuildingInTourPartialSerializer
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
