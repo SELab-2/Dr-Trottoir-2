@@ -10,6 +10,7 @@ import {
   faSort,
   faComment,
   faBicycle,
+  faChartPie,
 } from "@fortawesome/free-solid-svg-icons";
 import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
 import { useEffect, useRef, useState } from "react";
@@ -158,7 +159,7 @@ export default function AdminDashboardPage() {
         <Link
           key={entry.url}
           href={`/admin/planningen/${urlToPK(entry.url)}`}
-          className={"bg-primary-2 border-2 rounded-lg p-1"}
+          className={"bg-primary-2 border-2 border-light-h-2 rounded-lg p-1"}
         >
           Details
         </Link>,
@@ -215,30 +216,41 @@ export default function AdminDashboardPage() {
             setStartDate(newStartDate);
             setEndDate(newEndDate);
           }}
+          className="!light-bg-1"
         />
       </div>
 
       <PrimaryCard>
-        <div id={"statistics"} className={"flex flex-row grid grid-cols-3"}>
+        <div id={"statistics"} className={"flex flex-row grid grid-cols-2"}>
+          <div className="flex flex-col">
+            <SecondaryCard
+              title={"Aantal Rondes"}
+              className={"m-2 justify-center items-center flex-1"}
+              icon={faBicycle}
+            >
+              {entries.length === 1 ? (
+                <p className={"font-bold"}>{entries.length} ronde</p>
+              ) : (
+                <p className={"font-bold"}>{entries.length} rondes</p>
+              )}
+            </SecondaryCard>
+            <SecondaryCard
+              icon={faComment}
+              title={"Aantal opmerkingen"}
+              className={"m-2 justify-center items-center flex-1"}
+            >
+              {amountOfComments === 1 ? (
+                <p className={"font-bold"}>{amountOfComments} opmerking</p>
+              ) : (
+                <p className={"font-bold"}>{amountOfComments} opmerkingen</p>
+              )}
+            </SecondaryCard>
+          </div>
           <SecondaryCard
-            title={"Aantal Rondes"}
-            className={"m-2 justify-center items-center"}
-            icon={faBicycle}
-          >
-            {entries.length === 1 ? (
-              <p className={"font-bold"}>{entries.length} Ronde</p>
-            ) : (
-              <p className={"font-bold"}>{entries.length} Rondes</p>
-            )}
-          </SecondaryCard>
-          <SecondaryCard
-            icon={faComment}
-            title={"Aantal opmerkingen"}
+            title={"Overzicht"}
+            icon={faChartPie}
             className={"m-2"}
           >
-            <p className={"font-bold"}>{amountOfComments} opmerkingen</p>
-          </SecondaryCard>
-          <SecondaryCard title={"Overzicht"} className={"m-2"}>
             {entries.length > 0 && (
               <div className={"flex flex-col lg:flex-row items-center"}>
                 <PieChart
@@ -248,20 +260,16 @@ export default function AdminDashboardPage() {
                     amountOfStarted / entries.length,
                     amountOfCompleted / entries.length,
                   ]}
-                  circleWidth={150}
-                  radius={50}
+                  circleWidth={200}
+                  radius={70}
                 />
-                <div>
-                  <p className={"text-bad-1 font-bold"}>
+                <div className="font-bold">
+                  <p className={"text-bad-1"}>
                     {entries.length - amountOfCompleted - amountOfStarted}
                     {" Nog niet begonnen"}
                   </p>
-                  <p className={"text-meh-1 font-bold"}>
-                    {amountOfStarted} Onderweg
-                  </p>
-                  <p className={"text-done-1 font-bold"}>
-                    {amountOfCompleted} Compleet
-                  </p>
+                  <p className={"text-meh-1"}>{amountOfStarted} Onderweg</p>
+                  <p className={"text-done-1"}>{amountOfCompleted} Compleet</p>
                 </div>
               </div>
             )}
@@ -297,7 +305,7 @@ export default function AdminDashboardPage() {
                     <CustomInputField
                       icon={faMagnifyingGlass}
                       reference={searchString}
-                      classNameDiv={"h-6"}
+                      classNameDiv={"h-8"}
                       actionCallback={() =>
                         performSearch(entries, sortString, filterString)
                       }

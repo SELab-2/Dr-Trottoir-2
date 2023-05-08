@@ -34,7 +34,7 @@ export default function PieChart({ fractions, circleWidth, radius }) {
         <circle
           cx={circleWidth / 2}
           cy={circleWidth / 2}
-          strokeWidth={"15px"}
+          strokeWidth={"20px"}
           r={radius || 0}
           className={"fill-none"}
           key={index}
