@@ -1,4 +1,5 @@
 import HelperService from "@/services/helper.service";
+import ApiInstance from "@/services/ApiInstance";
 
 class BuildingService {
   /**
@@ -28,6 +29,91 @@ class BuildingService {
    */
   async getEntryByUrl(url) {
     return HelperService.getModelEntryByUrl(url, "building");
+  }
+
+  /**
+   * Add a new entry to the building endpoint.
+   *
+   * The data dict can have the following keys.
+   * - nickname (string)
+   * - description (string)
+   * - country (string)
+   * - address_line_1 (string)
+   * - address_line_2 (string)
+   * - region (url of region entry)
+   *
+   * @param data dict with the data.
+   * @returns {Promise<*>}
+   */
+  async post(data) {
+    const response = await ApiInstance.getApi().post("building/", data);
+    return response.data;
+  }
+
+  /**
+   * Update a building by id.
+   *
+   * The data dict can have the following keys.
+   * - nickname (string)
+   * - description (string)
+   * - country (string)
+   * - address_line_1 (string)
+   * - address_line_2 (string)
+   * - region (url of region entry)
+   *
+   * @param id ID of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchById(id, data) {
+    const response = await ApiInstance.getApi().patch(`building/${id}/`, data);
+    return response.data;
+  }
+
+  /**
+   * Update a building by url.
+   *
+   * The data dict can have the following keys.
+   * - nickname (string)
+   * - description (string)
+   * - country (string)
+   * - address_line_1 (string)
+   * - address_line_2 (string)
+   * - region (url of region entry)
+   *
+   * @param url url of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchByUrl(url, data) {
+    if (HelperService.isCorrectModelUrl(url, "building")) {
+      const response = await ApiInstance.getApi().patch(url, data);
+      return response.data;
+    }
+  }
+
+  /**
+   * Delete a building by id.
+   *
+   * @param id ID of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteById(id) {
+    const response = await ApiInstance.getApi().delete(`building/${id}/`);
+    return response.data;
+  }
+
+  /**
+   * Delete a building by url.
+   *
+   * @param url url of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteByUrl(url) {
+    if (HelperService.isCorrectModelUrl(url, "building")) {
+      const response = await ApiInstance.getApi().delete(url);
+      return response.data;
+    }
   }
 
   /**
