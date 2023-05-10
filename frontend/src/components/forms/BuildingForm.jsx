@@ -5,6 +5,7 @@ import BasicForm from "@/components/forms/BasicForm";
 import InputForm from "@/components/forms/forms-components/forms-input/InputForm";
 import TextAreaForm from "@/components/forms/forms-components/forms-input/TextAreaForm";
 import SelectForm from "@/components/forms/forms-components/forms-input/SelectForm";
+import UserService from "@/services/user.service";
 
 export default function BuildingForm({ id }) {
   const [loading, setLoading] = useState(true);
@@ -12,6 +13,7 @@ export default function BuildingForm({ id }) {
   // DATA ////////////////////////////////////////
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [allOwners, setAllOwners] = useState([]);
   const [owner, setOwner] = useState("");
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
@@ -30,6 +32,7 @@ export default function BuildingForm({ id }) {
       address_line_2: address2,
       country: country,
       manual: manual,
+      owner: owner,
     };
     alert(
       `You have submitted the form. 
@@ -49,6 +52,7 @@ export default function BuildingForm({ id }) {
         setAddress2(data.address_line_2);
         setCountry(data.country);
       }
+      setAllOwners(await UserService.get({ roles: [4] }));
     }
 
     fetchData()
@@ -91,7 +95,13 @@ export default function BuildingForm({ id }) {
         label={"Owner"}
         onChange={(e) => setOwner(e.target.value)}
       >
-        <option>abc</option>
+        {allOwners.map((owner) => {
+          return (
+            <option key={owner.url} value={owner.url}>
+              {owner.first_name + " " + owner.last_name}
+            </option>
+          );
+        })}
       </SelectForm>
 
       <InputForm

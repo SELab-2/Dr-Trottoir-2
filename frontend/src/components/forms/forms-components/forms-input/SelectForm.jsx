@@ -20,7 +20,7 @@ export default function SelectForm({
         }
         onChange={onChange}
       >
-        <option value={-1}>--Please pick a {id}--</option>
+        <option value={-1}>--Please pick an option--</option>
         {children}
       </select>
     </div>
