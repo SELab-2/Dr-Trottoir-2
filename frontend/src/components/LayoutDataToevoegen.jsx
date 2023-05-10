@@ -21,6 +21,9 @@ import { useRouter } from "next/router";
 import LinkButton from "@/components/navbar/LinkButton";
 import Loading from "@/components/Loading";
 import RegionService from "@/services/region.service";
+import CustomWeekPicker from "./input-fields/CustomWeekPicker";
+import moment from "moment";
+import scheduleService from "@/services/schedule.service";
 
 function scheduleList(data) {
   return data.map((data) => {
@@ -145,9 +148,15 @@ function syndiciList(data) {
   });
 }
 
-export default function LayoutDataAdd({ children }) {
+export default function LayoutDataAdd({ children, id }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [dateRange, setDateRange] = useState([
+    moment().startOf("isoWeek").toDate(),
+    moment().endOf("isoWeek").toDate(),
+  ]);
+  // used to change the daterange of weekpicker to selected schedule
+  const [directToId, setDirectToId] = useState(true); 
   const router = useRouter();
 
   useEffect(() => {
@@ -157,13 +166,27 @@ export default function LayoutDataAdd({ children }) {
     async function fetchData() {
       switch (router.query.type) {
         case "planningen": {
-          let data = await ScheduleService.get();
+          if (id != null && directToId) {
+            let schedule = await scheduleService.getById(id);
+            setDirectToId(false);
+            setDateRange([
+              moment(schedule.date).startOf("isoWeek").toDate(),
+              moment(schedule.date).endOf("isoWeek").toDate(),
+            ]);
+          }
+          let data = await ScheduleService.get({
+            startDate: dateRange[0],
+            endDate: dateRange[1],
+          });
           data = await Promise.all(
             data.map(async (entry) => {
               entry.student = await UserService.getEntryByUrl(entry.student);
               return entry;
             })
           );
+          data = data.sort(function (a, b) {
+            return b.date.localeCompare(a.date);
+          });
           setData(data);
           break;
         }
@@ -190,7 +213,7 @@ export default function LayoutDataAdd({ children }) {
     fetchData()
       .then(() => setLoading(false))
       .catch((err) => alert(err));
-  }, [router.query.type]);
+  }, [router.query.type, dateRange]);
 
   return (
     <div className={"flex flex-row h-full w-full p-2 space-x-2"}>
@@ -247,7 +270,17 @@ export default function LayoutDataAdd({ children }) {
           </div>
         ) : (
           <div className={"flex flex-col space-y-4"}>
-            {router.query.type === "planningen" && scheduleList(data)}
+            {router.query.type === "planningen" && (
+              <div>
+                <CustomWeekPicker
+                  startDate={dateRange[0]}
+                  endDate={dateRange[1]}
+                  onChange={(begin, end) => setDateRange([begin, end])}
+                  className={"mb-2"}
+                />
+                {scheduleList(data)}
+              </div>
+            )}
             {router.query.type === "rondes" && tourList(data)}
             {router.query.type === "regio" && regionList(data)}
             {router.query.type === "gebouwen" && buildingList(data)}
