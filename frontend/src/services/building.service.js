@@ -41,12 +41,17 @@ class BuildingService {
    * - address_line_1 (string)
    * - address_line_2 (string)
    * - region (url of region entry)
+   * - manual (file object)
    *
    * @param data dict with the data.
    * @returns {Promise<*>}
    */
   async post(data) {
-    const response = await ApiInstance.getApi().post("building/", data);
+    const formData = HelperService.createFormData(data);
+    const response = await ApiInstance.getApi("multipart/form-data").post(
+      "building/",
+      formData
+    );
     return response.data;
   }
 
@@ -60,13 +65,18 @@ class BuildingService {
    * - address_line_1 (string)
    * - address_line_2 (string)
    * - region (url of region entry)
+   * - manual (file object)
    *
    * @param id ID of the entry you want to update.
    * @param data Dict, data you want to chance.
    * @returns {Promise<*>}
    */
   async patchById(id, data) {
-    const response = await ApiInstance.getApi().patch(`building/${id}/`, data);
+    const formData = HelperService.createFormData(data);
+    const response = await ApiInstance.getApi("multipart/form-data").patch(
+      `building/${id}/`,
+      formData
+    );
     return response.data;
   }
 
@@ -80,6 +90,7 @@ class BuildingService {
    * - address_line_1 (string)
    * - address_line_2 (string)
    * - region (url of region entry)
+   * - manual (file object)
    *
    * @param url url of the entry you want to update.
    * @param data Dict, data you want to chance.
@@ -87,7 +98,11 @@ class BuildingService {
    */
   async patchByUrl(url, data) {
     if (HelperService.isCorrectModelUrl(url, "building")) {
-      const response = await ApiInstance.getApi().patch(url, data);
+      const formData = HelperService.createFormData(data);
+      const response = await ApiInstance.getApi("multipart/form-data").patch(
+        url,
+        formData
+      );
       return response.data;
     }
   }
