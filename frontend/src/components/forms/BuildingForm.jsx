@@ -4,6 +4,7 @@ import Loading from "@/components/Loading";
 import BasicForm from "@/components/forms/BasicForm";
 import InputForm from "@/components/forms/forms-components/forms-input/InputForm";
 import TextAreaForm from "@/components/forms/forms-components/forms-input/TextAreaForm";
+import SelectForm from "@/components/forms/forms-components/forms-input/SelectForm";
 
 export default function BuildingForm({ id }) {
   const [loading, setLoading] = useState(true);
@@ -11,15 +12,29 @@ export default function BuildingForm({ id }) {
   // DATA ////////////////////////////////////////
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [owner, setOwner] = useState("");
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
   const [country, setCountry] = useState("");
+  const [manual, setManual] = useState(undefined);
 
   ////////////////////////////////////////////////
 
   const onSubmit = (event) => {
     event.preventDefault();
-    alert(`You have submitted the form.`);
+    console.log(manual);
+    const data = {
+      nickname: name,
+      description: description,
+      address_line_1: address1,
+      address_line_2: address2,
+      country: country,
+      manual: manual,
+    };
+    alert(
+      `You have submitted the form. 
+      The data you want to submit is: ${JSON.stringify(data)}`
+    );
   };
 
   useEffect(() => {
@@ -71,15 +86,23 @@ export default function BuildingForm({ id }) {
         onChange={(e) => setDescription(e.target.value)}
       />
 
+      <SelectForm
+        id={"owner"}
+        label={"Owner"}
+        onChange={(e) => setOwner(e.target.value)}
+      >
+        <option>abc</option>
+      </SelectForm>
+
       <InputForm
-        label={"Address line 1"}
+        label={"Straat + Nr."}
         id={"address1"}
         value={address1}
         onChange={(e) => setAddress1(e.target.value)}
       />
 
       <InputForm
-        label={"Address line 2"}
+        label={"Gemeente/stad + postcode"}
         id={"address2"}
         value={address2}
         onChange={(e) => setAddress2(e.target.value)}
@@ -92,19 +115,14 @@ export default function BuildingForm({ id }) {
         onChange={(e) => setCountry(e.target.value)}
       />
 
-      <div className={"flex flex-col space-y-2"}>
-        <label htmlFor="manual" className={"font-bold"}>
-          Manual
-        </label>
-        <input
-          type="file"
-          name="manual"
-          id="manual"
-          className={
-            "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
-          }
-        />
-      </div>
+      <InputForm
+        type={"file"}
+        label={"Manual"}
+        id={"manual"}
+        onChange={(e) => {
+          setManual(e.target.files[0]);
+        }}
+      />
     </BasicForm>
   );
 }
