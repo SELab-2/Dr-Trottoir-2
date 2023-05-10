@@ -77,10 +77,11 @@ export default function RegionForm({ id }) {
       editMode={id !== undefined}
     >
       <InputForm
-        label={"Region Name"}
+        label={"Naam Regio"}
         id={"region_name"}
         value={name}
         onChange={(e) => setName(e.target.value)}
+        required
       />
     </BasicForm>
   );

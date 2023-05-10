@@ -102,46 +102,21 @@ function buildingList(data) {
   });
 }
 
-function personeelList(data) {
+function userList(data, type) {
   return data.map((data) => {
-    const id = urlToPK(data.url);
-
-    if (data.role !== 4) {
-      return (
-        <LinkButton
-          key={id}
-          link={`/admin/data_toevoegen/personeel/${id}`}
-          className={"truncate"}
-        >
-          <div className={"text-light-h-1"}>
-            <p>{data.first_name + " " + data.last_name}</p>
-            <p className={"text-light-h-2"}>{data.email}</p>
-            <p></p>
-          </div>
-        </LinkButton>
-      );
-    }
-  });
-}
-
-function syndiciList(data) {
-  return data.map((data) => {
-    const id = urlToPK(data.url);
-
-    if (data.role === 4) {
-      return (
-        <LinkButton
-          key={id}
-          link={`/admin/data_toevoegen/syndici/${id}`}
-          className={"truncate"}
-        >
-          <div className={"text-light-h-1"}>
-            <p>{data.first_name + " " + data.last_name}</p>
-            <p className={"text-light-h-2"}>{data.email}</p>
-          </div>
-        </LinkButton>
-      );
-    }
+    return (
+      <LinkButton
+        key={data.url}
+        link={`/admin/data_toevoegen/${type}/${urlToPK(data.url)}`}
+        className={"truncate"}
+      >
+        <div className={"text-light-h-1"}>
+          <p>{data.first_name + " " + data.last_name}</p>
+          <p className={"text-light-h-2"}>{data.email}</p>
+          <p></p>
+        </div>
+      </LinkButton>
+    );
   });
 }
 
@@ -174,10 +149,10 @@ export default function LayoutDataAdd({ children }) {
           setData(await BuildingService.get());
           break;
         case "personeel":
-          setData(await UserService.get());
+          setData(await UserService.get({ roles: [1, 2, 3, 5] }));
           break;
         case "syndici":
-          setData(await UserService.get());
+          setData(await UserService.get({ roles: [4] }));
           break;
         case "regio":
           setData(await RegionService.get());
@@ -245,19 +220,26 @@ export default function LayoutDataAdd({ children }) {
           <div className={"flex justify-center items-center h-fit w-full"}>
             <Loading className={"w-10 h-10"} />
           </div>
-        ) : (
+        ) : data.length !== 0 ? (
           <div className={"flex flex-col space-y-4"}>
             {router.query.type === "planningen" && scheduleList(data)}
             {router.query.type === "rondes" && tourList(data)}
             {router.query.type === "regio" && regionList(data)}
             {router.query.type === "gebouwen" && buildingList(data)}
-            {router.query.type === "personeel" && personeelList(data)}
-            {router.query.type === "syndici" && syndiciList(data)}
+            {router.query.type === "personeel" && userList(data, "personeel")}
+            {router.query.type === "syndici" && userList(data, "syndici")}
+          </div>
+        ) : (
+          <div className={"flex justify-center items-center"}>
+            <p> Geen {router.query.type} </p>
           </div>
         )}
       </PrimaryCard>
 
-      <PrimaryCard className={`h-full w-3/5`} title={"Bewerken"}>
+      <PrimaryCard
+        className={`h-full w-3/5`}
+        title={router.query.id ? "Bewerken" : "Toevoegen"}
+      >
         {children}
       </PrimaryCard>
     </div>

@@ -6,6 +6,7 @@ import InputForm from "@/components/forms/forms-components/forms-input/InputForm
 import TextAreaForm from "@/components/forms/forms-components/forms-input/TextAreaForm";
 import SelectForm from "@/components/forms/forms-components/forms-input/SelectForm";
 import UserService from "@/services/user.service";
+import Link from "next/link";
 
 export default function BuildingForm({ id }) {
   const [loading, setLoading] = useState(true);
@@ -18,6 +19,8 @@ export default function BuildingForm({ id }) {
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
   const [country, setCountry] = useState("");
+  const [currentManual, setCurrentManual] = useState(undefined);
+
   const [manual, setManual] = useState(undefined);
 
   ////////////////////////////////////////////////
@@ -51,6 +54,7 @@ export default function BuildingForm({ id }) {
         setAddress1(data.address_line_1);
         setAddress2(data.address_line_2);
         setCountry(data.country);
+        setCurrentManual(data.manual);
       }
       setAllOwners(await UserService.get({ roles: [4] }));
     }
@@ -77,23 +81,26 @@ export default function BuildingForm({ id }) {
       editMode={id !== undefined}
     >
       <InputForm
-        label={"Name"}
+        label={"Naam"}
         id={"name"}
         value={name}
         onChange={(e) => setName(e.target.value)}
+        required
       />
 
       <TextAreaForm
         id={"description"}
-        label={"Description"}
+        label={"Beschrijving"}
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+        required
       />
 
       <SelectForm
         id={"owner"}
-        label={"Owner"}
+        label={"Eigenaar"}
         onChange={(e) => setOwner(e.target.value)}
+        required
       >
         {allOwners.map((owner) => {
           return (
@@ -109,6 +116,7 @@ export default function BuildingForm({ id }) {
         id={"address1"}
         value={address1}
         onChange={(e) => setAddress1(e.target.value)}
+        required
       />
 
       <InputForm
@@ -116,23 +124,34 @@ export default function BuildingForm({ id }) {
         id={"address2"}
         value={address2}
         onChange={(e) => setAddress2(e.target.value)}
+        required
       />
 
       <InputForm
-        label={"Country"}
+        label={"Land"}
         id={"country"}
         value={country}
         onChange={(e) => setCountry(e.target.value)}
+        required
       />
 
       <InputForm
         type={"file"}
-        label={"Manual"}
+        label={"Handleiding"}
         id={"manual"}
         onChange={(e) => {
           setManual(e.target.files[0]);
         }}
       />
+      {currentManual && (
+        <Link
+          href={currentManual}
+          target="_blank"
+          className={"text-primary-1 underline"}
+        >
+          Huidige handleiding
+        </Link>
+      )}
     </BasicForm>
   );
 }
