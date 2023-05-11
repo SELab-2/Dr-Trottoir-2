@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
@@ -23,10 +23,17 @@ export default function Dropdown({
   icon,
   onClick,
   options,
+  value,
   multi = false,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndices, setSelectedIndices] = useState([]);
+
+  useEffect(() => {
+    if (value) {
+      setSelectedIndices([options.findIndex((option) => option === value)]);
+    }
+  }, [value, options]);
 
   const onButtonPressed = () => {
     setIsOpen(!isOpen);
