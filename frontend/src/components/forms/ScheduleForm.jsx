@@ -1,13 +1,16 @@
 import SelectForm from "@/components/forms/forms-components/forms-input/SelectForm";
 import BasicForm from "@/components/forms/BasicForm";
 import Loading from "@/components/Loading";
-import scheduleService from "@/services/schedule.service";
-import tourService from "@/services/tour.service";
-import userService from "@/services/user.service";
+import ScheduleService from "@/services/schedule.service";
+import TourService from "@/services/tour.service";
+import UserService from "@/services/user.service";
 import { urlToPK } from "@/utils/urlToPK";
 import { useEffect, useState } from "react";
 import CustomDayPicker from "../input-fields/CustomDayPicker";
 import { useRouter } from "next/router";
+import SecondaryCard from "../custom-card/SecondaryCard";
+import BuildingService from "@/services/building.service";
+import TableWasteSchedule from "./forms-components/forms-input/TableWasteSchedule";
 
 export default function ScheduleForm({ id }) {
   const [loading, setLoading] = useState(true);
@@ -18,6 +21,7 @@ export default function ScheduleForm({ id }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [allStudents, setAllStudents] = useState([]);
   const [allTours, setAllTours] = useState([]);
+  const [tourBuildings, setTourBuildings] = useState([]);
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -56,10 +60,10 @@ export default function ScheduleForm({ id }) {
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      setAllStudents(await userService.get());
-      setAllTours(await tourService.get());
+      setAllStudents(await UserService.get());
+      setAllTours(await TourService.get());
       if (id) {
-        const schedule = await scheduleService.getById(id);
+        const schedule = await ScheduleService.getById(id);
         setSelectedStudent(schedule.student);
         setSelectedTour(schedule.tour);
         setSelectedDate(new Date(schedule.date));
@@ -77,6 +81,25 @@ export default function ScheduleForm({ id }) {
         <Loading className={"w-10 h-10"} />
       </div>
     );
+  }
+
+  const handleTourSelect = async (tour) => {
+    setSelectedTour(tour);
+    let buildings_in_tour = await TourService.getBuildingsFromTour(urlToPK(tour));
+    // Fix the format of the data, change it to [{building: <info building>, order_index: <order>}...]
+    const fixed_format = await Promise.all(
+      buildings_in_tour.map(async (building_in_tour) => ({
+        building: await BuildingService.getEntryByUrl(
+          building_in_tour.building
+        ),
+        order_index: building_in_tour.order_index,
+      }))
+    );
+    const sorted = fixed_format.sort(
+      (a, b) => a.order_index - b.order_index
+    );
+
+    setTourBuildings(sorted);
   }
 
   return (
@@ -113,7 +136,7 @@ export default function ScheduleForm({ id }) {
       <SelectForm
         id={"tour"}
         label={"Ronde"}
-        onChange={(tour) => setSelectedTour(tour.target.value)}
+        onChange={(tour) => handleTourSelect(tour.target.value)}
         className={"flex-grow"}
         value={selectedTour}
       >
@@ -125,6 +148,16 @@ export default function ScheduleForm({ id }) {
           );
         })}
       </SelectForm>
+
+      {tourBuildings.length != 0 ? (
+        <SecondaryCard className={"!pl-0"}>
+          <TableWasteSchedule buildings={tourBuildings}></TableWasteSchedule>
+        </SecondaryCard>) :
+        (<p>Selecteer een ronde</p>)
+      }
+      
+
+      
     </BasicForm>
   );
 }
