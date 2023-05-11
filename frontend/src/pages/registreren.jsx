@@ -1,13 +1,19 @@
 import Head from "next/head";
 import Logo from "/public/images/Logo-Dr-Trottoir-GEEL-01.png";
 import Image from "next/image";
-import { getSession } from "next-auth/react";
 import { useState } from "react";
 import UserService from "@/services/user.service";
 import Loading from "@/components/Loading";
 import { COLOR_ACCENT_2, COLOR_LIGHT_H_2 } from "@/utils/colors";
 
-function SignupInput({ field, updateField, id, type, autocomplete }) {
+function SignupInput({
+  field,
+  updateField,
+  id,
+  type,
+  autocomplete,
+  placeholder,
+}) {
   return (
     <div>
       <input
@@ -23,6 +29,7 @@ function SignupInput({ field, updateField, id, type, autocomplete }) {
         onChange={(event) => {
           updateField({ value: event.target.value, error: null });
         }}
+        placeholder={placeholder}
       />
       {field.error && <p className={"text-bad-1 pb-3"}>{field.error}</p>}
     </div>
@@ -102,9 +109,12 @@ export default function Registreren() {
         (v) => validateLength(v, 2, 128),
         (v) => (!v.includes("@") ? `Geen geldige email` : null),
       ]) && valid;
+    tel.value = tel.value.replace(/\s/g, "");
     valid =
       allValid(tel, setTel, [
         validateRequired,
+        (v) => (/[a-zA-Z]/g.test(v) ? `Ongeldig nummer` : null),
+        (v) => (!v.includes("+") ? `Landcode ontbreekt` : null),
         (v) => validateLength(v, 12, 12),
       ]) && valid;
     valid =
@@ -202,13 +212,14 @@ export default function Registreren() {
               field={email}
               updateField={setEmail}
             />
-            <p className={"text-light-text"}>Telefoon</p>
+            <p className={"text-light-text"}>Telefoon (inclusief landcode)</p>
             <SignupInput
               id={"tel"}
               type={"tel"}
               autocomplete={"tel"}
               field={tel}
               updateField={setTel}
+              placeholder={"+xx xxx xx xx xx"}
             />
           </div>
           <div className={"pb-3"}>
