@@ -9,4 +9,4 @@ class ScheduleSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Schedule
-        fields = ['url', 'date', 'student', 'tour', 'comment']
+        fields = ['url', 'date', 'student', 'tour']
