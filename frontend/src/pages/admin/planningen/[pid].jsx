@@ -236,7 +236,6 @@ export default function AdminTourPage() {
       for (const comment of scheduleCommentResponse) {
         const building = await BuildingService.getEntryByUrl(comment.building);
         const user = await UserService.getEntryByUrl(comment.user);
-        console.log(user);
         comments.push({
           comment: comment.text,
           building: building.nickname,
@@ -244,7 +243,6 @@ export default function AdminTourPage() {
           last_update: new Date(comment.updated_at),
         });
       }
-      console.log(comments);
       setComments(comments);
 
       // Searching the buildings of this tour
