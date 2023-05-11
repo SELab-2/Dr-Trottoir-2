@@ -36,9 +36,9 @@ export default function ScheduleForm({ id }) {
     );
     try {
       if (id) {
-        await scheduleService.patchById(id, data);
+        await ScheduleService.patchById(id, data);
       } else {
-        await scheduleService.post(data);
+        await ScheduleService.post(data);
       }
 
       //TODO: change to better reload
@@ -50,7 +50,7 @@ export default function ScheduleForm({ id }) {
 
   const onDelete = async () => {
     try {
-      await scheduleService.deleteById(id);
+      await ScheduleService.deleteById(id);
       await router.push(`/admin/data_toevoegen/planningen`);
     } catch (e) {
       alert(e);
@@ -85,7 +85,9 @@ export default function ScheduleForm({ id }) {
 
   const handleTourSelect = async (tour) => {
     setSelectedTour(tour);
-    let buildings_in_tour = await TourService.getBuildingsFromTour(urlToPK(tour));
+    let buildings_in_tour = await TourService.getBuildingsFromTour(
+      urlToPK(tour)
+    );
     // Fix the format of the data, change it to [{building: <info building>, order_index: <order>}...]
     const fixed_format = await Promise.all(
       buildings_in_tour.map(async (building_in_tour) => ({
@@ -95,12 +97,10 @@ export default function ScheduleForm({ id }) {
         order_index: building_in_tour.order_index,
       }))
     );
-    const sorted = fixed_format.sort(
-      (a, b) => a.order_index - b.order_index
-    );
+    const sorted = fixed_format.sort((a, b) => a.order_index - b.order_index);
 
     setTourBuildings(sorted);
-  }
+  };
 
   return (
     <BasicForm
@@ -152,12 +152,10 @@ export default function ScheduleForm({ id }) {
       {tourBuildings.length != 0 ? (
         <SecondaryCard className={"!pl-0"}>
           <TableWasteSchedule buildings={tourBuildings}></TableWasteSchedule>
-        </SecondaryCard>) :
-        (<p>Selecteer een ronde</p>)
-      }
-      
-
-      
+        </SecondaryCard>
+      ) : (
+        <p>Selecteer een ronde</p>
+      )}
     </BasicForm>
   );
 }

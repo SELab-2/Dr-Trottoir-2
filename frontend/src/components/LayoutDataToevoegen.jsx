@@ -156,7 +156,7 @@ export default function LayoutDataAdd({ children, id }) {
     moment().endOf("isoWeek").toDate(),
   ]);
   // used to change the daterange of weekpicker to selected schedule
-  const [directToId, setDirectToId] = useState(true); 
+  const [directToId, setDirectToId] = useState(true);
   const router = useRouter();
 
   useEffect(() => {

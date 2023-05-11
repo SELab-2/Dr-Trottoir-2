@@ -8,24 +8,46 @@ export default function TableWasteSchedule({
   buildings,
   wasteTypes,
 }) {
-
   const wastes = [
-    {char: "R", full: "Rest", background: "bg-waste-rest"},
-    {char: "P", full: "PMD", background: "bg-waste-PMD"},
-    {char: "G", full: "Glas", background: "bg-waste-glass"},
-    {char: "P", full: "Papier", background: "bg-waste-paper"},
-    {char: "G", full: "GFT", background: "bg-waste-GFT"},
+    {
+      char: "R",
+      full: "Rest",
+      background: "bg-waste-rest",
+    },
+    {
+      char: "P",
+      full: "PMD",
+      background: "bg-waste-PMD",
+    },
+    {
+      char: "G",
+      full: "Glas",
+      background: "bg-waste-glass",
+    },
+    {
+      char: "P",
+      full: "Papier",
+      background: "bg-waste-paper",
+    },
+    {
+      char: "G",
+      full: "GFT",
+      background: "bg-waste-GFT",
+    },
   ];
   const days = ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"];
 
   return (
     <div className="overflow-x-auto">
       <div className="inline-flex sticky left-4 bg-light-bg-2 mb-4 ml-4">
-        {wastes.map((waste, index) => 
-          <ColoredTag key={index} className={`text-dark-h-1 ${waste.background}`}>
+        {wastes.map((waste, index) => (
+          <ColoredTag
+            key={index}
+            className={`text-dark-h-1 ${waste.background}`}
+          >
             {waste.full}
           </ColoredTag>
-        )}
+        ))}
       </div>
 
       <table className="border-separate border-spacing-x-0.5">
@@ -35,10 +57,12 @@ export default function TableWasteSchedule({
             {days.map((day, index) => {
               return (
                 <>
-                  <th colSpan={wastes.length} key={index}>{day}</th>
+                  <th colSpan={wastes.length} key={index}>
+                    {day}
+                  </th>
                   <th key={`gap-${index}`}></th>
                 </>
-              )
+              );
             })}
           </tr>
           <tr>
@@ -48,47 +72,53 @@ export default function TableWasteSchedule({
                 <>
                   {wastes.map((waste, wasteIndex) => {
                     return (
-                      <th 
-                      key={`${dayIndex}-${wasteIndex}`} 
-                      className={`h-1 column-space rounded-t-lg text-dark-h-1 ${waste.background}`}
+                      <th
+                        key={`${dayIndex}-${wasteIndex}`}
+                        className={`h-1 column-space rounded-t-lg text-dark-h-1 ${waste.background}`}
                       >
                         {waste.char}
                       </th>
-                    )
+                    );
                   })}
                   <th key={`gap-${dayIndex}`}></th>
                 </>
-              )}
-            )}
+              );
+            })}
           </tr>
         </thead>
         <tbody>
           {buildings.map((building, buildingIndex) => {
             return (
               <tr key={buildingIndex}>
-                <td className="sticky left-0 bg-light-bg-2 px-2">{building.building.nickname}</td>
+                <td className="sticky left-0 bg-light-bg-2 px-2">
+                  {building.building.nickname}
+                </td>
                 {days.map((day, dayIndex) => {
                   return (
                     <>
                       {wastes.map((waste, wasteIndex) => {
-                        const isLastRow = buildingIndex === buildings.length - 1;
+                        const isLastRow =
+                          buildingIndex === buildings.length - 1;
                         return (
                           <td
                             key={`${dayIndex}-${wasteIndex}`}
-                            className={`column-space ${isLastRow ? "rounded-b-lg" : ""} ${waste.background}`}
+                            className={`column-space ${
+                              isLastRow ? "rounded-b-lg" : ""
+                            } 
+                            ${waste.background}`}
                           >
-                            <WasteState/>
+                            <WasteState />
                           </td>
-                        )
+                        );
                       })}
                       <td key={`gap-${dayIndex}`}>
                         <div key={dayIndex} className="w-2"></div>
                       </td>
                     </>
-                  )
-              })}
+                  );
+                })}
               </tr>
-            )
+            );
           })}
         </tbody>
       </table>
