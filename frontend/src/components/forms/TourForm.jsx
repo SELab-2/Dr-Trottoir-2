@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import BuildingService from "@/services/building.service";
 import Loading from "@/components/Loading";
 import BasicForm from "@/components/forms/BasicForm";
 import InputForm from "@/components/forms/forms-components/forms-input/InputForm";
@@ -7,10 +6,12 @@ import TourService from "@/services/tour.service";
 import TourBuildingAdd from "@/components/forms/forms-components/TourBuildingAdd";
 import SelectForm from "@/components/forms/forms-components/forms-input/SelectForm";
 import RegionService from "@/services/region.service";
-import { urlToPK } from "@/utils/urlToPK";
+import { useRouter } from "next/router";
+import BuildingService from "@/services/building.service";
 
 export default function TourForm({ id }) {
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   // DATA ////////////////////////////////////////
   const [name, setName] = useState("");
@@ -19,13 +20,30 @@ export default function TourForm({ id }) {
   const [region, setRegion] = useState("");
   ////////////////////////////////////////////////
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     const data = { name: name, buildings: selectedB, region: region };
-    alert(
-      `You have submitted the form. 
-      The data you want to submit is: ${JSON.stringify(data)}`
-    );
+    try {
+      if (id) {
+        await TourService.patchById(id, data);
+      } else {
+        await TourService.post(data);
+      }
+
+      //TODO: change to better reload
+      router.reload();
+    } catch (e) {
+      alert(e);
+    }
+  };
+
+  const onDelete = async () => {
+    try {
+      await TourService.deleteById(id);
+      await router.push(`/admin/data_toevoegen/rondes`);
+    } catch (e) {
+      alert(e);
+    }
   };
 
   const changeSelected = (buildings) => {
@@ -67,6 +85,7 @@ export default function TourForm({ id }) {
     <BasicForm
       loading={loading}
       onSubmit={onSubmit}
+      onDelete={onDelete}
       model={"ronde"}
       editMode={id !== undefined}
     >
@@ -88,7 +107,7 @@ export default function TourForm({ id }) {
         value={region}
         required
       >
-        {allRegions.map((reg, index) => {
+        {allRegions.map((reg) => {
           return (
             <option key={reg.url} value={reg.url}>
               {reg.region_name}

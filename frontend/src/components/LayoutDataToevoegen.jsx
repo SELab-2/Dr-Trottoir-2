@@ -45,6 +45,12 @@ function scheduleList(data) {
 }
 
 function tourList(data) {
+  data = data.filter((tour) => {
+    return !data.some((tour2) => {
+      return tour.name === tour2.name && urlToPK(tour.url) < urlToPK(tour2.url);
+    });
+  });
+
   return data.map((data) => {
     const id = urlToPK(data.url);
 

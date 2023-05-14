@@ -7,9 +7,13 @@ import TextAreaForm from "@/components/forms/forms-components/forms-input/TextAr
 import SelectForm from "@/components/forms/forms-components/forms-input/SelectForm";
 import UserService from "@/services/user.service";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import RegionService from "@/services/region.service";
+import TourService from "@/services/tour.service";
 
 export default function BuildingForm({ id }) {
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   // DATA ////////////////////////////////////////
   const [name, setName] = useState("");
@@ -19,28 +23,51 @@ export default function BuildingForm({ id }) {
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
   const [country, setCountry] = useState("");
+  const [allRegions, setAllRegions] = useState([]);
+  const [region, setRegion] = useState("");
   const [currentManual, setCurrentManual] = useState(undefined);
 
   const [manual, setManual] = useState(undefined);
 
   ////////////////////////////////////////////////
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    console.log(manual);
-    const data = {
+
+    let data = {
       nickname: name,
       description: description,
       address_line_1: address1,
       address_line_2: address2,
       country: country,
-      manual: manual,
+      region: region,
       owner: owner,
     };
-    alert(
-      `You have submitted the form. 
-      The data you want to submit is: ${JSON.stringify(data)}`
-    );
+
+    if (manual !== undefined) {
+      data.manual = manual;
+    }
+
+    try {
+      if (id) {
+        await BuildingService.patchById(id, data);
+      } else {
+        await BuildingService.post(data);
+      }
+
+      router.reload();
+    } catch (e) {
+      alert(e);
+    }
+  };
+
+  const onDelete = async () => {
+    try {
+      await BuildingService.deleteById(id);
+      await router.push(`/admin/data_toevoegen/gebouwen`);
+    } catch (e) {
+      alert(e);
+    }
   };
 
   useEffect(() => {
@@ -55,7 +82,9 @@ export default function BuildingForm({ id }) {
         setAddress2(data.address_line_2);
         setCountry(data.country);
         setCurrentManual(data.manual);
+        setRegion(data.region);
       }
+      setAllRegions(await RegionService.get());
       setAllOwners(await UserService.get({ roles: [4] }));
     }
 
@@ -77,6 +106,7 @@ export default function BuildingForm({ id }) {
     <BasicForm
       loading={loading}
       onSubmit={onSubmit}
+      onDelete={onDelete}
       model={"gebouw"}
       editMode={id !== undefined}
     >
@@ -135,6 +165,24 @@ export default function BuildingForm({ id }) {
         required
       />
 
+      <SelectForm
+        id={"regio"}
+        label={"Regio"}
+        onChange={(e) => setRegion(e.target.value)}
+        className={"flex-grow"}
+        value={region}
+        required
+      >
+        {allRegions.map((reg) => {
+          return (
+            <option key={reg.url} value={reg.url}>
+              {reg.region_name}
+            </option>
+          );
+        })}
+        )
+      </SelectForm>
+
       <InputForm
         type={"file"}
         label={"Handleiding"}
@@ -143,6 +191,7 @@ export default function BuildingForm({ id }) {
           setManual(e.target.files[0]);
         }}
       />
+
       {currentManual && (
         <Link
           href={currentManual}
