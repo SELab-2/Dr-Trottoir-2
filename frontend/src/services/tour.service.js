@@ -66,6 +66,7 @@ class TourService {
         building: building.building,
       });
     }
+    return response;
   }
 
   /**
@@ -81,6 +82,14 @@ class TourService {
    * @returns {Promise<*>}
    */
   async patchById(id, data) {
+    const old_data = this.getById(id);
+    if (!("name" in data)) {
+      data.name = old_data.name;
+    }
+    if (!("region" in data)) {
+      data.region = old_data.name;
+    }
+
     return await this.post(data);
   }
 
@@ -98,6 +107,13 @@ class TourService {
    */
   async patchByUrl(url, data) {
     if (HelperService.isCorrectModelUrl(url, "tour")) {
+      const old_data = this.getEntryByUrl(url);
+      if (!("name" in data)) {
+        data.name = old_data.name;
+      }
+      if (!("region" in data)) {
+        data.region = old_data.name;
+      }
       return await this.post(data);
     }
   }
