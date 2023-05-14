@@ -59,14 +59,14 @@ class TourService {
     const tourData = { name: data.name, region: data.region };
     const response = await ApiInstance.getApi().post("tour/", tourData);
 
-    for (const building in data.buildings) {
+    for (const building of data.buildings) {
       await buildingInTourService.post({
-        tour: response.url,
+        tour: response.data.url,
         order_index: building.order_index,
         building: building.building,
       });
     }
-    return response;
+    return response.data;
   }
 
   /**
