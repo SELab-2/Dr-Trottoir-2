@@ -27,8 +27,7 @@ export default function RegionForm({ id }) {
         await RegionService.post(data);
       }
 
-      //TODO: change to better reload
-      router.reload();
+      await router.push(`/admin/data_toevoegen/regio`);
     } catch (e) {
       alert(e);
     }

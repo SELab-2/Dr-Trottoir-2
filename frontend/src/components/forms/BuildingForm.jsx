@@ -55,7 +55,7 @@ export default function BuildingForm({ id }) {
         await BuildingService.post(data);
       }
 
-      router.reload();
+      await router.push(`/admin/data_toevoegen/gebouwen`);
     } catch (e) {
       alert(e);
     }
