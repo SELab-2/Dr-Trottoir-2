@@ -58,7 +58,7 @@ export default function BuildingForm({ id }) {
 
       await router.reload();
     } catch (e) {
-      alert(e);
+      alert(JSON.stringify(e.response.data));
     }
   };
 

@@ -38,7 +38,7 @@ export default function RegionForm({ id }) {
       await RegionService.deleteById(id);
       await router.push(`/admin/data_toevoegen/regio`);
     } catch (e) {
-      alert(e);
+      alert(JSON.stringify(e.response.data));
     }
   };
 

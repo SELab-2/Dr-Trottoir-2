@@ -36,7 +36,7 @@ export default function TourForm({ id }) {
 
       await router.reload();
     } catch (e) {
-      alert(e);
+      alert(JSON.stringify(e.response.data));
     }
   };
 
