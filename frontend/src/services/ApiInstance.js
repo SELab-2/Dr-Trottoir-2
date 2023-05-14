@@ -2,11 +2,11 @@ import axios from "axios";
 import getAuthHeader from "@/utils/getAuthHeader";
 
 class ApiInstance {
-  getApi() {
+  getApi(contentType = "application/json") {
     const instance = axios.create({
       baseURL: process.env.NEXT_PUBLIC_API_URL,
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": contentType,
       },
     });
 

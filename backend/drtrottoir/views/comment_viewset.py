@@ -8,7 +8,7 @@ from pytz import timezone
 from datetime import datetime
 
 
-class CommentView(viewsets.ModelViewSet):
+class CommentViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         if any(x in request.data for x in ('user', 'created_at', 'updated_at')):
@@ -48,7 +48,7 @@ class CommentView(viewsets.ModelViewSet):
         abstract = True
 
 
-class ScheduleCommentView(CommentView):
+class ScheduleCommentViewSet(CommentViewSet):
     """
     retrieve:
     API endpoint that allows a comment on a schedule to be retrieved. Authentication required.
@@ -74,7 +74,7 @@ class ScheduleCommentView(CommentView):
     serializer_class = ScheduleCommentSerializer
 
 
-class VisitCommentView(CommentView):
+class VisitCommentViewSet(CommentViewSet):
     """
     retrieve:
     API endpoint that allows a comment on a visit to be retrieved.
