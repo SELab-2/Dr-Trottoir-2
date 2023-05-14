@@ -21,31 +21,8 @@ import { useRouter } from "next/router";
 import LinkButton from "@/components/navbar/LinkButton";
 import Loading from "@/components/Loading";
 import RegionService from "@/services/region.service";
-import CustomWeekPicker from "./input-fields/CustomWeekPicker";
 import moment from "moment";
 import scheduleService from "@/services/schedule.service";
-
-function scheduleList(data) {
-  return data.map((data) => {
-    const id = urlToPK(data.url);
-    return (
-      <LinkButton
-        key={id}
-        link={`/admin/data_toevoegen/planningen/${id}`}
-        className={"truncate"}
-      >
-        <div className={"text-light-h-1"}>
-          <p>{data.date}</p>
-          {data.student && (
-            <p className={"text-light-h-2"}>
-              {data.student.first_name + " " + data.student.last_name}
-            </p>
-          )}
-        </div>
-      </LinkButton>
-    );
-  });
-}
 
 function tourList(data) {
   return data.map((data) => {
@@ -263,34 +240,25 @@ export default function LayoutDataAdd({ children, id }) {
         </SecondaryButton>
       </div>
 
-      <PrimaryCard className={`h-full w-1/5`} title={"Huidige"}>
-        {loading ? (
-          <div className={"flex justify-center items-center h-fit w-full"}>
-            <Loading className={"w-10 h-10"} />
-          </div>
-        ) : (
-          <div className={"flex flex-col space-y-4"}>
-            {router.query.type === "planningen" && (
-              <div>
-                <CustomWeekPicker
-                  startDate={dateRange[0]}
-                  endDate={dateRange[1]}
-                  onChange={(begin, end) => setDateRange([begin, end])}
-                  className={"mb-2"}
-                />
-                {scheduleList(data)}
-              </div>
-            )}
-            {router.query.type === "rondes" && tourList(data)}
-            {router.query.type === "regio" && regionList(data)}
-            {router.query.type === "gebouwen" && buildingList(data)}
-            {router.query.type === "personeel" && personeelList(data)}
-            {router.query.type === "syndici" && syndiciList(data)}
-          </div>
-        )}
-      </PrimaryCard>
+      {router.query.type !== "planningen" && (
+        <PrimaryCard className={`h-full w-1/5`} title={"Huidige"}>
+          {loading ? (
+            <div className={"flex justify-center items-center h-fit w-full"}>
+              <Loading className={"w-10 h-10"} />
+            </div>
+          ) : (
+            <div className={"flex flex-col space-y-4"}>
+              {router.query.type === "rondes" && tourList(data)}
+              {router.query.type === "regio" && regionList(data)}
+              {router.query.type === "gebouwen" && buildingList(data)}
+              {router.query.type === "personeel" && personeelList(data)}
+              {router.query.type === "syndici" && syndiciList(data)}
+            </div>
+          )}
+        </PrimaryCard>
+      )}
 
-      <PrimaryCard className={`h-full w-3/5`} title={"Bewerken"}>
+      <PrimaryCard className={`h-full w-full`} title={"Bewerken"}>
         {children}
       </PrimaryCard>
     </div>

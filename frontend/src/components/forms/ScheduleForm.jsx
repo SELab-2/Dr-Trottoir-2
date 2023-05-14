@@ -1,79 +1,85 @@
 import SelectForm from "@/components/forms/forms-components/forms-input/SelectForm";
 import BasicForm from "@/components/forms/BasicForm";
 import Loading from "@/components/Loading";
-import ScheduleService from "@/services/schedule.service";
 import TourService from "@/services/tour.service";
-import UserService from "@/services/user.service";
 import { urlToPK } from "@/utils/urlToPK";
 import { useEffect, useState } from "react";
-import CustomDayPicker from "../input-fields/CustomDayPicker";
 import { useRouter } from "next/router";
 import SecondaryCard from "../custom-card/SecondaryCard";
 import BuildingService from "@/services/building.service";
 import TableWasteSchedule from "./forms-components/forms-input/TableWasteSchedule";
+import CustomWeekPicker from "../input-fields/CustomWeekPicker";
+import moment from "moment";
+import wasteService from "@/services/waste.service";
 
-export default function ScheduleForm({ id }) {
+export default function ScheduleForm() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const [selectedStudent, setSelectedStudent] = useState(-1);
   const [selectedTour, setSelectedTour] = useState(-1);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [allStudents, setAllStudents] = useState([]);
   const [allTours, setAllTours] = useState([]);
   const [tourBuildings, setTourBuildings] = useState([]);
+  const [waste, setWaste] = useState([]);
+  const [changedWaste, setChangedWaste] = useState({});
+  const [week, setWeek] = useState([
+    moment().startOf("isoWeek").toDate(),
+    moment().endOf("isoWeek").toDate(),
+  ]);
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    const data = {
-      student: selectedStudent,
-      tour: selectedTour,
-      date: selectedDate.toISOString().substr(0, 10),
-    };
-    alert(
-      `You have submitted the form. 
-      The data you want to submit is: ${JSON.stringify(data)}`
-    );
-    try {
-      if (id) {
-        await ScheduleService.patchById(id, data);
-      } else {
-        await ScheduleService.post(data);
+    for (const building in changedWaste) {
+      for (const date in changedWaste[building]) {
+        for (const type in changedWaste[building][date]) {
+          const [newState, timesChanged] = changedWaste[building][date][type];
+          let state = newState === 2 ? "Buiten" : "Binnen";
+
+          const wasteEntries = Object.values(waste[building] || {});
+          const matchingEntry = wasteEntries.find(
+            (entry) => entry.date === date && entry.waste_type === type
+          );
+
+          if (newState === 0) {
+            // delete entry
+            if (matchingEntry) {
+              await wasteService.deleteByUrl(matchingEntry.url);
+            }
+          } else if (newState === timesChanged) {
+            // create entry
+            const data = {
+              date,
+              waste_type: type,
+              building,
+              action: state,
+            };
+            await wasteService.post(data);
+            console.log(
+              `You have submitted the form. 
+              The data you want to submit is: ${JSON.stringify(data)}`
+            );
+          } else if (newState !== timesChanged) {
+            // update entry
+            if (matchingEntry) {
+              const data = { action: state };
+              await wasteService.patchByUrl(matchingEntry.url, data);
+            }
+          }
+        }
       }
-
-      //TODO: change to better reload
-      router.reload();
-    } catch (e) {
-      alert(e);
     }
-  };
-
-  const onDelete = async () => {
-    try {
-      await ScheduleService.deleteById(id);
-      await router.push(`/admin/data_toevoegen/planningen`);
-    } catch (e) {
-      alert(e);
-    }
+    router.reload();
   };
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      setAllStudents(await UserService.get());
       setAllTours(await TourService.get());
-      if (id) {
-        const schedule = await ScheduleService.getById(id);
-        setSelectedStudent(schedule.student);
-        setSelectedTour(schedule.tour);
-        setSelectedDate(new Date(schedule.date));
-      }
     }
 
     fetchData()
       .then(() => setLoading(false))
       .catch();
-  }, [id]);
+  }, [week]);
 
   if (loading) {
     return (
@@ -83,79 +89,92 @@ export default function ScheduleForm({ id }) {
     );
   }
 
+  const getWasteSchedule = async (startDate, endDate, buildings) => {
+    const wasteSchedule = {};
+    await Promise.all(
+      buildings.map(async (building) => {
+        wasteSchedule[building.building.url] = await wasteService.get({
+          startDate: startDate,
+          endDate: endDate,
+          building: building.building.url,
+        });
+      })
+    );
+    setWaste(wasteSchedule);
+  };
+
   const handleTourSelect = async (tour) => {
     setSelectedTour(tour);
-    let buildings_in_tour = await TourService.getBuildingsFromTour(
+    const buildingsInTour = await TourService.getBuildingsFromTour(
       urlToPK(tour)
     );
-    // Fix the format of the data, change it to [{building: <info building>, order_index: <order>}...]
-    const fixed_format = await Promise.all(
-      buildings_in_tour.map(async (building_in_tour) => ({
-        building: await BuildingService.getEntryByUrl(
-          building_in_tour.building
-        ),
-        order_index: building_in_tour.order_index,
+    const fixedFormat = await Promise.all(
+      buildingsInTour.map(async (buildingInTour) => ({
+        building: await BuildingService.getEntryByUrl(buildingInTour.building),
+        order_index: buildingInTour.order_index,
       }))
     );
-    const sorted = fixed_format.sort((a, b) => a.order_index - b.order_index);
-
+    const sorted = fixedFormat.sort((a, b) => a.order_index - b.order_index);
+    await getWasteSchedule(week[0], week[1], sorted);
     setTourBuildings(sorted);
+  };
+
+  const changeWeek = async (dateFrom, dateTo) => {
+    setWeek([dateFrom, dateTo]);
+    if (tourBuildings.length > 0) {
+      await getWasteSchedule(dateFrom, dateTo, tourBuildings);
+    }
   };
 
   return (
     <BasicForm
       loading={loading}
       onSubmit={onSubmit}
-      onDelete={onDelete}
       model={"planning"}
-      editMode={id !== undefined}
+      className={"space-y-2"}
     >
-      <label className={"font-bold"}> {"Datum"} </label>
-      <CustomDayPicker
-        date={selectedDate}
-        className={"w-full"}
-        onChange={(date) => setSelectedDate(date)}
-      />
+      <div className="flex space-x-2">
+        <div className="space-y-2 flex-1">
+          <label className={"font-bold"}> {"Week"} </label>
+          <CustomWeekPicker
+            startDate={week[0]}
+            endDate={week[1]}
+            className={"w-full"}
+            onChange={changeWeek}
+          />
+        </div>
+        <SelectForm
+          id={"tour"}
+          label={"Ronde"}
+          onChange={(tour) => handleTourSelect(tour.target.value)}
+          className={"flex-1"}
+          value={selectedTour}
+        >
+          {allTours.map((tour, index) => {
+            return (
+              <option key={tour.url} value={tour.url}>
+                {tour.name}
+              </option>
+            );
+          })}
+        </SelectForm>
+      </div>
 
-      <SelectForm
-        id={"student"}
-        label={"Student"}
-        onChange={(student) => setSelectedStudent(student.target.value)}
-        className={"flex-grow"}
-        value={selectedStudent}
-      >
-        {allStudents.map((student, index) => {
-          return (
-            <option key={student.url} value={student.url}>
-              {student.first_name + " " + student.last_name}
-            </option>
-          );
-        })}
-      </SelectForm>
-
-      <SelectForm
-        id={"tour"}
-        label={"Ronde"}
-        onChange={(tour) => handleTourSelect(tour.target.value)}
-        className={"flex-grow"}
-        value={selectedTour}
-      >
-        {allTours.map((tour, index) => {
-          return (
-            <option key={tour.url} value={tour.url}>
-              {tour.name}
-            </option>
-          );
-        })}
-      </SelectForm>
-
-      {tourBuildings.length != 0 ? (
-        <SecondaryCard className={"!pl-0"}>
-          <TableWasteSchedule buildings={tourBuildings}></TableWasteSchedule>
-        </SecondaryCard>
-      ) : (
-        <p>Selecteer een ronde</p>
-      )}
+      <label className={"font-bold"}> {"Planning"} </label>
+      <SecondaryCard>
+        {tourBuildings.length !== 0 ? (
+          <SecondaryCard className={"!pl-0"}>
+            <TableWasteSchedule
+              buildings={tourBuildings}
+              wasteSchedule={waste}
+              startDate={week[0]}
+              onChange={setChangedWaste}
+            ></TableWasteSchedule>
+          </SecondaryCard>
+        ) : (
+          <p>Selecteer een ronde</p>
+        )}
+      </SecondaryCard>
     </BasicForm>
   );
 }

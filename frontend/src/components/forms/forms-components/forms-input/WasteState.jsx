@@ -5,9 +5,13 @@ import Image from "next/image";
 
 export default function WasteState({ state = 0, onChange }) {
   const [wasteState, setWasteState] = useState(state);
+  const [timesChanged, setTimesChanged] = useState(0);
 
   const changeState = () => {
-    let newState = (wasteState + 1) % 3;
+    const newState = (wasteState + 1) % 3;
+    const times = (timesChanged + 1) % 3;
+    onChange(newState, times);
+    setTimesChanged(times);
     setWasteState(newState);
   };
 
