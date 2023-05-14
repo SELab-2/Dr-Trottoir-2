@@ -90,7 +90,8 @@ class BuildingInTourService {
   }
 
   /**
-   * Delete a BuildingInTour by id. Deleting a BuildingInTour is not possible.
+   * @deprecated Deleting a BuildingInTour is not possible.
+   * Delete a BuildingInTour by id.
    *
    * @param id ID of the entry you want to delete.
    * @returns {Promise<*>}
@@ -106,7 +107,8 @@ class BuildingInTourService {
   }
 
   /**
-   * Delete a BuildingInTour by url. Deleting a BuildingInTour is not possible.
+   * @deprecated Deleting a BuildingInTour is not possible.
+   * Delete a BuildingInTour by url.
    *
    * @param url url of the entry you want to delete.
    * @returns {Promise<*>}

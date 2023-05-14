@@ -1,6 +1,6 @@
 import ApiInstance from "@/services/ApiInstance";
 import HelperService from "@/services/helper.service";
-import Error from "next/error";
+import buildingInTourService from "@/services/buildingInTour.service";
 
 class TourService {
   /**
@@ -45,24 +45,52 @@ class TourService {
   }
 
   /**
+   * Add a new entry to the tour endpoint.
+   *
+   * The data dict can have the following keys.
+   * - name (string)
+   * - region (url of an entry)
+   * - buildings (list with dict: building (url) and order_index (int))
+   *
+   * @param data dict with the data.
+   * @returns {Promise<*>}
+   */
+  async post(data) {
+    const tourData = { name: data.name, region: data.region };
+    const response = await ApiInstance.getApi().post("tour/", tourData);
+
+    for (const building in data.buildings) {
+      await buildingInTourService.post({
+        tour: response.url,
+        order_index: building.order_index,
+        building: building.building,
+      });
+    }
+  }
+
+  /**
    * Update a tour by id. This creates a new tour entry.
    *
    * The data dict can have the following keys.
-   * - TODO
+   * - name (string)
+   * - region (url of an entry)
+   * - buildings (list with dict: building (url) and order_index (int))
    *
    * @param id ID of the entry you want to update.
    * @param data Dict, data you want to chance.
    * @returns {Promise<*>}
    */
   async patchById(id, data) {
-    //TODO
+    return await this.post(data);
   }
 
   /**
    * Update a tour by url. This creates a new tour entry.
    *
    * The data dict can have the following keys.
-   * - TODO
+   * - name (string)
+   * - region (url of an entry)
+   * - buildings (list with dict: building (url) and order_index (int))
    *
    * @param url url of the entry you want to update.
    * @param data Dict, data you want to chance.
@@ -70,7 +98,7 @@ class TourService {
    */
   async patchByUrl(url, data) {
     if (HelperService.isCorrectModelUrl(url, "tour")) {
-      //TODO
+      return await this.post(data);
     }
   }
 
@@ -81,7 +109,8 @@ class TourService {
    * @returns {Promise<*>}
    */
   async deleteById(id) {
-    throw new Error(`A tour can't be deleted`);
+    const response = await ApiInstance.getApi().delete(`tour/${id}/`);
+    return response.data;
   }
 
   /**
@@ -91,20 +120,10 @@ class TourService {
    * @returns {Promise<*>}
    */
   async deleteByUrl(url) {
-    throw new Error(`A tour can't be deleted`);
-  }
-
-  /**
-   * Add a new entry to the tour endpoint.
-   *
-   * The data dict can have the following keys.
-   * - TODO
-   *
-   * @param data dict with the data.
-   * @returns {Promise<*>}
-   */
-  async post(data) {
-    //TODO
+    if (HelperService.isCorrectModelUrl(url, "tour")) {
+      const response = await ApiInstance.getApi().delete(url);
+      return response.data;
+    }
   }
 
   /**
