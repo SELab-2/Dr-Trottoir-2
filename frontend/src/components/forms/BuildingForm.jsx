@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import RegionService from "@/services/region.service";
 import TourService from "@/services/tour.service";
+import { urlToPK } from "@/utils/urlToPK";
 
 export default function BuildingForm({ id }) {
   const [loading, setLoading] = useState(true);
@@ -55,7 +56,7 @@ export default function BuildingForm({ id }) {
         await BuildingService.post(data);
       }
 
-      router.reload();
+      await router.reload();
     } catch (e) {
       alert(e);
     }

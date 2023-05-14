@@ -8,6 +8,7 @@ import SelectForm from "@/components/forms/forms-components/forms-input/SelectFo
 import RegionService from "@/services/region.service";
 import { useRouter } from "next/router";
 import BuildingService from "@/services/building.service";
+import { urlToPK } from "@/utils/urlToPK";
 
 export default function TourForm({ id }) {
   const [loading, setLoading] = useState(true);
@@ -25,13 +26,15 @@ export default function TourForm({ id }) {
     const data = { name: name, buildings: selectedB, region: region };
     try {
       if (id) {
-        await TourService.patchById(id, data);
+        const response = await TourService.patchById(id, data);
+        await router.push(
+          `/admin/data_toevoegen/rondes/${urlToPK(response.url)}`
+        );
       } else {
         await TourService.post(data);
       }
 
-      //TODO: change to better reload
-      router.reload();
+      await router.reload();
     } catch (e) {
       alert(e);
     }
