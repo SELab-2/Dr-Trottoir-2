@@ -1,6 +1,7 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from drtrottoir.models import CustomUser
 from drtrottoir.permissions.user_permissions import UserViewSetPermission
 from drtrottoir.serializers import UserSerializer
@@ -26,6 +27,16 @@ class UserViewSet(viewsets.ModelViewSet):
     destroy:
     API endpoint that allows a user to be deleted. Superadmin role or above required.
     """
-    queryset = CustomUser.objects.all()
+    queryset = CustomUser.objects.all().order_by('id')
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated & UserViewSetPermission]
+
+    # Marks user as removed
+    @action(detail=True, methods=['post'])
+    def remove(self, request, pk=None):
+        # Check if user id is valid
+        if pk is None or not CustomUser.objects.filter(pk=pk).exists():
+            return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
+        user = CustomUser.objects.get(pk=pk)
+        user.is_active = False
+        user.save()

@@ -11,7 +11,6 @@ class VisitFactory(DjangoModelFactory):
     user = factory.SubFactory(StudentUserFactory)
     building_in_tour = factory.SubFactory(BuildingInTourFactory)
     arrival = factory.Faker("date_time", tzinfo=timezone.utc)
-    comment = factory.Faker("sentence")
     schedule = factory.SubFactory(ScheduleFactory)
 
     class Meta:

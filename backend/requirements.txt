@@ -4,7 +4,7 @@ djangorestframework==3.14.0
 gunicorn==20.1.0
 psycopg2-binary==2.9.5
 pytz==2022.7.1
-sqlparse==0.4.3
+sqlparse==0.4.4
 django-cors-headers==3.14.0
 djangorestframework-simplejwt==5.2.2
 Faker==17.6.0
