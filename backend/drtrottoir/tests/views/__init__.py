@@ -9,6 +9,7 @@ from .test_user import TestUserView
 from .test_waste import TestWasteView
 from .test_building_in_tour import TestBuildingInTourView
 from .test_me import TestMeView
+from .test_comment import TestVisitCommentView, TestScheduleCommentView
 
 __all__ = [
     TestRegionAPIView,
@@ -22,4 +23,6 @@ __all__ = [
     TestWasteView,
     TestBuildingInTourView,
     TestMeView,
+    TestVisitCommentView,
+    TestScheduleCommentView
 ]

@@ -5,9 +5,14 @@
  * @returns {Promise<*>}
  */
 import ApiInstance from "@/services/ApiInstance";
+import Error from "next/error";
 
 class HelperService {
   async getResponseByUrl(url) {
+    if (process.env.NEXT_PUBLIC_API_URL.includes("https:")) {
+      url = url.replace("http:", "https:");
+    }
+
     return await ApiInstance.getApi().get(url);
 
     // Error will be catched in the component if needed
@@ -61,6 +66,15 @@ class HelperService {
       const response = await this.getResponseByUrl(url);
       return response.status === 200 ? response.data : {};
     }
+  }
+
+  createFormData(data) {
+    const formData = new FormData();
+    for (const [key, value] of Object.entries(data)) {
+      formData.append(key, value);
+    }
+
+    return formData;
   }
 }
 

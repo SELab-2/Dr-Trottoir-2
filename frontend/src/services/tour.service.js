@@ -1,5 +1,6 @@
 import ApiInstance from "@/services/ApiInstance";
 import HelperService from "@/services/helper.service";
+import buildingInTourService from "@/services/buildingInTour.service";
 
 class TourService {
   /**
@@ -41,6 +42,104 @@ class TourService {
       `tour/${id}/buildings/`
     );
     return response.status === 200 ? response.data : [];
+  }
+
+  /**
+   * Add a new entry to the tour endpoint.
+   *
+   * The data dict can have the following keys.
+   * - name (string)
+   * - region (url of an entry)
+   * - buildings (list with dict: building (url) and order_index (int))
+   *
+   * @param data dict with the data.
+   * @returns {Promise<*>}
+   */
+  async post(data) {
+    const tourData = { name: data.name, region: data.region };
+    const response = await ApiInstance.getApi().post("tour/", tourData);
+
+    for (const building in data.buildings) {
+      await buildingInTourService.post({
+        tour: response.url,
+        order_index: building.order_index,
+        building: building.building,
+      });
+    }
+    return response;
+  }
+
+  /**
+   * Update a tour by id. This creates a new tour entry.
+   *
+   * The data dict can have the following keys.
+   * - name (string)
+   * - region (url of an entry)
+   * - buildings (list with dict: building (url) and order_index (int))
+   *
+   * @param id ID of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchById(id, data) {
+    const old_data = this.getById(id);
+    if (!("name" in data)) {
+      data.name = old_data.name;
+    }
+    if (!("region" in data)) {
+      data.region = old_data.name;
+    }
+
+    return await this.post(data);
+  }
+
+  /**
+   * Update a tour by url. This creates a new tour entry.
+   *
+   * The data dict can have the following keys.
+   * - name (string)
+   * - region (url of an entry)
+   * - buildings (list with dict: building (url) and order_index (int))
+   *
+   * @param url url of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchByUrl(url, data) {
+    if (HelperService.isCorrectModelUrl(url, "tour")) {
+      const old_data = this.getEntryByUrl(url);
+      if (!("name" in data)) {
+        data.name = old_data.name;
+      }
+      if (!("region" in data)) {
+        data.region = old_data.name;
+      }
+      return await this.post(data);
+    }
+  }
+
+  /**
+   * Delete a tour by id. Deleting a Tour is not possible.
+   *
+   * @param id ID of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteById(id) {
+    const response = await ApiInstance.getApi().delete(`tour/${id}/`);
+    return response.data;
+  }
+
+  /**
+   * Delete a tour by url. Deleting a Tour is not possible.
+   *
+   * @param url url of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteByUrl(url) {
+    if (HelperService.isCorrectModelUrl(url, "tour")) {
+      const response = await ApiInstance.getApi().delete(url);
+      return response.data;
+    }
   }
 
   /**
