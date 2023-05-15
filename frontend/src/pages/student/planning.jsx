@@ -2,7 +2,6 @@ import Layout from "@/components/Layout";
 import MobileLayout from "@/components/MobileLayout";
 import Popup from "reactjs-popup";
 import PhotoCreation from "@/components/PhotoCreate";
-import PhotoScreen from "@/components/CameraScreen";
 
 export default function StudentPlanningPage() {
   // TODO: Implement this page
@@ -20,7 +19,7 @@ export default function StudentPlanningPage() {
               scheduleUrl={"http://localhost:8000/api/schedule/1/"}
               state={1}
               close={close}
-              buildingUrl={"http://127.0.0.1:8000/api/building/3/"}
+              buildingUrl={"http://localhost:8000/api/building/3/"}
             />
           )}
         </Popup>
