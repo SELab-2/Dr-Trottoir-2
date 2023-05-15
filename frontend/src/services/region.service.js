@@ -32,10 +32,24 @@ class RegionService {
   }
 
   /**
+   * Add a new entry to the region endpoint.
+   *
+   * The data dict can have the following keys.
+   * - region_name (string)
+   *
+   * @param data dict with the data.
+   * @returns {Promise<*>}
+   */
+  async post(data) {
+    const response = await ApiInstance.getApi().post("region/", data);
+    return response.data;
+  }
+
+  /**
    * Update a region by id.
    *
    * The data dict can have the following keys.
-   * - region_name
+   * - region_name (string)
    *
    * @param id ID of the entry you want to update.
    * @param data Dict, data you want to chance.
@@ -50,7 +64,7 @@ class RegionService {
    * Update a region by url.
    *
    * The data dict can have the following keys.
-   * - region_name
+   * - region_name (string)
    *
    * @param url url of the entry you want to update.
    * @param data Dict, data you want to chance.
@@ -85,20 +99,6 @@ class RegionService {
       const response = await ApiInstance.getApi().delete(url);
       return response.data;
     }
-  }
-
-  /**
-   * Add a new entry to the region endpoint.
-   *
-   * The data dict can have the following keys.
-   * - region_name
-   *
-   * @param data dict with the data.
-   * @returns {Promise<*>}
-   */
-  async post(data) {
-    const response = await ApiInstance.getApi().post("region/", data);
-    return response.data;
   }
 
   /**

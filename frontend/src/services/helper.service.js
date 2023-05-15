@@ -5,6 +5,7 @@
  * @returns {Promise<*>}
  */
 import ApiInstance from "@/services/ApiInstance";
+import Error from "next/error";
 
 class HelperService {
   async getResponseByUrl(url) {
@@ -65,6 +66,15 @@ class HelperService {
       const response = await this.getResponseByUrl(url);
       return response.status === 200 ? response.data : {};
     }
+  }
+
+  createFormData(data) {
+    const formData = new FormData();
+    for (const [key, value] of Object.entries(data)) {
+      formData.append(key, value);
+    }
+
+    return formData;
   }
 }
 
