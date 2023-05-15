@@ -5,6 +5,7 @@
  * @returns {Promise<*>}
  */
 import ApiInstance from "@/services/ApiInstance";
+import Error from "next/error";
 
 class HelperService {
   async getResponseByUrl(url) {
