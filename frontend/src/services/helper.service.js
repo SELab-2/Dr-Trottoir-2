@@ -5,7 +5,7 @@
  * @returns {Promise<*>}
  */
 import ApiInstance from "@/services/ApiInstance";
-import { error } from "next/dist/build/output/log";
+import Error from "next/error";
 
 class HelperService {
   async getResponseByUrl(url) {
