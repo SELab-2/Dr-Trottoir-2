@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import MobileLayout from "@/components/MobileLayout";
 import Popup from "reactjs-popup";
 import PhotoCreation from "@/components/PhotoCreate";
+import PhotoScreen from "@/components/CameraScreen";
 
 export default function StudentPlanningPage() {
   // TODO: Implement this page
@@ -11,7 +12,7 @@ export default function StudentPlanningPage() {
         <p>placehoder</p>
         <Popup
           trigger={<button> Click to open popup </button>}
-          position="right center"
+          position="center center"
           modal
         >
           {(close) => (

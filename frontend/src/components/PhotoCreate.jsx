@@ -1,17 +1,20 @@
-import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import "reactjs-popup/dist/index.css";
 import PrimaryButton from "@/components/button/PrimaryButton";
-import { useRef, useState } from "react";
-import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import PhotoService from "@/services/photo.service";
 import moment from "moment";
 import ScheduleService from "@/services/schedule.service";
 import TourService from "@/services/tour.service";
-import BuildingService from "@/services/building.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
 import { getSession } from "next-auth/react";
 import userService from "@/services/user.service";
 import VisitService from "@/services/visit.service";
+import React from "react";
+import Webcam from "react-webcam";
+import Image from "next/image";
+import PhotoScreen from "@/components/CameraScreen";
+import Popup from "reactjs-popup";
+import CustomButton from "@/components/button/Button";
 
 export default function PhotoCreation({
   scheduleUrl,
@@ -19,16 +22,44 @@ export default function PhotoCreation({
   buildingUrl,
   close,
 }) {
+  const [photoMode, setPhotoMode] = useState(true);
+  const [commentMode, setCommentMode] = useState(false);
   const [photos, setPhotos] = useState([]);
+  const [photo, setPhoto] = useState(null);
+  const [file, setFile] = useState(null);
   const [files, setFiles] = useState([]);
   const CommentRef = useRef(null);
 
-  function handlePhotoUpload(event) {
-    const newPhotos = [...photos];
+  useEffect(() => {
+    setPhotoMode(true);
+    setPhotoMode(true);
+  }, []);
+  console.log(photoMode);
+
+  function blobToUrl(blob) {
+    // https://stackoverflow.com/questions/16968945/convert-base64-png-data-to-javascript-file-objects
+    let arr = blob.split(","),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    const file = new File([u8arr], "test.png", { type: mime });
+    console.log(file);
+    setFile(file);
+    setPhoto(URL.createObjectURL(file));
+    //handlePhotoUpload([file]);
+  }
+
+  function handlePhotoUpload(file) {
     const newFiles = [...files];
-    for (let i = 0; i < event.target.files.length; i++) {
-      newFiles.push(event.target.files[i]);
-      newPhotos.push(URL.createObjectURL(event.target.files[i]));
+    const newPhotos = [...photos];
+    for (let i = 0; i < files.length; i++) {
+      console.log(files[i]);
+      newFiles.push(files[i]);
+      newPhotos.push(URL.createObjectURL(files[i]));
     }
     setPhotos(newPhotos);
     setFiles(newFiles);
@@ -105,30 +136,109 @@ export default function PhotoCreation({
     }
   }
 
-  return (
-    <div className={"flex flex-col h-full w-full space-y-3"}>
-      <div className={"h-[400px] w-full overflow-y-scroll rounded-lg border-2"}>
-        {photos.map((photo) => (
-          <Image
-            src={photo}
-            alt="uploaded"
-            key={photo}
-            width={500}
-            height={500}
-            layout="intrinsic"
-            objectFit="cover"
-            className={"w-full"}
-          />
-        ))}
-      </div>
-      <input
-        type="file"
-        accept="image/*"
-        multiple
-        onChange={handlePhotoUpload}
-      />
-      <textarea className={"border-2 rounded-lg"} ref={CommentRef} />
-      <PrimaryButton onClick={savePictures}>Opslaan</PrimaryButton>
+  return photoMode ? (
+    <div className={"flex-col space-y-2"}>
+      <Webcam
+        audio={false}
+        height={720}
+        screenshotFormat="image/png"
+        width={1280}
+        screenshotQuality={1}
+        videoConstraints={{
+          width: 1280,
+          height: 720,
+          facingMode: "environment",
+        }}
+      >
+        {({ getScreenshot }) => (
+          <div className={"flex flex-row"}>
+            <PrimaryButton
+              className={"w-full"}
+              onClick={() => {
+                const imageSrc = getScreenshot();
+                blobToUrl(imageSrc);
+                setPhotoMode(false);
+              }}
+            >
+              Capture photo
+            </PrimaryButton>
+          </div>
+        )}
+      </Webcam>
     </div>
+  ) : (
+    <div className={"flex flex-col space-y-2 h-full"}>
+      <div className={"w-full rounded-lg border-2 overflow-hidden"}>
+        <Image
+          src={photo}
+          alt="uploaded"
+          width={1280}
+          height={600}
+          layout="intrinsic"
+          objectFit="cover"
+          className={"h-4/5"}
+        />
+      </div>
+      {commentMode ? (
+        <div className={"w-full"}>
+          <textarea
+            className={"border-2 rounded-lg w-full resize-none"}
+            ref={CommentRef}
+          />
+          <PrimaryButton className={"w-full"}>Opslaan</PrimaryButton>
+        </div>
+      ) : (
+        <div className={"flex flex-row"}>
+          <PrimaryButton
+            className={"w-full"}
+            onClick={() => {
+              setCommentMode(true);
+            }}
+          >
+            Capture photo
+          </PrimaryButton>
+          <CustomButton
+            className={"bg-bad-1 text-dark-h-1"}
+            onClick={() => {
+              setPhotoMode(true);
+            }}
+          >
+            Retry
+          </CustomButton>
+        </div>
+      )}
+    </div>
+
+    // <div className={"flex flex-col h-full w-full space-y-4"}>
+    //   <div className={"h-full w-full overflow-y-scroll space-y-2"}>
+    //     {photos.map((photo) => (
+    //       <div
+    //         key={photo}
+    //         className={"w-full rounded-lg border-2 overflow-hidden"}
+    //       >
+    //         <Image
+    //           src={photo}
+    //           alt="uploaded"
+    //           width={500}
+    //           height={500}
+    //           layout="intrinsic"
+    //           objectFit="cover"
+    //         />
+    //       </div>
+    //     ))}
+    //   </div>
+    //   <input
+    //     type="file"
+    //     accept="image/*"
+    //     multiple
+    //     className={"py-4"}
+    //     onChange={(event) => handlePhotoUpload(event.target.files)}
+    //   />
+    //   <textarea
+    //     className={"border-2 rounded-lg h-[300px] resize-none"}
+    //     ref={CommentRef}
+    //   />
+    //   <PrimaryButton onClick={savePictures}>Opslaan</PrimaryButton>
+    // </div>
   );
 }

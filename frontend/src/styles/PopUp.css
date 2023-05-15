@@ -1,0 +1,11 @@
+.popup-content  {
+  border-radius: 5px;
+  padding: 6rem;
+  width: 90% !important;
+  height: 90%;
+  display: inline;
+}
+
+.popup-overlay {
+  display: inline;
+}
