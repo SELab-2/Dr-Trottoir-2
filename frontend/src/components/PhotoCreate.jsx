@@ -185,12 +185,7 @@ export default function PhotoCreation({
           ref={CommentRef}
         />
         <div className={"flex flex-row"}>
-          <PrimaryButton
-            className={"w-full"}
-            onClick={() => {
-              setCommentMode(true);
-            }}
-          >
+          <PrimaryButton className={"w-full"} onClick={savePictures}>
             Opslaan
           </PrimaryButton>
           <CustomButton
