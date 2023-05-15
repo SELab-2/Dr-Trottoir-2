@@ -9,8 +9,11 @@ export default function TableWasteSchedule({
   wasteSchedule,
   startDate,
   onChange,
+  selectDayIndex,
+  editable = true,
 }) {
   const [changedWastes, setChangedWastes] = useState({});
+  // Predefined waste types
   const wastes = [
     {
       char: "R",
@@ -39,6 +42,7 @@ export default function TableWasteSchedule({
     },
   ];
   const days = ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"];
+  // Generate date strings for each day starting from the provided startDate
   const dateStrings = days.map((day, dayIndex) =>
     moment(startDate)
       .add(dayIndex + 1, "days")
@@ -51,11 +55,13 @@ export default function TableWasteSchedule({
   const getState = (building, dayIndex, wasteType) => {
     const url = building.building.url;
     const buildingEntries = wasteSchedule[url];
+    // If no entries exist for the building, return default state 0
     if (buildingEntries.length === 0) {
       return 0;
     }
     let state = 0;
     const dateString = dateStrings[dayIndex];
+    // Find the corresponding waste entry for the given day and waste type
     buildingEntries.forEach((wasteEntry) => {
       if (
         wasteEntry.date === dateString &&
@@ -78,6 +84,7 @@ export default function TableWasteSchedule({
     const wasteType = waste.full;
     const date = dateStrings[dayIndex];
 
+    // Update the changedWastes state with the modified waste entry
     const tempWastes = { ...changedWastes };
     tempWastes[url] = tempWastes[url] || {};
     tempWastes[url][date] = tempWastes[url][date] || {};
@@ -88,7 +95,6 @@ export default function TableWasteSchedule({
     }
     setChangedWastes(tempWastes);
     onChange(tempWastes);
-    console.log(tempWastes);
   };
 
   return (
@@ -110,7 +116,15 @@ export default function TableWasteSchedule({
             <th className="sticky left-0 bg-light-bg-2">Gebouw</th>
             {days.map((day, index) => (
               <React.Fragment key={index}>
-                <th colSpan={wastes.length} key={index}>
+                {/* Table header cells for each day */}
+                <th
+                  colSpan={wastes.length}
+                  key={index}
+                  className={`${
+                    selectDayIndex === index &&
+                    "bg-primary-2 border-2 border-primary-1 rounded-md"
+                  }`}
+                >
                   {day}
                 </th>
                 <th key={`gap-${index}`}></th>
@@ -121,6 +135,7 @@ export default function TableWasteSchedule({
             <th className="sticky left-0 bg-light-bg-2"></th>
             {days.map((day, dayIndex) => (
               <React.Fragment key={dayIndex}>
+                {/* Table header cells for each waste type */}
                 {wastes.map((waste, wasteIndex) => (
                   <th
                     key={`${dayIndex}-${wasteIndex}`}
@@ -150,7 +165,7 @@ export default function TableWasteSchedule({
                           key={`${dayIndex}-${wasteIndex}`}
                           className={`column-space ${
                             isLastRow ? "rounded-b-lg" : ""
-                          } 
+                          }
                           ${waste.background}`}
                         >
                           <WasteState
@@ -164,6 +179,7 @@ export default function TableWasteSchedule({
                                 timesChanged
                               )
                             }
+                            editable={editable}
                           />
                         </td>
                       );

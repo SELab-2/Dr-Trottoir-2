@@ -8,6 +8,7 @@ import {
   faLocationDot,
   faPeopleGroup,
   faPlusCircle,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import SecondaryButton from "@/components/button/SecondaryButton";
@@ -23,6 +24,29 @@ import Loading from "@/components/Loading";
 import RegionService from "@/services/region.service";
 import moment from "moment";
 import scheduleService from "@/services/schedule.service";
+import CustomWeekPicker from "./input-fields/CustomWeekPicker";
+
+function scheduleList(data) {
+  return data.map((data) => {
+    const id = urlToPK(data.url);
+    return (
+      <LinkButton
+        key={id}
+        link={`/admin/data_toevoegen/planningen/${id}`}
+        className={"truncate"}
+      >
+        <div className={"text-light-h-1"}>
+          <p>{data.date}</p>
+          {data.student && (
+            <p className={"text-light-h-2"}>
+              {data.student.first_name + " " + data.student.last_name}
+            </p>
+          )}
+        </div>
+      </LinkButton>
+    );
+  });
+}
 
 function tourList(data) {
   return data.map((data) => {
@@ -202,6 +226,10 @@ export default function LayoutDataAdd({ children, id }) {
                 icon: faCalendarWeek,
                 link: "/admin/data_toevoegen/planningen",
               },
+              Afval: {
+                icon: faTrash,
+                link: "/admin/data_toevoegen/afval",
+              },
               Rondes: {
                 icon: faBicycle,
                 link: "/admin/data_toevoegen/rondes",
@@ -240,7 +268,7 @@ export default function LayoutDataAdd({ children, id }) {
         </SecondaryButton>
       </div>
 
-      {router.query.type !== "planningen" && (
+      {router.query.type !== "afval" && (
         <PrimaryCard className={`h-full w-1/5`} title={"Huidige"}>
           {loading ? (
             <div className={"flex justify-center items-center h-fit w-full"}>
@@ -248,6 +276,17 @@ export default function LayoutDataAdd({ children, id }) {
             </div>
           ) : (
             <div className={"flex flex-col space-y-4"}>
+              {router.query.type === "planningen" && (
+                <div>
+                  <CustomWeekPicker
+                    startDate={dateRange[0]}
+                    endDate={dateRange[1]}
+                    onChange={(begin, end) => setDateRange([begin, end])}
+                    className={"mb-2"}
+                  />
+                  {scheduleList(data)}
+                </div>
+              )}
               {router.query.type === "rondes" && tourList(data)}
               {router.query.type === "regio" && regionList(data)}
               {router.query.type === "gebouwen" && buildingList(data)}
@@ -258,7 +297,12 @@ export default function LayoutDataAdd({ children, id }) {
         </PrimaryCard>
       )}
 
-      <PrimaryCard className={`h-full w-full`} title={"Bewerken"}>
+      <PrimaryCard
+        className={`h-full ${
+          router.query.type === "afval" ? "w-full" : "w-3/5"
+        }`}
+        title={"Bewerken"}
+      >
         {children}
       </PrimaryCard>
     </div>
