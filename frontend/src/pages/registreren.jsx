@@ -143,10 +143,15 @@ export default function Registreren() {
     });
 
     if (response.error) {
+      if (response.error.password) {
+        setPassword({ value: password.value, error: response.error.password });
+      }
       setRegistrationStatus({
         complete: false,
         loading: false,
-        error: response.error,
+        error: response.error.email
+          ? "Dit emailadres is al geregistreerd"
+          : "Er ging iets mis... Probeer het openieuw",
       });
       return;
     }

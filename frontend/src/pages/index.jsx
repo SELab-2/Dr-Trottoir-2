@@ -36,9 +36,8 @@ export default function Login() {
     });
 
     if (response?.error) {
-      console.log("something went wrong... failed to login :(");
       setIsLoading(false);
-      setError("Onbekende gebruiker");
+      setError("Gebruiker is nog niet gekend of heeft nog geen toegang");
       return;
     }
 

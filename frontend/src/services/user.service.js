@@ -1,12 +1,33 @@
 import ApiInstance from "@/services/ApiInstance";
 import HelperService from "@/services/helper.service";
+import axios from "axios";
 
 class UserService {
-  async register(args = {}) {
-    let response = null; // await HelperService.post("use/auth/register/");
-    return response
-      ? response.error
-      : { error: "Deze functionaliteit is nog in ontwikkeling!" };
+  /**
+   * Register a user.
+   *
+   * The data dict must have the following keys.
+   * - firstname (string)
+   * - lastname (string)
+   * - email (string)
+   * - password (string)
+   * - passwordRepeat (string)
+   *
+   * @param data dict with the data.
+   * @returns {Promise<*>}
+   */
+  async register(data) {
+    try {
+      const response = await axios.post(
+        process.env.NEXT_PUBLIC_API_URL + "user/auth/register/",
+        data
+      );
+      return response.status === 201 ? {} : { error: response.data };
+    } catch (error) {
+      return error.response?.data
+        ? { error: error.response.data }
+        : { error: "Er trad een onbekende fout op." };
+    }
   }
 
   /**
