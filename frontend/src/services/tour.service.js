@@ -82,7 +82,7 @@ class TourService {
    * @returns {Promise<*>}
    */
   async patchById(id, data) {
-    const old_data = this.getById(id);
+    const old_data = await this.getById(id);
     if (!("name" in data)) {
       data.name = old_data.name;
     }
