@@ -179,15 +179,11 @@ export default function PhotoCreation({
           className={"h-4/5"}
         />
       </div>
-      {commentMode ? (
-        <div className={"w-full"}>
-          <textarea
-            className={"border-2 rounded-lg w-full resize-none"}
-            ref={CommentRef}
-          />
-          <PrimaryButton className={"w-full"}>Opslaan</PrimaryButton>
-        </div>
-      ) : (
+      <div className={"w-full"}>
+        <textarea
+          className={"border-2 rounded-lg w-full resize-none"}
+          ref={CommentRef}
+        />
         <div className={"flex flex-row"}>
           <PrimaryButton
             className={"w-full"}
@@ -195,7 +191,7 @@ export default function PhotoCreation({
               setCommentMode(true);
             }}
           >
-            Capture photo
+            Opslaan
           </PrimaryButton>
           <CustomButton
             className={"bg-bad-1 text-dark-h-1"}
@@ -206,7 +202,7 @@ export default function PhotoCreation({
             Retry
           </CustomButton>
         </div>
-      )}
+      </div>
     </div>
 
     // <div className={"flex flex-col h-full w-full space-y-4"}>
