@@ -82,28 +82,35 @@ export default function WasteForm() {
             building: building.building.url,
           });
 
-          await Promise.all(
-            wasteEntries.map(async (wasteEntry) => {
-              for (let i = 1; weekCopy * i * 7 < 100; i++) {
-                const newDate = moment(wasteEntry.date)
-                  .add(1, "days")
-                  .add(i * weekCopy, "weeks")
-                  .toDate()
-                  .toISOString()
-                  .substring(0, 10);
+          const promises = wasteEntries.flatMap((wasteEntry) => {
+            const newEntries = [];
 
-                await wasteService.post({
-                  date: newDate,
-                  action: wasteEntry.action,
-                  building: wasteEntry.building,
-                  waste_type: wasteEntry.waste_type,
-                });
-              }
-            })
-          );
+            for (let i = 1; weekCopy * i * 7 < 100; i++) {
+              const newDate = moment(wasteEntry.date)
+                .add(1, "days")
+                .add(i * weekCopy, "weeks")
+                .toDate()
+                .toISOString()
+                .substring(0, 10);
+
+              const newEntryPromise = wasteService.post({
+                date: newDate,
+                action: wasteEntry.action,
+                building: wasteEntry.building,
+                waste_type: wasteEntry.waste_type,
+              });
+
+              newEntries.push(newEntryPromise);
+            }
+
+            return newEntries;
+          });
+
+          await Promise.all(promises);
         })
       );
     }
+
     setLoadSchedule(false);
     // TO DO: do this cleaner
     router.reload();
