@@ -42,6 +42,8 @@ export default function Home() {
           <p className={"text-xl"}>
             If you are viewing this page, you are successfully logged in{" "}
             <Emoji>🥳</Emoji>
+            <br />
+            Maps key {process.env.NEXT_PUBLIC_GOOGLE_API}
           </p>
           <SecondaryButton
             className={"my-2"}

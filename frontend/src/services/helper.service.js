@@ -9,6 +9,10 @@ import { error } from "next/dist/build/output/log";
 
 class HelperService {
   async getResponseByUrl(url) {
+    if (process.env.NEXT_PUBLIC_API_URL.includes("https:")) {
+      url = url.replace("http:", "https:");
+    }
+
     return await ApiInstance.getApi().get(url);
 
     // Error will be catched in the component if needed
@@ -54,14 +58,29 @@ class HelperService {
     return all;
   }
 
-  async getModelEntryByUrl(url, model) {
+  isCorrectModelUrl(url, model) {
     const regex = new RegExp(`\/api\/${model.toLowerCase()}\/[0-9]+\/?$`);
     if (regex.test(url)) {
-      const response = await this.getResponseByUrl(url);
-      return response.status === 200 ? response.data : {};
+      return true;
     } else {
       throw new Error(`${url} is not an entry of ${model}.`);
     }
+  }
+
+  async getModelEntryByUrl(url, model) {
+    if (this.isCorrectModelUrl(url, model)) {
+      const response = await this.getResponseByUrl(url);
+      return response.status === 200 ? response.data : {};
+    }
+  }
+
+  createFormData(data) {
+    const formData = new FormData();
+    for (const [key, value] of Object.entries(data)) {
+      formData.append(key, value);
+    }
+
+    return formData;
   }
 }
 

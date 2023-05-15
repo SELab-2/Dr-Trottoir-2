@@ -7,5 +7,20 @@ from .schedule import Schedule
 from .tour import Tour
 from .visit import Visit
 from .waste import Waste
+from .comment import Comment, ScheduleComment, VisitComment
 
-__all__ = [CustomUser, CustomUserManager, Building, BuildingInTour, Region, Photo, Schedule, Tour, Visit, Waste]
+__all__ = [
+    CustomUser,
+    CustomUserManager,
+    Building,
+    BuildingInTour,
+    Region,
+    Photo,
+    Schedule,
+    Tour,
+    Visit,
+    Waste,
+    Comment,
+    ScheduleComment,
+    VisitComment
+]
