@@ -20,6 +20,8 @@ from drtrottoir.tests.factories import (
     ScheduleFactory,
 )
 from drtrottoir.models.custom_user import Roles
+from datetime import datetime
+from pytz import timezone
 
 
 class TestVisitView(APITestCase):
@@ -51,8 +53,7 @@ class TestVisitView(APITestCase):
                         "user_data" in response.data and
                         "building_in_tour" in response.data and
                         "building_in_tour_data" in response.data and
-                        "arrival" in response.data and
-                        "comment" in response.data)
+                        "arrival" in response.data)
 
         user_data = response.data["user_data"]
         self.assertTrue("email" in user_data and
@@ -89,11 +90,11 @@ class TestVisitView(APITestCase):
     def test_patch(self):
         response = self.client.get(reverse("visit-detail", kwargs={'pk': self.visit.pk}), follow=True)
         original = response.data
-        response = self.client.patch(reverse("visit-detail", kwargs={'pk': self.visit.pk}),
-                                     data={"comment": "UPDATE TEST"}, follow=True)
+        d = {"arrival": datetime.now(tz=timezone('CET')).isoformat()}
+        response = self.client.patch(reverse("visit-detail", kwargs={'pk': self.visit.pk}), data=d, follow=True)
         new_data = response.data
-        self.assertNotEqual(original["comment"], new_data["comment"])
-        self.assertEqual(new_data["comment"], "UPDATE TEST")
+        self.assertNotEqual(original["arrival"], new_data["arrival"])
+        self.assertEqual(new_data["arrival"], d["arrival"])
 
     def test_patch_own_record(self):
         self.client.force_authenticate(user=self.visit.user)
@@ -102,7 +103,7 @@ class TestVisitView(APITestCase):
     def test_patch_unauthorized(self):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
         response = self.client.patch(reverse("visit-detail", kwargs={'pk': self.visit.pk}),
-                                     data={"comment": "UPDATE TEST"}, follow=True)
+                                     data={"arrival": datetime.now(tz=timezone('CET')).isoformat()}, follow=True)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_post(self):
@@ -113,8 +114,7 @@ class TestVisitView(APITestCase):
         serializerUser = UserSerializer(self.users[Roles.STUDENT], context={'request': response.wsgi_request})
         serializerSchedule = ScheduleSerializer(self.schedule, context={'request': response.wsgi_request})
         response = self.client.post("/api/visit/",
-                                    data={"comment": "TEST",
-                                          "arrival": "2023-03-15T17:10:46Z",
+                                    data={"arrival": datetime.now(tz=timezone('CET')).isoformat(),
                                           "building_in_tour": serializerBuildTour.data["url"],
                                           "user": serializerUser.data["url"],
                                           "schedule": serializerSchedule.data["url"]
@@ -125,8 +125,7 @@ class TestVisitView(APITestCase):
 
         # Test incorrect POST body
         response = self.client.post("/api/visit/",
-                                    data={"comment": "TEST",
-                                          "arrival": "2023-03-15T17:10:46Z",
+                                    data={"arrival": datetime.now(tz=timezone('CET')).isoformat(),
                                           "building_in_tour": 1,
                                           "user": "user"
                                           }, follow=True)

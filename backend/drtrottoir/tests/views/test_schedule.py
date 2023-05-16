@@ -50,12 +50,11 @@ class TestScheduleView(APITestCase):
         response = self.client.post("/api/schedule/",
                                     data={
                                         "date": "2000-01-01",
-                                        "comment": "TEST",
                                         "tour": serializerTour.data["url"],
                                         "student": serializerUser.data["url"],
                                     }, follow=True)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["comment"], "TEST")
+        self.assertEqual(response.data["date"], "2000-01-01")
 
     def test_post_unauthorized(self):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
@@ -64,9 +63,9 @@ class TestScheduleView(APITestCase):
 
     def test_update(self):
         response = self.client.patch(reverse("schedule-detail", kwargs={'pk': self.schedule.pk}),
-                                     data={"comment": "test"}, follow=True)
+                                     data={"date": "2000-01-01"}, follow=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["comment"], "test")
+        self.assertEqual(response.data["date"], "2000-01-01")
 
     def test_update_unauthorized(self):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
