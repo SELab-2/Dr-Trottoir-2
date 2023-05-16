@@ -82,12 +82,12 @@ class TourService {
    * @returns {Promise<*>}
    */
   async patchById(id, data) {
-    const old_data = this.getById(id);
+    const old_data = await this.getById(id);
     if (!("name" in data)) {
       data.name = old_data.name;
     }
     if (!("region" in data)) {
-      data.region = old_data.name;
+      data.region = old_data.region;
     }
 
     return await this.post(data);
@@ -107,12 +107,12 @@ class TourService {
    */
   async patchByUrl(url, data) {
     if (HelperService.isCorrectModelUrl(url, "tour")) {
-      const old_data = this.getEntryByUrl(url);
+      const old_data = await this.getEntryByUrl(url);
       if (!("name" in data)) {
         data.name = old_data.name;
       }
       if (!("region" in data)) {
-        data.region = old_data.name;
+        data.region = old_data.region;
       }
       return await this.post(data);
     }
