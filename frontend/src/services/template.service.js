@@ -1,6 +1,5 @@
 import ApiInstance from "@/services/ApiInstance";
 import HelperService from "@/services/helper.service";
-import { baseUrl } from "@/utils/baseUrl";
 
 class TemplateService {
   /**
