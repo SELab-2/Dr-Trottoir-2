@@ -41,9 +41,6 @@ export default function PhotoPage({ photo }) {
         setAddress(
           `${building.address_line_1} ${building.address_line_2} (${building.nickname})`
         );
-        console.log(visit);
-        console.log(user);
-        console.log(building);
       }
     };
     getData().catch();

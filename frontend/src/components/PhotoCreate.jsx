@@ -54,7 +54,6 @@ export default function PhotoCreation({
       u8arr[n] = bstr.charCodeAt(n);
     }
     const file = new File([u8arr], "capture.png", { type: mime });
-    console.log(file);
     setFile(file);
     setPhoto(URL.createObjectURL(file));
   }
@@ -95,7 +94,6 @@ export default function PhotoCreation({
       })
     );
     const result = buildings.filter((b) => b.building === buildingUrl);
-    console.log(result);
     // There already is a visit object
     if (result.length === 1) {
       const visit = result[0].visit;
@@ -111,15 +109,12 @@ export default function PhotoCreation({
       let split = user.url.trim().split("/");
       user = await userService.getById(split[split.length - 2]);
       const schedule = await ScheduleService.getEntryByUrl(scheduleUrl);
-      console.log(schedule);
       const buildingInTours = await TourService.getBuildingsFromTour(
         urlToPK(schedule.tour)
       );
-      console.log(buildingInTours);
       const result = buildingInTours.filter(
         (entry) => entry.building === buildingUrl
       );
-      console.log(result);
       const date = moment(new Date()).format("YYYY-MM-DD[T]HH:mm:ss");
       const response = await VisitService.postVisit({
         user: user.url,
@@ -129,7 +124,6 @@ export default function PhotoCreation({
         building_in_tour: result[0].url,
       });
       await savePhoto(response, comment, date);
-      console.log(response);
     }
   }
 
