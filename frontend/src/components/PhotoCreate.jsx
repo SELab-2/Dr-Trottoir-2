@@ -18,7 +18,10 @@ import {
   faArrowRotateRight,
   faCameraRetro,
   faCirclePlus,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import Modal from "react-modal";
+import PrimaryCard from "@/components/custom-card/PrimaryCard";
 
 export default function PhotoCreation({
   scheduleUrl,
@@ -27,6 +30,7 @@ export default function PhotoCreation({
   callback = () => {},
   close,
 }) {
+  const [modalIsOpen, setIsOpen] = useState(false);
   const [photoMode, setPhotoMode] = useState(true);
   const [commentMode, setCommentMode] = useState(false);
   const [photos, setPhotos] = useState([]);
@@ -34,12 +38,6 @@ export default function PhotoCreation({
   const [file, setFile] = useState(null);
   const [files, setFiles] = useState([]);
   const CommentRef = useRef(null);
-
-  useEffect(() => {
-    setPhotoMode(true);
-    setPhotoMode(true);
-  }, []);
-  console.log(photoMode);
 
   function blobToUrl(blob) {
     // https://stackoverflow.com/questions/16968945/convert-base64-png-data-to-javascript-file-objects
@@ -55,19 +53,6 @@ export default function PhotoCreation({
     console.log(file);
     setFile(file);
     setPhoto(URL.createObjectURL(file));
-    //handlePhotoUpload([file]);
-  }
-
-  function handlePhotoUpload(file) {
-    const newFiles = [...files];
-    const newPhotos = [...photos];
-    for (let i = 0; i < files.length; i++) {
-      console.log(files[i]);
-      newFiles.push(files[i]);
-      newPhotos.push(URL.createObjectURL(files[i]));
-    }
-    setPhotos(newPhotos);
-    setFiles(newFiles);
   }
 
   async function savePhoto(visit, comment, date) {
@@ -79,7 +64,8 @@ export default function PhotoCreation({
     formData.append("created_at", date);
     const response = await PhotoService.postPhoto(formData);
     callback(response);
-    close();
+    setPhotoMode(true);
+    closeModal();
   }
 
   async function savePictures() {
@@ -136,74 +122,107 @@ export default function PhotoCreation({
     }
   }
 
-  return photoMode ? (
-    <div className={"flex-col space-y-2"}>
-      <Webcam
-        audio={false}
-        height={720}
-        screenshotFormat="image/png"
-        width={1280}
-        screenshotQuality={1}
-        videoConstraints={{
-          width: 1280,
-          height: 720,
-          facingMode: "environment",
-        }}
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  return (
+    <div>
+      <button onClick={openModal}>Open Modal</button>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        ariaHideApp={false}
+        style={{ content: { width: "100%", inset: "0px" } }}
       >
-        {({ getScreenshot }) => (
-          <div className={"flex flex-row"}>
-            <PrimaryButton
-              className={"w-full"}
-              onClick={() => {
-                const imageSrc = getScreenshot();
-                blobToUrl(imageSrc);
-                setPhotoMode(false);
-              }}
-              icon={faCameraRetro}
-            >
-              Neem foto
-            </PrimaryButton>
-          </div>
-        )}
-      </Webcam>
-    </div>
-  ) : (
-    <div className={"flex flex-col space-y-2 h-full"}>
-      <div className={"w-full rounded-lg border-2 overflow-hidden"}>
-        <Image
-          src={photo}
-          alt="uploaded"
-          width={1280}
-          height={600}
-          layout="intrinsic"
-          objectFit="cover"
-          className={"h-4/5"}
-        />
-      </div>
-      <div className={"w-full"}>
-        <textarea
-          className={"border-2 rounded-lg w-full resize-none p-2"}
-          ref={CommentRef}
-        />
-        <div className={"flex flex-row"}>
-          <PrimaryButton
-            className={"w-full"}
-            icon={faCirclePlus}
-            onClick={savePictures}
-          >
-            Opslaan
-          </PrimaryButton>
+        <PrimaryCard
+          title={"Neem een foto"}
+          icon={faCameraRetro}
+          className={"w-full"}
+        >
+          {photoMode ? (
+            <div className={"flex-col space-y-2"}>
+              <Webcam
+                audio={false}
+                imageSmoothing
+                screenshotFormat="image/png"
+                screenshotQuality={1}
+                videoConstraints={{
+                  width: 1280,
+                  height: 720,
+                  facingMode: "environment",
+                }}
+                className={"w-full"}
+              >
+                {({ getScreenshot }) => (
+                  <div className={"flex flex-row"}>
+                    <PrimaryButton
+                      className={"w-full"}
+                      onClick={() => {
+                        const imageSrc = getScreenshot();
+                        blobToUrl(imageSrc);
+                        setPhotoMode(false);
+                      }}
+                      icon={faCameraRetro}
+                    >
+                      Neem foto
+                    </PrimaryButton>
+                  </div>
+                )}
+              </Webcam>
+            </div>
+          ) : (
+            <div className={"flex flex-col space-y-2 h-full"}>
+              <div className={"w-full rounded-lg border-2 overflow-hidden"}>
+                <Image
+                  src={photo}
+                  alt="uploaded"
+                  width={1280}
+                  height={600}
+                  layout="intrinsic"
+                  objectFit="cover"
+                  className={""}
+                />
+              </div>
+              <div className={"w-full"}>
+                <textarea
+                  className={"border-2 rounded-lg w-full resize-none p-2"}
+                  ref={CommentRef}
+                />
+                <div className={"flex flex-row"}>
+                  <PrimaryButton
+                    className={"w-full"}
+                    icon={faCirclePlus}
+                    onClick={savePictures}
+                  >
+                    Opslaan
+                  </PrimaryButton>
+                  <CustomButton
+                    className={"bg-bad-1 text-dark-h-1"}
+                    onClick={() => {
+                      setPhotoMode(true);
+                    }}
+                    icon={faArrowRotateRight}
+                  >
+                    Opnieuw
+                  </CustomButton>
+                </div>
+              </div>
+            </div>
+          )}
           <CustomButton
-            className={"bg-bad-1 text-dark-h-1"}
-            onClick={() => {
-              setPhotoMode(true);
-            }}
-            icon={faArrowRotateRight}
+            className={"bg-bad-1 text-dark-h-1 w-full"}
+            onClick={closeModal}
+            icon={faXmark}
           >
-            Opnieuw
+            Annuleren
           </CustomButton>
-        </div>
-      </div>
+        </PrimaryCard>
+      </Modal>
     </div>
   );
 }

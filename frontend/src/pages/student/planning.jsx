@@ -12,7 +12,10 @@ export default function StudentPlanningPage() {
   useEffect(() => {
     const loadPhoto = async () => {
       const photo = await PhotoService.getById(1);
-      setPhoto(photo.image);
+      const split = photo.image.split("/");
+
+      console.log(split[split.length - 1]);
+      setPhoto(photo);
     };
     loadPhoto().catch();
   }, []);
@@ -21,27 +24,12 @@ export default function StudentPlanningPage() {
     <>
       <div>
         <p>placehoder</p>
-        <Popup
-          trigger={<button> Click to open popup </button>}
-          position="center center"
-          modal
-        >
-          {(close) => (
-            <PhotoCreation
-              scheduleUrl={"http://localhost:8000/api/schedule/1/"}
-              state={1}
-              close={close}
-              buildingUrl={"http://localhost:8000/api/building/3/"}
-            />
-          )}
-        </Popup>
-        <Popup
-          trigger={<button> Click to open popup </button>}
-          position="center center"
-          modal
-        >
-          {(close) => <PhotoPage photo={photo} />}
-        </Popup>
+        <PhotoCreation
+          scheduleUrl={"http://localhost:8000/api/schedule/1/"}
+          state={1}
+          buildingUrl={"http://localhost:8000/api/building/3/"}
+        />
+        <PhotoPage photo={photo} />
       </div>
     </>
   );

@@ -18,7 +18,14 @@ const nextConfig = {
     return [{ source: "/next/:path*", destination: "/api/:path*" }];
   },
   images: {
-    domains: ["127.0.0.1"],
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "8000",
+        pathname: "/media/images/*",
+      },
+    ],
   },
 };
 
