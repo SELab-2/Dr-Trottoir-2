@@ -52,9 +52,6 @@ admin.site.register(CustomUser, UserAdmin)
 # unregister the Group model from admin.
 admin.site.unregister(Group)
 # Register other moments
-<<<<<<< HEAD
-models = [Region, Building, Photo, Visit, Tour, Schedule, BuildingInTour, Waste, Template]
-=======
 models = [
     Region,
     Building,
@@ -64,8 +61,8 @@ models = [
     Schedule,
     BuildingInTour,
     Waste,
+    Template,
     VisitComment,
     ScheduleComment
 ]
->>>>>>> 4fb78de4ccd4da5b29b76013f4fc2f8bfa575940
 admin.site.register(models)
