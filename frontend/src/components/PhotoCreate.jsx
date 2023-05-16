@@ -1,6 +1,6 @@
 import "reactjs-popup/dist/index.css";
 import PrimaryButton from "@/components/button/PrimaryButton";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import PhotoService from "@/services/photo.service";
 import moment from "moment";
 import ScheduleService from "@/services/schedule.service";
@@ -23,24 +23,28 @@ import {
 import Modal from "react-modal";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 
+/**
+ * A popup to take a picture.
+ * @param scheduleUrl The URL of a schedule object.
+ * @param state The state of a picture (1: Arrival, 2: Departure, 3: Extra).
+ * @param buildingUrl The URL of a building object.
+ * @param callback A callback to give the new photo object.
+ */
 export default function PhotoCreation({
   scheduleUrl,
   state,
   buildingUrl,
   callback = () => {},
-  close,
 }) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [photoMode, setPhotoMode] = useState(true);
-  const [commentMode, setCommentMode] = useState(false);
-  const [photos, setPhotos] = useState([]);
   const [photo, setPhoto] = useState(null);
   const [file, setFile] = useState(null);
-  const [files, setFiles] = useState([]);
   const CommentRef = useRef(null);
 
   function blobToUrl(blob) {
     // https://stackoverflow.com/questions/16968945/convert-base64-png-data-to-javascript-file-objects
+    // The raw image is parsed into a file.
     let arr = blob.split(","),
       mime = arr[0].match(/:(.*?);/)[1],
       bstr = atob(arr[1]),
@@ -55,6 +59,12 @@ export default function PhotoCreation({
     setPhoto(URL.createObjectURL(file));
   }
 
+  /**
+   * Makes a new Photo object
+   * @param visit A visit object.
+   * @param comment A comment from the user input.
+   * @param date The current date of making the picture that is formatted correctly, so it can be parsed in the backend.
+   */
   async function savePhoto(visit, comment, date) {
     const formData = new FormData();
     formData.append("image", file);
@@ -96,6 +106,7 @@ export default function PhotoCreation({
       );
     } else if (result.length === 0 && state === 1) {
       // The state is "arriving" and there is no visit object yet.
+      // This means we have to make one first.
       let { user } = await getSession();
       let split = user.url.trim().split("/");
       user = await userService.getById(split[split.length - 2]);
@@ -182,7 +193,7 @@ export default function PhotoCreation({
                   src={photo}
                   alt="uploaded"
                   width={1280}
-                  height={600}
+                  height={720}
                   layout="intrinsic"
                   objectFit="cover"
                   className={""}

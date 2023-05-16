@@ -9,6 +9,10 @@ import UserService from "@/services/user.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
 import BuildingService from "@/services/building.service";
 
+/**
+ * A detail screen for a picture.
+ * @param photo A photo object.
+ */
 export default function PhotoPage({ photo }) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [person, setPerson] = useState("");
