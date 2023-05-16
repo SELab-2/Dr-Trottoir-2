@@ -216,7 +216,7 @@ export default function Templates() {
                 className={"mr-2"}
                 options={[]}
               >
-                Sort
+                Sorteer
               </Dropdown>
               <InputField
                 classNameDiv={"w-80"}
