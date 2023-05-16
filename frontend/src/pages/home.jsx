@@ -18,8 +18,6 @@ import {
 import Emoji from "@/components/Emoji";
 import Layout from "@/components/Layout";
 import CustomProgressBar from "@/components/ProgressBar";
-import { urlToPK } from "@/utils/urlToPK";
-import Link from "next/link";
 
 export default function Home() {
   const [response, setResponse] = useState("{}");
@@ -81,12 +79,6 @@ export default function Home() {
         circleWidth={120}
         radius={120}
       />
-      <Link
-        href={`/student/planning/`}
-        className={"bg-primary-2 border-2 rounded-lg p-1"}
-      >
-        Details
-      </Link>
     </>
   );
 }
