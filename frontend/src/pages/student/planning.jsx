@@ -2,9 +2,21 @@ import Layout from "@/components/Layout";
 import MobileLayout from "@/components/MobileLayout";
 import Popup from "reactjs-popup";
 import PhotoCreation from "@/components/PhotoCreate";
+import PhotoPage from "@/components/PhotoPage";
+import { useEffect, useState } from "react";
+import PhotoService from "@/services/photo.service";
 
 export default function StudentPlanningPage() {
-  // TODO: Implement this page
+  const [photo, setPhoto] = useState(null);
+
+  useEffect(() => {
+    const loadPhoto = async () => {
+      const photo = await PhotoService.getById(1);
+      setPhoto(photo.image);
+    };
+    loadPhoto().catch();
+  }, []);
+
   return (
     <>
       <div>
@@ -22,6 +34,13 @@ export default function StudentPlanningPage() {
               buildingUrl={"http://localhost:8000/api/building/3/"}
             />
           )}
+        </Popup>
+        <Popup
+          trigger={<button> Click to open popup </button>}
+          position="center center"
+          modal
+        >
+          {(close) => <PhotoPage photo={photo} />}
         </Popup>
       </div>
     </>

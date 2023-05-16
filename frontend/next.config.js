@@ -17,6 +17,9 @@ const nextConfig = {
   async rewrites() {
     return [{ source: "/next/:path*", destination: "/api/:path*" }];
   },
+  images: {
+    domains: ["127.0.0.1"],
+  },
 };
 
 module.exports = nextConfig;

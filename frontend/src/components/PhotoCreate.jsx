@@ -24,6 +24,7 @@ export default function PhotoCreation({
   scheduleUrl,
   state,
   buildingUrl,
+  callback = () => {},
   close,
 }) {
   const [photoMode, setPhotoMode] = useState(true);
@@ -77,7 +78,7 @@ export default function PhotoCreation({
     formData.append("comment", comment);
     formData.append("created_at", date);
     const response = await PhotoService.postPhoto(formData);
-    console.log(response);
+    callback(response);
     close();
   }
 
@@ -181,7 +182,7 @@ export default function PhotoCreation({
       </div>
       <div className={"w-full"}>
         <textarea
-          className={"border-2 rounded-lg w-full resize-none"}
+          className={"border-2 rounded-lg w-full resize-none p-2"}
           ref={CommentRef}
         />
         <div className={"flex flex-row"}>
