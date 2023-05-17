@@ -7,7 +7,6 @@ import TourBuildingAdd from "@/components/forms/forms-components/TourBuildingAdd
 import SelectForm from "@/components/forms/forms-components/forms-input/SelectForm";
 import RegionService from "@/services/region.service";
 import { useRouter } from "next/router";
-import BuildingService from "@/services/building.service";
 import { urlToPK } from "@/utils/urlToPK";
 
 export default function TourForm({ id }) {
@@ -28,7 +27,7 @@ export default function TourForm({ id }) {
       if (id) {
         const response = await TourService.patchById(id, data);
         await router.push(
-          `/admin/data_toevoegen/rondes/${urlToPK(response.url)}`
+          `/beheer/data_toevoegen/rondes/${urlToPK(response.url)}`
         );
       } else {
         await TourService.post(data);
@@ -43,7 +42,7 @@ export default function TourForm({ id }) {
   const onDelete = async () => {
     try {
       await TourService.deleteById(id);
-      await router.push(`/admin/data_toevoegen/rondes`);
+      await router.push(`/beheer/data_toevoegen/rondes`);
     } catch (e) {
       alert(e);
     }

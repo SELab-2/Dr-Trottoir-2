@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
-import AdminDashboardPage from "@/pages/admin/planning";
 import Layout from "@/components/Layout";
 
 export default function AdminDataAddPage() {
   const router = useRouter();
-  router.push("/admin/data_toevoegen/planningen");
+  router.push("/beheer/data_toevoegen/planningen");
 }
 
 AdminDataAddPage.getLayout = function getLayout(page) {

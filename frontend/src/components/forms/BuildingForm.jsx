@@ -9,8 +9,6 @@ import UserService from "@/services/user.service";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import RegionService from "@/services/region.service";
-import TourService from "@/services/tour.service";
-import { urlToPK } from "@/utils/urlToPK";
 
 export default function BuildingForm({ id }) {
   const [loading, setLoading] = useState(true);
@@ -65,7 +63,7 @@ export default function BuildingForm({ id }) {
   const onDelete = async () => {
     try {
       await BuildingService.deleteById(id);
-      await router.push(`/admin/data_toevoegen/gebouwen`);
+      await router.push(`/beheer/data_toevoegen/gebouwen`);
     } catch (e) {
       alert(e);
     }

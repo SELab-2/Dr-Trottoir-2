@@ -28,7 +28,7 @@ function scheduleList(data) {
     return (
       <LinkButton
         key={id}
-        link={`/admin/data_toevoegen/planningen/${id}`}
+        link={`/beheer/data_toevoegen/planningen/${id}`}
         className={"truncate"}
       >
         <div className={"text-light-h-1"}>
@@ -57,7 +57,7 @@ function tourList(data) {
     return (
       <LinkButton
         key={id}
-        link={`/admin/data_toevoegen/rondes/${id}`}
+        link={`/beheer/data_toevoegen/rondes/${id}`}
         className={"truncate"}
       >
         <div className={"text-light-h-1"}>
@@ -76,7 +76,7 @@ function regionList(data) {
     return (
       <LinkButton
         key={id}
-        link={`/admin/data_toevoegen/regio/${id}`}
+        link={`/beheer/data_toevoegen/regio/${id}`}
         className={"truncate"}
       >
         <div className={"text-light-h-1"}>
@@ -94,7 +94,7 @@ function buildingList(data) {
     return (
       <LinkButton
         key={id}
-        link={`/admin/data_toevoegen/gebouwen/${id}`}
+        link={`/beheer/data_toevoegen/gebouwen/${id}`}
         className={"truncate"}
       >
         <div className={"text-light-h-1"}>
@@ -113,7 +113,7 @@ function userList(data, type) {
     return (
       <LinkButton
         key={data.url}
-        link={`/admin/data_toevoegen/${type}/${urlToPK(data.url)}`}
+        link={`/beheer/data_toevoegen/${type}/${urlToPK(data.url)}`}
         className={"truncate"}
       >
         <div className={"text-light-h-1"}>
@@ -181,27 +181,27 @@ export default function LayoutDataAdd({ children }) {
             categories={{
               Planningen: {
                 icon: faCalendarWeek,
-                link: "/admin/data_toevoegen/planningen",
+                link: "/beheer/data_toevoegen/planningen",
               },
               Rondes: {
                 icon: faBicycle,
-                link: "/admin/data_toevoegen/rondes",
+                link: "/beheer/data_toevoegen/rondes",
               },
               Regio: {
                 icon: faLocationDot,
-                link: "/admin/data_toevoegen/regio",
+                link: "/beheer/data_toevoegen/regio",
               },
               Gebouwen: {
                 icon: faBuilding,
-                link: "/admin/data_toevoegen/gebouwen",
+                link: "/beheer/data_toevoegen/gebouwen",
               },
               Personeel: {
                 icon: faPeopleGroup,
-                link: "/admin/data_toevoegen/personeel",
+                link: "/beheer/data_toevoegen/personeel",
               },
               Syndici: {
                 icon: faBriefcase,
-                link: "/admin/data_toevoegen/syndici",
+                link: "/beheer/data_toevoegen/syndici",
               },
             }}
             linkClassName={"hover: hover:bg-light-bg-2"}
@@ -211,7 +211,7 @@ export default function LayoutDataAdd({ children }) {
           icon={faPlusCircle}
           className={"w-full"}
           onClick={() =>
-            router.push(`/admin/data_toevoegen/${router.query.type}`)
+            router.push(`/beheer/data_toevoegen/${router.query.type}`)
           }
         >
           Nieuw Item
