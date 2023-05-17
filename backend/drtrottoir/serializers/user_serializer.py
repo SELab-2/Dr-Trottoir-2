@@ -14,6 +14,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         source='region.region_name',
         read_only=True
     )
+    active = serializers.CharField(source='is_active', read_only=True)
 
     class Meta:
         model = User
@@ -26,6 +27,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'region',
             'region_name',
             'role',
-            'buildings'
+            'buildings',
+            'phone',
+            'active'
         ]
-        read_only_field = ['is_active']

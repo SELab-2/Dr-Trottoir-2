@@ -76,12 +76,12 @@ class PhotoPermission(BasePermission):
 
 class UserViewSetPermission(BasePermission):
     """
-    Including this permission allows only superadmins to GET index page.
-    Only Users that own the record and superadmins can view and edit that record.
+    Including this permission allows only super permissions to GET index page.
+    Only Users that own the record and super permissions can view and edit that record.
     """
 
     def has_permission(self, request, view):
-        return (request.user.role <= Roles.SUPERADMIN and request.method in SAFE_METHODS) or 'pk' in view.kwargs
+        return (request.user.is_super and request.method in SAFE_METHODS) or 'pk' in view.kwargs
 
     def has_object_permission(self, request, view, obj):
-        return request.user.role <= Roles.SUPERADMIN or (obj == request.user and request.method in SAFE_METHODS)
+        return request.user.is_super or (obj == request.user and request.method in SAFE_METHODS)
