@@ -34,9 +34,11 @@ class RegisterSerializer(serializers.HyperlinkedModelSerializer):
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             is_active=False,
-            phone=validated_data['phone'],
             role=Roles.STUDENT
         )
+
+        if 'phone' in validated_data:
+            user.phone = validated_data['phone']
 
         user.set_password(validated_data['password'])
         user.save()
