@@ -23,7 +23,7 @@ export default function Navbar() {
   return (
     <div className={"flex flex-col flex-shrink-0 sm:w-64 h-full bg-dark-bg-1"}>
       <div className={"flex justify-center p-1 mb-2 mt-8"}>
-        <Link href={"/home"}>
+        <Link href={"/admin/home"}>
           <Image src={Logo} className="w-36 object-fill" alt="logo" />
         </Link>
       </div>

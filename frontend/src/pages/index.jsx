@@ -43,7 +43,7 @@ export default function Login() {
 
     const user = (await getSession()).user;
     if (user.role <= ROLES.SUPERSTUDENT) {
-      await router.push("/admin/dashboard");
+      await router.push("/beheer/planning");
     } else if (user.role === ROLES.STUDENT) {
       await router.push("/student/planning");
     } else if (user.role === ROLES.SYNDICUS) {
