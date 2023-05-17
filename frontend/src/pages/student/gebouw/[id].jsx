@@ -299,7 +299,7 @@ export default function StudentBuilding() {
                   </div>
                   <div className="ml-auto my-2">
                     <Link
-                      href={selectedBuilding.manual}
+                      href={selectedBuilding.manual || ""}
                       target="_blank"
                       className={
                         "align-middle border-2 py-2 px-2 text-center rounded-lg font-bold"
@@ -337,6 +337,7 @@ export default function StudentBuilding() {
                       buildingVisit === null ? buildingVisit : buildingVisit.url
                     }
                     userUrl={userUrl}
+                    callback={() => loadComments(buildingVisit)}
                   ></CommentModal>
                 </div>
                 {renderComments()}
