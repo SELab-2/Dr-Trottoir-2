@@ -158,7 +158,7 @@ export default function AdminDashboardPage() {
         ),
         <Link
           key={entry.url}
-          href={`/admin/planningen/${urlToPK(entry.url)}`}
+          href={`/beheer/planningen/${urlToPK(entry.url)}`}
           className={"bg-primary-2 border-2 border-light-h-2 rounded-lg p-1"}
         >
           Details
