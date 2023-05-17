@@ -41,6 +41,21 @@ class VisitService {
     return response.status === 200 ? response.data : [];
   }
 
+  async postVisit(data) {
+    const response = await HelperService.getPostResponse(`visit/`, data);
+    return response.status === 201 ? response.data : {};
+  }
+
+  /**
+   * Returns visit comments of given visit.
+   * @param id The ID of the visit you want the visit comments of.
+   * @returns {Promise<*|*[]>}
+   */
+  async getCommentsFromVisit(id) {
+    let response = await HelperService.getResponseByUrl(`visit/${id}/comments`);
+    return response.status === 200 ? response.data : [];
+  }
+
   /**
    * Returns comments of given visit.
    * @param id The ID of the visit you want comments of.
@@ -60,7 +75,6 @@ class VisitService {
    * - text (string)
    * - user: url of the user (string)
    * - visit: url of the visit (string)
-   * 
    * @param data dict with the data.
    * @returns {Promise<*>}
    */

@@ -45,13 +45,16 @@ export default function WasteCalendar({ waste, dates }) {
               } else if (entry.waste_type.toUpperCase() === "REST") {
                 classname = "bg-waste-rest text-light-bg-1";
                 cut = false;
+              } else if (entry.waste_type.toUpperCase() === "GFT") {
+                classname = "bg-waste-GFT text-light-bg-1";
+                cut = false;
               }
               return (
                 <ColoredTag
                   key={index}
                   className={`rounded-lg w-full text-center overflow-hidden ${classname}`}
                 >
-                  <Cell cut={cut} maxWidth={"30"}>
+                  <Cell cut={cut} maxWidth={"max-w-[30px]"}>
                     <p className={classname}>{entry.waste_type}</p>
                   </Cell>
                 </ColoredTag>

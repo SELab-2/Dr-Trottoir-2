@@ -1,4 +1,9 @@
-import { faCirclePlus, faComment, faSquarePlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCirclePlus,
+  faComment,
+  faSquarePlus,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PrimaryCard from "./custom-card/PrimaryCard";
 import CustomButton from "./button/Button";
@@ -19,14 +24,13 @@ export default function CommentModal({
       text: CommentRef.current.value,
       visit: visitUrl,
     };
-    console.log(data);
-    const response = await visitService.postVisitComment(data);
+    await visitService.postVisitComment(data);
     callback();
     closeModal();
   }
 
   function openModal() {
-    if (visitUrl !== null){
+    if (visitUrl !== null) {
       setIsOpen(true);
     }
   }

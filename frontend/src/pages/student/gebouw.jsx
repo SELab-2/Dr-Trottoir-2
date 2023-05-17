@@ -1,8 +1,6 @@
 import MobileLayout from "@/components/MobileLayout";
 import { useEffect, useState } from "react";
-import {
-  faBuilding,
-} from "@fortawesome/free-solid-svg-icons";
+import faBuilding from "@fortawesome/free-solid-svg-icons";
 import Dropdown from "@/components/Dropdown";
 import scheduleService from "@/services/schedule.service";
 import { urlToPK } from "@/utils/urlToPK";

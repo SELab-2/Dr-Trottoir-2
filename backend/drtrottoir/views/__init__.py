@@ -9,7 +9,7 @@ from .schedule_viewset import ScheduleViewSet
 from .photo_viewset import PhotoViewSet
 from .register_view import RegisterView
 from .me_view import MeView
-from .comment_viewset import VisitCommentView, ScheduleCommentView
+from .comment_viewset import VisitCommentViewSet, ScheduleCommentViewSet
 
 __all__ = [
     BuildingViewSet,
@@ -24,6 +24,6 @@ __all__ = [
     BuildingInTourViewSet,
     RegisterView,
     MeView,
-    VisitCommentView,
-    ScheduleCommentView
+    VisitCommentViewSet,
+    ScheduleCommentViewSet
 ]

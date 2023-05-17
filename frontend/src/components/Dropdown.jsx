@@ -11,7 +11,9 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
  * @param icon If icon is not null, this will be displayed on the left.
  * @param onClick Function that is executed when element in the dropdown is selected.
  *        This function expects 1 argument, a list of all selected elements.
+ * @param value This is the option that should be selected when creating hte dropdown
  * @param options List of all the options. These needs to be strings/components.
+ * @param optionsValues List of the hidden value of every option.
  * @param multi Indicates if multiple elements can be selected.
  * @returns {JSX.Element}
  * @constructor
@@ -22,8 +24,9 @@ export default function Dropdown({
   listClassName,
   icon,
   onClick,
-  options,
   value,
+  options,
+  optionsValues,
   multi = false,
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,13 +51,21 @@ export default function Dropdown({
       ? [...selectedIndices, index]
       : [index];
     setSelectedIndices(selected);
-    onClick && onClick(selected.sort().map((i) => options[i]));
+    onClick &&
+      onClick(
+        selected.sort().map((i) => {
+          if (optionsValues) {
+            return [options[i], optionsValues[i]];
+          }
+          return options[i];
+        })
+      );
   };
 
   return (
     <div className={`${className}`}>
       <button
-        className={`align-middle border-2 py-2 px-3 text-center rounded-lg font-bold w-full mb-2 ${
+        className={`align-middle border-2 border-light-border py-2 px-3 text-center rounded-lg font-bold w-full ${
           selectedIndices.length !== 0 ? `bg-primary-2 text-primary-1` : ``
         }`}
         onClick={onButtonPressed}

@@ -30,6 +30,9 @@ import userService from "@/services/user.service";
 import buildingService from "@/services/building.service";
 import { useRouter } from "next/router";
 import CommentModal from "@/components/CommentModal";
+import PhotoCreation from "@/components/PhotoCreate";
+import PhotoPage from "@/components/PhotoPage";
+import Link from "next/link";
 
 export default function StudentBuilding() {
   const [buildings, setBuildings] = useState([]);
@@ -143,26 +146,27 @@ export default function StudentBuilding() {
     setVisitPhotos([]);
     setWasteSchedule([]);
     setVisitComments([]);
-    const wastes = await wasteService.get({
+
+    const wastePromise = wasteService.get({
       startDate: monday,
       endDate: sunday,
       building: building.url,
     });
-    setWasteSchedule(wastes);
 
-    // Get visits of the schedule of the selected building
-    const visits = await scheduleService.getVisitsFromSchedule(
+    const visitsPromise = scheduleService.getVisitsFromSchedule(
       urlToPK(building.schedule)
     );
-    for (let j in visits) {
-      let visit = visits[j];
-      let visited_building = await buildingInTourService.getEntryByUrl(
+
+    const [wastes, visits] = await Promise.all([wastePromise, visitsPromise]);
+    setWasteSchedule(wastes);
+
+    for (const visit of visits) {
+      const visited_building = await buildingInTourService.getEntryByUrl(
         visit.building_in_tour
       );
-      if (visited_building.building == building.url) {
-        // Call if selected building already has a visit
-        checkVisitPhotos(visit);
-        loadComments(visit);
+      if (visited_building.building === building.url) {
+        // Call if the selected building already has a visit
+        await Promise.all([checkVisitPhotos(visit), loadComments(visit)]);
       }
     }
   }
@@ -213,14 +217,7 @@ export default function StudentBuilding() {
       <div className="flex flex-wrap">
         {filtered.map((photo, index) => (
           <div key={index} className="p-2">
-            <Image
-              src={photo.image}
-              alt={index}
-              width={75}
-              height={75}
-              unoptimized={true}
-              className="rounded-md"
-            />
+            <PhotoPage photo={photo}></PhotoPage>
           </div>
         ))}
       </div>
@@ -251,17 +248,23 @@ export default function StudentBuilding() {
     }
   }
 
-  function addPhoto(state) {
-    // Redirect to the photo taking page
-    // If this is the first (arrival) photo, a visit object will have to be made with a POST-request
-    console.log("Add photo");
+  function renderPhotoCreation(state) {
+    return (
+      <PhotoCreation
+        className={"ml-auto pr-1 text-primary-1 text-lg cursor-pointer"}
+        scheduleUrl={selectedBuilding.schedule}
+        state={state}
+        buildingUrl={selectedBuilding.url}
+        callback={photoAdded}
+      ></PhotoCreation>
+    );
   }
 
-  function openManual() {
-    if (selectedBuilding != null) {
-      const manualUrl = selectedBuilding.manual;
-      console.log("Open manual");
-      // let the manual view on a page
+  function photoAdded() {
+    if (buildingVisit !== null) {
+      checkVisitPhotos(buildingVisit);
+    } else {
+      router.reload();
     }
   }
 
@@ -294,10 +297,16 @@ export default function StudentBuilding() {
                     {selectedBuilding.nickname}
                     {renderCompletedIcon(arrival && inside && departure)}
                   </div>
-                  <div className="ml-auto">
-                    <CustomButton className="-p-2" onClick={() => openManual()}>
+                  <div className="ml-auto my-2">
+                    <Link
+                      href={selectedBuilding.manual}
+                      target="_blank"
+                      className={
+                        "align-middle border-2 py-2 px-2 text-center rounded-lg font-bold"
+                      }
+                    >
                       Handleiding
-                    </CustomButton>
+                    </Link>
                   </div>
                 </div>
                 <div className="flex text-light-h-1 items-center">
@@ -321,8 +330,12 @@ export default function StudentBuilding() {
                     Opmerkingen
                   </div>
                   <CommentModal
-                    className={"ml-auto pr-1 text-primary-1 text-lg cursor-pointer"}
-                    visitUrl={buildingVisit === null ? buildingVisit : buildingVisit.url}
+                    className={
+                      "ml-auto pr-1 text-primary-1 text-lg cursor-pointer"
+                    }
+                    visitUrl={
+                      buildingVisit === null ? buildingVisit : buildingVisit.url
+                    }
                     userUrl={userUrl}
                   ></CommentModal>
                 </div>
@@ -332,15 +345,9 @@ export default function StudentBuilding() {
                 <PrimaryCard className="my-2">
                   <div className="font-bold flex">
                     Aankomst
-                    <div
-                      className="ml-auto flex items-center justify-center"
-                      onClick={() => addPhoto(1)}
-                    >
+                    <div className="ml-auto flex items-center justify-center">
                       {renderCompletedIcon(arrival)}
-                      <FontAwesomeIcon
-                        icon={faSquarePlus}
-                        className="pr-1 text-primary-1 text-lg cursor-pointer"
-                      />
+                      {renderPhotoCreation(1)}
                     </div>
                   </div>
                   {renderPhotos(1)}
@@ -348,12 +355,9 @@ export default function StudentBuilding() {
                 <PrimaryCard className="my-2">
                   <div className="font-bold flex">
                     Binnen
-                    <div className="ml-auto" onClick={() => addPhoto(3)}>
+                    <div className="ml-auto flex items-center justify-center">
                       {renderCompletedIcon(inside)}
-                      <FontAwesomeIcon
-                        icon={faSquarePlus}
-                        className="pr-1 text-primary-1 text-lg cursor-pointer"
-                      />
+                      {renderPhotoCreation(3)}
                     </div>
                   </div>
                   {renderPhotos(3)}
@@ -361,12 +365,9 @@ export default function StudentBuilding() {
                 <PrimaryCard className="my-2">
                   <div className="font-bold flex">
                     Vertrek
-                    <div className="ml-auto" onClick={() => addPhoto(2)}>
+                    <div className="ml-auto flex items-center justify-center">
                       {renderCompletedIcon(departure)}
-                      <FontAwesomeIcon
-                        icon={faSquarePlus}
-                        className="pr-1 text-primary-1 text-lg cursor-pointer"
-                      />
+                      {renderPhotoCreation(2)}
                     </div>
                   </div>
                   {renderPhotos(2)}
