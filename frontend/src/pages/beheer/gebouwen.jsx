@@ -27,6 +27,7 @@ import { useEffect, useRef, useState } from "react";
 import Dropdown from "@/components/Dropdown";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import { useRouter } from "next/router";
+import { urlToPK } from "@/utils/urlToPK";
 
 export default function Buildings() {
   const [buildingList, setBuildingList] = useState([]);
@@ -106,6 +107,21 @@ export default function Buildings() {
     );
   };
 
+  const ManualButton = () => {
+    if (buildingDetail.manual !== null)
+      return (
+        <div className={"pt-3"}>
+          <PrimaryButton
+            onClick={() =>
+              window.open(buildingDetail.manual, "_blank", "noreferrer")
+            }
+          >
+            Handleiding
+          </PrimaryButton>
+        </div>
+      );
+  };
+
   return (
     <>
       <Head>
@@ -129,7 +145,7 @@ export default function Buildings() {
                 className={"mr-2"}
                 options={[]}
               >
-                Sort
+                Sorteer
               </Dropdown>
               <InputField
                 classNameDiv={"w-80"}
@@ -165,7 +181,16 @@ export default function Buildings() {
                       {buildingDetail.nickname}
                     </h1>
                     <div className={"flex space-x-2"}>
-                      <SecondaryButton icon={faPenToSquare} className={"h-fit"}>
+                      <SecondaryButton
+                        icon={faPenToSquare}
+                        className={"h-fit"}
+                        onClick={() =>
+                          router.push(
+                            "/beheer/data_toevoegen/gebouwen/" +
+                              urlToPK(buildingURL)
+                          )
+                        }
+                      >
                         Bewerk
                       </SecondaryButton>
                       <SecondaryButton icon={faTrash} className={"h-fit"}>
@@ -216,18 +241,12 @@ export default function Buildings() {
                         <p>{buildingDetail.address_line_1}</p>
                         <p>{buildingDetail.address_line_2}</p>
                         <MapView
-                          className={"pt-3  h-[420px]"}
+                          className={"pt-3  h-[420px] w-full"}
                           address={
                             buildingDetail.address_line_1 +
                             " " +
                             buildingDetail.address_line_2
                           }
-                          mapWidth={
-                            mapCard.current
-                              ? mapCard.current.offsetWidth - 45
-                              : 0
-                          }
-                          mapHeight={400}
                         />
                       </SecondaryCard>
                     </div>
@@ -239,19 +258,7 @@ export default function Buildings() {
                       className={"my-2"}
                     >
                       <p>{buildingDetail["description"]}</p>
-                      <div className={"pt-3"}>
-                        <SecondaryButton
-                          onClick={() =>
-                            window.open(
-                              buildingDetail.manual,
-                              "_blank",
-                              "noreferrer"
-                            )
-                          }
-                        >
-                          Handleiding
-                        </SecondaryButton>
-                      </div>
+                      <ManualButton />
                     </SecondaryCard>
                     <SecondaryCard
                       title={"Foto's"}
