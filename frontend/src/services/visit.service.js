@@ -40,6 +40,11 @@ class VisitService {
     return response.status === 200 ? response.data : [];
   }
 
+  async postVisit(data) {
+    const response = await HelperService.getPostResponse(`visit/`, data);
+    return response.status === 201 ? response.data : {};
+  }
+
   /**
    * Returns visit comments of given visit.
    * @param id The ID of the visit you want the visit comments of.

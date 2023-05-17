@@ -27,6 +27,12 @@ class HelperService {
     return response;*/
   }
 
+  async getPostResponse(url, data) {
+    return await ApiInstance.getApi("application/x-www-form-urlencoded").post(
+      url,
+      data
+    );
+  }
   /**
    * Return all entries from a page with pagination.
    * If an error occurs, an empty list will be returned.
