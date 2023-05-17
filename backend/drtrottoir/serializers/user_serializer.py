@@ -26,6 +26,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'region',
             'region_name',
             'role',
-            'buildings'
+            'buildings',
+            'phone',
+            'is_active'
         ]
-        read_only_field = ['is_active']

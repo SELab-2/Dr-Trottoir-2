@@ -36,7 +36,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def remove(self, request, pk=None):
         # Check if user id is valid
         if pk is None or not CustomUser.objects.filter(pk=pk).exists():
-            return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Given user doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
         user = CustomUser.objects.get(pk=pk)
         user.is_active = False
         user.save()
