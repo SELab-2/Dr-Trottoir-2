@@ -18,7 +18,7 @@ import ContextMenu from "@/components/ContextMenu";
 import buildingService from "@/services/building.service";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import CustomButton from "@/components/button/Button";
-import CustomModal from "@/components/CustomModal";
+import CustomModal from "@/components/Modals/CustomModal";
 import SelectableTable from "@/components/table/SelectableTable";
 import { urlToPK } from "@/utils/urlToPK";
 import Layout from "@/components/Layout";

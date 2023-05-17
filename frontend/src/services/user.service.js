@@ -4,7 +4,11 @@ import HelperService from "@/services/helper.service";
 class UserService {
   /**
    * Returns all users that match the filters (args). If args is empty, all users will be returned.
-   * @param args Dictionary with the filters. No filters implemented for user.
+   *
+   * FILTERS:
+   * - roles (list of allowed roles of the users: DEVELOPER = 1, SUPERADMIN = 2, SUPERSTUDENT = 3, OWNER = 4, STUDENT = 5)
+   *
+   * @param args Dictionary with the filters.
    * @returns {Promise<*>} A list with user entries.
    */
   async get(args = {}) {
@@ -38,6 +42,10 @@ class UserService {
    * @returns {*} The filtered data.
    */
   #filterUser(data, args) {
+    if (args.roles) {
+      data = data.filter((user) => args.roles.includes(user.role));
+    }
+
     return data;
   }
 
