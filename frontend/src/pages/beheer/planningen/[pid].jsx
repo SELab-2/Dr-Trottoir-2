@@ -39,6 +39,7 @@ import Dropdown from "@/components/Dropdown";
 import InputField from "@/components/input-fields/InputField";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import { urlToPK } from "@/utils/urlToPK";
+import visit_finished from "@/utils/visit_finished";
 
 /**
  * Return small tour component to place in the selection list.
@@ -86,26 +87,6 @@ export default function AdminTourPage() {
     setSchedules(schedulesList);
     setStart(dateFrom);
     setEnd(dateTo);
-  }
-
-  /**
-   * We put all the photos of state departure of a visit in a list and return it.
-   * @param url The url of the visit object.
-   * @return list The list of photos with state departure.
-   */
-  async function visit_finished(url) {
-    const split = url.trim().split("/");
-    const photoUrls = await VisitService.getPhotosByVisit(
-      split[split.length - 2]
-    );
-
-    const photos = await Promise.all(
-      photoUrls.map(async (entry) => {
-        return await PhotoService.getEntryByUrl(entry.url);
-      })
-    );
-
-    return photos.filter((entry) => entry["state"] === 2);
   }
 
   /**
