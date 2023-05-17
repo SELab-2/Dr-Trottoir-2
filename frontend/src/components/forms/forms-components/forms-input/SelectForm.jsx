@@ -5,11 +5,12 @@ export default function SelectForm({
   className,
   onChange,
   value,
+  required = false,
 }) {
   return (
     <div className={`flex flex-col space-y-2 ${className}`}>
       <label htmlFor={id} className={"font-bold"}>
-        {label}
+        {label} {required && <span className="text-bad-1">*</span>}
       </label>
       <select
         name={id}
@@ -20,7 +21,7 @@ export default function SelectForm({
         }
         onChange={onChange}
       >
-        <option value={-1}>--Selecteer een {label}--</option>
+        <option value={""}>-- Kies een optie --</option>
         {children}
       </select>
     </div>

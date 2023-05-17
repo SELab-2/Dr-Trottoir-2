@@ -1,12 +1,18 @@
-import { useRouter } from "next/router";
-import AdminDashboardPage from "@/pages/admin/planning";
 import Layout from "@/components/Layout";
 
 export default function AdminDataAddPage() {
-  const router = useRouter();
-  router.push("/admin/data_toevoegen/planningen");
+  return <></>;
 }
 
 AdminDataAddPage.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>;
 };
+
+export async function getServerSideProps() {
+  return {
+    redirect: {
+      destination: "/beheer/data_toevoegen/planningen",
+      permanent: false,
+    },
+  };
+}

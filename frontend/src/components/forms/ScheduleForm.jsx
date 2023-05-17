@@ -19,8 +19,8 @@ export default function ScheduleForm({ id }) {
   const [loadSchedule, setLoadSchedule] = useState(false);
   const router = useRouter();
 
-  const [selectedStudent, setSelectedStudent] = useState(-1);
-  const [selectedTour, setSelectedTour] = useState(-1);
+  const [selectedStudent, setSelectedStudent] = useState("");
+  const [selectedTour, setSelectedTour] = useState("");
   const [selectedDate, setSelectedDate] = useState(moment());
   const [allStudents, setAllStudents] = useState([]);
   const [allTours, setAllTours] = useState([]);

@@ -15,7 +15,7 @@ export default function TourBuildingAdd({ tourId, callback }) {
   const [allBuildings, setAllBuildings] = useState([]);
 
   // index of selected building in allBuildings
-  const [addBuilding, setAddBuilding] = useState(-1);
+  const [addBuilding, setAddBuilding] = useState("");
 
   // All selected building, one building is listed in following format:
   // {building: <info_building>, order_index: <index>}
@@ -58,7 +58,7 @@ export default function TourBuildingAdd({ tourId, callback }) {
 
   // add building to the active building list
   const onAddBuilding = () => {
-    if (addBuilding !== -1) {
+    if (addBuilding !== "") {
       // add building to the active selectedBuildings
       const newSelectedBuildings = [...selectedBuildings];
       newSelectedBuildings.push({
@@ -76,7 +76,7 @@ export default function TourBuildingAdd({ tourId, callback }) {
       const newAllBuildings = [...allBuildings];
       newAllBuildings.splice(addBuilding, 1);
       setAllBuildings(newAllBuildings);
-      setAddBuilding(-1);
+      setAddBuilding("");
     }
   };
 

@@ -32,7 +32,7 @@ function scheduleList(data) {
     return (
       <LinkButton
         key={id}
-        link={`/admin/data_toevoegen/planningen/${id}`}
+        link={`/beheer/data_toevoegen/planningen/${id}`}
         className={"truncate"}
       >
         <div className={"text-light-h-1"}>
@@ -49,13 +49,19 @@ function scheduleList(data) {
 }
 
 function tourList(data) {
+  data = data.filter((tour) => {
+    return !data.some((tour2) => {
+      return tour.name === tour2.name && urlToPK(tour.url) < urlToPK(tour2.url);
+    });
+  });
+
   return data.map((data) => {
     const id = urlToPK(data.url);
 
     return (
       <LinkButton
         key={id}
-        link={`/admin/data_toevoegen/rondes/${id}`}
+        link={`/beheer/data_toevoegen/rondes/${id}`}
         className={"truncate"}
       >
         <div className={"text-light-h-1"}>
@@ -74,7 +80,7 @@ function regionList(data) {
     return (
       <LinkButton
         key={id}
-        link={`/admin/data_toevoegen/regio/${id}`}
+        link={`/beheer/data_toevoegen/regio/${id}`}
         className={"truncate"}
       >
         <div className={"text-light-h-1"}>
@@ -92,7 +98,7 @@ function buildingList(data) {
     return (
       <LinkButton
         key={id}
-        link={`/admin/data_toevoegen/gebouwen/${id}`}
+        link={`/beheer/data_toevoegen/gebouwen/${id}`}
         className={"truncate"}
       >
         <div className={"text-light-h-1"}>
@@ -106,7 +112,7 @@ function buildingList(data) {
   });
 }
 
-function personeelList(data) {
+function userList(data, type) {
   return data.map((data) => {
     const id = urlToPK(data.url);
 
@@ -121,27 +127,6 @@ function personeelList(data) {
             <p>{data.first_name + " " + data.last_name}</p>
             <p className={"text-light-h-2"}>{data.email}</p>
             <p></p>
-          </div>
-        </LinkButton>
-      );
-    }
-  });
-}
-
-function syndiciList(data) {
-  return data.map((data) => {
-    const id = urlToPK(data.url);
-
-    if (data.role === 4) {
-      return (
-        <LinkButton
-          key={id}
-          link={`/admin/data_toevoegen/syndici/${id}`}
-          className={"truncate"}
-        >
-          <div className={"text-light-h-1"}>
-            <p>{data.first_name + " " + data.last_name}</p>
-            <p className={"text-light-h-2"}>{data.email}</p>
           </div>
         </LinkButton>
       );
@@ -198,10 +183,10 @@ export default function LayoutDataAdd({ children, id }) {
           setData(await BuildingService.get());
           break;
         case "personeel":
-          setData(await UserService.get());
+          setData(await UserService.get({ roles: [1, 2, 3, 5] }));
           break;
         case "syndici":
-          setData(await UserService.get());
+          setData(await UserService.get({ roles: [4] }));
           break;
         case "regio":
           setData(await RegionService.get());
@@ -224,31 +209,31 @@ export default function LayoutDataAdd({ children, id }) {
             categories={{
               Planningen: {
                 icon: faCalendarWeek,
-                link: "/admin/data_toevoegen/planningen",
+                link: "/beheer/data_toevoegen/planningen",
               },
               Afval: {
                 icon: faTrash,
-                link: "/admin/data_toevoegen/afval",
+                link: "/beheer/data_toevoegen/afval",
               },
               Rondes: {
                 icon: faBicycle,
-                link: "/admin/data_toevoegen/rondes",
+                link: "/beheer/data_toevoegen/rondes",
               },
               Regio: {
                 icon: faLocationDot,
-                link: "/admin/data_toevoegen/regio",
+                link: "/beheer/data_toevoegen/regio",
               },
               Gebouwen: {
                 icon: faBuilding,
-                link: "/admin/data_toevoegen/gebouwen",
+                link: "/beheer/data_toevoegen/gebouwen",
               },
               Personeel: {
                 icon: faPeopleGroup,
-                link: "/admin/data_toevoegen/personeel",
+                link: "/beheer/data_toevoegen/personeel",
               },
               Syndici: {
                 icon: faBriefcase,
-                link: "/admin/data_toevoegen/syndici",
+                link: "/beheer/data_toevoegen/syndici",
               },
             }}
             linkClassName={"hover: hover:bg-light-bg-2"}
@@ -258,7 +243,7 @@ export default function LayoutDataAdd({ children, id }) {
           icon={faPlusCircle}
           className={"w-full"}
           onClick={() =>
-            router.push(`/admin/data_toevoegen/${router.query.type}`)
+            router.push(`/beheer/data_toevoegen/${router.query.type}`)
           }
         >
           Nieuw Item
@@ -274,7 +259,7 @@ export default function LayoutDataAdd({ children, id }) {
             <div className={"flex justify-center items-center h-fit w-full"}>
               <Loading className={"w-10 h-10"} />
             </div>
-          ) : (
+          ) : data.length !== 0 ? (
             <div className={"flex flex-col space-y-4"}>
               {router.query.type === "planningen" && (
                 <div>
@@ -290,8 +275,12 @@ export default function LayoutDataAdd({ children, id }) {
               {router.query.type === "rondes" && tourList(data)}
               {router.query.type === "regio" && regionList(data)}
               {router.query.type === "gebouwen" && buildingList(data)}
-              {router.query.type === "personeel" && personeelList(data)}
-              {router.query.type === "syndici" && syndiciList(data)}
+              {router.query.type === "personeel" && userList(data, "personeel")}
+              {router.query.type === "syndici" && userList(data, "syndici")}
+            </div>
+          ) : (
+            <div className={"flex justify-center items-center"}>
+              <p> Geen {router.query.type} </p>
             </div>
           )}
         </PrimaryCard>
@@ -301,7 +290,7 @@ export default function LayoutDataAdd({ children, id }) {
         className={`h-full ${
           router.query.type === "afval" ? "w-full" : "w-3/5"
         }`}
-        title={"Bewerken"}
+        title={router.query.id ? "Bewerken" : "Toevoegen"}
       >
         {children}
       </PrimaryCard>

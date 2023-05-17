@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
-import TourService from "@/services/tour.service";
 import Loading from "@/components/Loading";
 import BasicForm from "@/components/forms/BasicForm";
 import InputForm from "@/components/forms/forms-components/forms-input/InputForm";
-import TourBuildingAdd from "@/components/forms/forms-components/TourBuildingAdd";
-import VisitService from "@/services/visit.service";
 import RegionService from "@/services/region.service";
-import { urlToPK } from "@/utils/urlToPK";
 import { useRouter } from "next/router";
 
 export default function RegionForm({ id }) {
@@ -27,8 +23,7 @@ export default function RegionForm({ id }) {
         await RegionService.post(data);
       }
 
-      //TODO: change to better reload
-      router.reload();
+      await router.reload();
     } catch (e) {
       alert(e);
     }
@@ -37,10 +32,9 @@ export default function RegionForm({ id }) {
   const onDelete = async () => {
     try {
       await RegionService.deleteById(id);
-      await router.push(`/admin/data_toevoegen/regio`);
+      await router.push(`/beheer/data_toevoegen/regio`);
     } catch (e) {
-      console.log(e);
-      alert(e);
+      alert(JSON.stringify(e.response.data));
     }
   };
 
@@ -77,10 +71,11 @@ export default function RegionForm({ id }) {
       editMode={id !== undefined}
     >
       <InputForm
-        label={"Region Name"}
+        label={"Naam Regio"}
         id={"region_name"}
         value={name}
         onChange={(e) => setName(e.target.value)}
+        required
       />
     </BasicForm>
   );

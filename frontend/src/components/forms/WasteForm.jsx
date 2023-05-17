@@ -18,7 +18,7 @@ export default function WasteForm() {
   const [loadSchedule, setLoadSchedule] = useState(false);
   const router = useRouter();
 
-  const [selectedTour, setSelectedTour] = useState(-1);
+  const [selectedTour, setSelectedTour] = useState("");
   const [allTours, setAllTours] = useState([]);
   const [tourBuildings, setTourBuildings] = useState([]);
   const [waste, setWaste] = useState([]);
@@ -74,6 +74,31 @@ export default function WasteForm() {
 
     // copy weeks for following 100 days
     if (weekCopy > 0) {
+      // first delete every waste entry in the weeks you want to replace
+      await Promise.all(
+        tourBuildings.map(async (building) => {
+          for (let i = 1; weekCopy * i * 7 < 100; i++) {
+            const monday = moment(week[0])
+              .add(weekCopy * i, "weeks")
+              .toDate();
+            const sunday = moment(week[1])
+              .add(weekCopy * i, "weeks")
+              .toDate();
+            const wasteEntries = await wasteService.get({
+              startDate: monday,
+              endDate: sunday,
+              building: building.building.url,
+            });
+            await Promise.all(
+              wasteEntries.map(async (wasteEntry) => {
+                await wasteService.deleteByUrl(wasteEntry.url);
+              })
+            );
+          }
+        })
+      );
+
+      // add the copies
       await Promise.all(
         tourBuildings.map(async (building) => {
           const wasteEntries = await wasteService.get({
@@ -112,7 +137,6 @@ export default function WasteForm() {
     }
 
     setLoadSchedule(false);
-    // TO DO: do this cleaner
     router.reload();
   };
 

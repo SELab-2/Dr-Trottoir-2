@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import BuildingService from "@/services/building.service";
 import Loading from "@/components/Loading";
 import BasicForm from "@/components/forms/BasicForm";
 import InputForm from "@/components/forms/forms-components/forms-input/InputForm";
@@ -7,31 +6,52 @@ import TourService from "@/services/tour.service";
 import TourBuildingAdd from "@/components/forms/forms-components/TourBuildingAdd";
 import SelectForm from "@/components/forms/forms-components/forms-input/SelectForm";
 import RegionService from "@/services/region.service";
+import { useRouter } from "next/router";
 import { urlToPK } from "@/utils/urlToPK";
 
 export default function TourForm({ id }) {
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   // DATA ////////////////////////////////////////
   const [name, setName] = useState("");
   const [selectedB, setSelectedB] = useState([]);
   const [allRegions, setAllRegions] = useState([]);
-  const [region, setRegion] = useState(-1);
+  const [region, setRegion] = useState("");
   ////////////////////////////////////////////////
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     const data = { name: name, buildings: selectedB, region: region };
-    alert(
-      `You have submitted the form. 
-      The data you want to submit is: ${JSON.stringify(data)}`
-    );
+    try {
+      if (id) {
+        const response = await TourService.patchById(id, data);
+        await router.push(
+          `/beheer/data_toevoegen/rondes/${urlToPK(response.url)}`
+        );
+      } else {
+        await TourService.post(data);
+      }
+
+      await router.reload();
+    } catch (e) {
+      alert(JSON.stringify(e.response.data));
+    }
+  };
+
+  const onDelete = async () => {
+    try {
+      await TourService.deleteById(id);
+      await router.push(`/beheer/data_toevoegen/rondes`);
+    } catch (e) {
+      alert(e);
+    }
   };
 
   const changeSelected = (buildings) => {
     setSelectedB(
       buildings.map((building) => ({
-        building: urlToPK(building.building.url),
+        building: building.building.url,
         order_index: building.order_index,
       }))
     );
@@ -45,7 +65,7 @@ export default function TourForm({ id }) {
         //set Name tour
         const data = await TourService.getById(id);
         setName(data.name);
-        setRegion(urlToPK(data.region));
+        setRegion(data.region);
       }
       setAllRegions(await RegionService.get());
     }
@@ -67,6 +87,7 @@ export default function TourForm({ id }) {
     <BasicForm
       loading={loading}
       onSubmit={onSubmit}
+      onDelete={onDelete}
       model={"ronde"}
       editMode={id !== undefined}
     >
@@ -75,6 +96,7 @@ export default function TourForm({ id }) {
         id={"name"}
         value={name}
         onChange={(e) => setName(e.target.value)}
+        required
       />
 
       <TourBuildingAdd tourId={id} callback={changeSelected} />
@@ -85,10 +107,11 @@ export default function TourForm({ id }) {
         onChange={(e) => setRegion(e.target.value)}
         className={"flex-grow"}
         value={region}
+        required
       >
-        {allRegions.map((reg, index) => {
+        {allRegions.map((reg) => {
           return (
-            <option key={urlToPK(reg.url)} value={urlToPK(reg.url)}>
+            <option key={reg.url} value={reg.url}>
               {reg.region_name}
             </option>
           );

@@ -5,11 +5,13 @@ export default function InputForm({
   onChange,
   value,
   type,
+  required = false,
+  placeholder,
 }) {
   return (
     <div className={`flex flex-col space-y-2 ${className}`}>
-      <label htmlFor={id} className={"font-bold"}>
-        {label}
+      <label htmlFor={id} className={"font-bold after:required:"}>
+        {label} {required && <span className="text-bad-1">*</span>}
       </label>
       <input
         type={type}
@@ -20,6 +22,7 @@ export default function InputForm({
         }
         value={value}
         onChange={onChange}
+        placeholder={placeholder}
       />
     </div>
   );
