@@ -28,6 +28,9 @@ import Dropdown from "@/components/Dropdown";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import { useRouter } from "next/router";
 import { urlToPK } from "@/utils/urlToPK";
+import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
+import { getMonday, getSunday } from "@/utils/helpers";
+import buildingService from "@/services/building.service";
 
 export default function Buildings() {
   const [buildingList, setBuildingList] = useState([]);
@@ -35,24 +38,68 @@ export default function Buildings() {
   const [buildingURL, setBuildingURL] = useState("");
   const searchString = useRef("");
   const [searchResults, setSearchResults] = useState([]);
-  const [visits, setVisits] = useState([]);
+  const [selectionStartDate, setSelectionStartDate] = useState(
+    getMonday(new Date())
+  );
+  const [selectionEndDate, setSelectionEndDate] = useState(
+    getSunday(new Date())
+  );
+  const [photos, setPhotos] = useState([]);
+  const [comments, setComments] = useState([]);
 
   const mapCard = useRef(null);
   const router = useRouter();
 
   const updateBuildingSelection = async (url) => {
     setBuildingURL(url);
+    loadPhotos(url);
+    loadComments(url);
     const building = await BuildingService.getEntryByUrl(url);
     setBuildingDetail(building);
-    console.log(buildingDetail);
   };
 
   const loadBuildings = async () => {
     const buildings = await BuildingService.get();
     setBuildingList(buildings);
     setSearchResults(buildings);
-    console.log(buildings[0]);
     await updateBuildingSelection(buildings[0].url);
+  };
+
+  const formatDate = (date) => {
+    let month = "" + (date.getMonth() + 1);
+    let day = "" + date.getDate();
+    const year = date.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+  };
+
+  const loadPhotos = async (
+    url,
+    startDate = selectionStartDate,
+    endDate = selectionEndDate
+  ) => {
+    const photos = await buildingService.getPhotosByUrl(
+      url,
+      formatDate(startDate),
+      formatDate(endDate)
+    );
+    setPhotos(photos);
+  };
+
+  const loadComments = async (
+    url,
+    startDate = selectionStartDate,
+    endDate = selectionEndDate
+  ) => {
+    const comments = await buildingService.getCommentsByUrl(
+      url,
+      formatDate(startDate),
+      formatDate(endDate)
+    );
+    setPhotos(comments);
   };
 
   useEffect(() => {
@@ -125,7 +172,7 @@ export default function Buildings() {
   return (
     <>
       <Head>
-        <title>Dr. Trottoir: Gebouwen</title>
+        <title>Gebouwen</title>
       </Head>
       <div className={"h-4/5"}>
         <PrimaryCard className={"m-2"}>
@@ -214,7 +261,7 @@ export default function Buildings() {
                         buildingDetail.owners.map((owner) => (
                           <div key={owner.email}>
                             <p className={"font-bold"}>
-                              {owner["first_name"] + " " + owner.lastname}
+                              {owner["first_name"] + " " + owner.last_name}
                             </p>
                             <div className={"flex items-center"}>
                               <FontAwesomeIcon
@@ -264,7 +311,9 @@ export default function Buildings() {
                       title={"Foto's"}
                       icon={faImage}
                       className={"my-2"}
-                    ></SecondaryCard>
+                    >
+                      {JSON.stringify(photos)}
+                    </SecondaryCard>
                     <SecondaryCard
                       title={"Opmerkingen"}
                       icon={faComment}
@@ -275,23 +324,37 @@ export default function Buildings() {
               </div>
             )}
           </PrimaryCard>
-          <SelectionList
-            title={"Gebouwen"}
-            className={"m-2 basis-1/4 max-h-4/5"}
-            elements={searchResults}
-            callback={(url) => {
-              updateBuildingSelection(url);
-            }}
-            Component={({ url, background, setSelected, callback, data }) => (
-              <BuildingSelectionItem
-                key={url}
-                background={background}
-                setSelected={setSelected}
-                callback={callback}
-                data={data}
+          <div className={"m-2 basis-1/4 max-h-4/5"}>
+            <PrimaryCard title={"Selecteer week"} className={"mb-3"}>
+              <CustomWeekPicker
+                startDate={selectionStartDate}
+                endDate={selectionEndDate}
+                onChange={(newStartDate, newEndDate) => {
+                  setSelectionStartDate(newStartDate);
+                  setSelectionEndDate(newEndDate);
+                  loadPhotos(buildingURL, newStartDate, newEndDate);
+                }}
+                className="!light-bg-1"
               />
-            )}
-          />
+            </PrimaryCard>
+            <SelectionList
+              title={"Gebouwen"}
+              elements={searchResults}
+              className={"h-full mt-3"}
+              callback={(url) => {
+                updateBuildingSelection(url);
+              }}
+              Component={({ url, background, setSelected, callback, data }) => (
+                <BuildingSelectionItem
+                  key={url}
+                  background={background}
+                  setSelected={setSelected}
+                  callback={callback}
+                  data={data}
+                />
+              )}
+            />
+          </div>
         </div>
       </div>
     </>

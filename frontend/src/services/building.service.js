@@ -142,6 +142,30 @@ class BuildingService {
 
     return data;
   }
+
+  async getPhotosByUrl(url, startDate = null, endDate = null) {
+    if (HelperService.isCorrectModelUrl(url, "building")) {
+      let photoURL = `${url}photos/`;
+      if (startDate || endDate) {
+        photoURL += "?" + (startDate ? "start=" + startDate : "end=" + endDate);
+        if (startDate && endDate) photoURL += "&end=" + endDate;
+      }
+      const response = await ApiInstance.getApi().get(photoURL);
+      return response.data;
+    }
+  }
+
+  async getCommentsByUrl(url, startDate = null, endDate = null) {
+    if (HelperService.isCorrectModelUrl(url, "building")) {
+      let commentURL = `${url}comments/`;
+      if (startDate || endDate) {
+        commentURL += "?" + (startDate ? "start=" + startDate : "end=" + endDate);
+        if (startDate && endDate) commentURL += "&end=" + endDate;
+      }
+      const response = await ApiInstance.getApi().get(commentURL);
+      return response.data;
+    }
+  }
 }
 
 export default new BuildingService();
