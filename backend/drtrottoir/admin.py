@@ -63,7 +63,6 @@ models = [
     Waste,
     Template,
     VisitComment,
-    ScheduleComment,
-    Template
+    ScheduleComment
 ]
 admin.site.register(models)
