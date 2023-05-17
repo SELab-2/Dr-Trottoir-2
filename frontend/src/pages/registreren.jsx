@@ -138,6 +138,7 @@ export default function Registreren() {
       first_name: firstname.value,
       last_name: lastname.value,
       email: email.value,
+      phone: tel.value,
       password: password.value,
       password2: repeatPassword.value,
     });
