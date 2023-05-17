@@ -117,7 +117,7 @@ class BuildingViewSet(viewsets.ModelViewSet):
                     datetime.date.fromisoformat(q_params[k])
                     for k in q_param_keys
                 }
-                q = Photo.objects.filter(**arg).order_by('created_at')
+                q = Photo.objects.filter(**arg).filter(visit__building_in_tour__building__pk=pk).order_by('created_at')
                 # Return WastePartialSerializer
                 return Response(PhotoSerializer(list(q), many=True, context={'request': request}).data)
 
