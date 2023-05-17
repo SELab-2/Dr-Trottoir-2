@@ -7,9 +7,9 @@ export default function Loading({
 }) {
   return (
     <div className={className}>
-      <div className={"p-1"}>
+      <div className={"p-1 flex justify-center items-center"}>
         <svg
-          className="animate-spin -ml-1 mr-3 text-white"
+          className="animate-spin -ml-1 text-white"
           fill="none"
           viewBox="0 0 24 24"
         >
