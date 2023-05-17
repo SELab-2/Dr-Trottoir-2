@@ -35,7 +35,7 @@ export default function Navbar() {
           name={"Menu"}
           categories={{
             Dashboard: { icon: faCalendarWeek, link: "/beheer/dashboard" },
-            "Data beheer": {
+            "Databeheer": {
               icon: faCirclePlus,
               link: "/beheer/data_toevoegen",
             },
