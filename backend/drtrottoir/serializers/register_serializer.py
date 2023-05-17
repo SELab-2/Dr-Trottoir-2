@@ -17,7 +17,7 @@ class RegisterSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('password', 'password2', 'email', 'first_name', 'last_name')
+        fields = ('password', 'password2', 'email', 'first_name', 'last_name', 'phone')
         extra_kwargs = {
             'first_name': {'required': True},
             'last_name': {'required': True},
@@ -34,6 +34,7 @@ class RegisterSerializer(serializers.HyperlinkedModelSerializer):
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             is_active=False,
+            phone=validated_data['phone'],
             role=Roles.STUDENT
         )
 
