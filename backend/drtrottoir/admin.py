@@ -61,6 +61,7 @@ models = [
     Schedule,
     BuildingInTour,
     Waste,
+    Template,
     VisitComment,
     ScheduleComment,
     Template

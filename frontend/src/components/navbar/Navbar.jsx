@@ -53,7 +53,7 @@ export default function Navbar() {
           categories={{
             "Mail-templates": {
               icon: faEnvelopeOpenText,
-              link: "/admin/templates",
+              link: "/beheer/templates",
             },
           }}
         />

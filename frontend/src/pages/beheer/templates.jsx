@@ -93,7 +93,7 @@ export default function Templates() {
     return url;
   };
 
-  const performSearch = async (templates = templateList) => {
+  const performSearch = async (templates) => {
     setSearchResults(
       templates.filter((template) => {
         const search = searchString.current.value.toLowerCase();
@@ -174,6 +174,24 @@ export default function Templates() {
     if (saveState === SaveState.Clean) setSaveState(SaveState.Dirty);
   };
 
+  const SaveButton = () => {
+    if (saveState === SaveState.Clean) {
+      return null;
+    } else {
+      const buttonText =
+        saveState === SaveState.Dirty
+          ? "Wijzigingen opslaan"
+          : saveState === SaveState.New
+          ? "Nieuw template opslaan"
+          : "error";
+      return (
+        <PrimaryButton icon={faSave} onClick={() => saveTemplate()}>
+          {buttonText}
+        </PrimaryButton>
+      );
+    }
+  };
+
   return (
     <>
       <Head>
@@ -198,13 +216,13 @@ export default function Templates() {
                 className={"mr-2"}
                 options={[]}
               >
-                Sort
+                Sorteer
               </Dropdown>
               <InputField
                 classNameDiv={"w-80"}
                 reference={searchString}
                 icon={faSearch}
-                actionCallback={performSearch}
+                actionCallback={() => performSearch(templateList)}
               />
             </div>
             <PrimaryButton
@@ -266,13 +284,7 @@ export default function Templates() {
               >
                 Stuur e-mail
               </SecondaryButton>
-              <SecondaryButton
-                backgroundColor={"#ffffff"}
-                icon={faSave}
-                onClick={() => saveTemplate()}
-              >
-                Bewaren
-              </SecondaryButton>
+              <SaveButton />
             </div>
           </PrimaryCard>
           <SelectionList
