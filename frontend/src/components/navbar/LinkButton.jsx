@@ -33,7 +33,7 @@ export default function LinkButton({ children, icon, link, className }) {
             className={"flex-shrink-0 w-4 h-4 ml-4"}
           />
         )}
-        <div className={"ml-3"}>{children}</div>
+        <div className={"mx-3"}>{children}</div>
       </Link>
     </div>
   );

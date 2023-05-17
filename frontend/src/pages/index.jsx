@@ -43,7 +43,7 @@ export default function Login() {
 
     const user = (await getSession()).user;
     if (user.role <= ROLES.SUPERSTUDENT) {
-      await router.push("/admin/dashboard");
+      await router.push("/beheer/dashboard");
     } else if (user.role === ROLES.STUDENT) {
       await router.push("/student/planning");
     } else if (user.role === ROLES.SYNDICUS) {
@@ -138,7 +138,7 @@ export async function getServerSideProps(context) {
   if (session?.user?.role === ROLES.STUDENT) {
     return { redirect: { destination: "/student/planning", permanent: false } };
   } else if (session?.user?.role <= ROLES.SUPERSTUDENT) {
-    return { redirect: { destination: "/admin/dashboard", permanent: false } };
+    return { redirect: { destination: "/beheer/dashboard", permanent: false } };
   }
   return { props: { session } };
 }

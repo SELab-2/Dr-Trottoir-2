@@ -3,7 +3,6 @@ import {
   faBriefcase,
   faBuilding,
   faEnvelopeOpenText,
-  faEnvelope,
   faPeopleGroup,
   faCalendarWeek,
   faCirclePlus,
@@ -23,7 +22,7 @@ export default function Navbar() {
   return (
     <div className={"flex flex-col flex-shrink-0 sm:w-64 h-full bg-dark-bg-1"}>
       <div className={"flex justify-center p-1 mb-2 mt-8"}>
-        <Link href={"/home"}>
+        <Link href={"/"}>
           <Image src={Logo} className="w-36 object-fill" alt="logo" />
         </Link>
       </div>
@@ -35,8 +34,8 @@ export default function Navbar() {
         <LinkList
           name={"Menu"}
           categories={{
-            Planning: { icon: faCalendarWeek, link: "/beheer/planning" },
-            "Nieuwe data": {
+            Dashboard: { icon: faCalendarWeek, link: "/beheer/dashboard" },
+            Databeheer: {
               icon: faCirclePlus,
               link: "/beheer/data_toevoegen",
             },
@@ -47,7 +46,7 @@ export default function Navbar() {
         <LinkList
           name={"Data"}
           categories={{
-            Rondes: { icon: faBicycle, link: "#" },
+            Planningen: { icon: faBicycle, link: "/beheer/planningen/1" },
             Gebouwen: { icon: faBuilding, link: "/beheer/gebouwen" },
             Personeel: { icon: faPeopleGroup, link: "/beheer/personeel" },
             Syndici: { icon: faBriefcase, link: "/beheer/syndici" },
@@ -58,7 +57,6 @@ export default function Navbar() {
         <LinkList
           name={"Communicatie"}
           categories={{
-            Berichten: { icon: faEnvelope, link: "#" },
             Templates: { icon: faEnvelopeOpenText, link: "#" },
           }}
           className={"text-dark-text bg-dark-bg-1 mt-6 mb-6"}
