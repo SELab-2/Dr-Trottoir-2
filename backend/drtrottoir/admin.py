@@ -13,7 +13,9 @@ from .models import (
     Schedule,
     BuildingInTour,
     Waste,
-    Template
+    Template,
+    VisitComment,
+    ScheduleComment
 )
 
 
@@ -50,5 +52,17 @@ admin.site.register(CustomUser, UserAdmin)
 # unregister the Group model from admin.
 admin.site.unregister(Group)
 # Register other moments
-models = [Region, Building, Photo, Visit, Tour, Schedule, BuildingInTour, Waste, Template]
+models = [
+    Region,
+    Building,
+    Photo,
+    Visit,
+    Tour,
+    Schedule,
+    BuildingInTour,
+    Waste,
+    VisitComment,
+    ScheduleComment,
+    Template
+]
 admin.site.register(models)

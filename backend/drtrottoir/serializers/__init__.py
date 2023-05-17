@@ -14,6 +14,7 @@ from .waste_partial import WastePartialSerializer
 from .register_serializer import RegisterSerializer
 from .building_in_tour_partial import BuildingInTourPartialSerializer
 from .template_serializer import TemplateSerializer
+from .comment_serializer import VisitCommentSerializer, ScheduleCommentSerializer
 
 
 __all__ = [
@@ -35,5 +36,7 @@ __all__ = [
     BuildingInTourSerializer,
     BuildingInTourPartialSerializer,
     TourPartialSerializer,
-    TemplateSerializer
+    TemplateSerializer,
+    VisitCommentSerializer,
+    ScheduleCommentSerializer
 ]

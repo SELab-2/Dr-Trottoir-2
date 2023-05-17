@@ -30,6 +30,11 @@ class PhotoService {
     return HelperService.getModelEntryByUrl(url, "photo");
   }
 
+  async postPhoto(data) {
+    const response = await HelperService.getPostResponse(`photo/`, data);
+    return response.status === 201 ? response.data : {};
+  }
+
   /**
    * Filter the data with the filters given in args.
    * @param data List of photo entries.
