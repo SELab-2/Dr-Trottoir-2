@@ -181,7 +181,7 @@ export default function Buildings() {
                         buildingDetail.owners.map((owner) => (
                           <div key={owner.email}>
                             <p className={"font-bold"}>
-                              {owner["first_name"] + " " + owner.lastname}
+                              {owner["first_name"] + " " + owner.last_name}
                             </p>
                             <div className={"flex items-center"}>
                               <FontAwesomeIcon
