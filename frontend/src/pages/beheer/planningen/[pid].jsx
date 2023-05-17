@@ -48,7 +48,7 @@ import { urlToPK } from "@/utils/urlToPK";
 function SmallTour({ data, background }) {
   return (
     <div className={"rounded-lg"} style={{ backgroundColor: background }}>
-      <Link href={`/admin/planningen/${encodeURI(data.id)}/`}>
+      <Link href={`/beheer/planningen/${encodeURI(data.id)}/`}>
         <div className={"px-4 py-4"}>
           <h1 className={"font-semibold pb-2"}>{data.name}</h1>
           <CustomProgressBar fraction={data.finished / data.amount} />
