@@ -26,6 +26,7 @@ import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import Dropdown from "@/components/Dropdown";
 import SecondaryButton from "@/components/button/SecondaryButton";
+import { useRouter } from "next/router";
 
 export default function Buildings() {
   const [buildingList, setBuildingList] = useState([]);
@@ -36,6 +37,7 @@ export default function Buildings() {
   const [visits, setVisits] = useState([]);
 
   const mapCard = useRef(null);
+  const router = useRouter();
 
   const updateBuildingSelection = async (url) => {
     setBuildingURL(url);
@@ -136,7 +138,13 @@ export default function Buildings() {
                 actionCallback={() => performSearch()}
               />
             </div>
-            <PrimaryButton icon={faPlusCircle} text={"Sort"}>
+            <PrimaryButton
+              icon={faPlusCircle}
+              text={"Sort"}
+              onClick={() => {
+                router.push("/beheer/data_toevoegen/gebouwen");
+              }}
+            >
               Nieuw
             </PrimaryButton>
           </div>
@@ -231,6 +239,19 @@ export default function Buildings() {
                       className={"my-2"}
                     >
                       <p>{buildingDetail["description"]}</p>
+                      <div className={"pt-3"}>
+                        <SecondaryButton
+                          onClick={() =>
+                            window.open(
+                              buildingDetail.manual,
+                              "_blank",
+                              "noreferrer"
+                            )
+                          }
+                        >
+                          Handleiding
+                        </SecondaryButton>
+                      </div>
                     </SecondaryCard>
                     <SecondaryCard
                       title={"Foto's"}
