@@ -95,3 +95,10 @@ class TestUserView(APITestCase):
         self.client.force_authenticate(user=self.users[Roles.OWNER])
         response = self.client.delete(f'/api/user/{self.users[Roles.STUDENT].pk}/', follow=True)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_user_remove(self):
+        self.client.force_authenticate(user=self.users[Roles.STUDENT])
+        response = self.client.post(f'/api/user/{self.users[Roles.STUDENT].pk}/remove/', follow=True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(f'/api/user/{self.users[Roles.STUDENT].pk}', follow=True)
+        self.assertEqual(response.data['active'], 'False')
