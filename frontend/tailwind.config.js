@@ -56,7 +56,7 @@ module.exports = {
         1: "#FFEAB6",
         2: "#FFEAB6",
         3: "#E2D5F7",
-        5: "#FCCCF0",
+        5: "#fcccf0",
       },
       waste: {
         paper: "#003088",
