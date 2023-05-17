@@ -159,7 +159,8 @@ class BuildingService {
     if (HelperService.isCorrectModelUrl(url, "building")) {
       let commentURL = `${url}comments/`;
       if (startDate || endDate) {
-        commentURL += "?" + (startDate ? "start=" + startDate : "end=" + endDate);
+        commentURL +=
+          "?" + (startDate ? "start=" + startDate : "end=" + endDate);
         if (startDate && endDate) commentURL += "&end=" + endDate;
       }
       const response = await ApiInstance.getApi().get(commentURL);
