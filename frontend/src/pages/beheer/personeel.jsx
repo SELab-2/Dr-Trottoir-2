@@ -16,7 +16,7 @@ import CustomInputField from "@/components/input-fields/InputField";
 import userService from "@/services/user.service";
 import ColoredTag from "@/components/Tag";
 import Dropdown from "@/components/Dropdown";
-import CustomModal from "@/components/CustomModal";
+import CustomModal from "@/components/Modals/CustomModal";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import CustomButton from "@/components/button/Button";
 import SelectableTable from "@/components/table/SelectableTable";
