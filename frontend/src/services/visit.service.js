@@ -1,4 +1,5 @@
 import HelperService from "@/services/helper.service";
+import ApiInstance from "./ApiInstance";
 
 class VisitService {
   /**
@@ -48,6 +49,24 @@ class VisitService {
   async getCommentsByVisit(id) {
     let response = await HelperService.getResponseByUrl(`visit/${id}/comments`);
     return response.status === 200 ? response.data : [];
+  }
+
+  /**
+   * Add a new visit_comment
+   *
+   * The data dict must have the following keys.
+   * - created_at (string)
+   * - updated_at (string)
+   * - text (string)
+   * - user: url of the user (string)
+   * - visit: url of the visit (string)
+   * 
+   * @param data dict with the data.
+   * @returns {Promise<*>}
+   */
+  async postVisitComment(data) {
+    const response = await ApiInstance.getApi().post("visit_comment/", data);
+    return response.data;
   }
 
   /**

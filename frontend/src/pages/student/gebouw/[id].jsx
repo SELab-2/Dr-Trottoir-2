@@ -29,6 +29,7 @@ import { getSession } from "next-auth/react";
 import userService from "@/services/user.service";
 import buildingService from "@/services/building.service";
 import { useRouter } from "next/router";
+import CommentModal from "@/components/CommentModal";
 
 export default function StudentBuilding() {
   const [buildings, setBuildings] = useState([]);
@@ -42,6 +43,7 @@ export default function StudentBuilding() {
   const [visitComments, setVisitComments] = useState(false);
   const [visitPhotos, setVisitPhotos] = useState([]);
   const [buildingVisit, setBuildingVisit] = useState(null);
+  const [userUrl, setUserUrl] = useState(null);
   const router = useRouter();
 
   const monday = getMonday(new Date());
@@ -53,6 +55,7 @@ export default function StudentBuilding() {
         let { user } = await getSession();
         const userId = urlToPK(user.url);
         user = await userService.getById(userId);
+        setUserUrl(user.url);
         const schedules = await scheduleService.get({
           startDate: moment().startOf("day").toDate(),
           endDate: moment().endOf("day").toDate(),
@@ -138,6 +141,7 @@ export default function StudentBuilding() {
     setDeparture(false);
     setBuildingVisit(null);
     setVisitPhotos([]);
+    setWasteSchedule([]);
     setVisitComments([]);
     const wastes = await wasteService.get({
       startDate: monday,
@@ -253,11 +257,6 @@ export default function StudentBuilding() {
     console.log("Add photo");
   }
 
-  function addComment() {
-    // Redirect to the comment adding page
-    console.log("Add comment");
-  }
-
   function openManual() {
     if (selectedBuilding != null) {
       const manualUrl = selectedBuilding.manual;
@@ -321,11 +320,11 @@ export default function StudentBuilding() {
                     />
                     Opmerkingen
                   </div>
-                  <FontAwesomeIcon
-                    icon={faSquarePlus}
-                    className="ml-auto pr-1 text-primary-1 text-lg cursor-pointer"
-                    onClick={() => addComment()}
-                  />
+                  <CommentModal
+                    className={"ml-auto pr-1 text-primary-1 text-lg cursor-pointer"}
+                    visitUrl={buildingVisit === null ? buildingVisit : buildingVisit.url}
+                    userUrl={userUrl}
+                  ></CommentModal>
                 </div>
                 {renderComments()}
               </SecondaryCard>
