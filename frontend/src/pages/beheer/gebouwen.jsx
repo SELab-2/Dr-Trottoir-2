@@ -122,7 +122,7 @@ export default function Buildings() {
     const regionFilter =
       "regions" in params ? params["regions"] : selectedRegions;
     const searchFilter = "search" in params ? params["search"] : searchString;
-    const sortSetting = "sort" in params ? params["sort"] : "default";
+    const sortSetting = "sort" in params ? params["sort"] : sortingSetting;
 
     let filterResults = buildingList;
 
@@ -145,19 +145,27 @@ export default function Buildings() {
       );
     });
 
-    if (sortSetting !== "default") {
-      console.log(sortSetting);
+    if (sortSetting !== "") {
       filterResults.sort((building_1, building_2) => {
         switch (sortSetting) {
           case "Naam":
-            return building_1["nickname"] > building_2["nickname"];
+            return building_1["nickname"].toLowerCase() >
+              building_2["nickname"].toLowerCase()
+              ? 1
+              : -1;
           case "Adres":
             return (
               building_1["address_line_1"] +
+              " " +
+              building_1["address_line_2"].toLowerCase()
+            ).toLowerCase() >
+              (
+                building_2["address_line_1"].toLowerCase() +
                 " " +
-                building_1["address_line_2"] >
-              building_2["address_line_1"] + " " + building_2["address_line_2"]
-            );
+                building_2["address_line_2"].toLowerCase()
+              ).toLowerCase()
+              ? 1
+              : -1;
         }
       });
     }
@@ -428,7 +436,6 @@ export default function Buildings() {
                             )}
                           </div>
                           <p>{comment["text"]}</p>
-                          poep
                         </PrimaryCard>
                       ))}
                     </SecondaryCard>
