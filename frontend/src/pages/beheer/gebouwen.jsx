@@ -68,7 +68,7 @@ export default function Buildings() {
     const buildings = await BuildingService.get();
     setBuildingList(buildings);
     setSearchResults(buildings);
-    await updateBuildingSelection(buildings[0].url);
+    await updateBuildingSelection(buildings[0]?.url);
   };
 
   const loadRegions = async () => {
