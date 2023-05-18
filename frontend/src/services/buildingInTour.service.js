@@ -63,10 +63,7 @@ class BuildingInTourService {
    * @returns {Promise<*>}
    */
   async patchById(id, data) {
-    const response = await ApiInstance.patch(
-      `building_in_tour/${id}/`,
-      data
-    );
+    const response = await ApiInstance.patch(`building_in_tour/${id}/`, data);
     return response.data;
   }
 
