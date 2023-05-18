@@ -70,7 +70,7 @@ class UserService {
    * @returns {Promise<any>}
    */
   async activateById(id) {
-    const response = await ApiInstance.getApi().post(`user/${id}/activate`);
+    const response = await ApiInstance.getApi().post(`user/${id}/activate/`);
     return response.data;
   }
 
