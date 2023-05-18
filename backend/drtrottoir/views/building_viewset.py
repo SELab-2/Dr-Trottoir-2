@@ -9,8 +9,8 @@ from drtrottoir.serializers import (
     BuildingSerializer,
     WastePartialSerializer,
     PhotoSerializer,
-    ScheduleCommentSerializer,
-    VisitCommentSerializer
+    ScheduleCommentExtraSerializer,
+    VisitCommentExtraSerializer
 )
 
 
@@ -178,10 +178,10 @@ class BuildingViewSet(viewsets.ModelViewSet):
                     .filter(visit__building_in_tour__building__pk=pk)
                     .order_by('created_at')
                 )
-                scheduleCommentData = ScheduleCommentSerializer(list(qs), many=True, context={'request': request}).data
+                scheduleCommentData = ScheduleCommentExtraSerializer(list(qs), many=True, context={'request': request}).data
                 for comment in scheduleCommentData:
                     comment["type"] = "schedule_comment"
-                visitCommentData = VisitCommentSerializer(list(qv), many=True, context={'request': request}).data
+                visitCommentData = VisitCommentExtraSerializer(list(qv), many=True, context={'request': request}).data
                 for comment in visitCommentData:
                     comment["type"] = "visit_comment"
                 return Response(scheduleCommentData + visitCommentData)
