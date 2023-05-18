@@ -24,6 +24,7 @@ import LinkButton from "@/components/navbar/LinkButton";
 import Loading from "@/components/Loading";
 import RegionService from "@/services/region.service";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
+import ColoredTag from "@/components/Tag";
 
 function scheduleList(data) {
   return data.map((data) => {
@@ -120,9 +121,19 @@ function userList(data, type) {
         className={"truncate"}
       >
         <div className={"text-light-h-1"}>
-          <p>{data.first_name + " " + data.last_name}</p>
+          <div className={"flex flex-row items-center"}>
+            <p className={"flex-grow"}>
+              {data.first_name + " " + data.last_name}
+            </p>
+            <ColoredTag
+              className={`${
+                data.active ? "text-good-1 bg-good-2" : "text-bad-1 text-bad-2"
+              }`}
+            >
+              {data.active ? "Active" : "Inactive"}
+            </ColoredTag>
+          </div>
           <p className={"text-light-h-2"}>{data.email}</p>
-          <p></p>
         </div>
       </LinkButton>
     );
