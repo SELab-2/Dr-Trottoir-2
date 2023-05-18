@@ -26,9 +26,26 @@ export default function Templates() {
     Dirty: "dirty",
   });
 
+  const SearchParams = Object.freeze({
+    Templates: "templates",
+    SearchString: "search_string",
+    SearchOption: "search_option",
+    SortOption: "sort_option",
+  });
+
+  const EmailFields = Object.freeze({
+    Recipients: "Ontvangers",
+    Cc: "Cc",
+    Bcc: "Bcc",
+    Subject: "Onderwerp",
+    Body: "Inhoud",
+  });
+
   const [templateList, setTemplateList] = useState([]);
   const searchString = useRef("");
   const [searchResults, setSearchResults] = useState([]);
+  const [searchOptions, setSearchOptions] = useState([]);
+  const [sortOption, setSortOptions] = useState("");
   const [templateURL, setTemplateURL] = useState("");
   const [saveState, setSaveState] = useState(SaveState.New);
   const fieldTo = useRef("");
@@ -93,19 +110,78 @@ export default function Templates() {
     return url;
   };
 
-  const performSearch = async (templates) => {
-    setSearchResults(
-      templates.filter((template) => {
-        const search = searchString.current.value.toLowerCase();
-        return (
-          template["to"].toLowerCase().includes(search) ||
-          template["cc"].toLowerCase().includes(search) ||
-          template["bcc"].toLowerCase().includes(search) ||
-          template["subject"].toLowerCase().includes(search) ||
-          template["body"].toLowerCase().includes(search)
-        );
-      })
-    );
+  const performSearch = async (options = {}) => {
+    let localSearchResults =
+      SearchParams.Templates in options
+        ? options[SearchParams.Templates]
+        : templateList;
+    const localSearchString =
+      SearchParams.SearchString in options
+        ? options[SearchParams.SearchString]
+        : searchString;
+    const localSearchOptions =
+      SearchParams.SearchOption in options
+        ? options[SearchParams.SearchOption]
+        : searchOptions;
+    const filterAllowAll = localSearchOptions.length === 0;
+    const localSortOption =
+      SearchParams.SortOption in options
+        ? options[SearchParams.SortOption]
+        : sortOption;
+
+    // Search: Only consider selected fields, unless none are given
+    localSearchResults = localSearchResults.filter((template) => {
+      const search = localSearchString.current.value.toLowerCase();
+      return (
+        filterAllowAll ||
+        (localSearchOptions.includes(EmailFields.Recipients) &&
+          template["to"].toLowerCase().includes(search)) ||
+        filterAllowAll ||
+        (localSearchOptions.includes(EmailFields.Recipients) &&
+          template["cc"].toLowerCase().includes(search)) ||
+        filterAllowAll ||
+        (localSearchOptions.includes(EmailFields.Recipients) &&
+          template["bcc"].toLowerCase().includes(search)) ||
+        filterAllowAll ||
+        (localSearchOptions.includes(EmailFields.Subject) &&
+          template["subject"].toLowerCase().includes(search)) ||
+        filterAllowAll ||
+        (localSearchOptions.includes(EmailFields.Body) &&
+          template["body"].toLowerCase().includes(search))
+      );
+    });
+    if (localSortOption !== "") {
+      localSearchResults.sort((a, b) => {
+        switch (localSortOption) {
+          case EmailFields.Recipients:
+            return a["to"] > b["to"];
+          case EmailFields.Cc:
+            return a["cc"] > b["cc"];
+          case EmailFields.Bcc:
+            return a["bcc"] > b["bcc"];
+          case EmailFields.Subject:
+            return a["subject"] > b["subject"];
+          case EmailFields.Body:
+            return a["body"] > b["body"];
+        }
+      });
+    }
+    setSearchResults(localSearchResults);
+  };
+
+  const updateSearchCriteria = async (selections) => {
+    setSearchOptions(selections);
+    const paramObj = {};
+    paramObj[SearchParams.SearchOption] = selections;
+    performSearch(paramObj);
+  };
+
+  const updateSorting = async (selections) => {
+    const option = selections.length ? selections[0] : "";
+    setSortOptions(option);
+    const paramObj = {};
+    paramObj[SearchParams.SortOption] = option;
+    performSearch(paramObj);
   };
 
   const saveTemplate = async () => {
@@ -206,23 +282,29 @@ export default function Templates() {
                 icon={faFilter}
                 text={"Filter"}
                 className={"mr-2"}
-                options={[]}
+                options={[
+                  EmailFields.Recipients,
+                  EmailFields.Subject,
+                  EmailFields.Body,
+                ]}
+                onClick={updateSearchCriteria}
               >
-                Filter
+                Zoek op
               </Dropdown>
               <Dropdown
                 icon={faSort}
                 text={"Sort"}
                 className={"mr-2"}
-                options={[]}
+                options={Object.values(EmailFields)}
+                onClick={updateSorting}
               >
-                Sorteer
+                Sorteer op
               </Dropdown>
               <InputField
                 classNameDiv={"w-80"}
                 reference={searchString}
                 icon={faSearch}
-                actionCallback={() => performSearch(templateList)}
+                actionCallback={performSearch}
               />
             </div>
             <PrimaryButton
