@@ -20,6 +20,7 @@ import {
   faFileText,
   faPenToSquare,
   faTrash,
+  faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Head from "next/head";
@@ -31,6 +32,8 @@ import { urlToPK } from "@/utils/urlToPK";
 import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
 import { getMonday, getSunday } from "@/utils/helpers";
 import buildingService from "@/services/building.service";
+import Image from "next/image";
+import regionService from "@/services/region.service";
 
 export default function Buildings() {
   const [buildingList, setBuildingList] = useState([]);
@@ -46,6 +49,9 @@ export default function Buildings() {
   );
   const [photos, setPhotos] = useState([]);
   const [comments, setComments] = useState([]);
+  const [regionList, setRegionList] = useState([]);
+  const [selectedRegions, setSelectedRegions] = useState([]);
+  const [sortingSetting, setSortingSetting] = useState("");
 
   const mapCard = useRef(null);
   const router = useRouter();
@@ -63,6 +69,11 @@ export default function Buildings() {
     setBuildingList(buildings);
     setSearchResults(buildings);
     await updateBuildingSelection(buildings[0].url);
+  };
+
+  const loadRegions = async () => {
+    const regions = await regionService.get();
+    setRegionList(regions);
   };
 
   const formatDate = (date) => {
@@ -99,26 +110,69 @@ export default function Buildings() {
       formatDate(startDate),
       formatDate(endDate)
     );
-    setPhotos(comments);
+    setComments(comments);
   };
 
   useEffect(() => {
     loadBuildings();
+    loadRegions();
   }, []);
 
-  const performSearch = () => {
-    setSearchResults(
-      buildingList.filter((building) => {
-        const search = searchString.current.value.toLowerCase();
-        return (
-          building["nickname"].toLowerCase().includes(search) ||
-          building["description"].toLowerCase().includes(search) ||
-          (building["address_line_1"] + " " + building["address_line_2"])
-            .toLowerCase()
-            .includes(search)
-        );
-      })
-    );
+  const filter = (params = {}) => {
+    const regionFilter =
+      "regions" in params ? params["regions"] : selectedRegions;
+    const searchFilter = "search" in params ? params["search"] : searchString;
+    const sortSetting = "sort" in params ? params["sort"] : "default";
+
+    let filterResults = buildingList;
+
+    if (regionFilter.length) {
+      filterResults = filterResults.filter((building) =>
+        JSON.stringify(regionFilter).includes(
+          JSON.stringify(building["region_name"])
+        )
+      );
+    }
+
+    filterResults = filterResults.filter((building) => {
+      const searchLower = searchFilter.current.value.toLowerCase();
+      return (
+        building["nickname"].toLowerCase().includes(searchLower) ||
+        building["description"].toLowerCase().includes(searchLower) ||
+        (building["address_line_1"] + " " + building["address_line_2"])
+          .toLowerCase()
+          .includes(searchLower)
+      );
+    });
+
+    if (sortSetting !== "default") {
+      console.log(sortSetting);
+      filterResults.sort((building_1, building_2) => {
+        switch (sortSetting) {
+          case "Naam":
+            return building_1["nickname"] > building_2["nickname"];
+          case "Adres":
+            return (
+              building_1["address_line_1"] +
+                " " +
+                building_1["address_line_2"] >
+              building_2["address_line_1"] + " " + building_2["address_line_2"]
+            );
+        }
+      });
+    }
+
+    setSearchResults(filterResults);
+  };
+
+  const updateRegionFilter = (selectionList) => {
+    setSelectedRegions(selectionList);
+    filter({ regions: selectionList });
+  };
+
+  const updateSorting = (selection) => {
+    setSortingSetting(selection.length ? selection[0] : "");
+    filter({ sort: selection[0] });
   };
 
   const BuildingSelectionItem = ({
@@ -182,15 +236,18 @@ export default function Buildings() {
                 icon={faFilter}
                 text={"Filter"}
                 className={"mr-2"}
-                options={[]}
+                options={regionList.map((region) => region["region_name"])}
+                multi={true}
+                onClick={updateRegionFilter}
               >
-                Filter
+                Filter Regio
               </Dropdown>
               <Dropdown
                 icon={faSort}
                 text={"Sort"}
                 className={"mr-2"}
-                options={[]}
+                options={["Naam", "Adres"]}
+                onClick={updateSorting}
               >
                 Sorteer
               </Dropdown>
@@ -198,7 +255,7 @@ export default function Buildings() {
                 classNameDiv={"w-80"}
                 reference={searchString}
                 icon={faSearch}
-                actionCallback={() => performSearch()}
+                actionCallback={() => filter()}
               />
             </div>
             <PrimaryButton
@@ -228,7 +285,7 @@ export default function Buildings() {
                       {buildingDetail.nickname}
                     </h1>
                     <div className={"flex space-x-2"}>
-                      <SecondaryButton
+                      <PrimaryButton
                         icon={faPenToSquare}
                         className={"h-fit"}
                         onClick={() =>
@@ -239,10 +296,7 @@ export default function Buildings() {
                         }
                       >
                         Bewerk
-                      </SecondaryButton>
-                      <SecondaryButton icon={faTrash} className={"h-fit"}>
-                        Verwijder
-                      </SecondaryButton>
+                      </PrimaryButton>
                     </div>
                   </div>
                 </div>
@@ -310,15 +364,74 @@ export default function Buildings() {
                     <SecondaryCard
                       title={"Foto's"}
                       icon={faImage}
-                      className={"my-2"}
+                      className={"my-2 "}
                     >
-                      {JSON.stringify(photos)}
+                      <div className={"flex overflow-x-auto"}>
+                        {photos.map((photo) => (
+                          <div className={"flex-shrink-0"} key={photo["url"]}>
+                            <PrimaryCard className={"mr-3"}>
+                              <img src={photo["image"]} width="200px" alt="" />
+                            </PrimaryCard>
+                          </div>
+                        ))}
+                      </div>
                     </SecondaryCard>
                     <SecondaryCard
                       title={"Opmerkingen"}
                       icon={faComment}
                       className={"my-2"}
-                    ></SecondaryCard>
+                    >
+                      {comments.map((comment) => (
+                        <PrimaryCard key={comment["url"]} className={"mb-3"}>
+                          <div className={"flex align-top"}>
+                            <p className={"text-lg font-bold"}>
+                              {comment["user"]["first_name"]}{" "}
+                              {comment["user"]["last_name"]}
+                            </p>
+                            <div className={"grow"} />
+                            {comment["user"]["role"] === 5 ? (
+                              <p className={"mr-5 text-light-h-2 italic"}>
+                                student
+                              </p>
+                            ) : null}
+                            {comment["updated_at"] ? (
+                              <>
+                                <p className={"text-light-h-2 mr-2 mt-1"}>
+                                  {comment["updated_at"]
+                                    .split("T")[1]
+                                    .split("+")[0] +
+                                    " " +
+                                    comment["updated_at"]
+                                      .split("T")[0]
+                                      .split("-")
+                                      .reverse()
+                                      .join("-")}
+                                </p>
+                                <FontAwesomeIcon
+                                  icon={faPencil}
+                                  className={"mt-2"}
+                                  style={{ color: "gray" }}
+                                />
+                              </>
+                            ) : (
+                              <p className={"text-light-h-2"}>
+                                {comment["created_at"]
+                                  .split("T")[1]
+                                  .split("+")[0] +
+                                  " " +
+                                  comment["created_at"]
+                                    .split("T")[0]
+                                    .split("-")
+                                    .reverse()
+                                    .join("-")}
+                              </p>
+                            )}
+                          </div>
+                          <p>{comment["text"]}</p>
+                          poep
+                        </PrimaryCard>
+                      ))}
+                    </SecondaryCard>
                   </div>
                 </div>
               </div>
@@ -333,6 +446,7 @@ export default function Buildings() {
                   setSelectionStartDate(newStartDate);
                   setSelectionEndDate(newEndDate);
                   loadPhotos(buildingURL, newStartDate, newEndDate);
+                  loadComments(buildingURL, newStartDate, newEndDate);
                 }}
                 className="!light-bg-1"
               />
