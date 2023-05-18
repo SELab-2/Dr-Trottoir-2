@@ -59,7 +59,7 @@ class HelperService {
   }
 
   isCorrectModelUrl(url, model) {
-    const regex = new RegExp(`\/api\/${model.toLowerCase()}\/[0-9]+\/?$`);
+    const regex = new RegExp(`\/api\/${model.toLowerCase()}\/[0-9]+\/?`);
     if (regex.test(url)) {
       return true;
     } else {
