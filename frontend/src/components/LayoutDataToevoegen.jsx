@@ -24,6 +24,7 @@ import LinkButton from "@/components/navbar/LinkButton";
 import Loading from "@/components/Loading";
 import RegionService from "@/services/region.service";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
+import HelperService from "@/services/helper.service";
 
 function scheduleList(data) {
   return data.map((data) => {
@@ -141,14 +142,21 @@ export default function LayoutDataAdd({ children }) {
     async function fetchData() {
       switch (router.query.type) {
         case "planningen": {
-          let data = await ScheduleService.get();
-          data = await Promise.all(
-            data.map(async (entry) => {
-              entry.student = await UserService.getEntryByUrl(entry.student);
-              return entry;
+          let scheduleData = await ScheduleService.get();
+          const studentUrls = [
+            ...new Set(scheduleData.map((schedule) => schedule.student)),
+          ];
+          let studentsData = {};
+          await Promise.all(
+            studentUrls.map(async (url) => {
+              studentsData[url] = await UserService.getEntryByUrl(url);
             })
           );
-          setData(data);
+          const scheduleDataWithUsers = scheduleData.map((schedule) => {
+            schedule.student = studentsData[schedule.student];
+            return schedule;
+          });
+          setData(scheduleDataWithUsers);
           break;
         }
         case "rondes":

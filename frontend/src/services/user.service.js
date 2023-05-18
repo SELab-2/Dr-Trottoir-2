@@ -83,7 +83,7 @@ class UserService {
    * @returns {*} Empty string if the user is deleted.
    */
   async deleteById(id) {
-    const response = await ApiInstance.getApi().delete("user/" + id + "/");
+    const response = await ApiInstance.delete("user/" + id + "/");
     return response.data;
   }
 }
