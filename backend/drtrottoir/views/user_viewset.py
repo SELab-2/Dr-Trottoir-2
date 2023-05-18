@@ -73,4 +73,4 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], permission_classes=[SuperPermission])
     def removed(self, request):
         users = CustomUser.objects.filter(deleted=True)
-        return Response(UserSerializer(list(users), many=True, context={'request': request}).data)  
+        return Response(UserSerializer(list(users), many=True, context={'request': request}).data)
