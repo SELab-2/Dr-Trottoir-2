@@ -178,7 +178,11 @@ class BuildingViewSet(viewsets.ModelViewSet):
                     .filter(visit__building_in_tour__building__pk=pk)
                     .order_by('created_at')
                 )
-                scheduleCommentData = ScheduleCommentExtraSerializer(list(qs), many=True, context={'request': request}).data
+                scheduleCommentData = ScheduleCommentExtraSerializer(
+                    list(qs),
+                    many=True,
+                    context={'request': request}
+                ).data
                 for comment in scheduleCommentData:
                     comment["type"] = "schedule_comment"
                 visitCommentData = VisitCommentExtraSerializer(list(qv), many=True, context={'request': request}).data
