@@ -6,9 +6,7 @@ import BasicForm from "@/components/forms/BasicForm";
 import InputForm from "@/components/forms/forms-components/forms-input/InputForm";
 import SelectForm from "@/components/forms/forms-components/forms-input/SelectForm";
 import UserService from "@/services/user.service";
-import HelperService from "@/services/helper.service";
 import userService from "@/services/user.service";
-import Link from "next/link";
 import CustomButton from "@/components/button/Button";
 
 /**
@@ -29,8 +27,8 @@ export default function UserForm({ id }) {
   const [phone, setPhone] = useState("");
   const [region, setRegion] = useState("");
   const [active, setActive] = useState(false);
-  const [role, setRole] = useState(5);
-  const [lastLogin, setLastLogin] = useState("");
+  const [role, setRole] = useState("5");
+  const [lastLogin, setLastLogin] = useState(new Date());
   const [allRegions, setAllRegions] = useState([]);
 
   ////////////////////////////////////////////////
@@ -42,11 +40,28 @@ export default function UserForm({ id }) {
       active: active,
       role: role,
     };
-    alert(`Submit this data: ${JSON.stringify(data)}`);
+    try {
+      await UserService.patchById(id, data);
+      await router.push(
+        `/beheer/data_toevoegen/${
+          data.role === "4" ? "syndici" : "personeel"
+        }/${id}`
+      );
+
+      // Otherwise, the update is not satisfying
+      await router.reload();
+    } catch (e) {
+      alert(JSON.stringify(e.response.data));
+    }
   };
 
   const onDelete = async () => {
-    alert("implement this");
+    try {
+      await UserService.deleteById(id);
+      await router.push(`/beheer/data_toevoegen/${router.query.type}`);
+    } catch (e) {
+      alert(JSON.stringify(e.response.data));
+    }
   };
 
   const onActivate = async () => {
@@ -54,7 +69,7 @@ export default function UserForm({ id }) {
       await userService.activateById(id);
       router.reload();
     } catch (e) {
-      alert(e);
+      alert(JSON.stringify(e.response.data));
     }
   };
 
@@ -68,8 +83,8 @@ export default function UserForm({ id }) {
         setRegion(data.region);
         setEmail(data.email);
         setPhone(data.phone);
-        setActive(data.active);
-        setLastLogin(data.last_login);
+        setActive(data.active === "True");
+        setLastLogin(new Date(data.last_login));
         setRole(data.role);
         setAllRegions(await RegionService.get());
       }
@@ -98,28 +113,35 @@ export default function UserForm({ id }) {
 
   return (
     <div className={"space-y-2"}>
-      <div
-        className={
-          "bg-meh-2 text-meh-1 p-2 rounded-lg border-meh-1 border-2 font-bold"
-        }
-      >
-        <div className={"flex flex-row items-center"}>
-          <p className={"flex-grow"}>
-            Deze gebruiker is nog niet geactiveerd. Klik op de knop om hem te
-            activeren.
-          </p>
-          <CustomButton onClick={onActivate} className={"bg-meh-1 text-meh-2"}>
-            <p>ACTIVEER</p>
-          </CustomButton>
+      {!active && (
+        <div
+          className={
+            "bg-meh-2 text-meh-1 p-2 rounded-lg border-meh-1 border-2 font-bold"
+          }
+        >
+          <div className={"flex flex-row items-center"}>
+            <p className={"flex-grow"}>
+              Deze gebruiker is nog niet geactiveerd. Klik op de knop om hem te
+              activeren.
+            </p>
+            <CustomButton
+              onClick={onActivate}
+              className={"bg-meh-1 text-meh-2"}
+            >
+              <p>ACTIVEER</p>
+            </CustomButton>
+          </div>
         </div>
-      </div>
-      <div
-        className={
-          "bg-bad-2 text-bad-1 p-2 rounded-lg border-bad-1 border-2 font-bold"
-        }
-      >
-        <p>Deze gebruiker is verwijderd.</p>
-      </div>
+      )}
+      {!active && (
+        <div
+          className={
+            "bg-bad-2 text-bad-1 p-2 rounded-lg border-bad-1 border-2 font-bold"
+          }
+        >
+          <p>Deze gebruiker is verwijderd.</p>
+        </div>
+      )}
       <BasicForm
         loading={loading}
         onSubmit={onSubmit}
