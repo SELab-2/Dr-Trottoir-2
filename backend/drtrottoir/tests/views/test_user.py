@@ -84,13 +84,6 @@ class TestUserView(APITestCase):
         response = self.client.patch(f'/api/user/{self.users[Roles.STUDENT].pk}/', data=d, follow=True)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_delete_superadmin(self):
-        self.client.force_authenticate(user=self.users[Roles.SUPERADMIN])
-        response = self.client.delete(f'/api/user/{self.users[Roles.STUDENT].pk}/', follow=True)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        response = self.client.get(f'/api/user/{self.users[Roles.STUDENT].pk}/')
-        self.assertEqual(response.data["detail"].code, "not_found")
-
     def test_delete_user_unauthorized(self):
         self.client.force_authenticate(user=self.users[Roles.OWNER])
         response = self.client.delete(f'/api/user/{self.users[Roles.STUDENT].pk}/', follow=True)
@@ -98,7 +91,8 @@ class TestUserView(APITestCase):
 
     def test_user_remove(self):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
-        response = self.client.post(f'/api/user/{self.users[Roles.STUDENT].pk}/remove/', follow=True)
+        response = self.client.delete(f'/api/user/{self.users[Roles.STUDENT].pk}/', follow=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get(f'/api/user/{self.users[Roles.STUDENT].pk}', follow=True)
-        self.assertEqual(response.data['active'], 'False')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['active'], False)

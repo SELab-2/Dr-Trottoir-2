@@ -14,7 +14,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         source='region.region_name',
         read_only=True
     )
-    active = serializers.CharField(source='is_active', read_only=True)
+    active = serializers.BooleanField(source='is_active', read_only=True)
+    removed = serializers.BooleanField(source='deleted', read_only=True)
 
     class Meta:
         model = User
@@ -29,5 +30,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'role',
             'buildings',
             'phone',
-            'active'
+            'active',
+            'removed'
         ]
