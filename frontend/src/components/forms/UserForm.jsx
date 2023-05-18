@@ -105,10 +105,11 @@ export default function UserForm({ id }) {
       >
         <div className={"flex flex-row items-center"}>
           <p className={"flex-grow"}>
-            This user is not yet activated. Click the button to activate.
+            Deze gebruiker is nog niet geactiveerd. Klik op de knop om hem te
+            activeren.
           </p>
           <CustomButton onClick={onActivate} className={"bg-meh-1 text-meh-2"}>
-            <p>ACTIVATE</p>
+            <p>ACTIVEER</p>
           </CustomButton>
         </div>
       </div>
@@ -117,7 +118,7 @@ export default function UserForm({ id }) {
           "bg-bad-2 text-bad-1 p-2 rounded-lg border-bad-1 border-2 font-bold"
         }
       >
-        <p>This user has been deleted.</p>
+        <p>Deze gebruiker is verwijderd.</p>
       </div>
       <BasicForm
         loading={loading}

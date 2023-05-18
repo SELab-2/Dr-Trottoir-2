@@ -239,7 +239,7 @@ export default function LayoutDataAdd({ children }) {
               className={"w-48"}
               text={"Sort"}
             >
-              Bulk Action
+              Bulk Acties
             </SecondaryButton>
             <SecondaryButton
               icon={faPlusCircle}
