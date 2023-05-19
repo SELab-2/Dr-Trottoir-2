@@ -13,6 +13,7 @@ export default function TableWasteSchedule({
   editable = true,
 }) {
   const [changedWastes, setChangedWastes] = useState({});
+  const [columnKey, setColumnKey] = useState(0);
   // Predefined waste types
   const wastes = [
     {
@@ -54,6 +55,17 @@ export default function TableWasteSchedule({
   // Function to get the state for a specific building, day, and waste type
   const getState = (building, dayIndex, wasteType) => {
     const url = building.building.url;
+
+    const wasteFull = wasteType.full;
+    const date = dateStrings[dayIndex];
+    if (
+      url in changedWastes &&
+      date in changedWastes[url] &&
+      wasteFull in changedWastes[url][date]
+    ) {
+      return changedWastes[url][date][wasteFull][0];
+    }
+
     const buildingEntries = wasteSchedule[url];
     // If no entries exist for the building, return default state 0
     if (buildingEntries.length === 0) {
@@ -77,8 +89,40 @@ export default function TableWasteSchedule({
     return state;
   };
 
+  const changeColumn = (dayIndex, waste) => {
+    if (editable) {
+      const wasteType = waste.full;
+      const date = dateStrings[dayIndex];
+      const tempWastes = { ...changedWastes };
+
+      buildings.forEach((building) => {
+        const url = building.building.url;
+        tempWastes[url] = tempWastes[url] || {};
+        tempWastes[url][date] = tempWastes[url][date] || {};
+        if (wasteType in tempWastes[url][date]) {
+          const [state, timesChanged] = tempWastes[url][date][wasteType];
+          if (timesChanged === 2) {
+            // 3 times changed == no change
+            delete tempWastes[url][date][wasteType];
+          } else {
+            tempWastes[url][date][wasteType] = [
+              (state + 1) % 3,
+              timesChanged + 1,
+            ];
+          }
+        } else {
+          const state = getState(building, dayIndex, waste);
+          tempWastes[url][date][wasteType] = [(state + 1) % 3, 1];
+        }
+      });
+      setChangedWastes(tempWastes);
+      setColumnKey((prevKey) => prevKey + 1);
+      onChange(tempWastes);
+    }
+  };
+
   // Function to change the state of a waste entry
-  const changeState = (building, dayIndex, waste, newState, timesChanged) => {
+  const changeState = (building, dayIndex, waste, newState) => {
     // change the Wastes
     const url = building.building.url;
     const wasteType = waste.full;
@@ -88,10 +132,16 @@ export default function TableWasteSchedule({
     const tempWastes = { ...changedWastes };
     tempWastes[url] = tempWastes[url] || {};
     tempWastes[url][date] = tempWastes[url][date] || {};
-    if (timesChanged === 0) {
-      tempWastes[url][date][wasteType] = null;
+    if (wasteType in tempWastes[url][date]) {
+      const timesChanged = tempWastes[url][date][wasteType][1];
+      if (timesChanged === 2) {
+        // 3 times changed == no change
+        delete tempWastes[url][date][wasteType];
+      } else {
+        tempWastes[url][date][wasteType] = [newState, timesChanged + 1];
+      }
     } else {
-      tempWastes[url][date][wasteType] = [newState, timesChanged];
+      tempWastes[url][date][wasteType] = [newState, 1];
     }
     setChangedWastes(tempWastes);
     onChange(tempWastes);
@@ -139,7 +189,10 @@ export default function TableWasteSchedule({
                 {wastes.map((waste, wasteIndex) => (
                   <th
                     key={`${dayIndex}-${wasteIndex}`}
-                    className={`h-1 column-space rounded-t-lg text-dark-h-1 ${waste.background}`}
+                    className={`h-1 column-space rounded-t-lg text-dark-h-1
+                      ${waste.background}
+                    ${editable && "cursor-pointer"}`}
+                    onClick={() => changeColumn(dayIndex, waste)}
                   >
                     {waste.char}
                   </th>
@@ -162,22 +215,17 @@ export default function TableWasteSchedule({
                       const isLastRow = buildingIndex === buildings.length - 1;
                       return (
                         <td
-                          key={`${dayIndex}-${wasteIndex}`}
+                          key={`${dayIndex}-${wasteIndex}-${columnKey}`}
                           className={`column-space ${
                             isLastRow ? "rounded-b-lg" : ""
                           }
                           ${waste.background}`}
                         >
                           <WasteState
+                            key={`${dayIndex}-${wasteIndex}-${columnKey}`}
                             state={getState(building, dayIndex, waste)}
-                            onChange={(newState, timesChanged) =>
-                              changeState(
-                                building,
-                                dayIndex,
-                                waste,
-                                newState,
-                                timesChanged
-                              )
+                            onChange={(newState) =>
+                              changeState(building, dayIndex, waste, newState)
                             }
                             editable={editable}
                           />

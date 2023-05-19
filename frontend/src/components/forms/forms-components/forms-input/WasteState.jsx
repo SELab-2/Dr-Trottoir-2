@@ -11,7 +11,7 @@ export default function WasteState({ state = 0, onChange, editable }) {
     if (editable) {
       const newState = (wasteState + 1) % 3;
       const times = (timesChanged + 1) % 3;
-      onChange(newState, times);
+      onChange(newState);
       setTimesChanged(times);
       setWasteState(newState);
     }

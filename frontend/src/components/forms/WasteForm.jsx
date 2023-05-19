@@ -29,6 +29,7 @@ export default function WasteForm() {
     moment().endOf("isoWeek").toDate(),
   ]);
   const [weekCopy, setWeekCopy] = useState(0);
+  const [submitKey, setSubmitKey] = useState(0);
 
   const onSubmit = async (event) => {
     setLoadSchedule(true);
@@ -42,9 +43,11 @@ export default function WasteForm() {
               changedWaste[tourUrl][building][date][type];
             let state = newState === 2 ? "Buiten" : "Binnen";
 
-            const wasteEntries = Object.values(waste[building] || {});
-            const matchingEntry = wasteEntries.find(
-              (entry) => entry.date === date && entry.waste_type === type
+            const matchingEntry = waste.find(
+              (entry) =>
+                entry.building === building &&
+                entry.date === date &&
+                entry.waste_type === type
             );
 
             if (newState === 0) {
@@ -140,7 +143,7 @@ export default function WasteForm() {
         await Promise.all(promises);
       }
     }
-    router.reload();
+    await changeWeek(week[0], week[1]);
     setLoadSchedule(false);
   };
 
@@ -180,20 +183,25 @@ export default function WasteForm() {
     });
     setWaste(wasteSchedule);
     if (Object.keys(tourBuildings).length !== 0) {
-      for (const tourUrl in tourBuildings) {
-        // Update the waste data for each building in the tour
-        tourBuildings[tourUrl].waste = tourBuildings[tourUrl].buildings.reduce(
-          (dict, building) => {
-            const filteredWaste = waste.filter(
+      setTourBuildings((prevTourBuildings) => {
+        const updatedTourBuildings = { ...prevTourBuildings };
+
+        for (const tourUrl in updatedTourBuildings) {
+          updatedTourBuildings[tourUrl].waste = updatedTourBuildings[
+            tourUrl
+          ].buildings.reduce((dict, building) => {
+            const filteredWaste = wasteSchedule.filter(
               (w) => w.building === building.building.url
             );
             dict[building.building.url] = filteredWaste;
             return dict;
-          },
-          {}
-        );
-      }
+          }, {});
+        }
+
+        return updatedTourBuildings;
+      });
     }
+    setSubmitKey((prevKey) => prevKey + 1);
     setLoadSchedule(false);
   };
 
@@ -287,6 +295,7 @@ export default function WasteForm() {
                 wasteSchedule={tour.waste}
                 startDate={week[0]}
                 onChange={(w) => updateWaste(w, tourUrl)}
+                key={submitKey}
               ></TableWasteSchedule>
             </SecondaryCard>
           ))}
