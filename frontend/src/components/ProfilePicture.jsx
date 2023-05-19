@@ -34,7 +34,7 @@ export default function ProfilePicture({ image, className = "w-9" }) {
         >
           <SecondaryButton
             onClick={async () => {
-              await signOut();
+              await signOut({ redirect: false });
               await router.push("/");
             }}
             icon={faRightFromBracket}
