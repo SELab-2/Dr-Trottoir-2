@@ -151,7 +151,8 @@ export default function UserForm({ id }) {
         onSubmit={onSubmit}
         onDelete={onDelete}
         model={"user"}
-        editMode={true}
+        allowRemove={!removed}
+        allowAdd={!removed}
       >
         <div className={"flex flex-row space-x-2"}>
           <InputForm
@@ -194,6 +195,7 @@ export default function UserForm({ id }) {
           className={"flex-grow"}
           value={region}
           required
+          disabled={removed}
         >
           {allRegions.map((reg) => {
             return (
@@ -213,6 +215,7 @@ export default function UserForm({ id }) {
             setRole(e.target.value === "" ? "" : parseInt(e.target.value));
           }}
           value={role}
+          disabled={removed}
         >
           <option value={1}>Developer</option>
           <option value={2}>Administrator</option>
