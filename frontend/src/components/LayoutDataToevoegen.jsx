@@ -24,7 +24,6 @@ import LinkButton from "@/components/navbar/LinkButton";
 import Loading from "@/components/Loading";
 import RegionService from "@/services/region.service";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
-import HelperService from "@/services/helper.service";
 
 function scheduleList(data) {
   return data.map((data) => {
