@@ -25,6 +25,8 @@ import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
 import WasteCalendar from "@/components/Wastecalendar";
 import MapView from "@/components/MapView";
+import { useRouter } from "next/router";
+import { urlToPK } from "@/utils/urlToPK";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -33,6 +35,7 @@ export default function StudentPlanningPage() {
   const [names, setNames] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [dates, setDates] = useState([]);
+  const router = useRouter();
 
   /**
    * Will set the need information of a selected schedule like
@@ -189,7 +192,12 @@ export default function StudentPlanningPage() {
                   }
                   key={index}
                 >
-                  <div className={"flex flex-row"}>
+                  <div
+                    className={"flex flex-row cursor-pointer"}
+                    onClick={() =>
+                      router.push(`/student/gebouw/${urlToPK(data.url)}`)
+                    }
+                  >
                     <h1 className={"font-bold text-lg w-full"}>
                       {data["name"]}
                     </h1>

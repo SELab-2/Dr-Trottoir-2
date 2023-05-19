@@ -9,7 +9,7 @@ import ProfilePicture from "../ProfilePicture";
 export default function MobileNavbar() {
   const buttons = [
     { icon: faCalendarWeek, link: "/student/planning", label: "planning" },
-    { icon: faBuilding, link: "#", label: "gebouwen" },
+    { icon: faBuilding, link: "/student/gebouw", label: "gebouwen" },
   ];
 
   return (
