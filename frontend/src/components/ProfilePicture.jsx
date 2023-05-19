@@ -3,7 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import {
+  faGraduationCap,
+  faRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function ProfilePicture({ image, className = "w-9" }) {
   const router = useRouter();
@@ -29,7 +32,7 @@ export default function ProfilePicture({ image, className = "w-9" }) {
       {open && (
         <div
           className={
-            "absolute bottom-[100%] absolute z-[100] hover:z-[1000] border-1 border-light-border mt-2 rounded-lg bg-light-bg-1 mb-4"
+            "absolute bottom-[100%] absolute z-[100] hover:z-[1000] border-2 border-light-border mt-2 rounded-lg bg-light-bg-2 mb-4 w-[180px]"
           }
         >
           <SecondaryButton
@@ -38,8 +41,16 @@ export default function ProfilePicture({ image, className = "w-9" }) {
               await router.push("/");
             }}
             icon={faRightFromBracket}
+            className={"w-full mb-1"}
           >
             Uitloggen
+          </SecondaryButton>
+          <SecondaryButton
+            onClick={() => router.push("/student/home")}
+            icon={faGraduationCap}
+            className={"w-full"}
+          >
+            Naar Student
           </SecondaryButton>
         </div>
       )}
