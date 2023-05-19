@@ -24,6 +24,10 @@ import LinkButton from "@/components/navbar/LinkButton";
 import Loading from "@/components/Loading";
 import RegionService from "@/services/region.service";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
+import TourCopyModal from "@/components/forms/forms-copy-modal/TourCopyModal";
+import ScheduleCopyModal from "@/components/forms/forms-copy-modal/ScheduleCopyModal";
+import RegionCopyModal from "@/components/forms/forms-copy-modal/RegionCopyModal";
+import BuildingCopyModal from "@/components/forms/forms-copy-modal/BuildingCopyModal";
 
 function scheduleList(data) {
   return data.map((data) => {
@@ -132,6 +136,7 @@ function userList(data, type) {
 export default function LayoutDataAdd({ children }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -178,6 +183,30 @@ export default function LayoutDataAdd({ children }) {
 
   return (
     <div className={"m-2 h-screen"}>
+      {router.query.type === "planningen" && (
+        <ScheduleCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
+      {router.query.type === "rondes" && (
+        <TourCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
+      {router.query.type === "regio" && (
+        <RegionCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
+      {router.query.type === "gebouwen" && (
+        <BuildingCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
       <PrimaryCard title={"Selecteer type"} className={""}>
         <SecondaryCard>
           <LinkList
@@ -230,13 +259,18 @@ export default function LayoutDataAdd({ children }) {
             >
               Bulk Action
             </SecondaryButton>
-            <SecondaryButton
-              icon={faPlusCircle}
-              className={"w-36"}
-              text={"Sort"}
-            >
-              Kopieer
-            </SecondaryButton>
+            {router.query.id &&
+              router.query.type !== "personeel" &&
+              router.query.type !== "syndici" && (
+                <SecondaryButton
+                  icon={faPlusCircle}
+                  className={"w-36"}
+                  text={"Sort"}
+                  onClick={() => setModalOpen(true)}
+                >
+                  Kopieer
+                </SecondaryButton>
+              )}
             <PrimaryButton
               icon={faPlusCircle}
               className={"w-36"}
