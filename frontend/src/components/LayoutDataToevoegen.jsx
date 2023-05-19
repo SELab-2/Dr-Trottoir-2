@@ -132,7 +132,7 @@ function userList(data, type) {
                   data.active ? "text-good-1 bg-good-2" : "text-bad-1 bg-bad-2"
                 }`}
               >
-                {data.active ? "Active" : "Inactive"}
+                {data.active ? "Actief" : "Inactief"}
               </ColoredTag>
             </div>
             <p className={"text-light-h-2"}>{data.email}</p>
