@@ -20,7 +20,7 @@ export default function SelectForm({
         className={`border-2 rounded-lg  p-2 outline-none ${
           !disabled
             ? `bg-light-bg-2 border-light-h-2`
-            : `border-dark-text text-light-text`
+            : `border-dark-text text-light-h-3`
         }`}
         onChange={onChange}
         disabled={disabled}

@@ -21,7 +21,7 @@ export default function InputForm({
         className={`border-2 rounded-lg  p-2 outline-none ${
           !disabled
             ? `bg-light-bg-2 border-light-h-2`
-            : `border-dark-text text-light-text`
+            : `border-dark-text text-light-h-3`
         }`}
         value={value}
         onChange={onChange}
