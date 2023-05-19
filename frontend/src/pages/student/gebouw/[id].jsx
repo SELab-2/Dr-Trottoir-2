@@ -229,7 +229,7 @@ export default function StudentBuilding() {
       return (
         <div className="space-y-2">
           {visitComments.map((comment, index) => {
-            const date = new Date(comment.updated_at);
+            const date = new Date(comment.created_at);
             return (
               <div key={index} className="rounded-lg bg-light-bg-1 p-2 w-full">
                 <div className="text-xs font-bold text-light-h-2">
