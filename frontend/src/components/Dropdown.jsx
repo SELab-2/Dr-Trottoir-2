@@ -61,6 +61,7 @@ export default function Dropdown({
           selectedIndices.length !== 0 ? `bg-primary-2 text-primary-1` : ``
         }`}
         onClick={onButtonPressed}
+        type="button"
       >
         <div className={"flex items-center justify-center"}>
           {icon && <FontAwesomeIcon icon={icon} className={"h-4"} />}

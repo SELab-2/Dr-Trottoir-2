@@ -12,6 +12,7 @@ import CustomWeekPicker from "../input-fields/CustomWeekPicker";
 import moment from "moment";
 import wasteService from "@/services/waste.service";
 import InputForm from "./forms-components/forms-input/InputForm";
+import Dropdown from "../Dropdown";
 
 export default function WasteForm() {
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,7 @@ export default function WasteForm() {
 
   const [selectedTour, setSelectedTour] = useState("");
   const [allTours, setAllTours] = useState([]);
+  const [tourBuildings2, setTourBuildings2] = useState({});
   const [tourBuildings, setTourBuildings] = useState([]);
   const [waste, setWaste] = useState([]);
   const [changedWaste, setChangedWaste] = useState({});
@@ -31,6 +33,7 @@ export default function WasteForm() {
 
   const onSubmit = async (event) => {
     setLoadSchedule(true);
+    console.log("hierzo");
     event.preventDefault();
     for (const building in changedWaste) {
       for (const date in changedWaste[building]) {
@@ -137,19 +140,34 @@ export default function WasteForm() {
     }
 
     setLoadSchedule(false);
-    router.reload();
+    //router.reload();
   };
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       setAllTours(await TourService.get());
-    }
+    } 
 
     fetchData()
-      .then(() => setLoading(false))
       .catch();
   }, []);
+
+  useEffect(() => {
+    async function fetchWaste() {
+      const wasteSchedule = await wasteService.get({
+        startDate: week[0],
+        endDate: week[1],
+      });
+      setWaste(wasteSchedule);
+    }
+
+    // TO DO: check this
+    fetchWaste()
+      .then(() => setLoading(false))
+      .catch();
+  }, [week]);
+
 
   if (loading) {
     return (
@@ -200,6 +218,38 @@ export default function WasteForm() {
     setLoadSchedule(false);
   };
 
+  const changeTours = async (tours) => {
+    console.log("hello");
+    setLoadSchedule(true);
+    const updatedTourBuildings = {};
+
+    tours.forEach(async (tour) => {
+      const tourUrl = tour[1].url;
+      if (tourUrl in tourBuildings2) {
+        updatedTourBuildings[tourUrl] = tourBuildings2[tourUrl];
+      } else {
+        const buildingsInTour = await TourService.getBuildingsFromTour(
+          urlToPK(tourUrl)
+        );
+        const fixedFormat = await Promise.all(
+          buildingsInTour.map(async (buildingInTour) => ({
+            building: await BuildingService.getEntryByUrl(buildingInTour.building),
+            order_index: buildingInTour.order_index,
+          }))
+        );
+        const sorted = fixedFormat.sort((a, b) => a.order_index - b.order_index);
+        const buildingsWaste = sorted.reduce((dict, building) => {
+          const filteredWaste = waste.filter((w) => w.building === building.building.url);
+          dict[building.building.url] = filteredWaste;
+          return dict;
+        }, {});
+        updatedTourBuildings[tourUrl] = [sorted, buildingsWaste];
+      }
+    });
+    setTourBuildings2(updatedTourBuildings);
+    setLoadSchedule(false);
+  };
+
   return (
     <BasicForm
       loading={loading}
@@ -217,24 +267,36 @@ export default function WasteForm() {
             onChange={changeWeek}
           />
         </div>
-        <SelectForm
-          id={"tour"}
-          label={"Ronde"}
-          onChange={(tour) => handleTourSelect(tour.target.value)}
-          className={"flex-1"}
-          value={selectedTour}
+        <Dropdown
+          multi={true}
+          options={allTours.map((tour) => tour.name)}
+          optionsValues={allTours}
+          onClick={changeTours}
         >
-          {allTours.map((tour, index) => {
-            return (
-              <option key={tour.url} value={tour.url}>
-                {tour.name}
-              </option>
-            );
-          })}
-        </SelectForm>
+          <p>Rondes</p>
+        </Dropdown>
       </div>
-
       <label className={"font-bold"}> {"Kalender"} </label>
+      { loadSchedule ? (
+        <div className={"flex justify-center items-center h-fit w-full"}>
+          <Loading className={"w-10 h-10"} />
+        </div>
+      ) : (
+        Object.entries(tourBuildings2).map(([tourUrl, buildings]) => (
+          <SecondaryCard key={tourUrl}>
+            {console.log(buildings)}
+            <label>{tourUrl}</label>
+            <TableWasteSchedule
+              buildings={buildings[0]}
+              wasteSchedule={buildings[1]}
+              startDate={week[0]}
+              onChange={setChangedWaste}
+            ></TableWasteSchedule>
+          </SecondaryCard>
+        ))
+      )}
+      
+      {/*
       <SecondaryCard>
         {!loadSchedule ? (
           tourBuildings.length === 0 ? (
@@ -268,6 +330,7 @@ export default function WasteForm() {
           </div>
         )}
       </SecondaryCard>
+        */}
     </BasicForm>
   );
 }
