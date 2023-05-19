@@ -35,7 +35,8 @@ class UserAdmin(BaseUserAdmin):
             'first_name',
             'last_name',
             'phone',
-            'is_active'
+            'is_active',
+            'deleted'
         )}),
         ('Permissions', {'fields': ('role',)}),
         ('Region', {'fields': ('region',)})
