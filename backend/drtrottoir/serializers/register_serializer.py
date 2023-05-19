@@ -17,7 +17,7 @@ class RegisterSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('password', 'password2', 'email', 'first_name', 'last_name')
+        fields = ('password', 'password2', 'email', 'first_name', 'last_name', 'phone')
         extra_kwargs = {
             'first_name': {'required': True},
             'last_name': {'required': True},
@@ -36,6 +36,9 @@ class RegisterSerializer(serializers.HyperlinkedModelSerializer):
             is_active=False,
             role=Roles.STUDENT
         )
+
+        if 'phone' in validated_data:
+            user.phone = validated_data['phone']
 
         user.set_password(validated_data['password'])
         user.save()

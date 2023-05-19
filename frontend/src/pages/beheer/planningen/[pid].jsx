@@ -412,6 +412,7 @@ export default function AdminTourPage() {
                 <div className={"w-full h-[84%] relative overflow-hidden"}>
                   <MapView
                     route={buildings.map((building) => building[1])}
+                    transportationMode={"bicycling"}
                     className={
                       "w-[150%] h-[200%] absolute top-[-50%] left-[-25%]"
                     }

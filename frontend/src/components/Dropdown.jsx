@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
@@ -12,6 +12,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
  * @param icon If icon is not null, this will be displayed on the left.
  * @param onClick Function that is executed when element in the dropdown is selected.
  *        This function expects 1 argument, a list of all selected elements.
+ * @param value This is the option that should be selected when creating hte dropdown
  * @param options List of all the options. These needs to be strings/components.
  * @param optionsValues List of the hidden value of every option.
  * @param multi Indicates if multiple elements can be selected.
@@ -25,12 +26,19 @@ export default function Dropdown({
   buttonClassName,
   icon,
   onClick,
+  value,
   options,
   optionsValues,
   multi = false,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndices, setSelectedIndices] = useState([]);
+
+  useEffect(() => {
+    if (value) {
+      setSelectedIndices([options.findIndex((option) => option === value)]);
+    }
+  }, [value, options]);
 
   const onButtonPressed = () => {
     setIsOpen(!isOpen);

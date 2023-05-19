@@ -117,7 +117,7 @@ export default function AdminDashboardPage() {
   // Renders the table
   const performSearch = (scheduleEntries, sortField, filtering) => {
     // Filters on input field
-    if (searchString.current !== "") {
+    if (searchString.current && searchString.current !== "") {
       const search = searchString.current.value.toLowerCase();
       scheduleEntries = scheduleEntries.filter(
         (entry) =>
@@ -209,22 +209,24 @@ export default function AdminDashboardPage() {
         <title>Rondes</title>
       </Head>
       <div className={"flex pb-2"}>
-        <CustomWeekPicker
-          startDate={startDate}
-          endDate={endDate}
-          onChange={(newStartDate, newEndDate) => {
-            setStartDate(newStartDate);
-            setEndDate(newEndDate);
-          }}
-          className="!light-bg-1"
-        />
+        <PrimaryCard title={"Selecteer week"} className={"w-full"}>
+          <CustomWeekPicker
+            startDate={startDate}
+            endDate={endDate}
+            onChange={(newStartDate, newEndDate) => {
+              setStartDate(newStartDate);
+              setEndDate(newEndDate);
+            }}
+            className="!light-bg-1"
+          />
+        </PrimaryCard>
       </div>
 
       <PrimaryCard>
         <div id={"statistics"} className={"flex flex-row grid grid-cols-2"}>
           <div className="flex flex-col">
             <SecondaryCard
-              title={"Aantal Rondes"}
+              title={"Aantal planningen"}
               className={"m-2 justify-center items-center flex-1"}
               icon={faBicycle}
             >
@@ -276,7 +278,7 @@ export default function AdminDashboardPage() {
           </SecondaryCard>
         </div>
 
-        <SecondaryCard icon={faBicycle} title={"Rondes"} className={"m-2"}>
+        <SecondaryCard icon={faBicycle} title={"Planningen"} className={"m-2"}>
           {entries.length ? (
             <div className={"flex flex-col"}>
               <PrimaryCard>

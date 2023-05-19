@@ -30,6 +30,7 @@ module.exports = {
       accent: {
         1: "#E6E600",
         2: "#585936",
+        3: "#c7c700",
       },
       primary: {
         1: "#377DFF",
@@ -76,6 +77,7 @@ module.exports = {
       },
     },
     fontSize: {
+      xs: "10px",
       base: "14px",
       lg: "21px",
       xl: "27px",

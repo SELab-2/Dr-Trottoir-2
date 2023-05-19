@@ -51,6 +51,7 @@ class CustomUser(AbstractBaseUser):
     role = models.IntegerField(choices=Roles.choices, default=Roles.STUDENT)
     buildings = models.ManyToManyField(Building, related_name='owners')
     phone = models.CharField(verbose_name="phone number", max_length=32, null=True)
+    deleted = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
