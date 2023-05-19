@@ -113,31 +113,33 @@ function buildingList(data) {
 }
 
 function userList(data, type) {
-  return data.map((data) => {
-    return (
-      <LinkButton
-        key={data.url}
-        link={`/beheer/data_toevoegen/${type}/${urlToPK(data.url)}`}
-        className={"truncate"}
-      >
-        <div className={"text-light-h-1"}>
-          <div className={"flex flex-row items-center"}>
-            <p className={"flex-grow"}>
-              {data.first_name + " " + data.last_name}
-            </p>
-            <ColoredTag
-              className={`${
-                data.active ? "text-good-1 bg-good-2" : "text-bad-1 text-bad-2"
-              }`}
-            >
-              {data.active ? "Active" : "Inactive"}
-            </ColoredTag>
+  return data
+    .filter((user) => !user.removed)
+    .map((data) => {
+      return (
+        <LinkButton
+          key={data.url}
+          link={`/beheer/data_toevoegen/${type}/${urlToPK(data.url)}`}
+          className={"truncate"}
+        >
+          <div className={"text-light-h-1"}>
+            <div className={"flex flex-row items-center"}>
+              <p className={"flex-grow"}>
+                {data.first_name + " " + data.last_name}
+              </p>
+              <ColoredTag
+                className={`${
+                  data.active ? "text-good-1 bg-good-2" : "text-bad-1 bg-bad-2"
+                }`}
+              >
+                {data.active ? "Active" : "Inactive"}
+              </ColoredTag>
+            </div>
+            <p className={"text-light-h-2"}>{data.email}</p>
           </div>
-          <p className={"text-light-h-2"}>{data.email}</p>
-        </div>
-      </LinkButton>
-    );
-  });
+        </LinkButton>
+      );
+    });
 }
 
 export default function LayoutDataAdd({ children }) {

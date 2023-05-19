@@ -27,8 +27,8 @@ export default function UserForm({ id }) {
   const [phone, setPhone] = useState("");
   const [region, setRegion] = useState("");
   const [active, setActive] = useState(false);
-  const [role, setRole] = useState("5");
-  const [lastLogin, setLastLogin] = useState(new Date());
+  const [removed, setRemoved] = useState(false);
+  const [role, setRole] = useState(5);
   const [allRegions, setAllRegions] = useState([]);
 
   ////////////////////////////////////////////////
@@ -42,14 +42,18 @@ export default function UserForm({ id }) {
     };
     try {
       await UserService.patchById(id, data);
-      await router.push(
-        `/beheer/data_toevoegen/${
-          data.role === "4" ? "syndici" : "personeel"
-        }/${id}`
+
+      await router.replace(
+        `/beheer/data_toevoegen/${role === 4 ? "syndici" : "personeel"}/${id}`
       );
 
-      // Otherwise, the update is not satisfying
-      await router.reload();
+      // To make the update satisfying
+      if (
+        (router.query.type === "personeel" && role !== 4) ||
+        (router.query.type === "Syndici" && role === 4)
+      ) {
+        router.reload();
+      }
     } catch (e) {
       alert(JSON.stringify(e.response.data));
     }
@@ -80,11 +84,11 @@ export default function UserForm({ id }) {
         const data = await UserService.getById(id);
         setFirstName(data.first_name);
         setLastName(data.last_name);
-        setRegion(data.region);
+        setRegion(data.region ? data.region : "");
         setEmail(data.email);
-        setPhone(data.phone);
-        setActive(data.active === "True");
-        setLastLogin(new Date(data.last_login));
+        setPhone(data.phone ? data.phone : "");
+        setActive(data.active);
+        setRemoved(data.removed);
         setRole(data.role);
         setAllRegions(await RegionService.get());
       }
@@ -113,7 +117,7 @@ export default function UserForm({ id }) {
 
   return (
     <div className={"space-y-2"}>
-      {!active && (
+      {!active && !removed && (
         <div
           className={
             "bg-meh-2 text-meh-1 p-2 rounded-lg border-meh-1 border-2 font-bold"
@@ -133,7 +137,7 @@ export default function UserForm({ id }) {
           </div>
         </div>
       )}
-      {!active && (
+      {removed && (
         <div
           className={
             "bg-bad-2 text-bad-1 p-2 rounded-lg border-bad-1 border-2 font-bold"
@@ -205,7 +209,9 @@ export default function UserForm({ id }) {
           id={"role"}
           label={"Functie"}
           required
-          onChange={(e) => setRole(e.target.value)}
+          onChange={(e) => {
+            setRole(e.target.value === "" ? "" : parseInt(e.target.value));
+          }}
           value={role}
         >
           <option value={1}>Developer</option>
