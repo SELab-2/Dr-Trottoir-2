@@ -10,6 +10,7 @@ import {
   faPlus,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import MapView from "@/components/MapView";
 
 export default function TourBuildingAdd({ tourId, callback }) {
   const [allBuildings, setAllBuildings] = useState([]);
@@ -122,9 +123,19 @@ export default function TourBuildingAdd({ tourId, callback }) {
     callback(newBuildings);
   };
 
+  const route = selectedBuildings.map(
+    (selected) =>
+      `${selected.building.address_line_1} ${selected.building.address_line_2}`
+  );
+
   return (
     <div className={"space-y-2"}>
       <p className={"font-bold"}>Gebouwen</p>
+      <MapView
+        route={route}
+        transportationMode={"bicycling"}
+        className={"w-[100%] h-[350px]"}
+      />
       <SecondaryCard className={"space-y-2"}>
         <div className={"flex flex-row justify-center items-center space-x-2"}>
           <SelectForm

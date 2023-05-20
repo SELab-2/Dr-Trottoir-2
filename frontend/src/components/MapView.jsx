@@ -27,11 +27,13 @@ function buildUrl(address, route, transportationMode) {
       }
     }
     params += "&destination=" + encodeURIComponent(route[route.length - 1]);
+
+    if (transportationMode !== undefined) {
+      params += "&mode=" + transportationMode;
+    }
+
   }
 
-  if (transportationMode !== undefined) {
-    params += "&mode=" + transportationMode;
-  }
 
   params += "&zoom=" + 13;
 
@@ -56,11 +58,11 @@ function buildUrl(address, route, transportationMode) {
  * @param mapHeight Height of iframe
  */
 export default function MapView({
-  address,
-  route,
-  transportationMode,
-  className,
-}) {
+                                  address,
+                                  route,
+                                  transportationMode,
+                                  className,
+                                }) {
   if (address === undefined && (route === undefined || route.length === 0)) {
     return (
       <iframe
@@ -76,6 +78,8 @@ export default function MapView({
       />
     );
   }
+
+  console.log(buildUrl(address, route, transportationMode));
 
   return (
     <iframe
