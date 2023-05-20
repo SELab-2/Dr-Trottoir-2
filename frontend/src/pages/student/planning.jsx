@@ -229,7 +229,9 @@ export default function StudentPlanningPage() {
                     <FontAwesomeIcon icon={faLocationDot} />
                     <p>{data["address"]}</p>
                   </div>
-                  <WasteCalendar dates={dates} waste={data["waste"]} />
+                  <SecondaryCard>
+                    <WasteCalendar dates={dates} waste={data["waste"]} />
+                  </SecondaryCard>
                 </SecondaryCard>
               );
             })}
