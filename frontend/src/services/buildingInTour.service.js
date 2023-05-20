@@ -46,7 +46,7 @@ class BuildingInTourService {
    * @returns {Promise<*>}
    */
   async post(data) {
-    const response = await ApiInstance.getApi().post("building_in_tour/", data);
+    const response = await ApiInstance.post("building_in_tour/", data);
     return response.data;
   }
 
@@ -63,10 +63,7 @@ class BuildingInTourService {
    * @returns {Promise<*>}
    */
   async patchById(id, data) {
-    const response = await ApiInstance.getApi().patch(
-      `building_in_tour/${id}/`,
-      data
-    );
+    const response = await ApiInstance.patch(`building_in_tour/${id}/`, data);
     return response.data;
   }
 
@@ -84,7 +81,7 @@ class BuildingInTourService {
    */
   async patchByUrl(url, data) {
     if (HelperService.isCorrectModelUrl(url, "building_in_tour")) {
-      const response = await ApiInstance.getApi().patch(url, data);
+      const response = await ApiInstance.patch(url, data);
       return response.data;
     }
   }
@@ -100,7 +97,7 @@ class BuildingInTourService {
     throw new Error(`A BuildingInTour can't be deleted`);
 
     // If deleting would be possible
-    /*const response = await ApiInstance.getApi().delete(
+    /*const response = await ApiInstance.delete(
       `building_in_tour/${id}/`
     );
     return response.data;*/
@@ -118,7 +115,7 @@ class BuildingInTourService {
 
     // If deleting would be possible
     /*if (HelperService.isCorrectModelUrl(url, "building_in_tour")) {
-      const response = await ApiInstance.getApi().delete(url);
+      const response = await ApiInstance.delete(url);
       return response.data;
     }*/
   }

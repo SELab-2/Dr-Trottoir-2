@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
@@ -33,12 +33,27 @@ export default function Dropdown({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndices, setSelectedIndices] = useState([]);
+  const ref = useRef(null);
 
   useEffect(() => {
     if (value) {
       setSelectedIndices([options.findIndex((option) => option === value)]);
     }
   }, [value, options]);
+
+  const handleClickOutside = (event) => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const onButtonPressed = () => {
     setIsOpen(!isOpen);
@@ -81,7 +96,8 @@ export default function Dropdown({
       </button>
       {isOpen && (
         <ul
-          className={`absolute z-[100] hover:z-[1000] border-2 border-light-border mt-2 rounded-lg bg-light-bg-1 ${listClassName}`}
+          className={`absolute z-[100] hover:z-[1000] border-2 border-light-border mt-2 rounded-lg bg-light-bg-1 ${listClassName} select-none`}
+          ref={ref}
         >
           {options !== null && options.length !== 0 ? (
             options.map((ele, index) => (

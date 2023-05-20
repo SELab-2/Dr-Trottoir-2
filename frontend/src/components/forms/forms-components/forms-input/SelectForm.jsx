@@ -6,6 +6,7 @@ export default function SelectForm({
   onChange,
   value,
   required = false,
+  disabled = false,
 }) {
   return (
     <div className={`flex flex-col space-y-2 ${className}`}>
@@ -16,10 +17,13 @@ export default function SelectForm({
         name={id}
         id={id}
         value={value}
-        className={
-          "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
-        }
+        className={`border-2 rounded-lg  p-2 outline-none ${
+          !disabled
+            ? `bg-light-bg-2 border-light-h-2`
+            : `border-dark-text text-light-h-3`
+        }`}
         onChange={onChange}
+        disabled={disabled}
       >
         <option value={""}>-- Kies een optie --</option>
         {children}
