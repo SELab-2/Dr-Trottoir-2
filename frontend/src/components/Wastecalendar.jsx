@@ -41,7 +41,7 @@ export default function WasteCalendar({ waste, dates }) {
                 classname = "bg-waste-glass text-light-text";
                 cut = false;
               } else if (entry.waste_type.toUpperCase() === "PAPIER") {
-                classname = "bg-waste-paper text-light-bg-1";
+                classname = "bg-waste-paper text-light-text";
               } else if (entry.waste_type.toUpperCase() === "REST") {
                 classname = "bg-waste-rest text-light-bg-1";
                 cut = false;
