@@ -35,35 +35,6 @@ export default function WasteCalendar({ waste, dates }) {
               "flex flex-col grow shrink-0 bg-light-bg-1 p-1 rounded-lg items-center min-h-[50px] min-w-[30px]"
             }
           >
-            {wasteRest.map((entry, index) => {
-              let classname = "bg-waste-other text-light-bg-1";
-              let cut = true;
-              if (entry.waste_type.toUpperCase() === "PMD") {
-                classname = "bg-waste-PMD text-light-text";
-                cut = false;
-              } else if (entry.waste_type.toUpperCase() === "GLAS") {
-                classname = "bg-waste-glass text-light-text";
-                cut = false;
-              } else if (entry.waste_type.toUpperCase() === "PAPIER") {
-                classname = "bg-waste-paper text-light-text";
-              } else if (entry.waste_type.toUpperCase() === "REST") {
-                classname = "bg-waste-rest text-light-bg-1";
-                cut = false;
-              } else if (entry.waste_type.toUpperCase() === "GFT") {
-                classname = "bg-waste-GFT text-light-bg-1";
-                cut = false;
-              }
-              return (
-                <ColoredTag
-                  key={index}
-                  className={`rounded-lg w-full text-center overflow-hidden ${classname}`}
-                >
-                  <Cell cut={cut} maxWidth={"max-w-[30px]"}>
-                    <p className={classname}>{entry.waste_type}</p>
-                  </Cell>
-                </ColoredTag>
-              );
-            })}
             {wasteRest.map((entry, index) => (
               <WasteTag entry={entry} key={index} />
             ))}
