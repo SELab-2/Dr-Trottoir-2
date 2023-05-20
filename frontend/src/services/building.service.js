@@ -1,5 +1,6 @@
 import HelperService from "@/services/helper.service";
 import ApiInstance from "@/services/ApiInstance";
+import { formDataHeader } from "@/utils/contentTypeHeader";
 
 class BuildingService {
   /**
@@ -48,10 +49,9 @@ class BuildingService {
    */
   async post(data) {
     const formData = HelperService.createFormData(data);
-    const response = await ApiInstance.getApi("multipart/form-data").post(
-      "building/",
-      formData
-    );
+    const response = await ApiInstance.post("building/", formData, {
+      headers: formDataHeader,
+    });
     return response.data;
   }
 
@@ -73,10 +73,9 @@ class BuildingService {
    */
   async patchById(id, data) {
     const formData = HelperService.createFormData(data);
-    const response = await ApiInstance.getApi("multipart/form-data").patch(
-      `building/${id}/`,
-      formData
-    );
+    const response = await ApiInstance.patch(`building/${id}/`, formData, {
+      headers: formDataHeader,
+    });
     return response.data;
   }
 
@@ -99,10 +98,9 @@ class BuildingService {
   async patchByUrl(url, data) {
     if (HelperService.isCorrectModelUrl(url, "building")) {
       const formData = HelperService.createFormData(data);
-      const response = await ApiInstance.getApi("multipart/form-data").patch(
-        url,
-        formData
-      );
+      const response = await ApiInstance.patch(url, formData, {
+        headers: formDataHeader,
+      });
       return response.data;
     }
   }
@@ -114,7 +112,7 @@ class BuildingService {
    * @returns {Promise<*>}
    */
   async deleteById(id) {
-    const response = await ApiInstance.getApi().delete(`building/${id}/`);
+    const response = await ApiInstance.delete(`building/${id}/`);
     return response.data;
   }
 
@@ -126,7 +124,7 @@ class BuildingService {
    */
   async deleteByUrl(url) {
     if (HelperService.isCorrectModelUrl(url, "building")) {
-      const response = await ApiInstance.getApi().delete(url);
+      const response = await ApiInstance.delete(url);
       return response.data;
     }
   }
@@ -150,7 +148,7 @@ class BuildingService {
         photoURL += "?" + (startDate ? "start=" + startDate : "end=" + endDate);
         if (startDate && endDate) photoURL += "&end=" + endDate;
       }
-      const response = await ApiInstance.getApi().get(photoURL);
+      const response = await ApiInstance.get(photoURL);
       return response.data;
     }
   }
@@ -163,7 +161,7 @@ class BuildingService {
           "?" + (startDate ? "start=" + startDate : "end=" + endDate);
         if (startDate && endDate) commentURL += "&end=" + endDate;
       }
-      const response = await ApiInstance.getApi().get(commentURL);
+      const response = await ApiInstance.get(commentURL);
       return response.data;
     }
   }

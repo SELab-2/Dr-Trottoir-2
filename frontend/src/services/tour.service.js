@@ -57,7 +57,7 @@ class TourService {
    */
   async post(data) {
     const tourData = { name: data.name, region: data.region };
-    const response = await ApiInstance.getApi().post("tour/", tourData);
+    const response = await ApiInstance.post("tour/", tourData);
 
     for (const building of data.buildings) {
       await buildingInTourService.post({
@@ -125,7 +125,7 @@ class TourService {
    * @returns {Promise<*>}
    */
   async deleteById(id) {
-    const response = await ApiInstance.getApi().delete(`tour/${id}/`);
+    const response = await ApiInstance.delete(`tour/${id}/`);
     return response.data;
   }
 
@@ -137,7 +137,7 @@ class TourService {
    */
   async deleteByUrl(url) {
     if (HelperService.isCorrectModelUrl(url, "tour")) {
-      const response = await ApiInstance.getApi().delete(url);
+      const response = await ApiInstance.delete(url);
       return response.data;
     }
   }
