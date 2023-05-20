@@ -51,7 +51,7 @@ module.exports = {
         2: "#FFDCCC",
       },
       bad: {
-        1: "#CF222E",
+        1: "#cf222e",
         2: "#FFD4DF",
       },
       tags: {
