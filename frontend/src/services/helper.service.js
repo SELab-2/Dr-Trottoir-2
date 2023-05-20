@@ -6,6 +6,7 @@
  */
 import ApiInstance from "@/services/ApiInstance";
 import Error from "next/error";
+import { formDataHeader, formUrlEncoded } from "@/utils/contentTypeHeader";
 
 class HelperService {
   async getResponseByUrl(url) {
@@ -13,13 +14,13 @@ class HelperService {
       url = url.replace("http:", "https:");
     }
 
-    return await ApiInstance.getApi().get(url);
+    return await ApiInstance.get(url);
 
     // Error will be catched in the component if needed
     /*
     let response = null;
     try {
-      response = await ApiInstance.getApi().get(url);
+      response = await ApiInstance.get(url);
     } catch (e) {
       response = e;
       alert(JSON.stringify(e.message, null, 2));
@@ -28,11 +29,9 @@ class HelperService {
   }
 
   async getPostResponse(url, data) {
-    return await ApiInstance.getApi("application/x-www-form-urlencoded").post(
-      url,
-      data
-    );
+    return await ApiInstance.post(url, data, { headers: formUrlEncoded });
   }
+
   /**
    * Return all entries from a page with pagination.
    * If an error occurs, an empty list will be returned.

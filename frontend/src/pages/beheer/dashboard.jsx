@@ -27,6 +27,7 @@ import VisitService from "@/services/visit.service";
 import ColoredTag from "@/components/Tag";
 import PieChart from "@/components/PieChart";
 import Dropdown from "@/components/Dropdown";
+import { useRouter } from "next/router";
 
 export default function AdminDashboardPage() {
   const [schedule, setSchedule] = useState([]);
@@ -39,6 +40,7 @@ export default function AdminDashboardPage() {
   const searchString = useRef("");
   const [sortString, setSortString] = useState("");
   const [filterString, setFilterString] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     // fetch all the data needed for the page
@@ -111,6 +113,7 @@ export default function AdminDashboardPage() {
       performSearch(scheduleEntries, sortString, filterString);
       setEntries(scheduleEntries);
     }
+
     fetchData().catch();
   }, [endDate, startDate]);
 
@@ -315,7 +318,13 @@ export default function AdminDashboardPage() {
                   </div>
 
                   <div className={"px-2"}>
-                    <PrimaryButton text={"Nieuw"} icon={faPlusCircle}>
+                    <PrimaryButton
+                      text={"Nieuw"}
+                      icon={faPlusCircle}
+                      onClick={() =>
+                        router.push("/beheer/data_toevoegen/planningen/")
+                      }
+                    >
                       <p>Nieuw</p>
                     </PrimaryButton>
                   </div>

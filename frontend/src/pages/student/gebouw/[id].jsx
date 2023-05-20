@@ -5,16 +5,13 @@ import {
   faLocationDot,
   faComment,
   faImage,
-  faSquarePlus,
   faCheck,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import Image from "next/image";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
 import Dropdown from "@/components/Dropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import CustomButton from "@/components/button/Button";
 import wasteService from "@/services/waste.service";
 import { getMonday, getSunday } from "@/utils/helpers";
 import scheduleService from "@/services/schedule.service";
@@ -107,6 +104,7 @@ export default function StudentBuilding() {
         );
       }
     }
+
     if (router.query.id) {
       fetchData(router.query.id);
     }
@@ -229,7 +227,7 @@ export default function StudentBuilding() {
       return (
         <div className="space-y-2">
           {visitComments.map((comment, index) => {
-            const date = new Date(comment.updated_at);
+            const date = new Date(comment.created_at);
             return (
               <div key={index} className="rounded-lg bg-light-bg-1 p-2 w-full">
                 <div className="text-xs font-bold text-light-h-2">
