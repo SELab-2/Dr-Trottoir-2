@@ -126,7 +126,7 @@ function buildingList(data) {
 }
 
 function userList(data, type) {
-  return data
+  return sortByName(data, "first_name")
     .filter((user) => !user.removed)
     .map((data) => {
       return (
@@ -391,7 +391,7 @@ export default function LayoutDataAdd({ children, id }) {
           )}
           <PrimaryCard
             className={`h-full ${
-              router.query.type === "afval" ? "w-full" : "w-4/5"
+              router.query.type === "afval" ? "w-full" : "grow"
             }`}
             title={router.query.id ? "Bewerken" : "Toevoegen"}
           >

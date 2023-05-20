@@ -1,5 +1,4 @@
 export default function sortByName(arr, key = "name") {
-  console.log(arr);
   return arr.sort((a, b) => {
     const aName = a[key]?.toLowerCase();
     const bName = b[key]?.toLowerCase();
