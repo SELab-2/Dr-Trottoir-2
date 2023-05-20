@@ -8,6 +8,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
  * @param children Element displayed in the button of the dropdown menu.
  * @param className Add extra classes to the dropdown component.
  * @param listClassName Add extra classes to the list of the dropdown menu.
+ * @param buttonClassName Add extra classes to the button of the dropdown component.
  * @param icon If icon is not null, this will be displayed on the left.
  * @param onClick Function that is executed when element in the dropdown is selected.
  *        This function expects 1 argument, a list of all selected elements.
@@ -22,6 +23,7 @@ export default function Dropdown({
   children,
   className,
   listClassName,
+  buttonClassName,
   icon,
   onClick,
   value,
@@ -82,8 +84,9 @@ export default function Dropdown({
       <button
         className={`align-middle border-2 border-light-border py-2 px-3 text-center rounded-lg font-bold w-full ${
           selectedIndices.length !== 0 ? `bg-primary-2 text-primary-1` : ``
-        }`}
+        } ${buttonClassName}`}
         onClick={onButtonPressed}
+        type="button"
       >
         <div className={"flex items-center justify-center"}>
           {icon && <FontAwesomeIcon icon={icon} className={"h-4"} />}

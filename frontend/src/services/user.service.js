@@ -70,7 +70,7 @@ class UserService {
    * @returns {Promise<any>}
    */
   async activateById(id) {
-    const response = await ApiInstance.getApi().post(`user/${id}/activate/`);
+    const response = await ApiInstance.post(`user/${id}/activate/`);
     return response.data;
   }
 
@@ -82,7 +82,7 @@ class UserService {
    */
   async activateByUrl(url) {
     if (HelperService.isCorrectModelUrl(url, "user")) {
-      const response = await ApiInstance.getApi().post(url);
+      const response = await ApiInstance.post(url);
       return response.data;
     }
   }
@@ -100,7 +100,7 @@ class UserService {
    * @returns {Promise<*>}
    */
   async patchById(id, data) {
-    const response = await ApiInstance.getApi().patch(`user/${id}/`, data);
+    const response = await ApiInstance.patch(`user/${id}/`, data);
     return response.data;
   }
 
@@ -118,7 +118,7 @@ class UserService {
    */
   async patchByUrl(url, data) {
     if (HelperService.isCorrectModelUrl(url, "user")) {
-      const response = await ApiInstance.getApi().patch(url, data);
+      const response = await ApiInstance.patch(url, data);
       return response.data;
     }
   }
@@ -141,7 +141,7 @@ class UserService {
    */
   async deleteByUrl(url) {
     if (HelperService.isCorrectModelUrl(url, "user")) {
-      const response = await ApiInstance.getApi().delete(url);
+      const response = await ApiInstance.delete(url);
       return response.data;
     }
   }
