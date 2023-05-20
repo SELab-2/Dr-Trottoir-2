@@ -14,30 +14,35 @@ import WasteTag from "@/components/WasteTag";
  * @constructor
  */
 export default function WasteCalendar({ waste, dates }) {
+  const days = ["Ma", "Di", "Woe", "Do", "Vr", "Za", "Zo"];
   return (
     <div className={"flex flex-row space-x-2 overflow-auto"}>
       {dates.map((date, i) => {
         const wasteRest = waste.filter((entry) => {
           const wasteDate = new Date(entry.date);
-          const day = wasteDate.getDay();
+          const day = wasteDate.getDate();
           const month = wasteDate.getMonth();
           const year = wasteDate.getFullYear();
           return (
-            day === date.getDay() &&
+            day === date.getDate() &&
             month === date.getMonth() &&
             year === date.getFullYear()
           );
         });
         return (
-          <div
-            key={i}
-            className={
-              "flex flex-col grow shrink-0 bg-light-bg-1 p-1 rounded-lg items-center min-h-[50px] min-w-[30px]"
-            }
-          >
-            {wasteRest.map((entry, index) => (
-              <WasteTag entry={entry} key={index} />
-            ))}
+          <div key={i} className={"text-center font-bold shrink-0"}>
+            <h1 className={"w-full"}>
+              {days[i]}: {date.getDate()}/{date.getMonth() + 1}
+            </h1>
+            <div
+              className={
+                "flex flex-col shrink-0 bg-light-bg-1 p-1 rounded-lg items-center min-h-[50px] min-w-[30px]"
+              }
+            >
+              {wasteRest.map((entry, index) => (
+                <WasteTag entry={entry} key={index} />
+              ))}
+            </div>
           </div>
         );
       })}
