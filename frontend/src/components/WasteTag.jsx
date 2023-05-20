@@ -41,7 +41,7 @@ export default function WasteTag({ entry }) {
           )}
         </div>
         <Cell cut={cut} maxWidth={"max-w-[30px]"}>
-          <p className={classname}>{entry.waste_type}</p>
+          <p className={classname}>{entry.waste_type.toUpperCase()}</p>
         </Cell>
       </div>
     </ColoredTag>

@@ -232,14 +232,25 @@ export default function StudentPlanningPage() {
                     <FontAwesomeIcon icon={faLocationDot} />
                     <p>{data["address"]}</p>
                   </div>
-                  <div
-                    className={"flex flex-row overflow-x-auto w-full space-x-2"}
-                  >
-                    {data["waste"].map((entry, index) => (
-                      <div className={"shrink-0"} key={index}>
-                        <WasteTag entry={entry} />
-                      </div>
-                    ))}
+                  <div className={"flex flex-row space-x-2"}>
+                    <div className={"flex flex-col"}>
+                      {data["waste"]
+                        .filter((entry) => entry.action === "Buiten")
+                        .map((entry, index) => (
+                          <div className={"shrink-0"} key={index}>
+                            <WasteTag entry={entry} />
+                          </div>
+                        ))}
+                    </div>
+                    <div className={"flex flex-col"}>
+                      {data["waste"]
+                        .filter((entry) => entry.action === "Binnen")
+                        .map((entry, index) => (
+                          <div className={"shrink-0"} key={index}>
+                            <WasteTag entry={entry} />
+                          </div>
+                        ))}
+                    </div>
                   </div>
                 </SecondaryCard>
               );
