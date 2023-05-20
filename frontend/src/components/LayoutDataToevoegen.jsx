@@ -321,7 +321,7 @@ export default function LayoutDataAdd({ children, id }) {
                   >
                     Kopieer
                   </SecondaryButton>
-              )}
+                )}
               {!hideNew && (
                 <PrimaryButton
                   icon={faPlusCircle}
