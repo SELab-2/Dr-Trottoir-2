@@ -140,7 +140,7 @@ export default function ScheduleForm({ id }) {
       onSubmit={onSubmit}
       onDelete={onDelete}
       model={"planning"}
-      editMode={id !== undefined}
+      allowRemove={id !== undefined}
     >
       <label className={"font-bold"}> {"Datum"} </label>
       <CustomDayPicker
