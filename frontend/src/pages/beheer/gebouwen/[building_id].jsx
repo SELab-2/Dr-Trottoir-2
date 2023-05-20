@@ -31,6 +31,7 @@ import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
 import { getMonday, getSunday } from "@/utils/helpers";
 import buildingService from "@/services/building.service";
 import regionService from "@/services/region.service";
+import PhotoPage from "@/components/PhotoPage";
 
 export default function BuildingDetail() {
   const router = useRouter();
@@ -395,7 +396,11 @@ export default function BuildingDetail() {
                         {photos.map((photo) => (
                           <div className={"flex-shrink-0"} key={photo["url"]}>
                             <PrimaryCard className={"mr-3"}>
-                              <img src={photo["image"]} width="200px" alt="" />
+                              <PhotoPage
+                                photo={photo}
+                                thumbWidth={200}
+                                thumbHeight={200}
+                              />
                             </PrimaryCard>
                           </div>
                         ))}
