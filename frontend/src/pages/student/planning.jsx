@@ -37,7 +37,6 @@ export default function StudentPlanningPage() {
   const [fraction, setFraction] = useState(0);
   const [names, setNames] = useState([]);
   const [schedules, setSchedules] = useState([]);
-  const [dates, setDates] = useState([]);
   const router = useRouter();
 
   /**
@@ -114,13 +113,6 @@ export default function StudentPlanningPage() {
       const date = new Date();
       const dateFrom = moment(date).startOf("isoWeek").toDate();
       const dateTo = moment(date).endOf("isoWeek").toDate();
-      const dates = [];
-      let currentDate = new Date(dateFrom);
-      while (currentDate <= dateTo) {
-        dates.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-      setDates(dates);
       // Get every schedule assigned to the current user in this week
       const schedules = await scheduleService.get({
         students: [user.url],

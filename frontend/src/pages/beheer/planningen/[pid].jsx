@@ -71,6 +71,15 @@ export default function AdminTourPage() {
   const [comments, setComments] = useState([]);
   const router = useRouter();
 
+  async function deleteSelf() {
+    await ScheduleService.deleteByUrl(url);
+    await router.push("/beheer/dashboard");
+  }
+
+  async function update() {
+    await router.push("/beheer/dashboard");
+  }
+
   /**
    * We fill the selection list wih new schedule objects based on the given week.
    * @param dateFrom Start of the week.
@@ -121,6 +130,10 @@ export default function AdminTourPage() {
 
   useEffect(() => {
     const allTours = async () => {
+      setNewSchedules(
+        moment(new Date()).startOf("isoWeek").toDate(),
+        moment(new Date()).endOf("isoWeek").toDate()
+      );
       if (!router.isReady) return;
       const planning = router.query["pid"];
       const scheduleResponse = await ScheduleService.getById(planning);
@@ -259,6 +272,7 @@ export default function AdminTourPage() {
             status,
             owners,
             computedTime,
+            building.url,
           ];
         })
       );
@@ -298,7 +312,13 @@ export default function AdminTourPage() {
               actionCallback={() => {}}
             />
           </div>
-          <PrimaryButton icon={faPlusCircle} text={"Sort"}>
+          <PrimaryButton
+            icon={faPlusCircle}
+            text={"Sort"}
+            onClick={async () =>
+              await router.push("/beheer/data_toevoegen/planningen")
+            }
+          >
             Nieuw
           </PrimaryButton>
         </div>
@@ -314,10 +334,22 @@ export default function AdminTourPage() {
                 {name}
               </h1>
               <div className={"flex space-x-2"}>
-                <SecondaryButton icon={faPenToSquare} className={"h-fit"}>
+                <SecondaryButton
+                  icon={faPenToSquare}
+                  className={"h-fit"}
+                  onClick={async () =>
+                    await router.push(
+                      `/beheer/data_toevoegen/planningen/${urlToPK(url)}`
+                    )
+                  }
+                >
                   Bewerk
                 </SecondaryButton>
-                <SecondaryButton icon={faTrash} className={"h-fit"}>
+                <SecondaryButton
+                  icon={faTrash}
+                  className={"h-fit"}
+                  onClick={deleteSelf}
+                >
                   Verwijder
                 </SecondaryButton>
               </div>
@@ -377,7 +409,7 @@ export default function AdminTourPage() {
                 title={"Opmerkingen"}
                 className={"sm:w-2/6 basis-1/3"}
               >
-                <div className={"space-y-2 overflow-auto"}>
+                <div className={"space-y-2  overflow-auto"}>
                   {comments.map((entry, index) => (
                     <div key={index} className={"rounded-lg bg-light-bg-1 p-2"}>
                       <div className={"flex flex-row"}>
@@ -451,6 +483,19 @@ export default function AdminTourPage() {
                   },
                   { name: "Verantwoordelijke", cut: true },
                   { name: "Tijd" },
+                  {
+                    name: "Detail",
+                    createCell: (url) => (
+                      <Link
+                        className={
+                          "bg-primary-2 border-2 border-light-h-2 rounded-lg p-1"
+                        }
+                        href={`/beheer/gebouwen/${urlToPK(url)}`}
+                      >
+                        Detail
+                      </Link>
+                    ),
+                  },
                 ]}
                 data={buildings}
               />
