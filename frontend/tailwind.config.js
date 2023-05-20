@@ -67,13 +67,6 @@ module.exports = {
         GFT: "#165e00",
         other: "#000000",
       },
-      waste: {
-        paper: "#003088",
-        PMD: "#c8d7ff",
-        rest: "#282825",
-        glass: "#ffd500",
-        other: "#000000",
-      },
     },
     fontSize: {
       xs: "10px",
