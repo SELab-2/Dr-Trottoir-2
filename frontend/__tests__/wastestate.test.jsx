@@ -15,9 +15,8 @@ describe("WasteState component", () => {
     fireEvent.click(component);
     expect(onChangeMock).toHaveBeenCalledTimes(1);
 
-    // Check if state and timesChanged values are updated correctly
+    // Check if state value is updated correctly
     expect(onChangeMock.mock.calls[0][0]).toBe(1); // newState
-    expect(onChangeMock.mock.calls[0][1]).toBe(1); // timesChanged
   });
 
   test("does not change state when not editable", () => {

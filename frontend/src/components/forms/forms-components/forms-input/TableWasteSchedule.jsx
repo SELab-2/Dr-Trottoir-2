@@ -3,6 +3,18 @@ import WasteState from "./WasteState";
 import moment from "moment";
 import React, { useState } from "react";
 
+/**
+ * Table calendar which shows garbage collecting for one week and can be adjusted.
+ * @param className Add extra classes to the table component.
+ * @param building List of dictionaries which represent each building in a tour
+ * @param wasteSchedule A dictionary which includes the waste for a specific week
+ * @param startDate The start date of the week
+ * @param onChange Function which will be called when a state is changed in the table
+ * @param selectDayIndex The index of the day which has to be selected (optional)
+ * @param editable Determines whether you can change the table
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function TableWasteSchedule({
   className,
   buildings,

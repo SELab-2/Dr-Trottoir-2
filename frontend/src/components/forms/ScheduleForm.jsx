@@ -34,10 +34,6 @@ export default function ScheduleForm({ id }) {
       tour: selectedTour,
       date: moment(selectedDate).format("YYYY-MM-DD"),
     };
-    alert(
-      `You have submitted the form. 
-      The data you want to submit is: ${JSON.stringify(data)}`
-    );
     try {
       if (id) {
         await scheduleService.patchById(id, data);
@@ -158,6 +154,7 @@ export default function ScheduleForm({ id }) {
         onChange={(student) => setSelectedStudent(student.target.value)}
         className={"flex-grow"}
         value={selectedStudent}
+        required
       >
         {allStudents.map((student, index) => {
           return (
@@ -174,6 +171,7 @@ export default function ScheduleForm({ id }) {
         onChange={(tour) => fetchTourBuildings(tour.target.value, selectedDate)}
         className={"flex-grow"}
         value={selectedTour}
+        required
       >
         {allTours.map((tour, index) => {
           return (

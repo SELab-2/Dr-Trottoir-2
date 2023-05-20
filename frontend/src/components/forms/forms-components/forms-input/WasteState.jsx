@@ -5,14 +5,11 @@ import Image from "next/image";
 
 export default function WasteState({ state = 0, onChange, editable }) {
   const [wasteState, setWasteState] = useState(state);
-  const [timesChanged, setTimesChanged] = useState(0);
 
   const changeState = () => {
     if (editable) {
       const newState = (wasteState + 1) % 3;
-      const times = (timesChanged + 1) % 3;
       onChange(newState);
-      setTimesChanged(times);
       setWasteState(newState);
     }
   };
