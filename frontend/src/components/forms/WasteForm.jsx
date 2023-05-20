@@ -174,6 +174,7 @@ export default function WasteForm() {
 
   // Function to change the selected week
   const changeWeek = async (dateFrom, dateTo) => {
+    dateTo = moment(dateTo).add(1, "days").toDate();
     setWeek([dateFrom, dateTo]);
     setLoadSchedule(true);
     // Fetch the waste schedule for the selected week
@@ -288,8 +289,12 @@ export default function WasteForm() {
       ) : (
         <div className="space-y-2">
           {Object.entries(tourBuildings).map(([tourUrl, tour]) => (
-            <SecondaryCard key={tourUrl}>
-              <label className={"font-bold mb-2"}> {tour.name} </label>
+            <SecondaryCard key={tourUrl} className="!pl-0">
+              <label
+                className={"inline-flex sticky left-4 font-bold mb-2 ml-4"}
+              >
+                {tour.name}
+              </label>
               <TableWasteSchedule
                 buildings={tour.buildings}
                 wasteSchedule={tour.waste}

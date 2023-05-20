@@ -93,7 +93,7 @@ export default function ScheduleForm({ id }) {
     const sorted = fixedFormat.sort((a, b) => a.order_index - b.order_index);
     fetchWaste(
       moment(date).isoWeekday(1).toDate(),
-      moment(date).isoWeekday(7).toDate(),
+      moment(date).isoWeekday(7).add(1, "days").toDate(),
       sorted
     );
     setTourBuildings(sorted);
@@ -184,18 +184,16 @@ export default function ScheduleForm({ id }) {
       </SelectForm>
 
       <label className={"font-bold"}> {"Kalender"} </label>
-      <SecondaryCard>
+      <SecondaryCard className="!pl-0">
         {loadSchedule ? (
-          <SecondaryCard>
-            <div className={"flex justify-center items-center h-fit w-full"}>
-              <Loading className={"w-10 h-10"} />
-            </div>
-          </SecondaryCard>
+          <div className={"flex justify-center items-center h-fit w-full"}>
+            <Loading className={"w-10 h-10"} />
+          </div>
         ) : (
           tourBuildings.length > 0 &&
           waste !== null && (
             <div className="space-y-4">
-              <div className="inline-flex sticky left-0 flex space-x-1 items-center">
+              <div className="inline-flex sticky left-4 flex space-x-1 items-center ml-4">
                 <p>Deze kalender kunt u wijzigen in het </p>
                 <Link
                   href="/beheer/data_toevoegen/afval"

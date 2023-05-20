@@ -55,7 +55,7 @@ export default function TableWasteSchedule({
       background: "bg-waste-GFT",
     },
   ];
-  const days = ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"];
+  const days = ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO", "MA"];
   // Generate date strings for each day starting from the provided startDate
   const dateStrings = days.map((day, dayIndex) =>
     moment(startDate)
@@ -64,6 +64,10 @@ export default function TableWasteSchedule({
       .toISOString()
       .substring(0, 10)
   );
+  const headerDates = days.map((day, dayIndex) => {
+    const headerDate = moment(startDate).add(dayIndex, "days").toDate();
+    return `${day} ${headerDate.getDate()}/${headerDate.getMonth() + 1}`;
+  });
 
   // Function to get the state for a specific building, day, and waste type
   const getState = (building, dayIndex, wasteType) => {
@@ -242,31 +246,33 @@ export default function TableWasteSchedule({
     return tempWastes;
   };
 
+  if (buildings.length === 0) {
+    return <p className="ml-4">Deze ronde bevat geen gebouwen.</p>;
+  }
+
   return (
     <div>
-      <div className="flex">
-        <div className="inline-flex sticky left-4 bg-light-bg-2 mb-4 ml-4">
-          {wastes.map((waste, index) => (
-            <ColoredTag
-              key={index}
-              className={`text-dark-h-1 ${waste.background}`}
-            >
-              {waste.full}
-            </ColoredTag>
-          ))}
-          {editable && (
-            <PrimaryButton
-              type="button"
-              className="ml-4 font-normal"
-              onClick={setInside}
-            >
-              Zet afval binnen na 1 dag
-            </PrimaryButton>
-          )}
-        </div>
+      <div className="inline-flex sticky left-4 bg-light-bg-2 mb-4 ml-4">
+        {wastes.map((waste, index) => (
+          <ColoredTag
+            key={index}
+            className={`text-dark-h-1 ${waste.background}`}
+          >
+            {waste.full}
+          </ColoredTag>
+        ))}
+        {editable && (
+          <PrimaryButton
+            type="button"
+            className="ml-4 font-normal"
+            onClick={setInside}
+          >
+            Zet afval binnen na 1 dag
+          </PrimaryButton>
+        )}
       </div>
 
-      <table className="border-separate border-spacing-x-0.5">
+      <table className="border-separate border-spacing-x-0.5 mr-2 mb-2">
         <thead>
           <tr>
             <th className="sticky left-0 bg-light-bg-2">Gebouw</th>
@@ -281,7 +287,7 @@ export default function TableWasteSchedule({
                     "bg-primary-2 border-2 border-primary-1 rounded-md"
                   }`}
                 >
-                  {day}
+                  {headerDates[index]}
                 </th>
                 <th key={`gap-${index}`}></th>
               </React.Fragment>
