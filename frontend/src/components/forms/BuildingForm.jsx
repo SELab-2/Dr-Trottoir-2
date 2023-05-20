@@ -107,7 +107,7 @@ export default function BuildingForm({ id }) {
       onSubmit={onSubmit}
       onDelete={onDelete}
       model={"gebouw"}
-      editMode={id !== undefined}
+      allowRemove={id !== undefined}
     >
       <InputForm
         label={"Naam"}

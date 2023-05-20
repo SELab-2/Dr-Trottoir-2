@@ -9,6 +9,7 @@ import {
   faLocationDot,
   faPeopleGroup,
   faPlusCircle,
+  faTrash,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "@/components/button/PrimaryButton";
@@ -24,6 +25,14 @@ import LinkButton from "@/components/navbar/LinkButton";
 import Loading from "@/components/Loading";
 import RegionService from "@/services/region.service";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
+import moment from "moment";
+import scheduleService from "@/services/schedule.service";
+import CustomWeekPicker from "./input-fields/CustomWeekPicker";
+import TourCopyModal from "@/components/forms/forms-copy-modal/TourCopyModal";
+import ScheduleCopyModal from "@/components/forms/forms-copy-modal/ScheduleCopyModal";
+import RegionCopyModal from "@/components/forms/forms-copy-modal/RegionCopyModal";
+import BuildingCopyModal from "@/components/forms/forms-copy-modal/BuildingCopyModal";
+import ColoredTag from "@/components/Tag";
 
 function scheduleList(data) {
   return data.map((data) => {
@@ -112,26 +121,45 @@ function buildingList(data) {
 }
 
 function userList(data, type) {
-  return data.map((data) => {
-    return (
-      <LinkButton
-        key={data.url}
-        link={`/beheer/data_toevoegen/${type}/${urlToPK(data.url)}`}
-        className={"truncate"}
-      >
-        <div className={"text-light-h-1"}>
-          <p>{data.first_name + " " + data.last_name}</p>
-          <p className={"text-light-h-2"}>{data.email}</p>
-          <p></p>
-        </div>
-      </LinkButton>
-    );
-  });
+  return data
+    .filter((user) => !user.removed)
+    .map((data) => {
+      return (
+        <LinkButton
+          key={data.url}
+          link={`/beheer/data_toevoegen/${type}/${urlToPK(data.url)}`}
+          className={"truncate"}
+        >
+          <div className={"text-light-h-1"}>
+            <div className={"flex flex-row items-center"}>
+              <p className={"flex-grow"}>
+                {data.first_name + " " + data.last_name}
+              </p>
+              <ColoredTag
+                className={`${
+                  data.active ? "text-good-1 bg-good-2" : "text-bad-1 bg-bad-2"
+                }`}
+              >
+                {data.active ? "Actief" : "Inactief"}
+              </ColoredTag>
+            </div>
+            <p className={"text-light-h-2"}>{data.email}</p>
+          </div>
+        </LinkButton>
+      );
+    });
 }
 
-export default function LayoutDataAdd({ children }) {
+export default function LayoutDataAdd({ children, id }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [dateRange, setDateRange] = useState([
+    moment().startOf("isoWeek").toDate(),
+    moment().endOf("isoWeek").toDate(),
+  ]);
+  // used to change the daterange of weekpicker to selected schedule
+  const [directToId, setDirectToId] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -141,7 +169,18 @@ export default function LayoutDataAdd({ children }) {
     async function fetchData() {
       switch (router.query.type) {
         case "planningen": {
-          let scheduleData = await ScheduleService.get();
+          if (id != null && directToId) {
+            let schedule = await scheduleService.getById(id);
+            setDirectToId(false);
+            setDateRange([
+              moment(schedule.date).startOf("isoWeek").toDate(),
+              moment(schedule.date).endOf("isoWeek").toDate(),
+            ]);
+          }
+          let scheduleData = await ScheduleService.get({
+            startDate: dateRange[0],
+            endDate: dateRange[1],
+          });
           const studentUrls = [
             ...new Set(scheduleData.map((schedule) => schedule.student)),
           ];
@@ -181,10 +220,37 @@ export default function LayoutDataAdd({ children }) {
     fetchData()
       .then(() => setLoading(false))
       .catch((err) => alert(err));
-  }, [router.query.type]);
+  }, [router.query.type, dateRange]);
+
+  const hideNew = router.query.type === "personeel";
+  const hideBulk = router.query.type === "personeel";
 
   return (
     <div className={"m-2 h-screen"}>
+      {router.query.type === "planningen" && (
+        <ScheduleCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
+      {router.query.type === "rondes" && (
+        <TourCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
+      {router.query.type === "regio" && (
+        <RegionCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
+      {router.query.type === "gebouwen" && (
+        <BuildingCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
       <PrimaryCard title={"Selecteer type"} className={""}>
         <SecondaryCard>
           <LinkList
@@ -193,6 +259,10 @@ export default function LayoutDataAdd({ children }) {
               Planningen: {
                 icon: faCalendarWeek,
                 link: "/beheer/data_toevoegen/planningen",
+              },
+              Afval: {
+                icon: faTrash,
+                link: "/beheer/data_toevoegen/afval",
               },
               Rondes: {
                 icon: faBicycle,
@@ -220,68 +290,84 @@ export default function LayoutDataAdd({ children }) {
         </SecondaryCard>
       </PrimaryCard>
       <PrimaryCard className={"mt-2"}>
-        <div className={"flex justify-between mb-4"}>
-          <div className={"flex w-2/6"}>
-            <InputField
-              classNameDiv={"w-full"}
-              reference={() => {}}
-              icon={faSearch}
-              actionCallback={() => {}}
-            />
+        {router.query.type !== "afval" && (
+          <div className={"flex justify-between mb-4"}>
+            <div className={"flex w-2/6"}>
+              <InputField
+                classNameDiv={"w-full"}
+                reference={() => {}}
+                icon={faSearch}
+                actionCallback={() => {}}
+              />
+            </div>
+            <div>
+              {!hideBulk && (
+                <SecondaryButton
+                  icon={faPlusCircle}
+                  className={"w-48"}
+                  text={"Sort"}
+                >
+                  Bulk Acties
+                </SecondaryButton>
+              )}
+              {router.query.id &&
+                router.query.type !== "personeel" &&
+                router.query.type !== "syndici" && (
+                  <SecondaryButton
+                    icon={faPlusCircle}
+                    className={"w-36"}
+                    text={"Sort"}
+                    onClick={() => setModalOpen(true)}
+                  >
+                    Kopieer
+                  </SecondaryButton>
+                )}
+              {!hideNew && (
+                <PrimaryButton
+                  icon={faPlusCircle}
+                  className={"w-36"}
+                  onClick={() =>
+                    router.push(`/beheer/data_toevoegen/${router.query.type}`)
+                  }
+                >
+                  Nieuw
+                </PrimaryButton>
+              )}
+            </div>
           </div>
-          <div>
-            <SecondaryButton
-              icon={faPlusCircle}
-              className={"w-48"}
-              text={"Sort"}
-            >
-              Bulk Action
-            </SecondaryButton>
-            <SecondaryButton
-              icon={faPlusCircle}
-              className={"w-36"}
-              text={"Sort"}
-            >
-              Kopieer
-            </SecondaryButton>
-            <PrimaryButton
-              icon={faPlusCircle}
-              className={"w-36"}
-              onClick={() =>
-                router.push(`/beheer/data_toevoegen/${router.query.type}`)
-              }
-            >
-              Nieuw
-            </PrimaryButton>
-          </div>
-        </div>
+        )}
         <SecondaryCard
           className={"flex flex-row h-full w-full p-2 space-x-4 h-screen"}
         >
-          <PrimaryCard className={`h-full w-1/5`} title={"Huidige"}>
-            {loading ? (
-              <div className={"flex justify-center items-center h-fit w-full"}>
-                <Loading className={"w-10 h-10"} />
-              </div>
-            ) : data.length !== 0 ? (
-              <div className={"flex flex-col space-y-4"}>
-                {router.query.type === "planningen" && scheduleList(data)}
-                {router.query.type === "rondes" && tourList(data)}
-                {router.query.type === "regio" && regionList(data)}
-                {router.query.type === "gebouwen" && buildingList(data)}
-                {router.query.type === "personeel" &&
-                  userList(data, "personeel")}
-                {router.query.type === "syndici" && userList(data, "syndici")}
-              </div>
-            ) : (
-              <div className={"flex justify-center items-center"}>
-                <p> Geen {router.query.type} </p>
-              </div>
-            )}
-          </PrimaryCard>
-
+          {router.query.type !== "afval" && (
+            <PrimaryCard className={`h-full min-w-[20%]`} title={"Huidige"}>
+              {loading ? (
+                <div
+                  className={"flex justify-center items-center h-fit w-full"}
+                >
+                  <Loading className={"w-10 h-10"} />
+                </div>
+              ) : data.length !== 0 ? (
+                <div className={"flex flex-col space-y-4"}>
+                  {router.query.type === "planningen" && scheduleList(data)}
+                  {router.query.type === "rondes" && tourList(data)}
+                  {router.query.type === "regio" && regionList(data)}
+                  {router.query.type === "gebouwen" && buildingList(data)}
+                  {router.query.type === "personeel" &&
+                    userList(data, "personeel")}
+                  {router.query.type === "syndici" && userList(data, "syndici")}
+                </div>
+              ) : (
+                <div className={"flex justify-center items-center"}>
+                  <p> Geen {router.query.type} </p>
+                </div>
+              )}
+            </PrimaryCard>
+          )}
           <PrimaryCard
-            className={`h-full w-4/5`}
+            className={`h-full ${
+              router.query.type === "afval" ? "w-full" : "w-4/5"
+            }`}
             title={router.query.id ? "Bewerken" : "Toevoegen"}
           >
             {children}

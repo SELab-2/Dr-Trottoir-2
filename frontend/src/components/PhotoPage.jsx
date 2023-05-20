@@ -14,7 +14,11 @@ import Image from "next/image";
  * A detail screen for a picture.
  * @param photo A photo object.
  */
-export default function PhotoPage({ photo }) {
+export default function PhotoPage({
+  photo,
+  thumbWidth = 75,
+  thumbHeight = 75,
+}) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [person, setPerson] = useState("");
   const [address, setAddress] = useState("");
@@ -72,8 +76,8 @@ export default function PhotoPage({ photo }) {
       <Image
         src={photo.image}
         alt={"building picture"}
-        width={75}
-        height={75}
+        width={thumbWidth}
+        height={thumbHeight}
         unoptimized={true}
         className="rounded-md"
         onClick={openModal}

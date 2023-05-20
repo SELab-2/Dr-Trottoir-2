@@ -1,5 +1,9 @@
 import ColoredTag from "@/components/Tag";
 import Cell from "@/components/table/Cell";
+import Outside from "/public/images/outside_building.png";
+import Inside from "/public/images/inside_building.png";
+import Image from "next/image";
+import WasteTag from "@/components/WasteTag";
 
 /**
  * A waste calander that will show a div for every day in "dates" that is filled
@@ -11,7 +15,7 @@ import Cell from "@/components/table/Cell";
  */
 export default function WasteCalendar({ waste, dates }) {
   return (
-    <div className={"flex flex-row space-x-2 w-full h-auto"}>
+    <div className={"flex flex-row space-x-2 overflow-auto"}>
       {dates.map((date, i) => {
         const wasteRest = waste.filter((entry) => {
           const wasteDate = new Date(entry.date);
@@ -28,7 +32,7 @@ export default function WasteCalendar({ waste, dates }) {
           <div
             key={i}
             className={
-              "flex flex-col flex-auto bg-light-bg-1 w-full p-1 rounded-lg items-center"
+              "flex flex-col grow shrink-0 bg-light-bg-1 p-1 rounded-lg items-center min-h-[50px] min-w-[30px]"
             }
           >
             {wasteRest.map((entry, index) => {
@@ -60,6 +64,9 @@ export default function WasteCalendar({ waste, dates }) {
                 </ColoredTag>
               );
             })}
+            {wasteRest.map((entry, index) => (
+              <WasteTag entry={entry} key={index} />
+            ))}
           </div>
         );
       })}

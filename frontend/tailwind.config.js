@@ -11,6 +11,7 @@ module.exports = {
         h: {
           1: "#000000",
           2: "#B2B2B2",
+          3: "#828282",
         },
         text: "#4D4D4D",
         border: "#E6E6E6",
