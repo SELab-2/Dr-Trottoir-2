@@ -349,7 +349,17 @@ export default function LayoutDataAdd({ children, id }) {
                 </div>
               ) : data.length !== 0 ? (
                 <div className={"flex flex-col space-y-4"}>
-                  {router.query.type === "planningen" && scheduleList(data)}
+                  {router.query.type === "planningen" && (
+                    <div>
+                      <CustomWeekPicker
+                        startDate={dateRange[0]}
+                        endDate={dateRange[1]}
+                        onChange={(begin, end) => setDateRange([begin, end])}
+                        className={"mb-2"}
+                      />
+                      {scheduleList(data)}
+                    </div>
+                  )}
                   {router.query.type === "rondes" && tourList(data)}
                   {router.query.type === "regio" && regionList(data)}
                   {router.query.type === "gebouwen" && buildingList(data)}
@@ -358,8 +368,18 @@ export default function LayoutDataAdd({ children, id }) {
                   {router.query.type === "syndici" && userList(data, "syndici")}
                 </div>
               ) : (
-                <div className={"flex justify-center items-center"}>
-                  <p> Geen {router.query.type} </p>
+                <div className={"flex flex-col justify-center items-center"}>
+                  {router.query.type === "planningen" && (
+                    <div>
+                      <CustomWeekPicker
+                        startDate={dateRange[0]}
+                        endDate={dateRange[1]}
+                        onChange={(begin, end) => setDateRange([begin, end])}
+                        className={"mb-2"}
+                      />
+                    </div>
+                  )}
+                  <div> Geen {router.query.type} </div>
                 </div>
               )}
             </PrimaryCard>
