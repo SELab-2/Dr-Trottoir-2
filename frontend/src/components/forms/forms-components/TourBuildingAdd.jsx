@@ -123,10 +123,14 @@ export default function TourBuildingAdd({ tourId, callback }) {
     callback(newBuildings);
   };
 
+  console.log(selectedBuildings);
+
   const route = selectedBuildings.map(
     (selected) =>
       `${selected.building.address_line_1} ${selected.building.address_line_2}`
   );
+
+  console.log(route);
 
   return (
     <div className={"space-y-2"}>

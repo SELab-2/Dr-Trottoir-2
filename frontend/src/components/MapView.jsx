@@ -31,9 +31,7 @@ function buildUrl(address, route, transportationMode) {
     if (transportationMode !== undefined) {
       params += "&mode=" + transportationMode;
     }
-
   }
-
 
   params += "&zoom=" + 13;
 
@@ -58,11 +56,11 @@ function buildUrl(address, route, transportationMode) {
  * @param mapHeight Height of iframe
  */
 export default function MapView({
-                                  address,
-                                  route,
-                                  transportationMode,
-                                  className,
-                                }) {
+  address,
+  route,
+  transportationMode,
+  className,
+}) {
   if (address === undefined && (route === undefined || route.length === 0)) {
     return (
       <iframe
@@ -79,7 +77,7 @@ export default function MapView({
     );
   }
 
-  console.log(buildUrl(address, route, transportationMode));
+  let url = buildUrl(address, route, transportationMode);
 
   return (
     <iframe
@@ -87,7 +85,8 @@ export default function MapView({
       style={{ border: 0 }}
       loading="lazy"
       allowFullScreen
-      src={buildUrl(address, route, transportationMode)}
+      key={url}
+      src={url}
     />
   );
 }
