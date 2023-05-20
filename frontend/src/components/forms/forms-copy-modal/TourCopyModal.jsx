@@ -24,7 +24,6 @@ export default function TourCopyModal({ open, onCloseModal }) {
       onCloseModal();
       router.reload();
     } catch (e) {
-      console.log(e);
       setError(JSON.stringify(e.response.data));
     }
   };
