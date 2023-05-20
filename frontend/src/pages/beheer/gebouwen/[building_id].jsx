@@ -74,7 +74,7 @@ export default function BuildingDetail() {
     );
     switch (searchedBuildings.length) {
       case 1:
-        await updateBuildingSelection(buildings[0]["url"]);
+        await updateBuildingSelection(searchedBuildings[0]["url"]);
         break;
       case 0:
         console.warn("No matching buildings found");
