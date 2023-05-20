@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import {
@@ -21,10 +21,19 @@ import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
 export default function Buildings() {
   const router = useRouter();
 
+  const states = Object.freeze({
+    waiting: "waiting",
+    empty: "empty",
+  });
+
+  const [loadState, setLoadState] = useState(states.waiting);
+
   useEffect(() => {
     const redirectToBuilding = async () => {
       const buildings = await buildingService.get();
-      router.push(`/beheer/gebouwen/${urlToPK(buildings[0]["url"])}`);
+      if (buildings.length > 0)
+        router.push(`/beheer/gebouwen/${urlToPK(buildings[0]["url"])}`);
+      else setLoadState(states.empty);
     };
 
     redirectToBuilding();
@@ -65,7 +74,11 @@ export default function Buildings() {
         <div className="flex">
           <PrimaryCard icon={faBuilding} className={"m-2 basis-3/4 autogrow"}>
             <div className={"flex items-center justify-center grow"}>
-              <Loading className="w-20" />
+              {loadState === states.waiting ? (
+                <Loading className="w-20" />
+              ) : (
+                <h className={"text-lg"}>Geen gebouwen gevonden.</h>
+              )}
             </div>
           </PrimaryCard>
           <div className={"m-2 basis-1/4 max-h-4/5"}>

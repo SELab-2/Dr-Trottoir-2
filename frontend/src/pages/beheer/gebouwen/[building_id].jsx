@@ -19,22 +19,18 @@ import {
   faSort,
   faFileText,
   faPenToSquare,
-  faTrash,
   faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import Dropdown from "@/components/Dropdown";
-import SecondaryButton from "@/components/button/SecondaryButton";
 import { useRouter } from "next/router";
 import { urlToPK } from "@/utils/urlToPK";
 import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
 import { getMonday, getSunday } from "@/utils/helpers";
 import buildingService from "@/services/building.service";
-import Image from "next/image";
 import regionService from "@/services/region.service";
-import Loading from "@/components/Loading";
 
 export default function BuildingDetail() {
   const router = useRouter();
@@ -79,14 +75,16 @@ export default function BuildingDetail() {
     );
     switch (searchedBuildings.length) {
       case 1:
-        await updateBuildingSelection(searchedBuildings[0]["url"]);
+        await updateBuildingSelection(buildings[0]["url"]);
         break;
       case 0:
         console.warn("No matching buildings found");
-        updateBuildingSelection(buildings[0]?.url);
+        if (buildings.length !== 0) updateBuildingSelection(buildings[0]?.url);
+        else router.push("/beheer/gebouwen");
         break;
       case 2:
         console.error("Multiple buildings with this ID");
+        router.push("/beheer/gebouwen");
         break;
     }
   };
@@ -231,7 +229,7 @@ export default function BuildingDetail() {
         style={{ backgroundColor: background }}
         onClick={handleClick}
       >
-        <h1 className={"font-semibold"}>{nickname}</h1>
+        <p className={"font-semibold"}>{nickname}</p>
         <p>{address}</p>
       </div>
     );
@@ -308,11 +306,11 @@ export default function BuildingDetail() {
               <div>
                 <div>
                   <div className={"flex flex items-center"}>
-                    <h1
+                    <p
                       className={"w-full text-light-h-1 font-bold text-xl my-5"}
                     >
                       {buildingDetail.nickname}
-                    </h1>
+                    </p>
                     <div className={"flex space-x-2"}>
                       <PrimaryButton
                         icon={faPenToSquare}
