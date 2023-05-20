@@ -4,8 +4,7 @@ import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
 import TourForm from "@/components/forms/TourForm";
 import ScheduleForm from "@/components/forms/ScheduleForm";
-import StaffForm from "@/components/forms/StaffForm";
-import SyndiciForm from "@/components/forms/SyndiciForm";
+import UserForm from "@/components/forms/UserForm";
 import LayoutDataAdd from "@/components/LayoutDataToevoegen";
 import RegionForm from "@/components/forms/RegionForm";
 
@@ -45,8 +44,8 @@ export default function AdminDataAddPage() {
         {router.query.type === "rondes" && <TourForm />}
         {router.query.type === "regio" && <RegionForm />}
         {router.query.type === "gebouwen" && <BuildingForm />}
-        {router.query.type === "personeel" && <StaffForm />}
-        {router.query.type === "syndici" && <SyndiciForm />}
+        {router.query.type === "personeel" && <UserForm />}
+        {router.query.type === "syndici" && <UserForm />}
       </LayoutDataAdd>
     </>
   );

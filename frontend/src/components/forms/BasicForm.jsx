@@ -14,7 +14,8 @@ import RemoveModal from "@/components/Modals/RemoveModal";
 
 export default function BasicForm({
   model,
-  editMode = false,
+  allowRemove = false,
+  allowAdd = true,
   children,
   onSubmit,
   onDelete,
@@ -47,10 +48,12 @@ export default function BasicForm({
       <form onSubmit={onSubmit} className={"flex flex-col space-y-2"}>
         {children}
         <div className={"flex flex-row space-x-2"}>
-          <PrimaryButton icon={faPlusCircle} type={"submit"}>
-            Opslaan
-          </PrimaryButton>
-          {editMode && (
+          {allowAdd && (
+            <PrimaryButton icon={faPlusCircle} type={"submit"}>
+              Opslaan
+            </PrimaryButton>
+          )}
+          {allowRemove && (
             <CustomButton
               icon={faMinusCircle}
               type="button"

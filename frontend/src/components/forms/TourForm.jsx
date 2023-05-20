@@ -89,7 +89,7 @@ export default function TourForm({ id }) {
       onSubmit={onSubmit}
       onDelete={onDelete}
       model={"ronde"}
-      editMode={id !== undefined}
+      allowRemove={id !== undefined}
     >
       <InputForm
         label={"Name"}

@@ -24,6 +24,11 @@ import LinkButton from "@/components/navbar/LinkButton";
 import Loading from "@/components/Loading";
 import RegionService from "@/services/region.service";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
+import TourCopyModal from "@/components/forms/forms-copy-modal/TourCopyModal";
+import ScheduleCopyModal from "@/components/forms/forms-copy-modal/ScheduleCopyModal";
+import RegionCopyModal from "@/components/forms/forms-copy-modal/RegionCopyModal";
+import BuildingCopyModal from "@/components/forms/forms-copy-modal/BuildingCopyModal";
+import ColoredTag from "@/components/Tag";
 
 function scheduleList(data) {
   return data.map((data) => {
@@ -112,26 +117,39 @@ function buildingList(data) {
 }
 
 function userList(data, type) {
-  return data.map((data) => {
-    return (
-      <LinkButton
-        key={data.url}
-        link={`/beheer/data_toevoegen/${type}/${urlToPK(data.url)}`}
-        className={"truncate"}
-      >
-        <div className={"text-light-h-1"}>
-          <p>{data.first_name + " " + data.last_name}</p>
-          <p className={"text-light-h-2"}>{data.email}</p>
-          <p></p>
-        </div>
-      </LinkButton>
-    );
-  });
+  return data
+    .filter((user) => !user.removed)
+    .map((data) => {
+      return (
+        <LinkButton
+          key={data.url}
+          link={`/beheer/data_toevoegen/${type}/${urlToPK(data.url)}`}
+          className={"truncate"}
+        >
+          <div className={"text-light-h-1"}>
+            <div className={"flex flex-row items-center"}>
+              <p className={"flex-grow"}>
+                {data.first_name + " " + data.last_name}
+              </p>
+              <ColoredTag
+                className={`${
+                  data.active ? "text-good-1 bg-good-2" : "text-bad-1 bg-bad-2"
+                }`}
+              >
+                {data.active ? "Actief" : "Inactief"}
+              </ColoredTag>
+            </div>
+            <p className={"text-light-h-2"}>{data.email}</p>
+          </div>
+        </LinkButton>
+      );
+    });
 }
 
 export default function LayoutDataAdd({ children }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -183,8 +201,35 @@ export default function LayoutDataAdd({ children }) {
       .catch((err) => alert(err));
   }, [router.query.type]);
 
+  const hideNew = router.query.type === "personeel";
+  const hideBulk = router.query.type === "personeel";
+
   return (
     <div className={"m-2 h-screen"}>
+      {router.query.type === "planningen" && (
+        <ScheduleCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
+      {router.query.type === "rondes" && (
+        <TourCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
+      {router.query.type === "regio" && (
+        <RegionCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
+      {router.query.type === "gebouwen" && (
+        <BuildingCopyModal
+          open={modalOpen}
+          onCloseModal={() => setModalOpen(false)}
+        />
+      )}
       <PrimaryCard title={"Selecteer type"} className={""}>
         <SecondaryCard>
           <LinkList
@@ -230,35 +275,44 @@ export default function LayoutDataAdd({ children }) {
             />
           </div>
           <div>
-            <SecondaryButton
-              icon={faPlusCircle}
-              className={"w-48"}
-              text={"Sort"}
-            >
-              Bulk Action
-            </SecondaryButton>
-            <SecondaryButton
-              icon={faPlusCircle}
-              className={"w-36"}
-              text={"Sort"}
-            >
-              Kopieer
-            </SecondaryButton>
-            <PrimaryButton
-              icon={faPlusCircle}
-              className={"w-36"}
-              onClick={() =>
-                router.push(`/beheer/data_toevoegen/${router.query.type}`)
-              }
-            >
-              Nieuw
-            </PrimaryButton>
+            {!hideBulk && (
+              <SecondaryButton
+                icon={faPlusCircle}
+                className={"w-48"}
+                text={"Sort"}
+              >
+                Bulk Acties
+              </SecondaryButton>
+            )}
+            {router.query.id &&
+              router.query.type !== "personeel" &&
+              router.query.type !== "syndici" && (
+                <SecondaryButton
+                  icon={faPlusCircle}
+                  className={"w-36"}
+                  text={"Sort"}
+                  onClick={() => setModalOpen(true)}
+                >
+                  Kopieer
+                </SecondaryButton>
+              )}
+            {!hideNew && (
+              <PrimaryButton
+                icon={faPlusCircle}
+                className={"w-36"}
+                onClick={() =>
+                  router.push(`/beheer/data_toevoegen/${router.query.type}`)
+                }
+              >
+                Nieuw
+              </PrimaryButton>
+            )}
           </div>
         </div>
         <SecondaryCard
           className={"flex flex-row h-full w-full p-2 space-x-4 h-screen"}
         >
-          <PrimaryCard className={`h-full w-1/5`} title={"Huidige"}>
+          <PrimaryCard className={`h-full min-w-[20%]`} title={"Huidige"}>
             {loading ? (
               <div className={"flex justify-center items-center h-fit w-full"}>
                 <Loading className={"w-10 h-10"} />
