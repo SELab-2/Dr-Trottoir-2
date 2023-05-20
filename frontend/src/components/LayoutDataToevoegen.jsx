@@ -87,7 +87,7 @@ function tourList(data) {
 }
 
 function regionList(data) {
-  return data.map((data) => {
+  return sortByName(data).map((data) => {
     const id = urlToPK(data.url);
 
     return (
