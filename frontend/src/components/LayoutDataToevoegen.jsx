@@ -321,8 +321,7 @@ export default function LayoutDataAdd({ children, id }) {
                   >
                     Kopieer
                   </SecondaryButton>
-                )
-              }
+              )}
               {!hideNew && (
                 <PrimaryButton
                   icon={faPlusCircle}
@@ -343,7 +342,9 @@ export default function LayoutDataAdd({ children, id }) {
           {router.query.type !== "afval" && (
             <PrimaryCard className={`h-full min-w-[20%]`} title={"Huidige"}>
               {loading ? (
-                <div className={"flex justify-center items-center h-fit w-full"}>
+                <div
+                  className={"flex justify-center items-center h-fit w-full"}
+                >
                   <Loading className={"w-10 h-10"} />
                 </div>
               ) : data.length !== 0 ? (
