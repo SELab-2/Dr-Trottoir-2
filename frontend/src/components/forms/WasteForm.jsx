@@ -151,7 +151,19 @@ export default function WasteForm() {
     // Fetch initial data
     async function fetchData() {
       setLoading(true);
-      setAllTours(await TourService.get());
+      setAllTours(
+        (await TourService.get()).sort((a, b) => {
+          const aName = a.name;
+          const bName = b.name;
+          if (aName < bName) {
+            return -1;
+          }
+          if (aName > bName) {
+            return 1;
+          }
+          return 0;
+        })
+      );
       const wasteSchedule = await wasteService.get({
         startDate: week[0],
         endDate: week[1],
