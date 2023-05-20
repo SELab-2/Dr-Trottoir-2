@@ -2,7 +2,7 @@ import {
   faBuilding,
   faCalendarWeek,
   faCircle,
-  faGraduationCap,
+  faGraduationCap, faPeopleRoof,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import MobileNavbarButton from "./MobileNavbarButton";
@@ -69,11 +69,11 @@ export default function MobileNavbar() {
               Uitloggen
             </SecondaryButton>
             <SecondaryButton
-              onClick={() => router.push("/student/planning")}
-              icon={faGraduationCap}
+              onClick={() => router.push("/beheer/dashboard")}
+              icon={faPeopleRoof}
               className={"w-full"}
             >
-              Naar Student
+              Naar Beheer
             </SecondaryButton>
           </div>
         )}
