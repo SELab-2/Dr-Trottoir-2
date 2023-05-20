@@ -187,7 +187,8 @@ export default function AdminTourPage() {
         );
 
         for (const photo of photos) {
-          if (photo.comment !== "") {
+          console.log(photo);
+          if (photo.comment !== "" && photo.comment !== null) {
             comments.push({
               comment: photo.comment,
               building: visit.building_in_tour_data.nickname,
