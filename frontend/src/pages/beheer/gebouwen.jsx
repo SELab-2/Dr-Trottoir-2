@@ -24,7 +24,6 @@ export default function Buildings() {
   useEffect(() => {
     const redirectToBuilding = async () => {
       const buildings = await buildingService.get();
-      console.log(urlToPK(buildings[0]["url"]));
       router.push(`/beheer/gebouwen/${urlToPK(buildings[0]["url"])}`);
     };
 

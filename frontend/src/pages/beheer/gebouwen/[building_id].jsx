@@ -58,10 +58,6 @@ export default function BuildingDetail() {
   const mapCard = useRef(null);
 
   const updateBuildingSelection = async (url) => {
-    console.log(
-      "(updateBuildingSelection) Redirecting to ",
-      `/beheer/gebouwen/${urlToPK(url)}`
-    );
     router.push(`/beheer/gebouwen/${urlToPK(url)}`, undefined, {
       shallow: true,
     });
@@ -78,16 +74,13 @@ export default function BuildingDetail() {
     setSearchResults(buildings);
 
     const selectedID = router.query.building_id;
-    const searchedBuildings = buildings.filter((building) => {
-      console.log(
-        building["url"],
-        `/${selectedID}/`,
-        building["url"]?.endsWith(`/${selectedID}/`)
-      );
-      return building["url"]?.endsWith(`/${selectedID}/`);
-    });
-    console.log(searchedBuildings);
+    const searchedBuildings = buildings.filter((building) =>
+      building["url"]?.endsWith(`/${selectedID}/`)
+    );
     switch (searchedBuildings.length) {
+      case 1:
+        await updateBuildingSelection(searchedBuildings[0]["url"]);
+        break;
       case 0:
         console.warn("No matching buildings found");
         updateBuildingSelection(buildings[0]?.url);
@@ -95,9 +88,6 @@ export default function BuildingDetail() {
       case 2:
         console.error("Multiple buildings with this ID");
         break;
-      case 1:
-        console.log("Updating page to", searchedBuildings[0]["url"]);
-        await updateBuildingSelection(searchedBuildings[0]["url"]);
     }
   };
 
