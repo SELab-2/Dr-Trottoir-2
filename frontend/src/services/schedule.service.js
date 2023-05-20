@@ -51,7 +51,7 @@ class ScheduleService {
    * @returns {Promise<*>}
    */
   async patchById(id, data) {
-    const response = await ApiInstance.getApi().patch(`schedule/${id}/`, data);
+    const response = await ApiInstance.patch(`schedule/${id}/`, data);
     return response.data;
   }
 
@@ -69,7 +69,7 @@ class ScheduleService {
    */
   async patchByUrl(url, data) {
     if (HelperService.isCorrectModelUrl(url, "schedule")) {
-      const response = await ApiInstance.getApi().patch(url, data);
+      const response = await ApiInstance.patch(url, data);
       return response.data;
     }
   }
@@ -81,7 +81,7 @@ class ScheduleService {
    * @returns {Promise<*>}
    */
   async deleteById(id) {
-    const response = await ApiInstance.getApi().delete(`schedule/${id}/`);
+    const response = await ApiInstance.delete(`schedule/${id}/`);
     return response.data;
   }
 
@@ -93,7 +93,7 @@ class ScheduleService {
    */
   async deleteByUrl(url) {
     if (HelperService.isCorrectModelUrl(url, "schedule")) {
-      const response = await ApiInstance.getApi().delete(url);
+      const response = await ApiInstance.delete(url);
       return response.data;
     }
   }
@@ -110,7 +110,7 @@ class ScheduleService {
    * @returns {Promise<*>}
    */
   async post(data) {
-    const response = await ApiInstance.getApi().post("schedule/", data);
+    const response = await ApiInstance.post("schedule/", data);
     return response.data;
   }
 

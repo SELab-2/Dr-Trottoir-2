@@ -48,7 +48,7 @@ class WasteService {
    * @returns {Promise<*>}
    */
   async post(data) {
-    const response = await ApiInstance.getApi().post("waste/", data);
+    const response = await ApiInstance.post("waste/", data);
     return response.data;
   }
 
@@ -59,7 +59,7 @@ class WasteService {
    * @returns {Promise<*>}
    */
   async deleteById(id) {
-    const response = await ApiInstance.getApi().delete(`waste/${id}/`);
+    const response = await ApiInstance.delete(`waste/${id}/`);
     return response.data;
   }
 
@@ -71,7 +71,7 @@ class WasteService {
    */
   async deleteByUrl(url) {
     if (HelperService.isCorrectModelUrl(url, "waste")) {
-      const response = await ApiInstance.getApi().delete(url);
+      const response = await ApiInstance.delete(url);
       return response.data;
     }
   }
@@ -90,7 +90,7 @@ class WasteService {
    * @returns {Promise<*>}
    */
   async patchById(id, data) {
-    const response = await ApiInstance.getApi().patch(`waste/${id}/`, data);
+    const response = await ApiInstance.patch(`waste/${id}/`, data);
     return response.data;
   }
 
@@ -109,7 +109,7 @@ class WasteService {
    */
   async patchByUrl(url, data) {
     if (HelperService.isCorrectModelUrl(url, "waste")) {
-      const response = await ApiInstance.getApi().patch(url, data);
+      const response = await ApiInstance.patch(url, data);
       return response.data;
     }
   }
