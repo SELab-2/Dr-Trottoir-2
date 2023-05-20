@@ -33,6 +33,7 @@ import ScheduleCopyModal from "@/components/forms/forms-copy-modal/ScheduleCopyM
 import RegionCopyModal from "@/components/forms/forms-copy-modal/RegionCopyModal";
 import BuildingCopyModal from "@/components/forms/forms-copy-modal/BuildingCopyModal";
 import ColoredTag from "@/components/Tag";
+import sortByName from "@/utils/sortByName";
 
 function scheduleList(data) {
   return data.map((data) => {
@@ -57,11 +58,15 @@ function scheduleList(data) {
 }
 
 function tourList(data) {
-  data = data.filter((tour) => {
-    return !data.some((tour2) => {
-      return tour.name === tour2.name && urlToPK(tour.url) < urlToPK(tour2.url);
-    });
-  });
+  data = sortByName(
+    data.filter((tour) => {
+      return !data.some((tour2) => {
+        return (
+          tour.name === tour2.name && urlToPK(tour.url) < urlToPK(tour2.url)
+        );
+      });
+    })
+  );
 
   return data.map((data) => {
     const id = urlToPK(data.url);
