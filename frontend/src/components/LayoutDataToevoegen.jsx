@@ -105,7 +105,7 @@ function regionList(data) {
 }
 
 function buildingList(data) {
-  return data.map((data) => {
+  return sortByName(data, "nickname").map((data) => {
     const id = urlToPK(data.url);
 
     return (
