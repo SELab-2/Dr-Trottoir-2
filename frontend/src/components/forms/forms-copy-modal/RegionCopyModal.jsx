@@ -22,7 +22,8 @@ export default function RegionCopyModal({ open, onCloseModal }) {
       await router.push(
         `/beheer/data_toevoegen/regio/${urlToPK(response.url)}`
       );
-      router.reload();
+      setError("");
+
     } catch (e) {
       setError(JSON.stringify(e.response.data));
     }

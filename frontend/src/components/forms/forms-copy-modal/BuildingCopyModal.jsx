@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Loading from "@/components/Loading";
 import InputForm from "@/components/forms/forms-components/forms-input/InputForm";
 import BuildingService from "@/services/building.service";
-import RegionService from "@/services/region.service";
 import { urlToPK } from "@/utils/urlToPK";
 
 export default function BuildingCopyModal({ open, onCloseModal }) {
@@ -16,13 +15,20 @@ export default function BuildingCopyModal({ open, onCloseModal }) {
 
   const onCopy = async () => {
     try {
-      const postData = {};
+      const postData = {
+        nickname: name,
+        description: data.description,
+        address_line_1: data.address_line_1,
+        address_line_2: data.address_line_2,
+        region: data.region,
+        country: data.country,
+      };
       const response = await BuildingService.post(postData);
       onCloseModal();
       await router.push(
         `/beheer/data_toevoegen/gebouwen/${urlToPK(response.url)}`
       );
-      router.reload();
+      setError("");
     } catch (e) {
       setError(JSON.stringify(e.response.data));
     }
