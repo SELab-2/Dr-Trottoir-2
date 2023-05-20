@@ -1,5 +1,9 @@
 import ColoredTag from "@/components/Tag";
 import Cell from "@/components/table/Cell";
+import Outside from "/public/images/outside_building.png";
+import Inside from "/public/images/inside_building.png";
+import Image from "next/image";
+import WasteTag from "@/components/WasteTag";
 
 /**
  * A waste calander that will show a div for every day in "dates" that is filled
@@ -11,7 +15,7 @@ import Cell from "@/components/table/Cell";
  */
 export default function WasteCalendar({ waste, dates }) {
   return (
-    <div className={"flex flex-row space-x-2 w-full h-auto"}>
+    <div className={"flex flex-row space-x-2 overflow-auto"}>
       {dates.map((date, i) => {
         const wasteRest = waste.filter((entry) => {
           const wasteDate = new Date(entry.date);
@@ -28,38 +32,12 @@ export default function WasteCalendar({ waste, dates }) {
           <div
             key={i}
             className={
-              "flex flex-col flex-auto bg-light-bg-1 w-full p-1 rounded-lg items-center"
+              "flex flex-col grow shrink-0 bg-light-bg-1 p-1 rounded-lg items-center min-h-[50px] min-w-[30px]"
             }
           >
-            {wasteRest.map((entry, index) => {
-              let classname = "bg-waste-other text-light-bg-1";
-              let cut = true;
-              if (entry.waste_type.toUpperCase() === "PMD") {
-                classname = "bg-waste-PMD text-light-text";
-                cut = false;
-              } else if (entry.waste_type.toUpperCase() === "GLAS") {
-                classname = "bg-waste-glass text-light-text";
-                cut = false;
-              } else if (entry.waste_type.toUpperCase() === "PAPIER") {
-                classname = "bg-waste-paper text-light-bg-1";
-              } else if (entry.waste_type.toUpperCase() === "REST") {
-                classname = "bg-waste-rest text-light-bg-1";
-                cut = false;
-              } else if (entry.waste_type.toUpperCase() === "GFT") {
-                classname = "bg-waste-GFT text-light-bg-1";
-                cut = false;
-              }
-              return (
-                <ColoredTag
-                  key={index}
-                  className={`rounded-lg w-full text-center overflow-hidden ${classname}`}
-                >
-                  <Cell cut={cut} maxWidth={"max-w-[30px]"}>
-                    <p className={classname}>{entry.waste_type}</p>
-                  </Cell>
-                </ColoredTag>
-              );
-            })}
+            {wasteRest.map((entry, index) => (
+              <WasteTag entry={entry} key={index} />
+            ))}
           </div>
         );
       })}

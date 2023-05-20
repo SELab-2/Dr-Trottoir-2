@@ -51,7 +51,7 @@ module.exports = {
         2: "#FFDCCC",
       },
       bad: {
-        1: "#CF222E",
+        1: "#cf222e",
         2: "#FFD4DF",
       },
       tags: {
@@ -73,6 +73,7 @@ module.exports = {
         PMD: "#c8d7ff",
         rest: "#282825",
         glass: "#ffd500",
+        GFT: "#165e00",
         other: "#000000",
       },
     },

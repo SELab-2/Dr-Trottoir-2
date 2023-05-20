@@ -1,4 +1,5 @@
 import HelperService from "@/services/helper.service";
+import ApiInstance from "./ApiInstance";
 
 class WasteService {
   /**
@@ -32,6 +33,85 @@ class WasteService {
    */
   async getEntryByUrl(url) {
     return HelperService.getModelEntryByUrl(url, "waste");
+  }
+
+  /**
+   * Add a new entry to the waste endpoint.
+   *
+   * The data dict must have the following keys.
+   * - date
+   * - action
+   * - building
+   * - waste_type
+   *
+   * @param data dict with the data.
+   * @returns {Promise<*>}
+   */
+  async post(data) {
+    const response = await ApiInstance.post("waste/", data);
+    return response.data;
+  }
+
+  /**
+   * Delete a waste by id.
+   *
+   * @param id ID of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteById(id) {
+    const response = await ApiInstance.delete(`waste/${id}/`);
+    return response.data;
+  }
+
+  /**
+   * Delete a waste by url.
+   *
+   * @param url url of the entry you want to delete.
+   * @returns {Promise<*>}
+   */
+  async deleteByUrl(url) {
+    if (HelperService.isCorrectModelUrl(url, "waste")) {
+      const response = await ApiInstance.delete(url);
+      return response.data;
+    }
+  }
+
+  /**
+   * Update a waste by id.
+   *
+   * The data dict can have the following keys.
+   * - date
+   * - action
+   * - building
+   * - waste_type
+   *
+   * @param id ID of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchById(id, data) {
+    const response = await ApiInstance.patch(`waste/${id}/`, data);
+    return response.data;
+  }
+
+  /**
+   * Update a waste by url.
+   *
+   * The data dict can have the following keys.
+   * - date
+   * - action
+   * - building
+   * - waste_type
+   *
+   * @param url url of the entry you want to update.
+   * @param data Dict, data you want to chance.
+   * @returns {Promise<*>}
+   */
+  async patchByUrl(url, data) {
+    if (HelperService.isCorrectModelUrl(url, "waste")) {
+      const response = await ApiInstance.patch(url, data);
+      return response.data;
+    }
   }
 
   /**
