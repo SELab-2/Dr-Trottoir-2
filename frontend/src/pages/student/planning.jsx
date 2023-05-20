@@ -27,6 +27,9 @@ import WasteCalendar from "@/components/Wastecalendar";
 import MapView from "@/components/MapView";
 import { useRouter } from "next/router";
 import { urlToPK } from "@/utils/urlToPK";
+import Image from "next/image";
+import Cell from "@/components/table/Cell";
+import WasteTag from "@/components/WasteTag";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -74,8 +77,8 @@ export default function StudentPlanningPage() {
             result["finished"] = false;
             result["waste"] = await WasteService.get({
               building: entry["building"],
-              startDate: moment(new Date()).startOf("isoWeek").toDate(),
-              endDate: moment(new Date()).endOf("isoWeek").toDate(),
+              startDate: moment(new Date()).startOf("day").toDate(),
+              endDate: moment(new Date()).endOf("day").toDate(),
             });
             return result;
           })
@@ -229,9 +232,15 @@ export default function StudentPlanningPage() {
                     <FontAwesomeIcon icon={faLocationDot} />
                     <p>{data["address"]}</p>
                   </div>
-                  <SecondaryCard>
-                    <WasteCalendar dates={dates} waste={data["waste"]} />
-                  </SecondaryCard>
+                  <div
+                    className={"flex flex-row overflow-x-auto w-full space-x-2"}
+                  >
+                    {data["waste"].map((entry, index) => (
+                      <div className={"shrink-0"} key={index}>
+                        <WasteTag entry={entry} />
+                      </div>
+                    ))}
+                  </div>
                 </SecondaryCard>
               );
             })}
