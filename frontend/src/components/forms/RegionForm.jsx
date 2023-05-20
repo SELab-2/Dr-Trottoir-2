@@ -68,7 +68,7 @@ export default function RegionForm({ id }) {
       onSubmit={onSubmit}
       onDelete={onDelete}
       model={"regio"}
-      editMode={id !== undefined}
+      allowRemove={id !== undefined}
     >
       <InputForm
         label={"Naam Regio"}

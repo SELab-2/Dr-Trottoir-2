@@ -6,6 +6,7 @@ export default function InputForm({
   value,
   type,
   required = false,
+  disabled = false,
   placeholder,
 }) {
   return (
@@ -17,12 +18,15 @@ export default function InputForm({
         type={type}
         name={id}
         id={id}
-        className={
-          "bg-light-bg-2 border-2 rounded-lg border-light-h-2 p-2 outline-none"
-        }
+        className={`border-2 rounded-lg  p-2 outline-none ${
+          !disabled
+            ? `bg-light-bg-2 border-light-h-2`
+            : `border-dark-text text-light-h-3`
+        }`}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        disabled={disabled}
       />
     </div>
   );
