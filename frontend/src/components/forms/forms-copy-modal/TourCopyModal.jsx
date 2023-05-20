@@ -1,10 +1,10 @@
 import BasicCopyModal from "@/components/forms/forms-copy-modal/BasicCopyModal";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Loading from "@/components/Loading";
 import InputForm from "@/components/forms/forms-components/forms-input/InputForm";
 import TourService from "@/services/tour.service";
 import { urlToPK } from "@/utils/urlToPK";
-import { useRouter } from "next/router";
 
 export default function TourCopyModal({ open, onCloseModal }) {
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function TourCopyModal({ open, onCloseModal }) {
       await router.push(
         `/beheer/data_toevoegen/rondes/${urlToPK(response.url)}`
       );
-      setError("");
+      router.reload();
     } catch (e) {
       console.log(e);
       setError(JSON.stringify(e.response.data));

@@ -23,11 +23,10 @@ export default function BuildingCopyModal({ open, onCloseModal }) {
         region: data.region,
         country: data.country,
       };
-      const response = await BuildingService.post(postData);
+      await BuildingService.post(postData);
       onCloseModal();
-      await router.push(
-        `/beheer/data_toevoegen/gebouwen/${urlToPK(response.url)}`
-      );
+      router.reload();
+
       setError("");
     } catch (e) {
       setError(JSON.stringify(e.response.data));

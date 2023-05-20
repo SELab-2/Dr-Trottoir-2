@@ -17,13 +17,10 @@ export default function RegionCopyModal({ open, onCloseModal }) {
       const postData = {
         region_name: name,
       };
-      const response = await RegionService.post(postData);
+      await RegionService.post(postData);
       onCloseModal();
-      await router.push(
-        `/beheer/data_toevoegen/regio/${urlToPK(response.url)}`
-      );
+      router.reload();
       setError("");
-
     } catch (e) {
       setError(JSON.stringify(e.response.data));
     }
