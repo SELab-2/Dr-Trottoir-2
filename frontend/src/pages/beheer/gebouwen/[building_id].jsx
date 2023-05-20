@@ -51,8 +51,6 @@ export default function BuildingDetail() {
   const [selectedRegions, setSelectedRegions] = useState([]);
   const [sortingSetting, setSortingSetting] = useState("");
 
-  const mapCard = useRef(null);
-
   const updateBuildingSelection = async (url) => {
     router.push(`/beheer/gebouwen/${urlToPK(url)}`, undefined, {
       shallow: true,
@@ -360,7 +358,7 @@ export default function BuildingDetail() {
                         ))
                       )}
                     </SecondaryCard>
-                    <div ref={mapCard}>
+                    <div>
                       <SecondaryCard
                         title="Locatie"
                         icon={faLocationDot}
