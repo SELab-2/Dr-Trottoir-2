@@ -79,7 +79,7 @@ class VisitService {
    * @returns {Promise<*>}
    */
   async postVisitComment(data) {
-    const response = await ApiInstance.getApi().post("visit_comment/", data);
+    const response = await ApiInstance.post("visit_comment/", data);
     return response.data;
   }
 

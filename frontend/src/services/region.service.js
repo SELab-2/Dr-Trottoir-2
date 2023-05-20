@@ -41,7 +41,7 @@ class RegionService {
    * @returns {Promise<*>}
    */
   async post(data) {
-    const response = await ApiInstance.getApi().post("region/", data);
+    const response = await ApiInstance.post("region/", data);
     return response.data;
   }
 
@@ -56,7 +56,7 @@ class RegionService {
    * @returns {Promise<*>}
    */
   async patchById(id, data) {
-    const response = await ApiInstance.getApi().patch(`region/${id}/`, data);
+    const response = await ApiInstance.patch(`region/${id}/`, data);
     return response.data;
   }
 
@@ -72,7 +72,7 @@ class RegionService {
    */
   async patchByUrl(url, data) {
     if (HelperService.isCorrectModelUrl(url, "region")) {
-      const response = await ApiInstance.getApi().patch(url, data);
+      const response = await ApiInstance.patch(url, data);
       return response.data;
     }
   }
@@ -84,7 +84,7 @@ class RegionService {
    * @returns {Promise<*>}
    */
   async deleteById(id) {
-    const response = await ApiInstance.getApi().delete(`region/${id}/`);
+    const response = await ApiInstance.delete(`region/${id}/`);
     return response.data;
   }
 
@@ -96,7 +96,7 @@ class RegionService {
    */
   async deleteByUrl(url) {
     if (HelperService.isCorrectModelUrl(url, "region")) {
-      const response = await ApiInstance.getApi().delete(url);
+      const response = await ApiInstance.delete(url);
       return response.data;
     }
   }
