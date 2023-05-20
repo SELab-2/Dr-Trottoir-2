@@ -2,6 +2,7 @@ import ColoredTag from "@/components/Tag";
 import WasteState from "./WasteState";
 import moment from "moment";
 import React, { useState } from "react";
+import PrimaryButton from "@/components/button/PrimaryButton";
 
 /**
  * Table calendar which shows garbage collecting for one week and can be adjusted.
@@ -91,7 +92,7 @@ export default function TableWasteSchedule({
         wasteEntry.date === dateString &&
         wasteEntry.waste_type === wasteType.full
       ) {
-        if (wasteEntry.action === "Binnen") {
+        if (wasteEntry.action === "Buiten") {
           state = 1;
         } else {
           state = 2;
@@ -159,17 +160,110 @@ export default function TableWasteSchedule({
     onChange(tempWastes);
   };
 
+  const setInside = () => {
+    let tempWastes = { ...changedWastes };
+    // go through the already saved schedules
+    Object.entries(wasteSchedule).forEach(([url, wastes]) => {
+      wastes.forEach((waste) => {
+        if (waste.action === "Buiten") {
+          const wasteType = waste.waste_type;
+          const dayAfter = moment(waste.date)
+            .add(2, "days")
+            .toDate()
+            .toISOString()
+            .substring(0, 10);
+          tempWastes[url] = tempWastes[url] || {};
+          tempWastes = updateInsideStates(
+            tempWastes,
+            url,
+            dayAfter,
+            wasteType,
+            wastes
+          );
+        }
+      });
+    });
+    // go through the changed entries
+    for (const url in changedWastes) {
+      for (const date in changedWastes[url]) {
+        const dayAfter = moment(date)
+          .add(2, "days")
+          .toDate()
+          .toISOString()
+          .substring(0, 10);
+        for (const wasteType in changedWastes[url][date]) {
+          const state = changedWastes[url][date][wasteType][0];
+          if (state === 1) {
+            tempWastes = updateInsideStates(
+              tempWastes,
+              url,
+              dayAfter,
+              wasteType,
+              wasteSchedule[url]
+            );
+          }
+        }
+      }
+    }
+    setColumnKey((prevKey) => prevKey + 1);
+    setChangedWastes(tempWastes);
+    onChange(tempWastes);
+  };
+
+  const updateInsideStates = (
+    tempWastes,
+    url,
+    dayAfter,
+    wasteType,
+    buildingWastes
+  ) => {
+    tempWastes[url][dayAfter] = tempWastes[url][dayAfter] || {};
+    if (wasteType in tempWastes[url][dayAfter]) {
+      const [oldState, timesChanged] = tempWastes[url][dayAfter][wasteType];
+      if (2 - oldState + timesChanged === 3) {
+        // 3 times changed == no change
+        delete tempWastes[url][dayAfter][wasteType];
+      } else {
+        tempWastes[url][dayAfter][wasteType] = [
+          2,
+          (2 - oldState + timesChanged) % 3,
+        ];
+      }
+    } else {
+      const match = buildingWastes.find(
+        (entry) => entry.date === dayAfter && entry.waste_type === wasteType
+      );
+      if (!match) {
+        tempWastes[url][dayAfter][wasteType] = [2, 2];
+      } else if (match.action === "Binnen") {
+        tempWastes[url][dayAfter][wasteType] = [2, 1];
+      }
+    }
+    return tempWastes;
+  };
+
   return (
-    <div className="overflow-x-auto">
-      <div className="inline-flex sticky left-4 bg-light-bg-2 mb-4 ml-4">
-        {wastes.map((waste, index) => (
-          <ColoredTag
-            key={index}
-            className={`text-dark-h-1 ${waste.background}`}
-          >
-            {waste.full}
-          </ColoredTag>
-        ))}
+    <div>
+      <div className="flex">
+        <div className="inline-flex sticky left-4 bg-light-bg-2 mb-4 ml-4">
+          {wastes.map((waste, index) => (
+            <ColoredTag
+              key={index}
+              className={`text-dark-h-1 ${waste.background}`}
+            >
+              {waste.full}
+            </ColoredTag>
+          ))}
+          {editable && (
+            <PrimaryButton
+              type="button"
+              className="ml-4 font-normal"
+              onClick={setInside}
+            >
+              Zet afval binnen na 1 dag
+            </PrimaryButton>
+          )}
+        </div>
       </div>
 
       <table className="border-separate border-spacing-x-0.5">

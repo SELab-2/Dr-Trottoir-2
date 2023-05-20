@@ -22,8 +22,12 @@ export default function WasteState({ state = 0, onChange, editable }) {
       onClick={() => changeState()}
       data-testid="waste-state-component"
     >
-      {wasteState == 1 && <Image src={Inside} className="w-5" alt="inside" />}
-      {wasteState == 2 && <Image src={Outside} className="w-5" alt="outside" />}
+      {wasteState == 1 && (
+        <Image src={Outside} width={20} height={20} alt="outside" />
+      )}
+      {wasteState == 2 && (
+        <Image src={Inside} width={20} height={20} alt="inside" />
+      )}
     </div>
   );
 }

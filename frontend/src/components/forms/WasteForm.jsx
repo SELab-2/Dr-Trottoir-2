@@ -41,7 +41,7 @@ export default function WasteForm() {
           for (const type in changedWaste[tourUrl][building][date]) {
             const [newState, timesChanged] =
               changedWaste[tourUrl][building][date][type];
-            let state = newState === 2 ? "Buiten" : "Binnen";
+            let state = newState === 2 ? "Binnen" : "Buiten";
 
             const matchingEntry = waste.find(
               (entry) =>

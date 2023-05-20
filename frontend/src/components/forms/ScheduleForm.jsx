@@ -13,6 +13,7 @@ import { urlToPK } from "@/utils/urlToPK";
 import BuildingService from "@/services/building.service";
 import WasteService from "@/services/waste.service";
 import SecondaryCard from "../custom-card/SecondaryCard";
+import Link from "next/link";
 
 export default function ScheduleForm({ id }) {
   const [loading, setLoading] = useState(true);
@@ -41,7 +42,6 @@ export default function ScheduleForm({ id }) {
         await scheduleService.post(data);
       }
 
-      //TODO: change to better reload
       router.reload();
     } catch (e) {
       alert(e);
@@ -51,7 +51,7 @@ export default function ScheduleForm({ id }) {
   const onDelete = async () => {
     try {
       await scheduleService.deleteById(id);
-      await router.push(`/admin/data_toevoegen/planningen`);
+      await router.push(`/beheer/data_toevoegen/planningen`);
     } catch (e) {
       alert(e);
     }
@@ -60,7 +60,8 @@ export default function ScheduleForm({ id }) {
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      setAllStudents(await userService.get());
+      const students = await userService.get();
+      setAllStudents(students.filter((s) => s.active && !s.removed));
       setAllTours(await TourService.get());
       if (id) {
         const schedule = await scheduleService.getById(id);
@@ -193,13 +194,25 @@ export default function ScheduleForm({ id }) {
         ) : (
           tourBuildings.length > 0 &&
           waste !== null && (
-            <TableWasteSchedule
-              buildings={tourBuildings}
-              wasteSchedule={waste}
-              startDate={moment(selectedDate).startOf("isoWeek").toDate()}
-              selectDayIndex={moment(selectedDate).isoWeekday() - 1}
-              editable={false}
-            />
+            <div className="space-y-4">
+              <div className="inline-flex sticky left-0 flex space-x-1 items-center">
+                <p>Deze kalender kunt u wijzigen in het </p>
+                <Link
+                  href="/beheer/data_toevoegen/afval"
+                  className={"text-primary-1 underline"}
+                >
+                  afval
+                </Link>
+                <p>tabblad.</p>
+              </div>
+              <TableWasteSchedule
+                buildings={tourBuildings}
+                wasteSchedule={waste}
+                startDate={moment(selectedDate).startOf("isoWeek").toDate()}
+                selectDayIndex={moment(selectedDate).isoWeekday() - 1}
+                editable={false}
+              />
+            </div>
           )
         )}
       </SecondaryCard>
