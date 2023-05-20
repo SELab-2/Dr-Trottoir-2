@@ -18,13 +18,10 @@ export default function TourCopyModal({ open, onCloseModal }) {
       const postData = {
         name: name,
         region: data.region,
-        buildings: [],
+        buildings: await TourService.getBuildingsFromTour(router.query.id),
       };
-      const response = await TourService.post(postData);
+      await TourService.post(postData);
       onCloseModal();
-      await router.push(
-        `/beheer/data_toevoegen/rondes/${urlToPK(response.url)}`
-      );
       router.reload();
     } catch (e) {
       console.log(e);
