@@ -11,6 +11,7 @@ module.exports = {
         h: {
           1: "#000000",
           2: "#B2B2B2",
+          3: "#828282",
         },
         text: "#4D4D4D",
         border: "#E6E6E6",
@@ -30,6 +31,7 @@ module.exports = {
       accent: {
         1: "#E6E600",
         2: "#585936",
+        3: "#c7c700",
       },
       primary: {
         1: "#377DFF",
@@ -49,7 +51,7 @@ module.exports = {
         2: "#FFDCCC",
       },
       bad: {
-        1: "#CF222E",
+        1: "#cf222e",
         2: "#FFD4DF",
       },
       tags: {
@@ -66,8 +68,17 @@ module.exports = {
         GFT: "#165e00",
         other: "#000000",
       },
+      waste: {
+        paper: "#003088",
+        PMD: "#c8d7ff",
+        rest: "#282825",
+        glass: "#ffd500",
+        GFT: "#165e00",
+        other: "#000000",
+      },
     },
     fontSize: {
+      xs: "10px",
       base: "14px",
       lg: "21px",
       xl: "27px",

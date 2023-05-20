@@ -3,13 +3,12 @@ import {
   faBriefcase,
   faBuilding,
   faEnvelopeOpenText,
-  faEnvelope,
   faPeopleGroup,
   faCalendarWeek,
   faCirclePlus,
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
-import NavbarList from "@/components/navbar/NavbarList";
+import LinkList from "@/components/navbar/LinkList";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import ProfilePicture from "@/components/ProfilePicture";
@@ -23,7 +22,7 @@ export default function Navbar() {
   return (
     <div className={"flex flex-col flex-shrink-0 sm:w-64 h-full bg-dark-bg-1"}>
       <div className={"flex justify-center p-1 mb-2 mt-8"}>
-        <Link href={"/home"}>
+        <Link href={"/"}>
           <Image src={Logo} className="w-36 object-fill" alt="logo" />
         </Link>
       </div>
@@ -32,23 +31,30 @@ export default function Navbar() {
           "overflow-y-auto overflow-x-hidden flex-grow border-b border-none p-3"
         }
       >
-        <NavbarList
+        <LinkList
           name={"Menu"}
           categories={{
-            Planning: { icon: faCalendarWeek, link: "/beheer/planning" },
-            "Nieuwe data": { icon: faCirclePlus, link: "#" },
+            Dashboard: { icon: faCalendarWeek, link: "/beheer/dashboard" },
+            Databeheer: {
+              icon: faCirclePlus,
+              link: "/beheer/data_toevoegen",
+            },
           }}
+          className={"text-dark-text bg-dark-bg-1 mt-6 mb-6"}
+          linkClassName={"hover: hover:bg-dark-bg-2"}
         />
-        <NavbarList
+        <LinkList
           name={"Data"}
           categories={{
-            Rondes: { icon: faBicycle, link: "#" },
+            Planningen: { icon: faBicycle, link: "/beheer/planningen/1" },
             Gebouwen: { icon: faBuilding, link: "/beheer/gebouwen" },
             Personeel: { icon: faPeopleGroup, link: "/beheer/personeel" },
             Syndici: { icon: faBriefcase, link: "/beheer/syndici" },
           }}
+          className={"text-dark-text bg-dark-bg-1 mt-6 mb-6 "}
+          linkClassName={"hover: hover:bg-dark-bg-2"}
         />
-        <NavbarList
+        <LinkList
           name={"Communicatie"}
           categories={{
             "Mail-templates": {
@@ -56,6 +62,8 @@ export default function Navbar() {
               link: "/beheer/templates",
             },
           }}
+          className={"text-dark-text bg-dark-bg-1 mt-6 mb-6"}
+          linkClassName={"hover: hover:bg-dark-bg-2"}
         />
       </div>
       <div className={"flex p-8 pt-4 w-full items-center"} id={"p-info"}>

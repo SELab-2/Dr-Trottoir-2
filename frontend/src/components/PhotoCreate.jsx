@@ -18,10 +18,12 @@ import {
   faArrowRotateRight,
   faCameraRetro,
   faCirclePlus,
+  faSquarePlus,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import Modal from "react-modal";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
  * A popup to take a picture.
@@ -34,6 +36,7 @@ export default function PhotoCreation({
   scheduleUrl,
   state,
   buildingUrl,
+  className,
   callback = () => {},
 }) {
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -136,8 +139,12 @@ export default function PhotoCreation({
   }
 
   return (
-    <div>
-      <button onClick={openModal}>Open Modal</button>
+    <div className={className}>
+      <FontAwesomeIcon
+        icon={faSquarePlus}
+        className="ml-auto pr-1 text-primary-1 text-lg cursor-pointer"
+        onClick={openModal}
+      />
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}

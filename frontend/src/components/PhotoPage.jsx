@@ -8,12 +8,17 @@ import VisitService from "@/services/visit.service";
 import UserService from "@/services/user.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
 import BuildingService from "@/services/building.service";
+import Image from "next/image";
 
 /**
  * A detail screen for a picture.
  * @param photo A photo object.
  */
-export default function PhotoPage({ photo }) {
+export default function PhotoPage({
+  photo,
+  thumbWidth = 75,
+  thumbHeight = 75,
+}) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [person, setPerson] = useState("");
   const [address, setAddress] = useState("");
@@ -68,7 +73,15 @@ export default function PhotoPage({ photo }) {
 
   return (
     <div>
-      <button onClick={openModal}>Open Modal</button>
+      <Image
+        src={photo.image}
+        alt={"building picture"}
+        width={thumbWidth}
+        height={thumbHeight}
+        unoptimized={true}
+        className="rounded-md"
+        onClick={openModal}
+      />
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}

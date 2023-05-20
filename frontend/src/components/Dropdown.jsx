@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
@@ -8,9 +8,11 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
  * @param children Element displayed in the button of the dropdown menu.
  * @param className Add extra classes to the dropdown component.
  * @param listClassName Add extra classes to the list of the dropdown menu.
+ * @param buttonClassName Add extra classes to the button of the dropdown component.
  * @param icon If icon is not null, this will be displayed on the left.
  * @param onClick Function that is executed when element in the dropdown is selected.
  *        This function expects 1 argument, a list of all selected elements.
+ * @param value This is the option that should be selected when creating hte dropdown
  * @param options List of all the options. These needs to be strings/components.
  * @param optionsValues List of the hidden value of every option.
  * @param multi Indicates if multiple elements can be selected.
@@ -21,14 +23,37 @@ export default function Dropdown({
   children,
   className,
   listClassName,
+  buttonClassName,
   icon,
   onClick,
+  value,
   options,
   optionsValues,
   multi = false,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndices, setSelectedIndices] = useState([]);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (value) {
+      setSelectedIndices([options.findIndex((option) => option === value)]);
+    }
+  }, [value, options]);
+
+  const handleClickOutside = (event) => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const onButtonPressed = () => {
     setIsOpen(!isOpen);
@@ -59,8 +84,9 @@ export default function Dropdown({
       <button
         className={`align-middle border-2 border-light-border py-2 px-3 text-center rounded-lg font-bold w-full ${
           selectedIndices.length !== 0 ? `bg-primary-2 text-primary-1` : ``
-        }`}
+        } ${buttonClassName}`}
         onClick={onButtonPressed}
+        type="button"
       >
         <div className={"flex items-center justify-center"}>
           {icon && <FontAwesomeIcon icon={icon} className={"h-4"} />}
@@ -70,7 +96,8 @@ export default function Dropdown({
       </button>
       {isOpen && (
         <ul
-          className={`absolute z-[100] hover:z-[1000] border-2 border-light-border mt-2 rounded-lg bg-light-bg-1 ${listClassName}`}
+          className={`absolute z-[100] hover:z-[1000] border-2 border-light-border mt-2 rounded-lg bg-light-bg-1 ${listClassName} select-none`}
+          ref={ref}
         >
           {options !== null && options.length !== 0 ? (
             options.map((ele, index) => (

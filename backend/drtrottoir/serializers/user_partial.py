@@ -15,6 +15,7 @@ class UserPartialSerializer(serializers.HyperlinkedModelSerializer):
             'url',
             'email',
             'first_name',
-            'last_name'
+            'last_name',
+            'role'
         ]
         read_only_field = ['is_active']

@@ -32,8 +32,8 @@ test("User info visible", async () => {
 test("Direction press Dashboard", async () => {
   render(<Navbar />);
 
-  const link = screen.getByRole("link", { name: "Planning" });
+  const link = screen.getByRole("link", { name: "Dashboard" });
   expect(link).toBeInTheDocument();
 
-  expect(link).toHaveAttribute("href", "/beheer/planning");
+  expect(link).toHaveAttribute("href", "/beheer/dashboard");
 });

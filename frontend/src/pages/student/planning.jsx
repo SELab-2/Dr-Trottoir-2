@@ -25,6 +25,11 @@ import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SecondaryCard from "@/components/custom-card/SecondaryCard";
 import WasteCalendar from "@/components/Wastecalendar";
 import MapView from "@/components/MapView";
+import { useRouter } from "next/router";
+import { urlToPK } from "@/utils/urlToPK";
+import Image from "next/image";
+import Cell from "@/components/table/Cell";
+import WasteTag from "@/components/WasteTag";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -33,6 +38,7 @@ export default function StudentPlanningPage() {
   const [names, setNames] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [dates, setDates] = useState([]);
+  const router = useRouter();
 
   /**
    * Will set the need information of a selected schedule like
@@ -71,8 +77,8 @@ export default function StudentPlanningPage() {
             result["finished"] = false;
             result["waste"] = await WasteService.get({
               building: entry["building"],
-              startDate: moment(new Date()).startOf("isoWeek").toDate(),
-              endDate: moment(new Date()).endOf("isoWeek").toDate(),
+              startDate: moment(new Date()).startOf("day").toDate(),
+              endDate: moment(new Date()).endOf("day").toDate(),
             });
             return result;
           })
@@ -189,7 +195,12 @@ export default function StudentPlanningPage() {
                   }
                   key={index}
                 >
-                  <div className={"flex flex-row"}>
+                  <div
+                    className={"flex flex-row cursor-pointer"}
+                    onClick={() =>
+                      router.push(`/student/gebouw/${urlToPK(data.url)}`)
+                    }
+                  >
                     <h1 className={"font-bold text-lg w-full"}>
                       {data["name"]}
                     </h1>
@@ -221,7 +232,26 @@ export default function StudentPlanningPage() {
                     <FontAwesomeIcon icon={faLocationDot} />
                     <p>{data["address"]}</p>
                   </div>
-                  <WasteCalendar dates={dates} waste={data["waste"]} />
+                  <div className={"flex flex-row space-x-2"}>
+                    <div className={"flex flex-col"}>
+                      {data["waste"]
+                        .filter((entry) => entry.action === "Buiten")
+                        .map((entry, index) => (
+                          <div className={"shrink-0"} key={index}>
+                            <WasteTag entry={entry} />
+                          </div>
+                        ))}
+                    </div>
+                    <div className={"flex flex-col"}>
+                      {data["waste"]
+                        .filter((entry) => entry.action === "Binnen")
+                        .map((entry, index) => (
+                          <div className={"shrink-0"} key={index}>
+                            <WasteTag entry={entry} />
+                          </div>
+                        ))}
+                    </div>
+                  </div>
                 </SecondaryCard>
               );
             })}
