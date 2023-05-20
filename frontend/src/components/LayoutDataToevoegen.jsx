@@ -201,6 +201,9 @@ export default function LayoutDataAdd({ children }) {
       .catch((err) => alert(err));
   }, [router.query.type]);
 
+  const hideNew = router.query.type === "personeel";
+  const hideBulk = router.query.type === "personeel";
+
   return (
     <div className={"m-2 h-screen"}>
       {router.query.type === "planningen" && (
@@ -272,13 +275,15 @@ export default function LayoutDataAdd({ children }) {
             />
           </div>
           <div>
-            <SecondaryButton
-              icon={faPlusCircle}
-              className={"w-48"}
-              text={"Sort"}
-            >
-              Bulk Acties
-            </SecondaryButton>
+            {!hideBulk && (
+              <SecondaryButton
+                icon={faPlusCircle}
+                className={"w-48"}
+                text={"Sort"}
+              >
+                Bulk Acties
+              </SecondaryButton>
+            )}
             {router.query.id &&
               router.query.type !== "personeel" &&
               router.query.type !== "syndici" && (
@@ -291,21 +296,23 @@ export default function LayoutDataAdd({ children }) {
                   Kopieer
                 </SecondaryButton>
               )}
-            <PrimaryButton
-              icon={faPlusCircle}
-              className={"w-36"}
-              onClick={() =>
-                router.push(`/beheer/data_toevoegen/${router.query.type}`)
-              }
-            >
-              Nieuw
-            </PrimaryButton>
+            {!hideNew && (
+              <PrimaryButton
+                icon={faPlusCircle}
+                className={"w-36"}
+                onClick={() =>
+                  router.push(`/beheer/data_toevoegen/${router.query.type}`)
+                }
+              >
+                Nieuw
+              </PrimaryButton>
+            )}
           </div>
         </div>
         <SecondaryCard
           className={"flex flex-row h-full w-full p-2 space-x-4 h-screen"}
         >
-          <PrimaryCard className={`h-full w-1/5`} title={"Huidige"}>
+          <PrimaryCard className={`h-full min-w-[20%]`} title={"Huidige"}>
             {loading ? (
               <div className={"flex justify-center items-center h-fit w-full"}>
                 <Loading className={"w-10 h-10"} />
