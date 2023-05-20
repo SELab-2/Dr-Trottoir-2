@@ -368,8 +368,18 @@ export default function LayoutDataAdd({ children, id }) {
                   {router.query.type === "syndici" && userList(data, "syndici")}
                 </div>
               ) : (
-                <div className={"flex justify-center items-center"}>
-                  <p> Geen {router.query.type} </p>
+                <div className={"flex flex-col justify-center items-center"}>
+                  {router.query.type === "planningen" && (
+                    <div>
+                      <CustomWeekPicker
+                        startDate={dateRange[0]}
+                        endDate={dateRange[1]}
+                        onChange={(begin, end) => setDateRange([begin, end])}
+                        className={"mb-2"}
+                      />
+                    </div>
+                  )}
+                  <div> Geen {router.query.type} </div>
                 </div>
               )}
             </PrimaryCard>
