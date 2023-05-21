@@ -306,15 +306,6 @@ export default function LayoutDataAdd({ children, id }) {
               />
             </div>
             <div>
-              {!hideBulk && (
-                <SecondaryButton
-                  icon={faPlusCircle}
-                  className={"w-48"}
-                  text={"Sort"}
-                >
-                  Bulk Acties
-                </SecondaryButton>
-              )}
               {router.query.id &&
                 router.query.type !== "personeel" &&
                 router.query.type !== "syndici" && (
