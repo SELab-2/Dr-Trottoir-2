@@ -57,11 +57,14 @@ export default function SelectableTable({
   return (
     <table className={`${className}`}>
       <thead>
-        <tr className={"bg-accent-1 text-accent-2"}>
-          <th className={"rounded-l-full"}></th>
+        <tr className={"text-accent-2"}>
+          <th className={"bg-accent-1 rounded-l-lg"}></th>
           {columns.map((entry, index) => {
             return (
-              <th key={index} className={"last:rounded-r-full p-1 text-left"}>
+              <th
+                key={index}
+                className={"last:rounded-lg p-1 text-left bg-accent-1"}
+              >
                 {entry.name}
               </th>
             );
