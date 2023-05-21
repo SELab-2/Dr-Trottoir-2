@@ -13,7 +13,7 @@ import {
 import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SelectionList from "@/components/selection/SelectionList";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TourService from "@/services/tour.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
 import VisitService from "@/services/visit.service";
@@ -47,11 +47,16 @@ import visit_finished from "@/utils/visit_finished";
  * @param background The object needed to make a SmallTour component.
  */
 function SmallTour({ data, background }) {
+  const date = new Date(data.date);
+
   return (
     <div className={"rounded-lg"} style={{ backgroundColor: background }}>
       <Link href={`/beheer/planningen/${encodeURI(data.id)}/`}>
         <div className={"px-4 py-4"}>
           <h1 className={"font-semibold pb-2"}>{data.name}</h1>
+          <h2 className={"pb-2"}>
+            {date.getDate()}-{date.getMonth() + 1}-{date.getFullYear()}
+          </h2>
           <CustomProgressBar fraction={data.finished / data.amount} />
         </div>
       </Link>
@@ -66,9 +71,13 @@ export default function AdminTourPage() {
   const [startDate, setStart] = useState(new Date());
   const [endDate, setEnd] = useState(new Date());
   const [schedules, setSchedules] = useState([]);
+  const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [finished, setFinished] = useState(0);
   const [buildings, setBuildings] = useState([]);
   const [comments, setComments] = useState([]);
+  const searchString = useRef("");
+  const [sortString, setSortString] = useState("");
+  const [filterString, setFilterString] = useState("");
   const router = useRouter();
 
   async function deleteSelf() {
@@ -76,10 +85,88 @@ export default function AdminTourPage() {
     await router.push("/beheer/dashboard");
   }
 
-  async function update() {
-    await router.push("/beheer/dashboard");
-  }
+  const performSearch = (scheduleEntries, sortField, filtering) => {
+    // Filters on input field
+    if (searchString.current && searchString.current !== "") {
+      const search = searchString.current.value.toLowerCase();
+      scheduleEntries = scheduleEntries.filter(
+        (entry) =>
+          entry.tour.toLowerCase().includes(search) ||
+          entry.student.toLowerCase().includes(search)
+      );
+    }
+    // Sorts based on the given sortField
+    // if (sortField !== "") {
+    //   scheduleEntries = scheduleEntries.sort(function (a, b) {
+    //     const field = stringToField[sortField];
+    //     return a[field].localeCompare(b[field]);
+    //   });
+    // }
+    // Perform filtering based on completeness
+    scheduleEntries = filterSchedules(scheduleEntries, filtering);
+    // Renders the table rows
+    setFilteredSchedules(scheduleEntries);
+    // setSchedule(
+    //   scheduleEntries.map((entry) => [
+    //     entry.date,
+    //     entry.tour,
+    //     entry.student,
+    //     <div key={entry.url} className={"flex flex-row space-x-4"}>
+    //       <div className={"flex-grow"}>
+    //         <CustomProgressBar
+    //           fraction={entry.visits / entry.buildings}
+    //           is_wheel={false}
+    //         />
+    //       </div>
+    //       <p>
+    //         {entry.visits} / {entry.buildings}
+    //       </p>
+    //     </div>,
+    //     entry.comments > 0 && (
+    //       <ColoredTag className={"text-primary-1 bg-primary-2"}>
+    //         {entry.comments}
+    //       </ColoredTag>
+    //     ),
+    //     <Link
+    //       key={entry.url}
+    //       href={`/beheer/planningen/${urlToPK(entry.url)}`}
+    //       className={"bg-primary-2 border-2 border-light-h-2 rounded-lg p-1"}
+    //     >
+    //       Details
+    //     </Link>,
+    //   ])
+    // );
+  };
 
+  const performSort = (sort) => {
+    const newSort = sort.length > 0 ? sort[0] : "";
+    setSortString(newSort);
+    performSearch(entries, newSort, filterString);
+  };
+
+  const performFilter = (filtering) => {
+    const newFilter = filtering.length > 0 ? filtering[0] : "";
+    setFilterString(newFilter);
+    performSearch(schedules, sortString, newFilter);
+  };
+
+  const filterSchedules = (schedules, filtering) => {
+    if (filtering === "Nog niet begonnen") {
+      return schedules.filter((schedule) => schedule.finished === 0);
+    }
+    if (filtering === "Onderweg") {
+      return schedules.filter((schedule) => {
+        const completeness = schedule.finished / schedule.amount;
+        return completeness > 0 && completeness < 1;
+      });
+    }
+    if (filtering === "Compleet") {
+      return schedules.filter(
+        (schedule) => schedule.finished / schedule.amount === 1
+      );
+    }
+    return schedules;
+  };
   /**
    * We fill the selection list wih new schedule objects based on the given week.
    * @param dateFrom Start of the week.
@@ -94,6 +181,7 @@ export default function AdminTourPage() {
       schedules.map(async (entry) => await parseTour(entry))
     );
     setSchedules(schedulesList);
+    setFilteredSchedules(schedulesList);
     setStart(dateFrom);
     setEnd(dateTo);
   }
@@ -104,19 +192,22 @@ export default function AdminTourPage() {
    * @return list The resulting object that will be used in the SmallTour component.
    */
   const parseTour = async (data) => {
-    let split = data["url"].trim().split("/");
-    const id = split[split.length - 2];
-    const result = { url: data["url"], id: id, date: data["date"] };
+    const result = {
+      url: data["url"],
+      id: urlToPK(data["url"]),
+      date: data["date"],
+    };
     const tour = await TourService.getEntryByUrl(data["tour"]);
     result["name"] = tour["name"];
-    split = data["tour"].trim().split("/");
     const buildingIds = await TourService.getBuildingsFromTour(
-      split[split.length - 2]
+      urlToPK(data["tour"])
     );
 
     result["amount"] = 1;
     if (buildingIds.length > 0) result["amount"] = buildingIds.length;
-    const scheduleVisits = await ScheduleService.getVisitsFromSchedule(id);
+    const scheduleVisits = await ScheduleService.getVisitsFromSchedule(
+      urlToPK(data["url"])
+    );
     let count = 0;
     for (const visit of scheduleVisits) {
       const response = await visit_finished(visit.url);
@@ -293,7 +384,8 @@ export default function AdminTourPage() {
               icon={faFilter}
               text={"Filter"}
               className={"mr-2"}
-              options={[]}
+              options={["Nog niet begonnen", "Onderweg", "Compleet"]}
+              onClick={performFilter}
             >
               Filter
             </Dropdown>
@@ -517,7 +609,7 @@ export default function AdminTourPage() {
               <SmallTour key={url} background={background} data={data} />
             )}
             callback={() => {}}
-            elements={schedules}
+            elements={filteredSchedules}
             selectedStart={url}
             className={"grow"}
             title={"Rondes"}
