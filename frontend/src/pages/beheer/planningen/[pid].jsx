@@ -80,6 +80,11 @@ export default function AdminTourPage() {
   const [filterString, setFilterString] = useState("");
   const router = useRouter();
 
+  const stringToField = {
+    Ronde: "name",
+    Datum: "date",
+  };
+
   async function deleteSelf() {
     await ScheduleService.deleteByUrl(url);
     await router.push("/beheer/dashboard");
@@ -87,21 +92,22 @@ export default function AdminTourPage() {
 
   const performSearch = (scheduleEntries, sortField, filtering) => {
     // Filters on input field
+    console.log("print");
+    console.log(searchString.current);
     if (searchString.current && searchString.current !== "") {
       const search = searchString.current.value.toLowerCase();
-      scheduleEntries = scheduleEntries.filter(
-        (entry) =>
-          entry.tour.toLowerCase().includes(search) ||
-          entry.student.toLowerCase().includes(search)
+      scheduleEntries = scheduleEntries.filter((entry) =>
+        entry.name.toLowerCase().includes(search)
       );
+      console.log(scheduleEntries);
     }
     // Sorts based on the given sortField
-    // if (sortField !== "") {
-    //   scheduleEntries = scheduleEntries.sort(function (a, b) {
-    //     const field = stringToField[sortField];
-    //     return a[field].localeCompare(b[field]);
-    //   });
-    // }
+    if (sortField !== "") {
+      scheduleEntries = scheduleEntries.sort(function (a, b) {
+        const field = stringToField[sortField];
+        return a[field].localeCompare(b[field]);
+      });
+    }
     // Perform filtering based on completeness
     scheduleEntries = filterSchedules(scheduleEntries, filtering);
     // Renders the table rows
@@ -141,7 +147,7 @@ export default function AdminTourPage() {
   const performSort = (sort) => {
     const newSort = sort.length > 0 ? sort[0] : "";
     setSortString(newSort);
-    performSearch(entries, newSort, filterString);
+    performSearch(schedules, newSort, filterString);
   };
 
   const performFilter = (filtering) => {
@@ -393,15 +399,18 @@ export default function AdminTourPage() {
               icon={faSort}
               text={"Sort"}
               className={"mr-2"}
-              options={[]}
+              onClick={performSort}
+              options={["Datum", "Ronde"]}
             >
               Sort
             </Dropdown>
             <InputField
               classNameDiv={"w-80"}
-              reference={() => {}}
+              reference={searchString}
               icon={faSearch}
-              actionCallback={() => {}}
+              actionCallback={() =>
+                performSearch(schedules, sortString, filterString)
+              }
             />
           </div>
           <PrimaryButton
