@@ -14,6 +14,7 @@ import wasteService from "@/services/waste.service";
 import InputForm from "./forms-components/forms-input/InputForm";
 import Dropdown from "../Dropdown";
 import { faBicycle } from "@fortawesome/free-solid-svg-icons";
+import sortByName from "@/utils/sortByName";
 
 export default function WasteForm() {
   const [loading, setLoading] = useState(true);
@@ -22,6 +23,7 @@ export default function WasteForm() {
 
   const [allTours, setAllTours] = useState([]);
   const [tourBuildings, setTourBuildings] = useState([]);
+  const [definedTours, setDefinedTours] = useState([]);
   const [waste, setWaste] = useState([]);
   const [changedWaste, setChangedWaste] = useState({});
   const [week, setWeek] = useState([
@@ -95,10 +97,10 @@ export default function WasteForm() {
         const sunday = moment(week[1])
           .add(weekCopy * i, "weeks")
           .toDate();
-        let wasteEntries = await wasteService.get({
-          startDate: monday,
-          endDate: sunday,
-        });
+        let wasteEntries = await wasteService.getByDate(
+          dateFormat(monday),
+          dateFormat(sunday)
+        );
         wasteEntries = wasteEntries.filter((w) =>
           buildingUrls.includes(w.building)
         );
@@ -147,15 +149,43 @@ export default function WasteForm() {
     setLoadSchedule(false);
   };
 
+  const dateFormat = (date) => {
+    return moment(date).add(1, "days").toDate().toISOString().substring(0, 10);
+  };
+
+  const loadPlannedTours = async (wasteSchedule, tours) => {
+    const toursWithEntries = [];
+    await Promise.all(
+      tours.map(async (tour) => {
+        const buildingsInTour = await TourService.getBuildingsFromTour(
+          urlToPK(tour.url)
+        );
+        // Check if a building of the tour has a waste entry
+        const hasWasteEntry = buildingsInTour.some((buildingInTour) =>
+          wasteSchedule.some(
+            (wasteEntry) => wasteEntry.building === buildingInTour.building
+          )
+        );
+
+        if (hasWasteEntry) {
+          toursWithEntries.push(tour.name);
+        }
+      })
+    );
+    setDefinedTours(toursWithEntries);
+  };
+
   useEffect(() => {
     // Fetch initial data
     async function fetchData() {
       setLoading(true);
-      setAllTours(await TourService.get());
-      const wasteSchedule = await wasteService.get({
-        startDate: week[0],
-        endDate: week[1],
-      });
+      const tours = sortByName(await TourService.get());
+      setAllTours(tours);
+      const wasteSchedule = await wasteService.getByDate(
+        dateFormat(week[0]),
+        dateFormat(week[1])
+      );
+      await loadPlannedTours(wasteSchedule, tours);
       setWaste(wasteSchedule);
     }
 
@@ -178,10 +208,11 @@ export default function WasteForm() {
     setWeek([dateFrom, dateTo]);
     setLoadSchedule(true);
     // Fetch the waste schedule for the selected week
-    const wasteSchedule = await wasteService.get({
-      startDate: dateFrom,
-      endDate: dateTo,
-    });
+    const wasteSchedule = await wasteService.getByDate(
+      dateFormat(dateFrom),
+      dateFormat(dateTo)
+    );
+    await loadPlannedTours(wasteSchedule, allTours);
     setWaste(wasteSchedule);
     if (Object.keys(tourBuildings).length !== 0) {
       setTourBuildings((prevTourBuildings) => {
@@ -273,8 +304,18 @@ export default function WasteForm() {
           <Dropdown
             multi={true}
             icon={faBicycle}
-            options={allTours.map((tour) => tour.name)}
+            options={allTours
+              .filter(
+                (tour) =>
+                  !allTours.some(
+                    (tour2) =>
+                      tour.name === tour2.name &&
+                      urlToPK(tour.url) < urlToPK(tour2.url)
+                  )
+              )
+              .map((tour) => tour.name)}
             optionsValues={allTours}
+            values={definedTours}
             onClick={changeTours}
             buttonClassName={"border-light-h-2 bg-light-bg-2"}
           >

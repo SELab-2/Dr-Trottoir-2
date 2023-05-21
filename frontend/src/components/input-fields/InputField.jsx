@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  * @param keyDownCallback Function that will be called when a key is pressed
  * @param classNameDiv className that will be added to the enclosing div
  * @param classNameInput className that will be added to the <input/> member
+ * @param onChange callback when text is changed inside
  */
 export default function CustomInputField({
   icon,
@@ -18,6 +19,7 @@ export default function CustomInputField({
   actionCallback,
   classNameDiv,
   classNameInput,
+  onChange,
 }) {
   const combinedKeyCallback = (event) => {
     if (event.key === "Enter" && actionCallback !== undefined) {
@@ -41,6 +43,7 @@ export default function CustomInputField({
         type="text"
         onKeyDown={combinedKeyCallback}
         className={`flex-1 bg-light-bg-2 outline-none ${classNameInput}`}
+        onChange={onChange}
       />
       {icon && (
         <FontAwesomeIcon

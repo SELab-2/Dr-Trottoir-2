@@ -61,7 +61,11 @@ export default function ScheduleForm({ id }) {
     async function fetchData() {
       setLoading(true);
       const students = await userService.get();
-      setAllStudents(students.filter((s) => s.active && !s.removed));
+      setAllStudents(
+        students.filter(
+          (s) => s.active && !s.removed && s.role !== 4 && s.role !== 1
+        )
+      );
       setAllTours(await TourService.get());
       if (id) {
         const schedule = await scheduleService.getById(id);
@@ -102,10 +106,10 @@ export default function ScheduleForm({ id }) {
 
   const fetchWaste = async (startDate, endDate, buildings) => {
     const wasteSchedule = {};
-    const wasteEntries = await WasteService.get({
-      startDate: startDate,
-      endDate: endDate,
-    });
+    const wasteEntries = await WasteService.getByDate(
+      dateFormat(startDate),
+      dateFormat(endDate)
+    );
     buildings.map((building) => {
       const buildingUrl = building.building.url;
       wasteSchedule[building.building.url] = wasteEntries.filter(
@@ -124,6 +128,10 @@ export default function ScheduleForm({ id }) {
       setLoadSchedule(false);
     }
     setSelectedDate(newDate);
+  };
+
+  const dateFormat = (date) => {
+    return moment(date).add(1, "days").toDate().toISOString().substring(0, 10);
   };
 
   if (loading) {

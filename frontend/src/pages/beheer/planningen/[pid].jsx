@@ -3,7 +3,6 @@ import {
   faBriefcase,
   faEnvelope,
   faLocationDot,
-  faTrash,
   faPenToSquare,
   faFilter,
   faSort,
@@ -13,7 +12,7 @@ import {
 import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
 import SelectionList from "@/components/selection/SelectionList";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TourService from "@/services/tour.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
 import VisitService from "@/services/visit.service";
@@ -39,7 +38,7 @@ import Dropdown from "@/components/Dropdown";
 import InputField from "@/components/input-fields/InputField";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import { urlToPK } from "@/utils/urlToPK";
-import visit_finished from "@/utils/visit_finished";
+import { checkVisitPhotos } from "@/utils/helpers";
 
 /**
  * Return small tour component to place in the selection list.
@@ -47,11 +46,16 @@ import visit_finished from "@/utils/visit_finished";
  * @param background The object needed to make a SmallTour component.
  */
 function SmallTour({ data, background }) {
+  const date = new Date(data.date);
+
   return (
     <div className={"rounded-lg"} style={{ backgroundColor: background }}>
       <Link href={`/beheer/planningen/${encodeURI(data.id)}/`}>
         <div className={"px-4 py-4"}>
           <h1 className={"font-semibold pb-2"}>{data.name}</h1>
+          <h2 className={"pb-2"}>
+            {date.getDate()}-{date.getMonth() + 1}-{date.getFullYear()}
+          </h2>
           <CustomProgressBar fraction={data.finished / data.amount} />
         </div>
       </Link>
@@ -66,11 +70,72 @@ export default function AdminTourPage() {
   const [startDate, setStart] = useState(new Date());
   const [endDate, setEnd] = useState(new Date());
   const [schedules, setSchedules] = useState([]);
+  const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [finished, setFinished] = useState(0);
   const [buildings, setBuildings] = useState([]);
   const [comments, setComments] = useState([]);
+  const searchString = useRef("");
+  const [sortString, setSortString] = useState("");
+  const [filterString, setFilterString] = useState("");
   const router = useRouter();
 
+  const stringToField = {
+    Ronde: "name",
+    Datum: "date",
+  };
+
+  const performSearch = (scheduleEntries, sortField, filtering) => {
+    // Filters on input field
+    console.log("print");
+    console.log(searchString.current);
+    if (searchString.current && searchString.current !== "") {
+      const search = searchString.current.value.toLowerCase();
+      scheduleEntries = scheduleEntries.filter((entry) =>
+        entry.name.toLowerCase().includes(search)
+      );
+      console.log(scheduleEntries);
+    }
+    // Sorts based on the given sortField
+    if (sortField !== "") {
+      scheduleEntries = scheduleEntries.sort(function (a, b) {
+        const field = stringToField[sortField];
+        return a[field].localeCompare(b[field]);
+      });
+    }
+    // Perform filtering based on completeness
+    scheduleEntries = filterSchedules(scheduleEntries, filtering);
+    setFilteredSchedules(scheduleEntries);
+  };
+
+  const performSort = (sort) => {
+    const newSort = sort.length > 0 ? sort[0] : "";
+    setSortString(newSort);
+    performSearch(schedules, newSort, filterString);
+  };
+
+  const performFilter = (filtering) => {
+    const newFilter = filtering.length > 0 ? filtering[0] : "";
+    setFilterString(newFilter);
+    performSearch(schedules, sortString, newFilter);
+  };
+
+  const filterSchedules = (schedules, filtering) => {
+    if (filtering === "Nog niet begonnen") {
+      return schedules.filter((schedule) => schedule.finished === 0);
+    }
+    if (filtering === "Onderweg") {
+      return schedules.filter((schedule) => {
+        const completeness = schedule.finished / schedule.amount;
+        return completeness > 0 && completeness < 1;
+      });
+    }
+    if (filtering === "Compleet") {
+      return schedules.filter(
+        (schedule) => schedule.finished / schedule.amount === 1
+      );
+    }
+    return schedules;
+  };
   /**
    * We fill the selection list wih new schedule objects based on the given week.
    * @param dateFrom Start of the week.
@@ -85,6 +150,7 @@ export default function AdminTourPage() {
       schedules.map(async (entry) => await parseTour(entry))
     );
     setSchedules(schedulesList);
+    setFilteredSchedules(schedulesList);
     setStart(dateFrom);
     setEnd(dateTo);
   }
@@ -95,23 +161,26 @@ export default function AdminTourPage() {
    * @return list The resulting object that will be used in the SmallTour component.
    */
   const parseTour = async (data) => {
-    let split = data["url"].trim().split("/");
-    const id = split[split.length - 2];
-    const result = { url: data["url"], id: id, date: data["date"] };
+    const result = {
+      url: data["url"],
+      id: urlToPK(data["url"]),
+      date: data["date"],
+    };
     const tour = await TourService.getEntryByUrl(data["tour"]);
     result["name"] = tour["name"];
-    split = data["tour"].trim().split("/");
     const buildingIds = await TourService.getBuildingsFromTour(
-      split[split.length - 2]
+      urlToPK(data["tour"])
     );
 
     result["amount"] = 1;
     if (buildingIds.length > 0) result["amount"] = buildingIds.length;
-    const scheduleVisits = await ScheduleService.getVisitsFromSchedule(id);
+    const scheduleVisits = await ScheduleService.getVisitsFromSchedule(
+      urlToPK(data["url"])
+    );
     let count = 0;
     for (const visit of scheduleVisits) {
-      const response = await visit_finished(visit.url);
-      if (response.length > 0) {
+      const response = await checkVisitPhotos(visit.url);
+      if (response !== null) {
         count++;
       }
     }
@@ -121,6 +190,10 @@ export default function AdminTourPage() {
 
   useEffect(() => {
     const allTours = async () => {
+      setNewSchedules(
+        moment(new Date()).startOf("isoWeek").toDate(),
+        moment(new Date()).endOf("isoWeek").toDate()
+      );
       if (!router.isReady) return;
       const planning = router.query["pid"];
       const scheduleResponse = await ScheduleService.getById(planning);
@@ -187,7 +260,8 @@ export default function AdminTourPage() {
         );
 
         for (const photo of photos) {
-          if (photo.comment !== "") {
+          console.log(photo);
+          if (photo.comment !== "" && photo.comment !== null) {
             comments.push({
               comment: photo.comment,
               building: visit.building_in_tour_data.nickname,
@@ -201,11 +275,9 @@ export default function AdminTourPage() {
           visit["building_in_tour"]
         );
         time[buildInTour["building"]] = "TBA";
-        const departurePhotos = await visit_finished(visit.url);
-        if (departurePhotos.length > 0) {
-          const diff =
-            new Date(departurePhotos[0]["created_at"]) -
-            new Date(visit["arrival"]);
+        const LastTime = await checkVisitPhotos(visit.url);
+        if (LastTime !== null) {
+          const diff = LastTime - new Date(visit["arrival"]);
           let seconds = Math.round(diff / 1000);
           const minutes = Math.floor(seconds / 60);
           seconds -= minutes * 60;
@@ -258,6 +330,7 @@ export default function AdminTourPage() {
             status,
             owners,
             computedTime,
+            building.url,
           ];
         })
       );
@@ -278,7 +351,8 @@ export default function AdminTourPage() {
               icon={faFilter}
               text={"Filter"}
               className={"mr-2"}
-              options={[]}
+              options={["Nog niet begonnen", "Onderweg", "Compleet"]}
+              onClick={performFilter}
             >
               Filter
             </Dropdown>
@@ -286,18 +360,27 @@ export default function AdminTourPage() {
               icon={faSort}
               text={"Sort"}
               className={"mr-2"}
-              options={[]}
+              onClick={performSort}
+              options={["Datum", "Ronde"]}
             >
               Sort
             </Dropdown>
             <InputField
               classNameDiv={"w-80"}
-              reference={() => {}}
+              reference={searchString}
               icon={faSearch}
-              actionCallback={() => {}}
+              actionCallback={() =>
+                performSearch(schedules, sortString, filterString)
+              }
             />
           </div>
-          <PrimaryButton icon={faPlusCircle} text={"Sort"}>
+          <PrimaryButton
+            icon={faPlusCircle}
+            text={"Sort"}
+            onClick={async () =>
+              await router.push("/beheer/data_toevoegen/planningen")
+            }
+          >
             Nieuw
           </PrimaryButton>
         </div>
@@ -313,11 +396,16 @@ export default function AdminTourPage() {
                 {name}
               </h1>
               <div className={"flex space-x-2"}>
-                <SecondaryButton icon={faPenToSquare} className={"h-fit"}>
+                <SecondaryButton
+                  icon={faPenToSquare}
+                  className={"h-fit"}
+                  onClick={async () =>
+                    await router.push(
+                      `/beheer/data_toevoegen/planningen/${urlToPK(url)}`
+                    )
+                  }
+                >
                   Bewerk
-                </SecondaryButton>
-                <SecondaryButton icon={faTrash} className={"h-fit"}>
-                  Verwijder
                 </SecondaryButton>
               </div>
             </div>
@@ -376,7 +464,7 @@ export default function AdminTourPage() {
                 title={"Opmerkingen"}
                 className={"sm:w-2/6 basis-1/3"}
               >
-                <div className={"space-y-2 overflow-auto"}>
+                <div className={"space-y-2  overflow-auto"}>
                   {comments.map((entry, index) => (
                     <div key={index} className={"rounded-lg bg-light-bg-1 p-2"}>
                       <div className={"flex flex-row"}>
@@ -409,13 +497,11 @@ export default function AdminTourPage() {
                 icon={faLocationDot}
                 title={"Wegbeschrijving"}
               >
-                <div className={"w-full h-[84%] relative overflow-hidden"}>
+                <div className={"w-full h-[84%] overflow-hidden"}>
                   <MapView
                     route={buildings.map((building) => building[1])}
                     transportationMode={"bicycling"}
-                    className={
-                      "w-[150%] h-[200%] absolute top-[-50%] left-[-25%]"
-                    }
+                    className={"w-[100%] h-[100%]"}
                   />
                 </div>
               </SecondaryCard>
@@ -450,6 +536,19 @@ export default function AdminTourPage() {
                   },
                   { name: "Verantwoordelijke", cut: true },
                   { name: "Tijd" },
+                  {
+                    name: "Detail",
+                    createCell: (url) => (
+                      <Link
+                        className={
+                          "bg-primary-2 border-2 border-light-h-2 rounded-lg p-1"
+                        }
+                        href={`/beheer/gebouwen/${urlToPK(url)}`}
+                      >
+                        Detail
+                      </Link>
+                    ),
+                  },
                 ]}
                 data={buildings}
               />
@@ -458,20 +557,22 @@ export default function AdminTourPage() {
         </PrimaryCard>
 
         <div className={"space-y-2 basis-1/4 m-2 flex flex-col"}>
-          <CustomWeekPicker
-            className={"w-full"}
-            startDate={startDate}
-            endDate={endDate}
-            onChange={async (beginDate, endDate) =>
-              await setNewSchedules(beginDate, endDate)
-            }
-          />
+          <PrimaryCard title={"Selecteer week"} className={"mb-3"}>
+            <CustomWeekPicker
+              className={"w-full"}
+              startDate={startDate}
+              endDate={endDate}
+              onChange={async (beginDate, endDate) =>
+                await setNewSchedules(beginDate, endDate)
+              }
+            />
+          </PrimaryCard>
           <SelectionList
             Component={({ url, background, setSelected, callback, data }) => (
               <SmallTour key={url} background={background} data={data} />
             )}
             callback={() => {}}
-            elements={schedules}
+            elements={filteredSchedules}
             selectedStart={url}
             className={"grow"}
             title={"Rondes"}

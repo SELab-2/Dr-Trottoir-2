@@ -4,6 +4,7 @@ from .building_in_tour import BuildingInTour
 from .region import Region
 from .photo import Photo
 from .schedule import Schedule
+from .template import Template
 from .tour import Tour
 from .visit import Visit
 from .waste import Waste
@@ -22,5 +23,6 @@ __all__ = [
     Waste,
     Comment,
     ScheduleComment,
-    VisitComment
+    VisitComment,
+    Template
 ]
