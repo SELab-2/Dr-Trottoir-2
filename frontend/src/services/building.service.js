@@ -1,6 +1,7 @@
 import HelperService from "@/services/helper.service";
 import ApiInstance from "@/services/ApiInstance";
 import { formDataHeader } from "@/utils/contentTypeHeader";
+import { getSession } from "next-auth/react";
 
 class BuildingService {
   /**
@@ -11,6 +12,15 @@ class BuildingService {
   async get(args = {}) {
     let all = await HelperService.getAllPagination(`building/`);
     return this.#filterBuilding(all, args);
+  }
+
+  /**
+   * Returns all buildings that are managed by the current user (syndicus).
+   * @returns {Promise<*>} A list with building entries.
+   */
+  async getOwnedByMe(user) {
+    let all = await HelperService.getAllPagination(`building/`);
+    return this.#filterBuilding(all, { owner: user.url });
   }
 
   /**
@@ -136,8 +146,11 @@ class BuildingService {
    * @returns {*} The filtered data.
    */
   #filterBuilding(data, args) {
-    //TODO: add filters
-
+    if (args.owner) {
+      data = data.filter((building) => {
+        building.owners.map((owner) => owner.url).includes(args.owner);
+      });
+    }
     return data;
   }
 
@@ -162,6 +175,60 @@ class BuildingService {
         if (startDate && endDate) commentURL += "&end=" + endDate;
       }
       const response = await ApiInstance.get(commentURL);
+      return response.data;
+    }
+  }
+
+  /**
+   * Replace all owners of a building
+   * @param buildingUrl url of the building
+   * @param ownerList list of id's of users
+   * @returns response
+   */
+  async putOwnersByUrl(buildingUrl, ownerList) {
+    if (HelperService.isCorrectModelUrl(buildingUrl, "building")) {
+      let ownersURL = `${buildingUrl}owners/`;
+      const response = await ApiInstance.put(ownersURL, ownerList);
+      return response.data;
+    }
+  }
+
+  /**
+   * Delete all owners of a building
+   * @param buildingUrl url of the building
+   * @returns response
+   */
+  async deleteOwnersByUrl(buildingUrl) {
+    if (HelperService.isCorrectModelUrl(buildingUrl, "building")) {
+      let ownersURL = `${buildingUrl}owners/`;
+      const response = await ApiInstance.delete(ownersURL);
+      return response.data;
+    }
+  }
+
+  /**
+   * Get all owners of a building
+   * @param buildingUrl url of the building
+   * @returns response
+   */
+  async getOwnersByUrl(buildingUrl) {
+    if (HelperService.isCorrectModelUrl(buildingUrl, "building")) {
+      let ownersURL = `${buildingUrl}owners/`;
+      const response = await ApiInstance.get(ownersURL);
+      return response.data;
+    }
+  }
+
+  /**
+   * Add owners of a building
+   * @param buildingUrl url of the building
+   * @param ownerList list of id's of users
+   * @returns response
+   */
+  async postOwnersByUrl(buildingUrl, ownerList) {
+    if (HelperService.isCorrectModelUrl(buildingUrl, "building")) {
+      let ownersURL = `${buildingUrl}owners/`;
+      const response = await ApiInstance.post(ownersURL, ownerList);
       return response.data;
     }
   }
