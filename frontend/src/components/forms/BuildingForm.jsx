@@ -9,6 +9,7 @@ import UserService from "@/services/user.service";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import RegionService from "@/services/region.service";
+import { urlToPK } from "@/utils/urlToPK";
 
 export default function BuildingForm({ id }) {
   const [loading, setLoading] = useState(true);
@@ -41,6 +42,7 @@ export default function BuildingForm({ id }) {
       address_line_2: address2,
       country: country,
       region: region,
+      owner: owner,
     };
 
     if (manual !== undefined) {
@@ -53,11 +55,8 @@ export default function BuildingForm({ id }) {
       } else {
         await BuildingService.post(data);
       }
-      console.log(owner);
       if (owner !== "") {
-        console.log(url);
-        const res = await UserService.patchByUrl(owner, { buildings: [url] });
-        console.log(res);
+        await BuildingService.putOwnersByUrl(url, [urlToPK(owner)]);
       }
 
       // await router.reload();
