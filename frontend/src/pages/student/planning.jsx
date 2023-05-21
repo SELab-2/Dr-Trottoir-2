@@ -111,7 +111,7 @@ export default function StudentPlanningPage() {
       const split = user.url.trim().split("/");
       user = await userService.getById(split[split.length - 2]);
       const date = new Date();
-      const dateFrom = moment(date).startOf("day").toDate();
+      const dateFrom = moment(date).startOf("isoWeek").toDate();
       const dateTo = moment(date).endOf("isoWeek").toDate();
       // Get every schedule assigned to the current user in this week
       const schedules = await scheduleService.get({
