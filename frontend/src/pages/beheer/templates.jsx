@@ -375,8 +375,8 @@ export default function Templates() {
     );
   };
 
-  
   /********* Powering UI **************/
+
   const handleTextChange = () => {
     if (saveState === SaveState.Clean) setSaveState(SaveState.Dirty);
     setProtectLeave(true);
@@ -458,8 +458,8 @@ export default function Templates() {
     );
   };
 
-  
   /********* Page **************/
+
   return (
     <>
       <Head>
