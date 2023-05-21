@@ -62,8 +62,8 @@ export default function SelectableTable({
           {columns.map((entry, index) => {
             return (
               <th
-                key={index}
-                className={"last:rounded-lg p-1 text-left bg-accent-1"}
+                key={index + 1}
+                className={"last:rounded-r-lg p-1 text-left bg-accent-1"}
               >
                 {entry.name}
               </th>

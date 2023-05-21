@@ -27,10 +27,10 @@ function buildUrl(address, route, transportationMode) {
       }
     }
     params += "&destination=" + encodeURIComponent(route[route.length - 1]);
-  }
 
-  if (transportationMode !== undefined) {
-    params += "&mode=" + transportationMode;
+    if (transportationMode !== undefined) {
+      params += "&mode=" + transportationMode;
+    }
   }
 
   params += "&zoom=" + 13;
@@ -77,13 +77,16 @@ export default function MapView({
     );
   }
 
+  let url = buildUrl(address, route, transportationMode);
+
   return (
     <iframe
       className={className}
       style={{ border: 0 }}
       loading="lazy"
       allowFullScreen
-      src={buildUrl(address, route, transportationMode)}
+      key={url}
+      src={url}
     />
   );
 }
