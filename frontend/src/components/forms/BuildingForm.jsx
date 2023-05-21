@@ -50,9 +50,14 @@ export default function BuildingForm({ id }) {
     }
 
     try {
+      if (owner === "") {
+        alert("No owner given.");
+        return;
+      }
+
       if (id) {
         await BuildingService.patchById(id, data);
-      } else {
+      } else if (!id && owner !== "") {
         await BuildingService.post(data);
       }
       if (owner !== "") {
