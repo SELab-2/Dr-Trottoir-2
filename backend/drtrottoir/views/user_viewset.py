@@ -31,6 +31,9 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated & UserViewSetPermission]
 
+    class Meta:
+        ordering = ['first_name', 'last_name']
+
     # Marks user as removed
     def destroy(self, request, pk=None):
         # for some reason has_object_permission isn't checked before

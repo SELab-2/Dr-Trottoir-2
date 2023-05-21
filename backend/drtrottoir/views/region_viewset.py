@@ -29,3 +29,6 @@ class RegionViewSet(viewsets.ModelViewSet):
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
     permission_classes = [IsAuthenticated & SuperPermissionOrReadOnly]
+
+    class Meta:
+        ordering = ['region_name']
