@@ -89,7 +89,7 @@ export default function SyndicyBuildings() {
               {loadState === states.waiting ? (
                 <Loading className="w-20" />
               ) : (
-                <h className={"text-lg"}>Geen gebouwen gevonden.</h>
+                <p className={"text-lg"}>Geen gebouwen gevonden.</p>
               )}
             </div>
           </PrimaryCard>

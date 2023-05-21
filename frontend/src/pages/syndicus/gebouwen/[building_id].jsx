@@ -36,6 +36,7 @@ import PhotoPage from "@/components/PhotoPage";
 import { getSession, signOut } from "next-auth/react";
 import LayoutSyndici from "@/components/LayoutSyndici";
 import SecondaryButton from "@/components/button/SecondaryButton";
+import PhotoPageSyndicus from "@/components/PhotoPageSyndicus";
 
 export default function SyndicyBuildings() {
   const router = useRouter();
@@ -338,7 +339,7 @@ export default function SyndicyBuildings() {
                         {photos.map((photo) => (
                           <div className={"flex-shrink-0"} key={photo["url"]}>
                             <PrimaryCard className={"mr-3"}>
-                              <PhotoPage
+                              <PhotoPageSyndicus
                                 photo={photo}
                                 thumbWidth={200}
                                 thumbHeight={200}

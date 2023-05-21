@@ -136,6 +136,10 @@ export async function getServerSideProps(context) {
   const session = await getSession(context);
   if (session?.user?.role === ROLES.STUDENT) {
     return { redirect: { destination: "/student/planning", permanent: false } };
+  } else if (session?.user?.role === ROLES.SYNDICUS) {
+    return {
+      redirect: { destination: "/syndicus/gebouwen", permanent: false },
+    };
   } else if (session?.user?.role <= ROLES.SUPERSTUDENT) {
     return { redirect: { destination: "/beheer/dashboard", permanent: false } };
   }
