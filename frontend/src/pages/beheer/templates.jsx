@@ -1,5 +1,8 @@
 import Dropdown from "@/components/Dropdown";
 import Layout from "@/components/Layout";
+import CustomModal from "@/components/Modals/CustomModal";
+import RemoveModal from "@/components/Modals/RemoveModal";
+import CustomButton from "@/components/button/Button";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import PrimaryCard from "@/components/custom-card/PrimaryCard";
@@ -8,16 +11,19 @@ import InputField from "@/components/input-fields/InputField";
 import SelectionList from "@/components/selection/SelectionList";
 import TemplateService from "@/services/template.service";
 import {
+  faCancel,
   faEnvelope,
   faFilter,
+  faPen,
   faPlusCircle,
   faSave,
   faSearch,
   faSort,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function Templates() {
   const SaveState = Object.freeze({
@@ -41,6 +47,13 @@ export default function Templates() {
     Body: "Inhoud",
   });
 
+  const LeaveOrigins = Object.freeze({
+    None: "none",
+    Route: "route",
+    OtherTemplate: "other-template",
+    New: "new",
+  });
+
   const [templateList, setTemplateList] = useState([]);
   const searchString = useRef("");
   const [searchResults, setSearchResults] = useState([]);
@@ -48,13 +61,28 @@ export default function Templates() {
   const [sortOption, setSortOptions] = useState("");
   const [templateURL, setTemplateURL] = useState("");
   const [saveState, setSaveState] = useState(SaveState.New);
+  const [attemptDelete, setAttemptDelete] = useState(false);
+  const [protectLeave, setProtectLeave] = useState(false);
+  const [attemptLeaveModalOpen, setAttemptLeaveModalOpen] = useState(false);
+  const [attemptedRoute, setAttemptedRoute] = useState();
+  const [protectLeaveOrigin, setProtectLeaveOrigin] = useState({
+    cause: LeaveOrigins.None,
+    param: null,
+  });
   const fieldTo = useRef("");
   const fieldCc = useRef("");
   const fieldBcc = useRef("");
   const fieldSubject = useRef("");
   const fieldBody = useRef("");
 
+  const router = useRouter();
+
   const updateTemplateSelection = async (url) => {
+    if (!url) {
+      loadPage();
+      return;
+    }
+
     setTemplateURL(url);
     const template = await TemplateService.getEntryByUrl(url);
     fieldTo.current.value = template["to"] !== undefined ? template["to"] : "";
@@ -82,9 +110,27 @@ export default function Templates() {
     }
   };
 
+  const onRouteChangeStart = useCallback(
+    (route) => {
+      if (!protectLeave) return;
+
+      protectLeaveOrigin.cause = LeaveOrigins.Route;
+
+      setAttemptLeaveModalOpen(true);
+      setAttemptedRoute(route);
+      throw "cancelRouteChange";
+    },
+    [protectLeave]
+  );
+
   useEffect(() => {
     loadPage();
   }, []);
+
+  useEffect(() => {
+    router.events.on("routeChangeStart", onRouteChangeStart);
+    return () => router.events.off("routeChangeStart", onRouteChangeStart);
+  }, [onRouteChangeStart]);
 
   const mailtoURL = () => {
     let url = "mailto:";
@@ -184,29 +230,51 @@ export default function Templates() {
     performSearch(paramObj);
   };
 
-  const saveTemplate = async () => {
-    if (saveState === SaveState.Clean) return;
+  const reloadSelection = async (selectedURL) => {
+    const templates = await loadTemplates();
+    await updateTemplateSelection(selectedURL ? selectedURL : null);
+    performSearch({ templates: templates });
+  };
 
-    const data = {
+  const requestData = () => {
+    return {
       to: fieldTo.current.value,
       cc: fieldCc.current.value,
       bcc: fieldBcc.current.value,
       subject: fieldSubject.current.value,
       body: fieldBody.current.value,
     };
+  };
 
-    let response = null;
+  const saveNewTemplate = async () => {
+    const response = await TemplateService.postEntry(requestData());
+    await reloadSelection(response.url);
+    setSaveState(SaveState.Clean);
+    setProtectLeave(false);
+  };
+  const updateTemplate = async () => {
+    const response = await TemplateService.patchEntryByUrl(
+      templateURL,
+      requestData()
+    );
+    await reloadSelection(response.url);
+    setSaveState(SaveState.Clean);
+    setProtectLeave(false);
+  };
+  const deleteTemplate = async () => {
+    setAttemptDelete(false);
+    await TemplateService.deleteEntryByUrl(templateURL);
+    await reloadSelection();
+    setSaveState(SaveState.Clean);
+    setProtectLeave(false);
+  };
 
-    if (saveState === SaveState.Dirty) {
-      response = await TemplateService.patchEntryByUrl(templateURL, data);
-    } else if (saveState === SaveState.New) {
-      response = await TemplateService.postEntry(data);
-    }
-    const templates = await loadTemplates();
-    await updateTemplateSelection(response.url);
-
-    if (saveState === SaveState.New) performSearch(templates);
-
+  const saveNewTemplateModal = async () => {
+    await TemplateService.postEntry(requestData());
+    setSaveState(SaveState.Clean);
+  };
+  const updateTemplateModal = async () => {
+    await TemplateService.patchEntryByUrl(templateURL, requestData());
     setSaveState(SaveState.Clean);
   };
 
@@ -246,26 +314,134 @@ export default function Templates() {
     );
   };
 
-  const handleTextChange = () => {
-    if (saveState === SaveState.Clean) setSaveState(SaveState.Dirty);
+  const leaveModalOnCancel = () => {
+    setAttemptLeaveModalOpen(false);
+
+    if (protectLeaveOrigin.cause === LeaveOrigins.Route)
+      setAttemptedRoute(null);
+
+    protectLeaveOrigin.cause = LeaveOrigins.None;
   };
 
-  const SaveButton = () => {
-    if (saveState === SaveState.Clean) {
-      return null;
+  const leaveModalOnSave = async () => {
+    setAttemptLeaveModalOpen(false);
+
+    if (protectLeaveOrigin.cause === LeaveOrigins.Route) {
+      console.log("here now");
+      if (saveState === SaveState.New) {
+        await saveNewTemplateModal();
+      } else if (saveState === SaveState.Dirty) {
+        await updateTemplateModal();
+      }
+      console.log("here");
+      router.events.off("routeChangeStart", onRouteChangeStart);
+      console.log("pushing");
+      router.push(attemptedRoute);
     } else {
-      const buttonText =
-        saveState === SaveState.Dirty
-          ? "Wijzigingen opslaan"
-          : saveState === SaveState.New
-          ? "Nieuw template opslaan"
-          : "error";
-      return (
-        <PrimaryButton icon={faSave} onClick={() => saveTemplate()}>
-          {buttonText}
-        </PrimaryButton>
-      );
+      if (saveState === SaveState.New) {
+        await saveNewTemplate();
+      } else if (saveState === SaveState.Dirty) {
+        await updateTemplate();
+      }
+
+      if (protectLeaveOrigin.cause === LeaveOrigins.New) newTemplate();
+      else if (protectLeaveOrigin.cause === LeaveOrigins.OtherTemplate)
+        updateTemplateSelection(protectLeaveOrigin.param);
     }
+    setProtectLeave(false);
+  };
+
+  const leaveModalOnLeave = () => {
+    setAttemptLeaveModalOpen(false);
+
+    if (protectLeaveOrigin.cause === LeaveOrigins.Route) {
+      router.events.off("routeChangeStart", onRouteChangeStart);
+      router.push(attemptedRoute);
+    } else if (protectLeaveOrigin.cause === LeaveOrigins.New) newTemplate();
+    else if (protectLeaveOrigin.cause === LeaveOrigins.OtherTemplate)
+      updateTemplateSelection(protectLeaveOrigin.param);
+    setProtectLeave(false);
+  };
+
+  const handleTextChange = () => {
+    if (saveState === SaveState.Clean) setSaveState(SaveState.Dirty);
+    setProtectLeave(true);
+  };
+
+  const DataButtons = () => {
+    return (
+      <div className={"flex flex-row justify-between w-full ml-2"}>
+        {/* Modal to confirm deletion */}
+        <RemoveModal
+          open={attemptDelete}
+          element={"template"}
+          onCancel={() => setAttemptDelete(false)}
+          onDelete={deleteTemplate}
+        ></RemoveModal>
+        {/* Modal to protect unsaved data */}
+        <CustomModal isOpen={attemptLeaveModalOpen} className="z-20">
+          <h2 className="text-lg font-bold mb-4">
+            Wilt u uw wijzigingen opslaan?
+          </h2>
+          <div className="flex justify-center">
+            <PrimaryButton
+              className="mr-2"
+              icon={faCancel}
+              onClick={leaveModalOnCancel}
+            >
+              Annuleer
+            </PrimaryButton>
+
+            <CustomButton
+              className="mr-2 text-dark-h-1 bg-good-1 hover:bg-good-2 active:bg-good-2 active:text-good-1"
+              icon={faSave}
+              onClick={leaveModalOnSave}
+            >
+              Bewaar
+            </CustomButton>
+            <CustomButton
+              className="mr-2 text-dark-h-1 bg-bad-1 hover:bg-bad-2 active:bg-bad-2 active:text-bad-1"
+              icon={faTrash}
+              onClick={leaveModalOnLeave}
+            >
+              Bewaar niet
+            </CustomButton>
+          </div>
+        </CustomModal>
+        {saveState === SaveState.Dirty ? (
+          <PrimaryButton
+            icon={faPen}
+            onClick={updateTemplate}
+            className={"flex"}
+          >
+            Update
+          </PrimaryButton>
+        ) : null}
+        <div className={"flex grow"} />
+        {saveState === SaveState.Dirty || saveState === SaveState.New ? (
+          <CustomButton
+            icon={faSave}
+            onClick={saveNewTemplate}
+            className={
+              "flex text-dark-h-1 bg-good-1 hover:bg-good-2 active:bg-good-2 active:text-good-1"
+            }
+          >
+            Bewaar nieuw
+          </CustomButton>
+        ) : null}
+        {saveState === SaveState.Dirty || saveState === SaveState.Clean ? (
+          <CustomButton
+            icon={faTrash}
+            onClick={() => setAttemptDelete(true)}
+            className={
+              "flex text-dark-h-1 bg-bad-1 hover:bg-bad-2 active:bg-bad-2 active:text-bad-1"
+            }
+          >
+            Verwijder
+          </CustomButton>
+        ) : null}
+      </div>
+    );
   };
 
   return (
@@ -310,7 +486,13 @@ export default function Templates() {
             <PrimaryButton
               icon={faPlusCircle}
               text={"Sort"}
-              onClick={newTemplate}
+              onClick={() => {
+                if (!protectLeave) newTemplate();
+                else {
+                  protectLeaveOrigin.cause = LeaveOrigins.New;
+                  setAttemptLeaveModalOpen(true);
+                }
+              }}
             >
               Nieuw
             </PrimaryButton>
@@ -363,18 +545,25 @@ export default function Templates() {
                 onClick={() => {
                   window.open(mailtoURL(), "_blank", "noreferrer");
                 }}
+                className={"shrink-0"}
               >
                 Stuur e-mail
               </SecondaryButton>
-              <SaveButton />
+              <DataButtons />
             </div>
           </PrimaryCard>
           <SelectionList
             title={"Templates"}
             className={"m-2 basis-1/4 max-h-4/5"}
             elements={searchResults}
+            selectedStart={templateURL}
             callback={(url) => {
-              updateTemplateSelection(url);
+              if (!protectLeave) updateTemplateSelection(url);
+              else {
+                protectLeaveOrigin.cause = LeaveOrigins.OtherTemplate;
+                protectLeaveOrigin.param = url;
+                setAttemptLeaveModalOpen(true);
+              }
             }}
             Component={({ url, background, setSelected, callback, data }) => (
               <TemplateSelectionItem

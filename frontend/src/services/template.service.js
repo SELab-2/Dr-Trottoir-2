@@ -64,12 +64,18 @@ class TemplateService {
   }
 
   async patchEntryByUrl(url, data) {
-    const response = await ApiInstance.getApi().patch(url, data);
+    const response = await ApiInstance.patch(url, data);
     return response.data;
   }
 
   async postEntry(data) {
-    const response = await ApiInstance.getApi().post("template/", data);
+    const response = await ApiInstance.post("template/", data);
+    return response.data;
+  }
+
+  async deleteEntryByUrl(url) {
+    const response = await ApiInstance.delete(url);
+    console.log(response);
     return response.data;
   }
 }
