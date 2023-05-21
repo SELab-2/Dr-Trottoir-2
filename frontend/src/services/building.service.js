@@ -178,6 +178,60 @@ class BuildingService {
       return response.data;
     }
   }
+
+  /**
+   * Replace all owners of a building
+   * @param buildingUrl url of the building
+   * @param ownerList list of id's of users
+   * @returns response
+   */
+  async putOwnersByUrl(buildingUrl, ownerList) {
+    if (HelperService.isCorrectModelUrl(buildingUrl, "building")) {
+      let ownersURL = `${buildingUrl}owners/`;
+      const response = await ApiInstance.put(ownersURL, ownerList);
+      return response.data;
+    }
+  }
+
+  /**
+   * Delete all owners of a building
+   * @param buildingUrl url of the building
+   * @returns response
+   */
+  async deleteOwnersByUrl(buildingUrl) {
+    if (HelperService.isCorrectModelUrl(buildingUrl, "building")) {
+      let ownersURL = `${buildingUrl}owners/`;
+      const response = await ApiInstance.delete(ownersURL);
+      return response.data;
+    }
+  }
+
+  /**
+   * Get all owners of a building
+   * @param buildingUrl url of the building
+   * @returns response
+   */
+  async getOwnersByUrl(buildingUrl) {
+    if (HelperService.isCorrectModelUrl(buildingUrl, "building")) {
+      let ownersURL = `${buildingUrl}owners/`;
+      const response = await ApiInstance.get(ownersURL);
+      return response.data;
+    }
+  }
+
+  /**
+   * Add owners of a building
+   * @param buildingUrl url of the building
+   * @param ownerList list of id's of users
+   * @returns response
+   */
+  async postOwnersByUrl(buildingUrl, ownerList) {
+    if (HelperService.isCorrectModelUrl(buildingUrl, "building")) {
+      let ownersURL = `${buildingUrl}owners/`;
+      const response = await ApiInstance.post(ownersURL, ownerList);
+      return response.data;
+    }
+  }
 }
 
 export default new BuildingService();

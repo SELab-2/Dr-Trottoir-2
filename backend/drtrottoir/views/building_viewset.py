@@ -3,14 +3,15 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from drtrottoir.models import Building, Waste, Photo, ScheduleComment, VisitComment
+from drtrottoir.models import Building, Waste, Photo, ScheduleComment, VisitComment, CustomUser
 from drtrottoir.permissions.user_permissions import SuperPermissionOrReadOnly
 from drtrottoir.serializers import (
     BuildingSerializer,
     WastePartialSerializer,
     PhotoSerializer,
     ScheduleCommentExtraSerializer,
-    VisitCommentExtraSerializer
+    VisitCommentExtraSerializer,
+    UserPartialSerializer
 )
 
 
@@ -198,3 +199,75 @@ class BuildingViewSet(viewsets.ModelViewSet):
 
         else:
             return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
+
+    # Update owners of a building
+    @action(detail=True, methods=['get'])
+    def owners(self, request, pk=None):
+        """
+        HTTP PUT will replace all owners
+        HTTP POST will add owners
+        HTTP DELETE will remove owners
+        """
+        # Check if building id is valid
+        if pk is not None and Building.objects.filter(pk=pk).exists():
+            return Response(UserPartialSerializer(Building.objects.get(pk=pk).owners.all(), many=True, context={'request': request}).data)
+        else:
+            return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
+
+    @owners.mapping.post
+    def post_owners(self, request, pk=None):
+        # Check if building id is valid
+        if pk is not None and Building.objects.filter(pk=pk).exists():
+            building = Building.objects.get(pk=pk)
+            for ownerPK in request.data:
+                print(ownerPK)
+                
+                if CustomUser.objects.filter(pk=ownerPK).exists():
+                    building.owners.add(CustomUser.objects.get(pk=ownerPK))
+
+                else:
+                    print("Invalid URL given")
+            
+            building.save()
+
+            return Response(UserPartialSerializer(Building.objects.get(pk=pk).owners.all(), many=True, context={'request': request}).data)
+        else:
+            return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
+
+    @owners.mapping.put
+    def put_owners(self, request, pk=None):
+        # Check if building id is valid
+        if pk is not None and Building.objects.filter(pk=pk).exists():
+            building = Building.objects.get(pk=pk)
+            # delete old ones
+            for owner in building.owners.all():
+                building.owners.remove(owner)
+
+            for ownerPK in request.data:
+                print(ownerPK)
+                
+                if CustomUser.objects.filter(pk=ownerPK).exists():
+                    building.owners.add(CustomUser.objects.get(pk=ownerPK))
+
+                else:
+                    print("Invalid URL given")
+            
+            building.save()
+
+            return Response(UserPartialSerializer(Building.objects.get(pk=pk).owners.all(), many=True, context={'request': request}).data)
+        else:
+            return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
+
+    @owners.mapping.delete
+    def delete_owners(self, request, pk=None):
+        # Check if building id is valid
+        if pk is not None and Building.objects.filter(pk=pk).exists():
+            building = Building.objects.get(pk=pk)
+            for owner in building.owners.all():
+                building.owners.remove(owner)
+            building.save()
+
+            return Response("Removed owners from building", status=status.HTTP_200_OK)
+        else:
+            return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
+
