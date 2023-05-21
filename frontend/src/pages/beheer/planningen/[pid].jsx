@@ -39,7 +39,6 @@ import Dropdown from "@/components/Dropdown";
 import InputField from "@/components/input-fields/InputField";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import { urlToPK } from "@/utils/urlToPK";
-import visit_finished from "@/utils/visit_finished";
 import { checkVisitPhotos } from "@/utils/helpers";
 
 /**
@@ -186,8 +185,8 @@ export default function AdminTourPage() {
     );
     let count = 0;
     for (const visit of scheduleVisits) {
-      const response = await visit_finished(visit.url);
-      if (response.length > 0) {
+      const response = await checkVisitPhotos(visit.url);
+      if (response !== null) {
         count++;
       }
     }
