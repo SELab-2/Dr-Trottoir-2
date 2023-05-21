@@ -36,7 +36,6 @@ export default function SyndicyBuildings() {
     const redirectToBuilding = async () => {
       const user = (await getSession()).user;
       const buildings = await buildingService.getOwnedByMe(user);
-      console.log("owned by me", buildings);
       if (buildings.length > 0)
         router.push(`/syndicus/gebouwen/${urlToPK(buildings[0]["url"])}`);
       else setLoadState(states.empty);

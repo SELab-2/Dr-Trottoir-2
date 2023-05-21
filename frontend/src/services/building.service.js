@@ -21,7 +21,6 @@ class BuildingService {
    */
   async getOwnedByMe(user) {
     let all = await HelperService.getAllPagination(`building/`);
-    console.log(all, user.url);
     return this.#filterBuilding(all, { owner: user.url });
   }
 
