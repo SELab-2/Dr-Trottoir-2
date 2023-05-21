@@ -273,7 +273,16 @@ export default function WasteForm() {
           <Dropdown
             multi={true}
             icon={faBicycle}
-            options={allTours.map((tour) => tour.name)}
+            options={allTours
+              .filter(
+                (tour) =>
+                  !allTours.some(
+                    (tour2) =>
+                      tour.name === tour2.name &&
+                      urlToPK(tour.url) < urlToPK(tour2.url)
+                  )
+              )
+              .map((tour) => tour.name)}
             optionsValues={allTours}
             onClick={changeTours}
             buttonClassName={"border-light-h-2 bg-light-bg-2"}
