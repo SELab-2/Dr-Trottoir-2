@@ -71,7 +71,7 @@ export default function StudentBuilding() {
           scheduledBuildings = scheduledBuildings.concat(
             await Promise.all(
               buildingsInTour.map(async (buildingInTour) => {
-                if (id == urlToPK(buildingInTour.building)) {
+                if (id === urlToPK(buildingInTour.building)) {
                   let building = await buildingService.getEntryByUrl(
                     buildingInTour.building
                   );
@@ -92,7 +92,7 @@ export default function StudentBuilding() {
       } else {
         await Promise.all(
           buildings.map(async (building) => {
-            if (id == urlToPK(building.url)) {
+            if (id === urlToPK(building.url)) {
               let selBuilding = await buildingService.getEntryByUrl(
                 building.url
               );
@@ -126,7 +126,7 @@ export default function StudentBuilding() {
       if (selectedBuilding === null || selectedBuilding.nickname !== selected) {
         const nicknameSelected = selected[0];
         let building = buildings.find(
-          (building) => building.nickname == nicknameSelected
+          (building) => building.nickname === nicknameSelected
         );
         setSelectedBuilding(building);
         router.push("/student/gebouw/" + urlToPK(building.url));
@@ -176,11 +176,11 @@ export default function StudentBuilding() {
     for (let i in photos) {
       let photo = photos[i];
       let state = photo.state;
-      if (state == 1) {
+      if (state === 1) {
         setArrival(true);
-      } else if (state == 2) {
+      } else if (state === 2) {
         setDeparture(true);
-      } else if (state == 3) {
+      } else if (state === 3) {
         setInside(true);
       }
     }
@@ -210,12 +210,12 @@ export default function StudentBuilding() {
   }
 
   function renderPhotos(state) {
-    let filtered = visitPhotos.filter((photo) => photo.state == state);
+    let filtered = visitPhotos.filter((photo) => photo.state === state);
     return (
       <div className="flex flex-wrap">
         {filtered.map((photo, index) => (
           <div key={index} className="p-2">
-            <PhotoPage photo={photo}></PhotoPage>
+            <PhotoPage photo={photo} />
           </div>
         ))}
       </div>
@@ -254,7 +254,7 @@ export default function StudentBuilding() {
         state={state}
         buildingUrl={selectedBuilding.url}
         callback={photoAdded}
-      ></PhotoCreation>
+      />
     );
   }
 
@@ -336,7 +336,7 @@ export default function StudentBuilding() {
                     }
                     userUrl={userUrl}
                     callback={() => loadComments(buildingVisit)}
-                  ></CommentModal>
+                  />
                 </div>
                 {renderComments()}
               </SecondaryCard>

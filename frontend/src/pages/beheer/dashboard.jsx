@@ -16,7 +16,7 @@ import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
 import { useEffect, useRef, useState } from "react";
 import ScheduleService from "@/services/schedule.service";
 import CustomTable from "@/components/table/Table";
-import { getMonday, getSunday } from "@/utils/helpers";
+import { checkVisitPhotos, getMonday, getSunday } from "@/utils/helpers";
 import TourService from "@/services/tour.service";
 import UserService from "@/services/user.service";
 import CustomProgressBar from "@/components/ProgressBar";
@@ -70,11 +70,9 @@ export default function AdminDashboardPage() {
                 urlToPK(visit.url)
               );
               comments += visitComments.length;
-              const visitPhotos = await VisitService.getPhotosByVisit(
-                urlToPK(visit.url)
-              );
-              // visit complete if there is a departure photo
-              if (visitPhotos.some((photo) => photo.state === 2)) {
+              const response = await checkVisitPhotos(visit.url);
+              // visit complete if there is a departure, arrival and extra photo
+              if (response !== null) {
                 departures += 1;
               }
             })
