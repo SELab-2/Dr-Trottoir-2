@@ -46,6 +46,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     class Meta:
         abstract = True
+        ordering = ['id']
 
 
 class ScheduleCommentViewSet(CommentViewSet):

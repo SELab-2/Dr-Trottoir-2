@@ -30,6 +30,9 @@ class WasteViewSet(viewsets.ModelViewSet):
     serializer_class = WasteSerializer
     permission_classes = [IsAuthenticated & SuperStudentPermissionOrReadOnly]
 
+    class Meta:
+        ordering = ['id']
+
     def list(self, request):
         q_params = request.query_params
         q_param_keys = q_params.keys()

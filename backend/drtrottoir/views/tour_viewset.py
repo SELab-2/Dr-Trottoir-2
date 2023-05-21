@@ -34,6 +34,9 @@ class TourViewSet(viewsets.ModelViewSet):
     queryset = Tour.objects.all()
     permission_classes = [IsAuthenticated & SuperPermissionOrReadOnly]
 
+    class Meta:
+        ordering = ['id']
+
     @action(detail=True, methods=['post'])
     def duplicate(self, request, pk=None):
         if not Tour.objects.filter(pk=pk).exists():

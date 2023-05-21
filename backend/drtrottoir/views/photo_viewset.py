@@ -15,3 +15,6 @@ class PhotoViewSet(viewsets.ModelViewSet):
     serializer_class = PhotoSerializer
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = [IsAuthenticated & PhotoPermission]
+
+    class Meta:
+        ordering = ['id']

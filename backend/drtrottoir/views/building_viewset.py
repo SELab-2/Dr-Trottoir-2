@@ -39,6 +39,9 @@ class BuildingViewSet(viewsets.ModelViewSet):
     serializer_class = BuildingSerializer
     permission_classes = [IsAuthenticated & SuperPermissionOrReadOnly]
 
+    class Meta:
+        ordering = ['nickname']
+
     # Get waste schedule for building
     @action(detail=True, methods=['get'])
     def waste(self, request, pk=None):

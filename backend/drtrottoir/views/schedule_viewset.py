@@ -16,6 +16,9 @@ class ScheduleViewSet(viewsets.ModelViewSet):
     serializer_class = ScheduleSerializer
     permission_classes = [IsAuthenticated & SuperPermissionOrReadOnly]
 
+    class Meta:
+        ordering = ['id']
+
     # Get visits for schedule
     @action(detail=True, methods=['get'])
     def visits(self, request, pk=None):
