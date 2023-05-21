@@ -363,7 +363,9 @@ export default function Templates() {
 
     return (
       <div
-        className={"p-2 rounded-lg space-y-1 cursor-pointer truncate"}
+        className={
+          "p-2 rounded-lg space-y-1 cursor-pointer text-ellipsis overflow-hidden"
+        }
         style={{ backgroundColor: background }}
         onClick={handleClick}
       >
