@@ -227,8 +227,8 @@ export default function LayoutDataAdd({ children, id }) {
       .catch((err) => alert(err));
   }, [router.query.type, dateRange]);
 
-  const hideNew = router.query.type === "personeel";
-  const hideBulk = router.query.type === "personeel";
+  const hideNew =
+    router.query.type === "personeel" || router.query.type === "syndici";
 
   return (
     <div className={"m-2 h-screen"}>
@@ -306,15 +306,6 @@ export default function LayoutDataAdd({ children, id }) {
               />
             </div>
             <div>
-              {!hideBulk && (
-                <SecondaryButton
-                  icon={faPlusCircle}
-                  className={"w-48"}
-                  text={"Sort"}
-                >
-                  Bulk Acties
-                </SecondaryButton>
-              )}
               {router.query.id &&
                 router.query.type !== "personeel" &&
                 router.query.type !== "syndici" && (
