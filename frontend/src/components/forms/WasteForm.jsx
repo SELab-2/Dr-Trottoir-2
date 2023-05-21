@@ -23,6 +23,7 @@ export default function WasteForm() {
 
   const [allTours, setAllTours] = useState([]);
   const [tourBuildings, setTourBuildings] = useState([]);
+  const [definedTours, setDefinedTours] = useState([]);
   const [waste, setWaste] = useState([]);
   const [changedWaste, setChangedWaste] = useState({});
   const [week, setWeek] = useState([
@@ -152,15 +153,40 @@ export default function WasteForm() {
     return moment(date).add(1, "days").toDate().toISOString().substring(0, 10);
   };
 
+  const loadPlannedTours = async (wasteSchedule, tours) => {
+    const toursWithEntries = [];
+    await Promise.all(
+      tours.map(async (tour) => {
+        const buildingsInTour = await TourService.getBuildingsFromTour(
+          urlToPK(tour.url)
+        );
+        // Check if a building of the tour has a waste entry
+        const hasWasteEntry = buildingsInTour.some((buildingInTour) =>
+          wasteSchedule.some(
+            (wasteEntry) => wasteEntry.building === buildingInTour.building
+          )
+        );
+
+        if (hasWasteEntry) {
+          toursWithEntries.push(tour.name);
+        }
+      })
+    );
+    console.log(toursWithEntries);
+    setDefinedTours(toursWithEntries);
+  };
+
   useEffect(() => {
     // Fetch initial data
     async function fetchData() {
       setLoading(true);
-      setAllTours(sortByName(await TourService.get()));
+      const tours = sortByName(await TourService.get());
+      setAllTours(tours);
       const wasteSchedule = await wasteService.getByDate(
         dateFormat(week[0]),
         dateFormat(week[1])
       );
+      await loadPlannedTours(wasteSchedule, tours);
       setWaste(wasteSchedule);
     }
 
@@ -187,6 +213,7 @@ export default function WasteForm() {
       dateFormat(dateFrom),
       dateFormat(dateTo)
     );
+    await loadPlannedTours(wasteSchedule, allTours);
     setWaste(wasteSchedule);
     if (Object.keys(tourBuildings).length !== 0) {
       setTourBuildings((prevTourBuildings) => {
@@ -289,6 +316,7 @@ export default function WasteForm() {
               )
               .map((tour) => tour.name)}
             optionsValues={allTours}
+            values={definedTours}
             onClick={changeTours}
             buttonClassName={"border-light-h-2 bg-light-bg-2"}
           >

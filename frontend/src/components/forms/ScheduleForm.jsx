@@ -61,7 +61,11 @@ export default function ScheduleForm({ id }) {
     async function fetchData() {
       setLoading(true);
       const students = await userService.get();
-      setAllStudents(students.filter((s) => s.active && !s.removed));
+      setAllStudents(
+        students.filter(
+          (s) => s.active && !s.removed && s.role !== 4 && s.role !== 1
+        )
+      );
       setAllTours(await TourService.get());
       if (id) {
         const schedule = await scheduleService.getById(id);
