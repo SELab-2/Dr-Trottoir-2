@@ -32,7 +32,7 @@ class VisitViewSet(viewsets.ModelViewSet):
     queryset = Visit.objects.all()
     serializer_class = VisitSerializer
     permission_classes = [IsAuthenticated & AnyonePostSuperEditPermission]
-    
+
     class Meta:
         ordering = ['id']
 
