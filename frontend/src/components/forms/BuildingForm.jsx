@@ -9,12 +9,14 @@ import UserService from "@/services/user.service";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import RegionService from "@/services/region.service";
+import { urlToPK } from "@/utils/urlToPK";
 
 export default function BuildingForm({ id }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   // DATA ////////////////////////////////////////
+  const [url, setUrl] = useState({});
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [allOwners, setAllOwners] = useState([]);
@@ -54,6 +56,12 @@ export default function BuildingForm({ id }) {
         await BuildingService.post(data);
       }
 
+      if (owner !== "") {
+        await BuildingService.putOwnersByUrl(url, [urlToPK(owner)]);
+      } else {
+        await BuildingService.deleteOwnersByUrl(url);
+      }
+
       await router.reload();
     } catch (e) {
       alert(JSON.stringify(e.response.data));
@@ -75,6 +83,7 @@ export default function BuildingForm({ id }) {
       setLoading(true);
       if (id) {
         const data = await BuildingService.getById(id);
+        setUrl(data.url);
         setName(data.nickname);
         setDescription(data.description);
         setAddress1(data.address_line_1);
@@ -82,6 +91,7 @@ export default function BuildingForm({ id }) {
         setCountry(data.country);
         setCurrentManual(data.manual);
         setRegion(data.region);
+        setOwner(data.owners[0] ? data.owners[0].url : "");
       }
       setAllRegions(await RegionService.get());
       setAllOwners(await UserService.get({ roles: [4] }));
@@ -128,6 +138,7 @@ export default function BuildingForm({ id }) {
       <SelectForm
         id={"owner"}
         label={"Eigenaar"}
+        value={owner}
         onChange={(e) => setOwner(e.target.value)}
         required
       >
