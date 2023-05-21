@@ -17,7 +17,6 @@ import tourService from "@/services/tour.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
 import CustomProgressBar from "@/components/ProgressBar";
 import buildingService from "@/services/building.service";
-import visit_finished from "@/utils/visit_finished";
 import ColoredTag from "@/components/Tag";
 import { COLOR_BAD_1, COLOR_DONE_1 } from "@/utils/colors";
 import WasteService from "@/services/waste.service";
@@ -30,6 +29,7 @@ import { urlToPK } from "@/utils/urlToPK";
 import Image from "next/image";
 import Cell from "@/components/table/Cell";
 import WasteTag from "@/components/WasteTag";
+import { checkVisitPhotos } from "@/utils/helpers";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -89,8 +89,8 @@ export default function StudentPlanningPage() {
           const buildInTour = await BuildingInTourService.getEntryByUrl(
             visit["building_in_tour"]
           );
-          const photos = await visit_finished(visit.url);
-          if (photos.length > 0) {
+          const result = await checkVisitPhotos(visit.url);
+          if (result !== null) {
             const building = building_data.find(
               (entry) => entry["url"] === buildInTour["building"]
             );
