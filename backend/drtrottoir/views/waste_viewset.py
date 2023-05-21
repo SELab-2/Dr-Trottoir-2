@@ -65,7 +65,7 @@ class WasteViewSet(viewsets.ModelViewSet):
                     "Invalid date: date must be of format (YYYY-MM-DD)",
                     status=status.HTTP_400_BAD_REQUEST
                 )
-        
+
         # Start and End params
         try:
             # Adds date__gte field when start param is present and date__gte field when end param is present
