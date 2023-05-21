@@ -51,7 +51,7 @@ module.exports = {
         2: "#FFDCCC",
       },
       bad: {
-        1: "#cf222e",
+        1: "#CF222E",
         2: "#FFD4DF",
       },
       tags: {
@@ -61,19 +61,11 @@ module.exports = {
         5: "#fcccf0",
       },
       waste: {
-        paper: "#003088",
-        PMD: "#c8d7ff",
-        rest: "#282825",
-        glass: "#ffd500",
-        GFT: "#165e00",
-        other: "#000000",
-      },
-      waste: {
-        paper: "#003088",
-        PMD: "#c8d7ff",
-        rest: "#282825",
-        glass: "#ffd500",
-        GFT: "#165e00",
+        paper: "#FFDC01",
+        PMD: "#98CCFE",
+        rest: "#565444",
+        glass: "#FE6700",
+        GFT: "#76B828",
         other: "#000000",
       },
     },

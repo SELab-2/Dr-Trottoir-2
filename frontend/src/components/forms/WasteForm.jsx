@@ -14,6 +14,7 @@ import wasteService from "@/services/waste.service";
 import InputForm from "./forms-components/forms-input/InputForm";
 import Dropdown from "../Dropdown";
 import { faBicycle } from "@fortawesome/free-solid-svg-icons";
+import sortByName from "@/utils/sortByName";
 
 export default function WasteForm() {
   const [loading, setLoading] = useState(true);
@@ -155,8 +156,7 @@ export default function WasteForm() {
     // Fetch initial data
     async function fetchData() {
       setLoading(true);
-      setAllTours(await TourService.get());
-      console.log("endate: " + week[1]);
+      setAllTours(sortByName(await TourService.get()));
       const wasteSchedule = await wasteService.getByDate(
         dateFormat(week[0]),
         dateFormat(week[1])

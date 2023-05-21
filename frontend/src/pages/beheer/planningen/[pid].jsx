@@ -409,13 +409,11 @@ export default function AdminTourPage() {
                 icon={faLocationDot}
                 title={"Wegbeschrijving"}
               >
-                <div className={"w-full h-[84%] relative overflow-hidden"}>
+                <div className={"w-full h-[84%] overflow-hidden"}>
                   <MapView
                     route={buildings.map((building) => building[1])}
                     transportationMode={"bicycling"}
-                    className={
-                      "w-[150%] h-[200%] absolute top-[-50%] left-[-25%]"
-                    }
+                    className={"w-[100%] h-[100%]"}
                   />
                 </div>
               </SecondaryCard>

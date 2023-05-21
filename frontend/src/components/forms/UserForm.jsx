@@ -8,6 +8,7 @@ import SelectForm from "@/components/forms/forms-components/forms-input/SelectFo
 import UserService from "@/services/user.service";
 import userService from "@/services/user.service";
 import CustomButton from "@/components/button/Button";
+import sortByName from "@/utils/sortByName";
 
 /**
  *
@@ -90,7 +91,7 @@ export default function UserForm({ id }) {
         setActive(data.active);
         setRemoved(data.removed);
         setRole(data.role);
-        setAllRegions(await RegionService.get());
+        setAllRegions(sortByName(await RegionService.get(), "region_name"));
       }
     }
 
