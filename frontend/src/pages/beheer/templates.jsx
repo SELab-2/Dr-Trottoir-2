@@ -141,7 +141,7 @@ export default function Templates() {
       SearchParams.SearchOption in options
         ? options[SearchParams.SearchOption]
         : searchOptions;
-    const filterAllowAll = localSearchOptions.length === 0;
+    const filterAllowAnyMatch = localSearchOptions.length === 0;
     const localSortOption =
       SearchParams.SortOption in options
         ? options[SearchParams.SortOption]
@@ -151,20 +151,20 @@ export default function Templates() {
     localSearchResults = localSearchResults.filter((template) => {
       const search = localSearchString.current.value.toLowerCase();
       return (
-        filterAllowAll ||
-        (localSearchOptions.includes(EmailFields.Recipients) &&
+        ((filterAllowAnyMatch ||
+          localSearchOptions.includes(EmailFields.Recipients)) &&
           template["to"].toLowerCase().includes(search)) ||
-        filterAllowAll ||
-        (localSearchOptions.includes(EmailFields.Recipients) &&
+        ((filterAllowAnyMatch ||
+          localSearchOptions.includes(EmailFields.Recipients)) &&
           template["cc"].toLowerCase().includes(search)) ||
-        filterAllowAll ||
-        (localSearchOptions.includes(EmailFields.Recipients) &&
+        ((filterAllowAnyMatch ||
+          localSearchOptions.includes(EmailFields.Recipients)) &&
           template["bcc"].toLowerCase().includes(search)) ||
-        filterAllowAll ||
-        (localSearchOptions.includes(EmailFields.Subject) &&
+        ((filterAllowAnyMatch ||
+          localSearchOptions.includes(EmailFields.Subject)) &&
           template["subject"].toLowerCase().includes(search)) ||
-        filterAllowAll ||
-        (localSearchOptions.includes(EmailFields.Body) &&
+        ((filterAllowAnyMatch ||
+          localSearchOptions.includes(EmailFields.Body)) &&
           template["body"].toLowerCase().includes(search))
       );
     });
