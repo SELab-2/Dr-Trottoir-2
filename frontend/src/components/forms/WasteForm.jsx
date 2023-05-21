@@ -172,7 +172,6 @@ export default function WasteForm() {
         }
       })
     );
-    console.log(toursWithEntries);
     setDefinedTours(toursWithEntries);
   };
 
