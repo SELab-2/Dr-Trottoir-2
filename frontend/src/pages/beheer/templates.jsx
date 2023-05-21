@@ -99,7 +99,7 @@ export default function Templates() {
 
   const loadTemplates = async () => {
     const templates = await TemplateService.get();
-    const sorted = templates.sort((a, b) => (a["to"] > b["to"] ? 1 : -1));
+    const sorted = templates.sort((a, b) => (a["url"] > b["url"] ? 1 : -1));
     setTemplateList(templates);
     return templates;
   };
