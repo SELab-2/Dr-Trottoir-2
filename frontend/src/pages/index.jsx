@@ -47,8 +47,7 @@ export default function Login() {
     } else if (user.role === ROLES.STUDENT) {
       await router.push("/student/planning");
     } else if (user.role === ROLES.SYNDICUS) {
-      console.error("user not supported");
-      setError("Gebruiker is nog niet ondersteund.");
+      await router.push("/syndicus/gebouwen");
     }
 
     setIsLoading(false);
