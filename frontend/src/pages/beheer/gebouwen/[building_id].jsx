@@ -32,6 +32,7 @@ import { getMonday, getSunday } from "@/utils/helpers";
 import buildingService from "@/services/building.service";
 import regionService from "@/services/region.service";
 import PhotoPage from "@/components/PhotoPage";
+import SecondaryButton from "@/components/button/SecondaryButton";
 
 export default function BuildingDetail() {
   const router = useRouter();
@@ -311,7 +312,7 @@ export default function BuildingDetail() {
                       {buildingDetail.nickname}
                     </p>
                     <div className={"flex space-x-2"}>
-                      <PrimaryButton
+                      <SecondaryButton
                         icon={faPenToSquare}
                         className={"h-fit"}
                         onClick={() =>
@@ -322,7 +323,7 @@ export default function BuildingDetail() {
                         }
                       >
                         Bewerk
-                      </PrimaryButton>
+                      </SecondaryButton>
                     </div>
                   </div>
                 </div>

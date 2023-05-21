@@ -17,7 +17,6 @@ import tourService from "@/services/tour.service";
 import BuildingInTourService from "@/services/buildingInTour.service";
 import CustomProgressBar from "@/components/ProgressBar";
 import buildingService from "@/services/building.service";
-import visit_finished from "@/utils/visit_finished";
 import ColoredTag from "@/components/Tag";
 import { COLOR_BAD_1, COLOR_DONE_1 } from "@/utils/colors";
 import WasteService from "@/services/waste.service";
@@ -30,6 +29,7 @@ import { urlToPK } from "@/utils/urlToPK";
 import Image from "next/image";
 import Cell from "@/components/table/Cell";
 import WasteTag from "@/components/WasteTag";
+import { checkVisitPhotos } from "@/utils/helpers";
 
 export default function StudentPlanningPage() {
   const [name, setName] = useState("");
@@ -37,7 +37,6 @@ export default function StudentPlanningPage() {
   const [fraction, setFraction] = useState(0);
   const [names, setNames] = useState([]);
   const [schedules, setSchedules] = useState([]);
-  const [dates, setDates] = useState([]);
   const router = useRouter();
 
   /**
@@ -90,8 +89,8 @@ export default function StudentPlanningPage() {
           const buildInTour = await BuildingInTourService.getEntryByUrl(
             visit["building_in_tour"]
           );
-          const photos = await visit_finished(visit.url);
-          if (photos.length > 0) {
+          const result = await checkVisitPhotos(visit.url);
+          if (result !== null) {
             const building = building_data.find(
               (entry) => entry["url"] === buildInTour["building"]
             );
@@ -114,13 +113,6 @@ export default function StudentPlanningPage() {
       const date = new Date();
       const dateFrom = moment(date).startOf("isoWeek").toDate();
       const dateTo = moment(date).endOf("isoWeek").toDate();
-      const dates = [];
-      let currentDate = new Date(dateFrom);
-      while (currentDate <= dateTo) {
-        dates.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-      setDates(dates);
       // Get every schedule assigned to the current user in this week
       const schedules = await scheduleService.get({
         students: [user.url],
