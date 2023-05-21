@@ -15,6 +15,7 @@ export default function BuildingForm({ id }) {
   const router = useRouter();
 
   // DATA ////////////////////////////////////////
+  const [url, setUrl] = useState({});
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [allOwners, setAllOwners] = useState([]);
@@ -40,7 +41,6 @@ export default function BuildingForm({ id }) {
       address_line_2: address2,
       country: country,
       region: region,
-      owner: owner,
     };
 
     if (manual !== undefined) {
@@ -53,8 +53,14 @@ export default function BuildingForm({ id }) {
       } else {
         await BuildingService.post(data);
       }
+      console.log(owner);
+      if (owner !== "") {
+        console.log(url);
+        const res = await UserService.patchByUrl(owner, { buildings: [url] });
+        console.log(res);
+      }
 
-      await router.reload();
+      // await router.reload();
     } catch (e) {
       alert(JSON.stringify(e.response.data));
     }
@@ -75,6 +81,7 @@ export default function BuildingForm({ id }) {
       setLoading(true);
       if (id) {
         const data = await BuildingService.getById(id);
+        setUrl(data.url);
         setName(data.nickname);
         setDescription(data.description);
         setAddress1(data.address_line_1);
@@ -82,6 +89,7 @@ export default function BuildingForm({ id }) {
         setCountry(data.country);
         setCurrentManual(data.manual);
         setRegion(data.region);
+        setOwner(data.owners[0] ? data.owners[0].url : "");
       }
       setAllRegions(await RegionService.get());
       setAllOwners(await UserService.get({ roles: [4] }));
@@ -128,6 +136,7 @@ export default function BuildingForm({ id }) {
       <SelectForm
         id={"owner"}
         label={"Eigenaar"}
+        value={owner}
         onChange={(e) => setOwner(e.target.value)}
         required
       >
