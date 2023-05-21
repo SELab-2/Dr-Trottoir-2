@@ -257,7 +257,6 @@ class BuildingViewSet(viewsets.ModelViewSet):
                 else:
                     return Response("Invalid owner PK given", status=status.HTTP_400_BAD_REQUEST)
 
-
             building.save()
 
             return Response(
