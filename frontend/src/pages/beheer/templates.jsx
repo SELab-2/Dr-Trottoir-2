@@ -99,6 +99,7 @@ export default function Templates() {
 
   const loadTemplates = async () => {
     const templates = await TemplateService.get();
+    const sorted = templates.sort((a, b) => (a["to"] > b["to"] ? 1 : -1));
     setTemplateList(templates);
     return templates;
   };
@@ -362,7 +363,7 @@ export default function Templates() {
 
     return (
       <div
-        className={"p-2 rounded-lg space-y-1 cursor-pointer"}
+        className={"p-2 rounded-lg space-y-1 cursor-pointer truncate"}
         style={{ backgroundColor: background }}
         onClick={handleClick}
       >
@@ -463,7 +464,8 @@ export default function Templates() {
         <title>Dr. Trottoir: Mail-templates</title>
       </Head>
 
-      <div className={"h-4/5"}>
+      <div>
+        {/* filter bar */}
         <PrimaryCard className={"m-2"}>
           <div className={"flex justify-between"}>
             <div className={"flex"}>
@@ -511,7 +513,9 @@ export default function Templates() {
             </PrimaryButton>
           </div>
         </PrimaryCard>
-        <div className={"flex"}>
+        {/* rest van de page */}
+        <div className={"flex h-fit h-5/6"}>
+          {/* detail info */}
           <PrimaryCard className={"m-2 basis-3/4"}>
             <p>Ontvangers</p>
             <CustomInputField
@@ -565,9 +569,10 @@ export default function Templates() {
               <DataButtons />
             </div>
           </PrimaryCard>
+          {/* selectie */}
           <SelectionList
             title={"Templates"}
-            className={"m-2 basis-1/4 max-h-4/5"}
+            className={"m-2 basis-1/4 h-ull"}
             elements={searchResults}
             selectedStart={templateURL}
             callback={(url) => {
