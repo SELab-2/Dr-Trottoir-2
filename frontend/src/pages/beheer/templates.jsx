@@ -77,12 +77,13 @@ export default function Templates() {
 
   const router = useRouter();
 
+  /********* Swapping templates **************/
+
   const updateTemplateSelection = async (url) => {
     if (!url) {
       loadPage();
       return;
     }
-
     setTemplateURL(url);
     const template = await TemplateService.getEntryByUrl(url);
     fieldTo.current.value = template["to"] !== undefined ? template["to"] : "";
@@ -110,51 +111,22 @@ export default function Templates() {
     }
   };
 
-  const onRouteChangeStart = useCallback(
-    (route) => {
-      if (!protectLeave) return;
+  const newTemplate = async () => {
+    setTemplateURL("");
+    fieldTo.current.value = "";
+    fieldCc.current.value = "";
+    fieldBcc.current.value = "";
+    fieldSubject.current.value = "";
+    fieldBody.current.value = "";
 
-      protectLeaveOrigin.cause = LeaveOrigins.Route;
-
-      setAttemptLeaveModalOpen(true);
-      setAttemptedRoute(route);
-      throw "cancelRouteChange";
-    },
-    [protectLeave]
-  );
+    setSaveState(SaveState.New);
+  };
 
   useEffect(() => {
     loadPage();
   }, []);
 
-  useEffect(() => {
-    router.events.on("routeChangeStart", onRouteChangeStart);
-    return () => router.events.off("routeChangeStart", onRouteChangeStart);
-  }, [onRouteChangeStart]);
-
-  const mailtoURL = () => {
-    let url = "mailto:";
-    let putQuestionMark = false;
-
-    const addOption = (optionRef, optionName) => {
-      const value = optionRef.current.value;
-      if (value !== undefined && value !== "") {
-        if (putQuestionMark) url += "&";
-        else {
-          url += "?";
-          putQuestionMark = true;
-        }
-        url += optionName + "=" + encodeURIComponent(value);
-      }
-    };
-
-    if (fieldTo.current.value !== undefined) url += fieldTo.current.value;
-    addOption(fieldCc, "cc");
-    addOption(fieldBcc, "bcc");
-    addOption(fieldSubject, "subject");
-    addOption(fieldBody, "body");
-    return url;
-  };
+  /********* Searching/filtering **************/
 
   const performSearch = async (options = {}) => {
     let localSearchResults =
@@ -236,6 +208,34 @@ export default function Templates() {
     performSearch({ templates: templates });
   };
 
+  /********* Email button **************/
+
+  const mailtoURL = () => {
+    let url = "mailto:";
+    let putQuestionMark = false;
+
+    const addOption = (optionRef, optionName) => {
+      const value = optionRef.current.value;
+      if (value !== undefined && value !== "") {
+        if (putQuestionMark) url += "&";
+        else {
+          url += "?";
+          putQuestionMark = true;
+        }
+        url += optionName + "=" + encodeURIComponent(value);
+      }
+    };
+
+    if (fieldTo.current.value !== undefined) url += fieldTo.current.value;
+    addOption(fieldCc, "cc");
+    addOption(fieldBcc, "bcc");
+    addOption(fieldSubject, "subject");
+    addOption(fieldBody, "body");
+    return url;
+  };
+
+  /********* Requests **************/
+
   const requestData = () => {
     return {
       to: fieldTo.current.value,
@@ -269,49 +269,34 @@ export default function Templates() {
     setProtectLeave(false);
   };
 
+  /********* Powering modal that asks to confirm when you leave **************/
+
+  const onRouteChangeStart = useCallback(
+    (route) => {
+      if (!protectLeave) return;
+
+      protectLeaveOrigin.cause = LeaveOrigins.Route;
+
+      setAttemptLeaveModalOpen(true);
+      setAttemptedRoute(route);
+      throw "cancelRouteChange";
+    },
+    [protectLeave]
+  );
+
+  useEffect(() => {
+    router.events.on("routeChangeStart", onRouteChangeStart);
+    return () => router.events.off("routeChangeStart", onRouteChangeStart);
+  }, [onRouteChangeStart]);
+
   const saveNewTemplateModal = async () => {
     await TemplateService.postEntry(requestData());
     setSaveState(SaveState.Clean);
   };
+
   const updateTemplateModal = async () => {
     await TemplateService.patchEntryByUrl(templateURL, requestData());
     setSaveState(SaveState.Clean);
-  };
-
-  const newTemplate = async () => {
-    setTemplateURL("");
-    fieldTo.current.value = "";
-    fieldCc.current.value = "";
-    fieldBcc.current.value = "";
-    fieldSubject.current.value = "";
-    fieldBody.current.value = "";
-
-    setSaveState(SaveState.New);
-  };
-
-  const TemplateSelectionItem = ({
-    data,
-    callback,
-    setSelected,
-    background,
-  }) => {
-    const url = data["url"];
-
-    function handleClick() {
-      setSelected(url);
-      callback(url);
-    }
-
-    return (
-      <div
-        className={"p-2 rounded-lg space-y-1 cursor-pointer"}
-        style={{ backgroundColor: background }}
-        onClick={handleClick}
-      >
-        <h1>{data["to"]}</h1>
-        <p className={"font-semibold"}>{data["subject"]}</p>
-      </div>
-    );
   };
 
   const leaveModalOnCancel = () => {
@@ -363,6 +348,35 @@ export default function Templates() {
     setProtectLeave(false);
   };
 
+  /********* Element to put in selectionlist **************/
+
+  const TemplateSelectionItem = ({
+    data,
+    callback,
+    setSelected,
+    background,
+  }) => {
+    const url = data["url"];
+
+    function handleClick() {
+      setSelected(url);
+      callback(url);
+    }
+
+    return (
+      <div
+        className={"p-2 rounded-lg space-y-1 cursor-pointer"}
+        style={{ backgroundColor: background }}
+        onClick={handleClick}
+      >
+        <h1>{data["to"]}</h1>
+        <p className={"font-semibold"}>{data["subject"]}</p>
+      </div>
+    );
+  };
+
+  
+  /********* Powering UI **************/
   const handleTextChange = () => {
     if (saveState === SaveState.Clean) setSaveState(SaveState.Dirty);
     setProtectLeave(true);
@@ -444,6 +458,8 @@ export default function Templates() {
     );
   };
 
+  
+  /********* Page **************/
   return (
     <>
       <Head>

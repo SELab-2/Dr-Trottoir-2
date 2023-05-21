@@ -7,7 +7,7 @@ from drtrottoir.serializers import TemplateSerializer
 
 class TemplateViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows regions to be viewed or edited.
+    API endpoint that allows templates to be viewed or edited.
     """
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
