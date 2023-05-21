@@ -266,7 +266,7 @@ export default function Templates() {
     setAttemptDelete(false);
     await TemplateService.deleteEntryByUrl(templateURL);
     await reloadSelection();
-    setSaveState(SaveState.Clean);
+    await newTemplate();
     setProtectLeave(false);
   };
 
