@@ -2,7 +2,8 @@ import {
   faBuilding,
   faCalendarWeek,
   faCircle,
-  faGraduationCap, faPeopleRoof,
+  faGraduationCap,
+  faPeopleRoof,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import MobileNavbarButton from "./MobileNavbarButton";
