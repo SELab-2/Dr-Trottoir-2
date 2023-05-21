@@ -22,6 +22,7 @@ import CustomButton from "@/components/button/Button";
 import SelectableTable from "@/components/table/SelectableTable";
 import Layout from "@/components/Layout";
 import { urlToPK } from "@/utils/urlToPK";
+import { useRouter } from "next/router";
 
 const initialContextMenu = {
   show: false,
@@ -39,10 +40,12 @@ export default function Employees() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const searchRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     const allUsers = async () => {
-      const response = await userService.get();
+      let response = await userService.get();
+      response = response.filter((user) => user.active && !user.removed);
       let user = [];
       for (let i in response) {
         let entry = response[i];
@@ -116,7 +119,9 @@ export default function Employees() {
   };
 
   const editUser = () => {
-    // To be implemented
+    const userIndex = selectedRows[0];
+    const userId = users[userIndex]["pk"];
+    router.push(`/beheer/data_toevoegen/personeel/${userId}`);
   };
 
   const deleteUsers = () => {
@@ -156,7 +161,6 @@ export default function Employees() {
   const multipleRowOptions = ["Verwijder", "Mail"];
 
   const changeSortSelected = (selected) => {
-    console.log(selected);
     setUsers(
       users.sort(function (a, b) {
         const field = stringToField[selected[0]];
@@ -254,11 +258,6 @@ export default function Employees() {
                 reference={searchRef}
                 callback={() => applySearch(filterSelected)}
               ></CustomInputField>
-            </div>
-            <div>
-              <PrimaryButton icon={faCirclePlus}>
-                <span className="mx-5-3">Nieuw</span>
-              </PrimaryButton>
             </div>
           </div>
         </PrimaryCard>
