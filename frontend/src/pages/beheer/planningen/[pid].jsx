@@ -40,6 +40,7 @@ import InputField from "@/components/input-fields/InputField";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import { urlToPK } from "@/utils/urlToPK";
 import visit_finished from "@/utils/visit_finished";
+import { checkVisitPhotos } from "@/utils/helpers";
 
 /**
  * Return small tour component to place in the selection list.
@@ -110,38 +111,7 @@ export default function AdminTourPage() {
     }
     // Perform filtering based on completeness
     scheduleEntries = filterSchedules(scheduleEntries, filtering);
-    // Renders the table rows
     setFilteredSchedules(scheduleEntries);
-    // setSchedule(
-    //   scheduleEntries.map((entry) => [
-    //     entry.date,
-    //     entry.tour,
-    //     entry.student,
-    //     <div key={entry.url} className={"flex flex-row space-x-4"}>
-    //       <div className={"flex-grow"}>
-    //         <CustomProgressBar
-    //           fraction={entry.visits / entry.buildings}
-    //           is_wheel={false}
-    //         />
-    //       </div>
-    //       <p>
-    //         {entry.visits} / {entry.buildings}
-    //       </p>
-    //     </div>,
-    //     entry.comments > 0 && (
-    //       <ColoredTag className={"text-primary-1 bg-primary-2"}>
-    //         {entry.comments}
-    //       </ColoredTag>
-    //     ),
-    //     <Link
-    //       key={entry.url}
-    //       href={`/beheer/planningen/${urlToPK(entry.url)}`}
-    //       className={"bg-primary-2 border-2 border-light-h-2 rounded-lg p-1"}
-    //     >
-    //       Details
-    //     </Link>,
-    //   ])
-    // );
   };
 
   const performSort = (sort) => {
@@ -312,11 +282,9 @@ export default function AdminTourPage() {
           visit["building_in_tour"]
         );
         time[buildInTour["building"]] = "TBA";
-        const departurePhotos = await visit_finished(visit.url);
-        if (departurePhotos.length > 0) {
-          const diff =
-            new Date(departurePhotos[0]["created_at"]) -
-            new Date(visit["arrival"]);
+        const LastTime = await checkVisitPhotos(visit.url);
+        if (LastTime !== null) {
+          const diff = LastTime - new Date(visit["arrival"]);
           let seconds = Math.round(diff / 1000);
           const minutes = Math.floor(seconds / 60);
           seconds -= minutes * 60;
