@@ -3,7 +3,6 @@ import {
   faBriefcase,
   faEnvelope,
   faLocationDot,
-  faTrash,
   faPenToSquare,
   faFilter,
   faSort,
@@ -84,11 +83,6 @@ export default function AdminTourPage() {
     Ronde: "name",
     Datum: "date",
   };
-
-  async function deleteSelf() {
-    await ScheduleService.deleteByUrl(url);
-    await router.push("/beheer/dashboard");
-  }
 
   const performSearch = (scheduleEntries, sortField, filtering) => {
     // Filters on input field
@@ -413,13 +407,6 @@ export default function AdminTourPage() {
                 >
                   Bewerk
                 </SecondaryButton>
-                <SecondaryButton
-                  icon={faTrash}
-                  className={"h-fit"}
-                  onClick={deleteSelf}
-                >
-                  Verwijder
-                </SecondaryButton>
               </div>
             </div>
             <div className={"flex space-x-2 my-4"}>
@@ -570,14 +557,16 @@ export default function AdminTourPage() {
         </PrimaryCard>
 
         <div className={"space-y-2 basis-1/4 m-2 flex flex-col"}>
-          <CustomWeekPicker
-            className={"w-full"}
-            startDate={startDate}
-            endDate={endDate}
-            onChange={async (beginDate, endDate) =>
-              await setNewSchedules(beginDate, endDate)
-            }
-          />
+          <PrimaryCard title={"Selecteer week"} className={"mb-3"}>
+            <CustomWeekPicker
+              className={"w-full"}
+              startDate={startDate}
+              endDate={endDate}
+              onChange={async (beginDate, endDate) =>
+                await setNewSchedules(beginDate, endDate)
+              }
+            />
+          </PrimaryCard>
           <SelectionList
             Component={({ url, background, setSelected, callback, data }) => (
               <SmallTour key={url} background={background} data={data} />
