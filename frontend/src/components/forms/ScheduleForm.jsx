@@ -102,10 +102,9 @@ export default function ScheduleForm({ id }) {
 
   const fetchWaste = async (startDate, endDate, buildings) => {
     const wasteSchedule = {};
-    const wasteEntries = await WasteService.get({
-      startDate: startDate,
-      endDate: endDate,
-    });
+    const wasteEntries = await WasteService.getByDate(
+      dateFormat(startDate), dateFormat(endDate)
+    );
     buildings.map((building) => {
       const buildingUrl = building.building.url;
       wasteSchedule[building.building.url] = wasteEntries.filter(
@@ -124,6 +123,10 @@ export default function ScheduleForm({ id }) {
       setLoadSchedule(false);
     }
     setSelectedDate(newDate);
+  };
+
+  const dateFormat = (date) => {
+    return moment(date).add(1, "days").toDate().toISOString().substring(0, 10);
   };
 
   if (loading) {
