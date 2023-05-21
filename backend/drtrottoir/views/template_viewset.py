@@ -12,3 +12,6 @@ class TemplateViewSet(viewsets.ModelViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
     permission_classes = [IsAuthenticated & SuperPermission]
+
+    class Meta:
+        ordering = ['id']
