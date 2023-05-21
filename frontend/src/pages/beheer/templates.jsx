@@ -481,6 +481,7 @@ export default function Templates() {
                   EmailFields.Body,
                 ]}
                 onClick={updateSearchCriteria}
+                multi={true}
               >
                 Zoek op
               </Dropdown>
