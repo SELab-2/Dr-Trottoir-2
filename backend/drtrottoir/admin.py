@@ -13,6 +13,7 @@ from .models import (
     Schedule,
     BuildingInTour,
     Waste,
+    Template,
     VisitComment,
     ScheduleComment
 )
@@ -69,6 +70,7 @@ models = [
     Schedule,
     BuildingInTour,
     Waste,
+    Template,
     VisitComment,
     ScheduleComment
 ]

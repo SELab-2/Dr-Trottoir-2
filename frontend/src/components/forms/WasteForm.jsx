@@ -96,10 +96,10 @@ export default function WasteForm() {
         const sunday = moment(week[1])
           .add(weekCopy * i, "weeks")
           .toDate();
-        let wasteEntries = await wasteService.get({
-          startDate: monday,
-          endDate: sunday,
-        });
+        let wasteEntries = await wasteService.getByDate(
+          dateFormat(monday),
+          dateFormat(sunday)
+        );
         wasteEntries = wasteEntries.filter((w) =>
           buildingUrls.includes(w.building)
         );
@@ -148,15 +148,19 @@ export default function WasteForm() {
     setLoadSchedule(false);
   };
 
+  const dateFormat = (date) => {
+    return moment(date).add(1, "days").toDate().toISOString().substring(0, 10);
+  };
+
   useEffect(() => {
     // Fetch initial data
     async function fetchData() {
       setLoading(true);
       setAllTours(sortByName(await TourService.get()));
-      const wasteSchedule = await wasteService.get({
-        startDate: week[0],
-        endDate: week[1],
-      });
+      const wasteSchedule = await wasteService.getByDate(
+        dateFormat(week[0]),
+        dateFormat(week[1])
+      );
       setWaste(wasteSchedule);
     }
 
@@ -179,10 +183,10 @@ export default function WasteForm() {
     setWeek([dateFrom, dateTo]);
     setLoadSchedule(true);
     // Fetch the waste schedule for the selected week
-    const wasteSchedule = await wasteService.get({
-      startDate: dateFrom,
-      endDate: dateTo,
-    });
+    const wasteSchedule = await wasteService.getByDate(
+      dateFormat(dateFrom),
+      dateFormat(dateTo)
+    );
     setWaste(wasteSchedule);
     if (Object.keys(tourBuildings).length !== 0) {
       setTourBuildings((prevTourBuildings) => {

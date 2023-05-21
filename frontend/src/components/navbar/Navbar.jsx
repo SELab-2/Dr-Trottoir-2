@@ -79,7 +79,10 @@ export default function Navbar() {
         <LinkList
           name={"Communicatie"}
           categories={{
-            Templates: { icon: faEnvelopeOpenText, link: "#" },
+            "Mail-templates": {
+              icon: faEnvelopeOpenText,
+              link: "/beheer/templates",
+            },
           }}
           className={"text-dark-text bg-dark-bg-1 mt-6 mb-6"}
           linkClassName={"hover: hover:bg-dark-bg-2"}
