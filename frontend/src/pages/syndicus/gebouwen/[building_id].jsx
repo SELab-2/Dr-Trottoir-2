@@ -20,6 +20,7 @@ import {
   faFileText,
   faPenToSquare,
   faPencil,
+  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Head from "next/head";
@@ -32,8 +33,9 @@ import { getMonday, getSunday } from "@/utils/helpers";
 import buildingService from "@/services/building.service";
 import regionService from "@/services/region.service";
 import PhotoPage from "@/components/PhotoPage";
-import { getSession } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 import LayoutSyndici from "@/components/LayoutSyndici";
+import SecondaryButton from "@/components/button/SecondaryButton";
 
 export default function SyndicyBuildings() {
   const router = useRouter();
@@ -66,7 +68,7 @@ export default function SyndicyBuildings() {
   };
 
   const initialisePage = async () => {
-    const user = await getSession().user;
+    const user = (await getSession()).user;
     const buildings = await BuildingService.getOwnedByMe(user);
     setBuildingList(buildings);
     setSearchResults(buildings);
@@ -272,6 +274,15 @@ export default function SyndicyBuildings() {
                 actionCallback={() => filter()}
               />
             </div>
+            <SecondaryButton
+              onClick={async () => {
+                await signOut({ redirect: false });
+                await router.push("/");
+              }}
+              icon={faRightFromBracket}
+            >
+              Uitloggen
+            </SecondaryButton>
           </div>
         </PrimaryCard>
         <div className={"flex"}>

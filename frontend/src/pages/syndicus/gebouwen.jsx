@@ -7,6 +7,7 @@ import {
   faBuilding,
   faFilter,
   faPlusCircle,
+  faRightFromBracket,
   faSearch,
   faSort,
 } from "@fortawesome/free-solid-svg-icons";
@@ -17,8 +18,9 @@ import Dropdown from "@/components/Dropdown";
 import CustomInputField from "@/components/input-fields/InputField";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import CustomWeekPicker from "@/components/input-fields/CustomWeekPicker";
-import { getSession, useSession } from "next-auth/react";
+import { getSession, signOut, useSession } from "next-auth/react";
 import LayoutSyndici from "@/components/LayoutSyndici";
+import SecondaryButton from "@/components/button/SecondaryButton";
 
 export default function SyndicyBuildings() {
   const router = useRouter();
@@ -34,6 +36,7 @@ export default function SyndicyBuildings() {
     const redirectToBuilding = async () => {
       const user = (await getSession()).user;
       const buildings = await buildingService.getOwnedByMe(user);
+      console.log("owned by me", buildings);
       if (buildings.length > 0)
         router.push(`/syndicus/gebouwen/${urlToPK(buildings[0]["url"])}`);
       else setLoadState(states.empty);
@@ -69,9 +72,15 @@ export default function SyndicyBuildings() {
               </Dropdown>
               <CustomInputField classNameDiv={"w-80"} icon={faSearch} />
             </div>
-            <PrimaryButton icon={faPlusCircle} text={"Sort"}>
-              Nieuw
-            </PrimaryButton>
+            <SecondaryButton
+              onClick={async () => {
+                await signOut({ redirect: false });
+                await router.push("/");
+              }}
+              icon={faRightFromBracket}
+            >
+              Uitloggen
+            </SecondaryButton>
           </div>
         </PrimaryCard>
         <div className="flex">
