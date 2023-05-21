@@ -27,10 +27,10 @@ function buildUrl(address, route, transportationMode) {
       }
     }
     params += "&destination=" + encodeURIComponent(route[route.length - 1]);
-  }
 
-  if (transportationMode !== undefined) {
-    params += "&mode=" + transportationMode;
+    if (transportationMode !== undefined) {
+      params += "&mode=" + transportationMode;
+    }
   }
 
   params += "&zoom=" + 13;
@@ -39,7 +39,7 @@ function buildUrl(address, route, transportationMode) {
     "https://www.google.com/maps/embed/v1/" +
     map_type +
     "?key=" +
-    process.env.NEXT_PUBLIC_GOOGLE_API_KEY +
+    process.env.NEXT_PUBLIC_GOOGLE_API +
     params
   );
 }
@@ -70,12 +70,14 @@ export default function MapView({
         allowFullScreen
         src={
           "https://www.google.com/maps/embed/v1/view?key=" +
-          process.env.NEXT_PUBLIC_GOOGLE_API_KEY +
+          process.env.NEXT_PUBLIC_GOOGLE_API +
           "&center=50.5508573,4.3932513&zoom=8.75"
         }
       />
     );
   }
+
+  let url = buildUrl(address, route, transportationMode);
 
   return (
     <iframe
@@ -83,7 +85,8 @@ export default function MapView({
       style={{ border: 0 }}
       loading="lazy"
       allowFullScreen
-      src={buildUrl(address, route, transportationMode)}
+      key={url}
+      src={url}
     />
   );
 }

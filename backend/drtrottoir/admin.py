@@ -12,7 +12,10 @@ from .models import (
     Tour,
     Schedule,
     BuildingInTour,
-    Waste
+    Waste,
+    Template,
+    VisitComment,
+    ScheduleComment
 )
 
 
@@ -27,8 +30,17 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'role')
     list_filter = ('role',)
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': (
+            'email',
+            'password',
+            'first_name',
+            'last_name',
+            'phone',
+            'is_active',
+            'deleted'
+        )}),
         ('Permissions', {'fields': ('role',)}),
+        ('Region', {'fields': ('region',)})
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -49,5 +61,17 @@ admin.site.register(CustomUser, UserAdmin)
 # unregister the Group model from admin.
 admin.site.unregister(Group)
 # Register other moments
-models = [Region, Building, Photo, Visit, Tour, Schedule, BuildingInTour, Waste]
+models = [
+    Region,
+    Building,
+    Photo,
+    Visit,
+    Tour,
+    Schedule,
+    BuildingInTour,
+    Waste,
+    Template,
+    VisitComment,
+    ScheduleComment
+]
 admin.site.register(models)

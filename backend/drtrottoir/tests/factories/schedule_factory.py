@@ -6,10 +6,9 @@ from .tour_factory import TourFactory
 
 
 class ScheduleFactory(DjangoModelFactory):
-    date = date = factory.Faker("date")
+    date = factory.Faker("date")
     student = factory.SubFactory(StudentUserFactory)
     tour = factory.SubFactory(TourFactory)
-    comment = factory.Faker("sentence")
 
     class Meta:
         model = Schedule

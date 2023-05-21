@@ -11,6 +11,7 @@ module.exports = {
         h: {
           1: "#000000",
           2: "#B2B2B2",
+          3: "#828282",
         },
         text: "#4D4D4D",
         border: "#E6E6E6",
@@ -30,6 +31,7 @@ module.exports = {
       accent: {
         1: "#E6E600",
         2: "#585936",
+        3: "#c7c700",
       },
       primary: {
         1: "#377DFF",
@@ -56,10 +58,19 @@ module.exports = {
         1: "#FFEAB6",
         2: "#FFEAB6",
         3: "#E2D5F7",
-        5: "#FCCCF0",
+        5: "#fcccf0",
+      },
+      waste: {
+        paper: "#FFDC01",
+        PMD: "#98CCFE",
+        rest: "#565444",
+        glass: "#FE6700",
+        GFT: "#76B828",
+        other: "#000000",
       },
     },
     fontSize: {
+      xs: "10px",
       base: "14px",
       lg: "21px",
       xl: "27px",

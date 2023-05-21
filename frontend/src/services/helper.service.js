@@ -5,21 +5,27 @@
  * @returns {Promise<*>}
  */
 import ApiInstance from "@/services/ApiInstance";
+import Error from "next/error";
+import { formDataHeader, formUrlEncoded } from "@/utils/contentTypeHeader";
 
 class HelperService {
   async getResponseByUrl(url) {
-    return await ApiInstance.getApi().get(url);
+    return await ApiInstance.get(url);
 
     // Error will be catched in the component if needed
     /*
     let response = null;
     try {
-      response = await ApiInstance.getApi().get(url);
+      response = await ApiInstance.get(url);
     } catch (e) {
       response = e;
       alert(JSON.stringify(e.message, null, 2));
     }
     return response;*/
+  }
+
+  async getPostResponse(url, data) {
+    return await ApiInstance.post(url, data, { headers: formUrlEncoded });
   }
 
   /**
@@ -47,14 +53,29 @@ class HelperService {
     return all;
   }
 
-  async getModelEntryByUrl(url, model) {
-    const regex = new RegExp(`\/api\/${model.toLowerCase()}\/[0-9]+\/?$`);
+  isCorrectModelUrl(url, model) {
+    const regex = new RegExp(`\/api\/${model.toLowerCase()}\/[0-9]+\/?`);
     if (regex.test(url)) {
-      const response = await this.getResponseByUrl(url);
-      return response.status === 200 ? response.data : {};
+      return true;
     } else {
       throw new Error(`${url} is not an entry of ${model}.`);
     }
+  }
+
+  async getModelEntryByUrl(url, model) {
+    if (this.isCorrectModelUrl(url, model)) {
+      const response = await this.getResponseByUrl(url);
+      return response.status === 200 ? response.data : {};
+    }
+  }
+
+  createFormData(data) {
+    const formData = new FormData();
+    for (const [key, value] of Object.entries(data)) {
+      formData.append(key, value);
+    }
+
+    return formData;
   }
 }
 

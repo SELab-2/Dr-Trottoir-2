@@ -1,8 +1,16 @@
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import SecondaryButton from "@/components/button/SecondaryButton";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/router";
+import {
+  faGraduationCap,
+  faRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function ProfilePicture({ image, className = "w-9" }) {
   return (
-    <div className={className}>
+    <div className={`relative ${className}`}>
       {image ? (
         <Image
           className="rounded-full object-fill"

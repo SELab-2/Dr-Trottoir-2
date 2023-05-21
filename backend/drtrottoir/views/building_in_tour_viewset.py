@@ -29,3 +29,6 @@ class BuildingInTourViewSet(viewsets.ModelViewSet):
     queryset = BuildingInTour.objects.all()
     serializer_class = BuildingInTourSerializer
     permission_classes = [IsAuthenticated & SuperPermissionOrReadOnly]
+
+    class Meta:
+        ordering = ['id']
