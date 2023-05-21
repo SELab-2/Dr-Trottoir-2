@@ -103,7 +103,8 @@ export default function ScheduleForm({ id }) {
   const fetchWaste = async (startDate, endDate, buildings) => {
     const wasteSchedule = {};
     const wasteEntries = await WasteService.getByDate(
-      dateFormat(startDate), dateFormat(endDate)
+      dateFormat(startDate),
+      dateFormat(endDate)
     );
     buildings.map((building) => {
       const buildingUrl = building.building.url;
