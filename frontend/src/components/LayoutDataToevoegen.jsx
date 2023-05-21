@@ -228,7 +228,6 @@ export default function LayoutDataAdd({ children, id }) {
   }, [router.query.type, dateRange]);
 
   const hideNew = router.query.type === "personeel";
-  const hideBulk = router.query.type === "personeel";
 
   return (
     <div className={"m-2 h-screen"}>
