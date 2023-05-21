@@ -5,6 +5,13 @@ const ApiInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
+ApiInstance.interceptors.request.use((config) => {
+  if (process.env.NEXT_PUBLIC_API_URL.includes("https:")) {
+    config.url = config.url.replace("http:", "https:");
+  }
+  return config;
+});
+
 ApiInstance.interceptors.response.use(
   (response) => response, // Simply return the response if the status is not 403
   async (error) => {

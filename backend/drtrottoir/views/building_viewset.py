@@ -227,13 +227,11 @@ class BuildingViewSet(viewsets.ModelViewSet):
         if pk is not None and Building.objects.filter(pk=pk).exists():
             building = Building.objects.get(pk=pk)
             for ownerPK in request.data:
-
                 if str(ownerPK).isnumeric() and CustomUser.objects.filter(pk=ownerPK).exists():
                     building.owners.add(CustomUser.objects.get(pk=ownerPK))
 
                 else:
                     return Response("Invalid owner PK given", status=status.HTTP_400_BAD_REQUEST)
-
             building.save()
 
             return Response(
@@ -258,6 +256,7 @@ class BuildingViewSet(viewsets.ModelViewSet):
                     building.owners.add(CustomUser.objects.get(pk=ownerPK))
                 else:
                     return Response("Invalid owner PK given", status=status.HTTP_400_BAD_REQUEST)
+
 
             building.save()
 
