@@ -57,12 +57,10 @@ export default function BuildingForm({ id }) {
 
       if (id) {
         await BuildingService.patchById(id, data);
-      } else if (!id && owner !== "") {
+      } else {
         await BuildingService.post(data);
       }
-      if (owner !== "") {
-        await BuildingService.putOwnersByUrl(url, [urlToPK(owner)]);
-      }
+      await BuildingService.putOwnersByUrl(url, [urlToPK(owner)]);
 
       // await router.reload();
     } catch (e) {
