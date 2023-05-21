@@ -10,10 +10,6 @@ import { formDataHeader, formUrlEncoded } from "@/utils/contentTypeHeader";
 
 class HelperService {
   async getResponseByUrl(url) {
-    if (process.env.NEXT_PUBLIC_API_URL.includes("https:")) {
-      url = url.replace("http:", "https:");
-    }
-
     return await ApiInstance.get(url);
 
     // Error will be catched in the component if needed
