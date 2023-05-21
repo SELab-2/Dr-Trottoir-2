@@ -225,13 +225,13 @@ class BuildingViewSet(viewsets.ModelViewSet):
             building = Building.objects.get(pk=pk)
             for ownerPK in request.data:
                 print(ownerPK)
-                
+
                 if CustomUser.objects.filter(pk=ownerPK).exists():
                     building.owners.add(CustomUser.objects.get(pk=ownerPK))
 
                 else:
                     print("Invalid URL given")
-            
+
             building.save()
 
             return Response(
@@ -253,13 +253,13 @@ class BuildingViewSet(viewsets.ModelViewSet):
 
             for ownerPK in request.data:
                 print(ownerPK)
-                
+
                 if CustomUser.objects.filter(pk=ownerPK).exists():
                     building.owners.add(CustomUser.objects.get(pk=ownerPK))
 
                 else:
                     print("Invalid URL given")
-            
+
             building.save()
 
             return Response(
