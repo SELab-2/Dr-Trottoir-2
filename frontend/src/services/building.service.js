@@ -2,6 +2,7 @@ import HelperService from "@/services/helper.service";
 import ApiInstance from "@/services/ApiInstance";
 import { formDataHeader } from "@/utils/contentTypeHeader";
 import { getSession } from "next-auth/react";
+import { urlToPK } from "@/utils/urlToPK";
 
 class BuildingService {
   /**
@@ -147,9 +148,11 @@ class BuildingService {
    */
   #filterBuilding(data, args) {
     if (args.owner) {
-      data = data.filter((building) => {
-        building.owners.map((owner) => owner.url).includes(args.owner);
-      });
+      data = data.filter((building) =>
+        building.owners
+          .map((owner) => urlToPK(owner.url))
+          .includes(urlToPK(args.owner))
+      );
     }
     return data;
   }
