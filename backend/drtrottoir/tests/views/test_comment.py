@@ -50,6 +50,8 @@ class TestVisitCommentView(APITestCase):
         # Created_at is random in faker factory
         self.assertEqual({i: response.data[0][i] for i in response.data[0] if i != 'created_at'},
                          {i: serializer.data[i] for i in serializer.data if i != 'created_at'})
+        response = self.client.get(f'/api/visit/{-1}/comments/')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_post(self):
         self.client.force_authenticate(user=self.users[Roles.STUDENT])
@@ -170,6 +172,8 @@ class TestScheduleCommentView(APITestCase):
         # Created_at is random in faker factory
         self.assertEqual({i: response.data[0][i] for i in response.data[0] if i != 'created_at'},
                          {i: serializer.data[i] for i in serializer.data if i != 'created_at'})
+        response = self.client.get(f'/api/schedule/{-1}/comments/')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_post(self):
         self.client.force_authenticate(user=self.users[Roles.SUPERSTUDENT])
