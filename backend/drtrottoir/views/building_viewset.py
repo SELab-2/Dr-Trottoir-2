@@ -210,7 +210,11 @@ class BuildingViewSet(viewsets.ModelViewSet):
         """
         # Check if building id is valid
         if pk is not None and Building.objects.filter(pk=pk).exists():
-            return Response(UserPartialSerializer(Building.objects.get(pk=pk).owners.all(), many=True, context={'request': request}).data)
+            return Response(
+                UserPartialSerializer(
+                    Building.objects.get(pk=pk).owners.all(), many=True, context={'request': request}
+                ).data
+            )
         else:
             return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
 
@@ -230,7 +234,11 @@ class BuildingViewSet(viewsets.ModelViewSet):
             
             building.save()
 
-            return Response(UserPartialSerializer(Building.objects.get(pk=pk).owners.all(), many=True, context={'request': request}).data)
+            return Response(
+                UserPartialSerializer(
+                    Building.objects.get(pk=pk).owners.all(), many=True, context={'request': request}
+                ).data
+            )
         else:
             return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
 
@@ -254,7 +262,11 @@ class BuildingViewSet(viewsets.ModelViewSet):
             
             building.save()
 
-            return Response(UserPartialSerializer(Building.objects.get(pk=pk).owners.all(), many=True, context={'request': request}).data)
+            return Response(
+                UserPartialSerializer(
+                    Building.objects.get(pk=pk).owners.all(), many=True, context={'request': request}
+                ).data
+            )
         else:
             return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
 
