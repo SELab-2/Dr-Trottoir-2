@@ -12,8 +12,21 @@ class WasteService {
    * @returns {Promise<*>} A list with waste entries.
    */
   async get(args = {}) {
-    let all = await HelperService.getAllPagination(`waste/`);
-    return this.#filterWaste(all, args);
+    let all = await HelperService.getResponseByUrl(`waste/`);
+    return this.#filterWaste(all.data, args);
+  }
+
+  /**
+   * Returns all waste entries that range from the startDate to the endDate
+   * @param startDate The startDate in "YYYY-MM-DD" format
+   * @param endDate The endDate in "YYYY-MM-DD" format
+   * @returns {Promise<*>} A list with waste entries.
+   */
+  async getByDate(startDate, endDate) {
+    let data = await HelperService.getResponseByUrl(
+      `waste?start=${startDate}&end=${endDate}`
+    );
+    return data.data;
   }
 
   /**
