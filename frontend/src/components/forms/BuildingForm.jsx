@@ -50,17 +50,17 @@ export default function BuildingForm({ id }) {
     }
 
     try {
-      if (owner === "") {
-        alert("No owner given.");
-        return;
-      }
-
       if (id) {
         await BuildingService.patchById(id, data);
       } else {
         await BuildingService.post(data);
       }
-      await BuildingService.putOwnersByUrl(url, [urlToPK(owner)]);
+
+      if (owner !== "") {
+        await BuildingService.putOwnersByUrl(url, [urlToPK(owner)]);
+      } else {
+        await BuildingService.deleteOwnersByUrl(url);
+      }
 
       // await router.reload();
     } catch (e) {
