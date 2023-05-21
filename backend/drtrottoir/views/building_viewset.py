@@ -282,4 +282,3 @@ class BuildingViewSet(viewsets.ModelViewSet):
             return Response("Removed owners from building", status=status.HTTP_200_OK)
         else:
             return Response("Given building doesn't exist.", status=status.HTTP_400_BAD_REQUEST)
-
