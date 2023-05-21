@@ -33,6 +33,7 @@ import ScheduleCopyModal from "@/components/forms/forms-copy-modal/ScheduleCopyM
 import RegionCopyModal from "@/components/forms/forms-copy-modal/RegionCopyModal";
 import BuildingCopyModal from "@/components/forms/forms-copy-modal/BuildingCopyModal";
 import ColoredTag from "@/components/Tag";
+import sortByName from "@/utils/sortByName";
 
 function scheduleList(data) {
   return data.map((data) => {
@@ -57,11 +58,15 @@ function scheduleList(data) {
 }
 
 function tourList(data) {
-  data = data.filter((tour) => {
-    return !data.some((tour2) => {
-      return tour.name === tour2.name && urlToPK(tour.url) < urlToPK(tour2.url);
-    });
-  });
+  data = sortByName(
+    data.filter((tour) => {
+      return !data.some((tour2) => {
+        return (
+          tour.name === tour2.name && urlToPK(tour.url) < urlToPK(tour2.url)
+        );
+      });
+    })
+  );
 
   return data.map((data) => {
     const id = urlToPK(data.url);
@@ -82,7 +87,7 @@ function tourList(data) {
 }
 
 function regionList(data) {
-  return data.map((data) => {
+  return sortByName(data, "region_name").map((data) => {
     const id = urlToPK(data.url);
 
     return (
@@ -100,7 +105,7 @@ function regionList(data) {
 }
 
 function buildingList(data) {
-  return data.map((data) => {
+  return sortByName(data, "nickname").map((data) => {
     const id = urlToPK(data.url);
 
     return (
@@ -121,7 +126,7 @@ function buildingList(data) {
 }
 
 function userList(data, type) {
-  return data
+  return sortByName(data, "first_name")
     .filter((user) => !user.removed)
     .map((data) => {
       return (
@@ -386,7 +391,7 @@ export default function LayoutDataAdd({ children, id }) {
           )}
           <PrimaryCard
             className={`h-full ${
-              router.query.type === "afval" ? "w-full" : "w-4/5"
+              router.query.type === "afval" ? "w-full" : "grow"
             }`}
             title={router.query.id ? "Bewerken" : "Toevoegen"}
           >
