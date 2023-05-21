@@ -62,7 +62,7 @@ export default function BuildingForm({ id }) {
         await BuildingService.deleteOwnersByUrl(url);
       }
 
-      // await router.reload();
+      await router.reload();
     } catch (e) {
       alert(JSON.stringify(e.response.data));
     }
