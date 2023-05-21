@@ -169,7 +169,8 @@ class TestBuildingView(APITestCase):
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
         r = self.client.get(f'/api/building/{-1}/photos/', follow=True)
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
-        r = self.client.get(f'/api/building/{photo.visit.building_in_tour.building.pk}/photos?start=vandaag', follow=True)
+        r = self.client.get(f'/api/building/{photo.visit.building_in_tour.building.pk}/photos?start=vandaag',
+                            follow=True)
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
 
     # Test /building/{id}/comments?params endpoint
