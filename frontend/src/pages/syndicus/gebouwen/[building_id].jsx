@@ -294,54 +294,21 @@ export default function SyndicyBuildings() {
                 <div className={"flex"}>
                   <div className={"basis-1/3 mr-1"}>
                     <SecondaryCard
-                      title={"Verantwoordelijke"}
-                      icon={faBriefcase}
+                      title="Locatie"
+                      icon={faLocationDot}
                       className={"my-2"}
                     >
-                      {buildingDetail.owners.length === 0 ? (
-                        <p>
-                          Dit gebouw ontbreekt momenteel een verantwoordelijke.
-                        </p>
-                      ) : (
-                        buildingDetail.owners.map((owner) => (
-                          <div key={owner.email}>
-                            <p className={"font-bold"}>
-                              {owner["first_name"] + " " + owner.last_name}
-                            </p>
-                            <div className={"flex items-center"}>
-                              <FontAwesomeIcon
-                                icon={faEnvelope}
-                                className={"p-1"}
-                              />
-                              <a
-                                href={"mailto:" + owner.email}
-                                className={"underline hover:no-underline"}
-                              >
-                                {owner.email}
-                              </a>
-                            </div>
-                          </div>
-                        ))
-                      )}
+                      <p>{buildingDetail.address_line_1}</p>
+                      <p>{buildingDetail.address_line_2}</p>
+                      <MapView
+                        className={"pt-3  h-[420px] w-full"}
+                        address={
+                          buildingDetail.address_line_1 +
+                          " " +
+                          buildingDetail.address_line_2
+                        }
+                      />
                     </SecondaryCard>
-                    <div>
-                      <SecondaryCard
-                        title="Locatie"
-                        icon={faLocationDot}
-                        className={"my-2"}
-                      >
-                        <p>{buildingDetail.address_line_1}</p>
-                        <p>{buildingDetail.address_line_2}</p>
-                        <MapView
-                          className={"pt-3  h-[420px] w-full"}
-                          address={
-                            buildingDetail.address_line_1 +
-                            " " +
-                            buildingDetail.address_line_2
-                          }
-                        />
-                      </SecondaryCard>
-                    </div>
                   </div>
                   <div className={"ml-2 basis-2/3"}>
                     <SecondaryCard
