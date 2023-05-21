@@ -314,7 +314,14 @@ export default function WasteForm() {
                   )
               )
               .map((tour) => tour.name)}
-            optionsValues={allTours}
+            optionsValues={allTours.filter(
+              (tour) =>
+                !allTours.some(
+                  (tour2) =>
+                    tour.name === tour2.name &&
+                    urlToPK(tour.url) < urlToPK(tour2.url)
+                )
+            )}
             values={definedTours}
             onClick={changeTours}
             buttonClassName={"border-light-h-2 bg-light-bg-2"}
