@@ -15,6 +15,7 @@ import InputForm from "./forms-components/forms-input/InputForm";
 import Dropdown from "../Dropdown";
 import { faBicycle } from "@fortawesome/free-solid-svg-icons";
 import sortByName from "@/utils/sortByName";
+import filterTourByRecent from "@/utils/filterTourByRecent";
 
 export default function WasteForm() {
   const [loading, setLoading] = useState(true);
@@ -304,24 +305,8 @@ export default function WasteForm() {
           <Dropdown
             multi={true}
             icon={faBicycle}
-            options={allTours
-              .filter(
-                (tour) =>
-                  !allTours.some(
-                    (tour2) =>
-                      tour.name === tour2.name &&
-                      urlToPK(tour.url) < urlToPK(tour2.url)
-                  )
-              )
-              .map((tour) => tour.name)}
-            optionsValues={allTours.filter(
-              (tour) =>
-                !allTours.some(
-                  (tour2) =>
-                    tour.name === tour2.name &&
-                    urlToPK(tour.url) < urlToPK(tour2.url)
-                )
-            )}
+            options={filterTourByRecent(allTours).map((tour) => tour.name)}
+            optionsValues={filterTourByRecent(allTours)}
             values={definedTours}
             onClick={changeTours}
             buttonClassName={"border-light-h-2 bg-light-bg-2"}

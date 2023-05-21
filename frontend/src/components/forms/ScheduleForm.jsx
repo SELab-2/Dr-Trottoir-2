@@ -14,6 +14,7 @@ import BuildingService from "@/services/building.service";
 import WasteService from "@/services/waste.service";
 import SecondaryCard from "../custom-card/SecondaryCard";
 import Link from "next/link";
+import filterTourByRecent from "@/utils/filterTourByRecent";
 
 export default function ScheduleForm({ id }) {
   const [loading, setLoading] = useState(true);
@@ -182,7 +183,7 @@ export default function ScheduleForm({ id }) {
         value={selectedTour}
         required
       >
-        {allTours.map((tour, index) => {
+        {filterTourByRecent(allTours).map((tour, index) => {
           return (
             <option key={tour.url} value={tour.url}>
               {tour.name}
