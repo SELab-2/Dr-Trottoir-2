@@ -172,15 +172,15 @@ export default function Templates() {
       localSearchResults.sort((a, b) => {
         switch (localSortOption) {
           case EmailFields.Recipients:
-            return a["to"] > b["to"];
+            return a["to"] > b["to"] ? 1 : -1;
           case EmailFields.Cc:
-            return a["cc"] > b["cc"];
+            return a["cc"] > b["cc"] ? 1 : -1;
           case EmailFields.Bcc:
-            return a["bcc"] > b["bcc"];
+            return a["bcc"] > b["bcc"] ? 1 : -1;
           case EmailFields.Subject:
-            return a["subject"] > b["subject"];
+            return a["subject"] > b["subject"] ? 1 : -1;
           case EmailFields.Body:
-            return a["body"] > b["body"];
+            return a["body"] > b["body"] ? 1 : -1;
         }
       });
     }
@@ -312,15 +312,12 @@ export default function Templates() {
     setAttemptLeaveModalOpen(false);
 
     if (protectLeaveOrigin.cause === LeaveOrigins.Route) {
-      console.log("here now");
       if (saveState === SaveState.New) {
         await saveNewTemplateModal();
       } else if (saveState === SaveState.Dirty) {
         await updateTemplateModal();
       }
-      console.log("here");
       router.events.off("routeChangeStart", onRouteChangeStart);
-      console.log("pushing");
       router.push(attemptedRoute);
     } else {
       if (saveState === SaveState.New) {
