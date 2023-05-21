@@ -11,6 +11,9 @@ from drtrottoir.tests.factories import (
     SuperStudentUserFactory,
     OwnerUserFactory,
     StudentUserFactory,
+    PhotoFactory,
+    VisitCommentFactory,
+    ScheduleCommentFactory
 )
 from drtrottoir.models.custom_user import Roles
 
@@ -28,6 +31,7 @@ class TestBuildingView(APITestCase):
             Roles.OWNER: OwnerUserFactory(),
             Roles.STUDENT: StudentUserFactory()
         }
+        self.building.owners.add(self.users[Roles.OWNER])
         self.client.force_authenticate(user=self.users[Roles.SUPERSTUDENT])
 
     def test_get(self):
@@ -152,4 +156,79 @@ class TestBuildingView(APITestCase):
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
         # Wrong building id
         r = self.client.get('/api/building/-1/waste', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # Test /building/{id}/photos?params endpoint
+    def test_photos(self):
+        photo = PhotoFactory()
+        r = self.client.get(f'/api/building/{photo.visit.building_in_tour.building.pk}/photos/', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(r.data), 1)
+        r = self.client.get(f'/api/building/{photo.visit.building_in_tour.building.pk}/photos?notaparameter=0',
+                            follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+        r = self.client.get(f'/api/building/{-1}/photos/', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+        r = self.client.get(f'/api/building/{photo.visit.building_in_tour.building.pk}/photos?start=vandaag', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # Test /building/{id}/comments?params endpoint
+    def test_comments(self):
+        visitcomment = VisitCommentFactory()
+        r = self.client.get(f'/api/building/{visitcomment.visit.building_in_tour.building.pk}/comments/', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(r.data), 1)
+        schedulecomment = ScheduleCommentFactory()
+        r = self.client.get(f'/api/building/{schedulecomment.building.pk}/comments/', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(r.data), 1)
+        r = self.client.get(f'/api/building/{schedulecomment.building.pk}/comments?notaparameter=0',
+                            follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+        r = self.client.get(f'/api/building/{-1}/comments/', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+        r = self.client.get(f'/api/building/{schedulecomment.building.pk}/comments?start=vandaag', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # Test GET /building/{id}/owners endpoint
+    def test_get_owners(self):
+        r = self.client.get(f'/api/building/{self.building.pk}/owners/', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(r.data), 1)
+        r = self.client.get(f'/api/building/{-1}/owners/', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # Test POST /building/{id}/owners endpoint
+    def test_post_owners(self):
+        newowner = OwnerUserFactory()
+        d = {newowner.pk}
+        r = self.client.post(f'/api/building/{self.building.pk}/owners/', data=d, follow=True)
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(r.data), 2)
+        r = self.client.post(f'/api/building/{-1}/owners/', follow=True, data=d)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+        r = self.client.post(f'/api/building/{self.building.pk}/owners/', data={"ietsrandom"}, follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # Test PUT /building/{id}/owners endpoint
+    def test_put_owners(self):
+        newowner = OwnerUserFactory()
+        d = {newowner.pk}
+        r = self.client.put(f'/api/building/{self.building.pk}/owners/', data=d, follow=True)
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(r.data), 1)
+        self.assertEqual(r.data[0]['email'], newowner.email)
+        r = self.client.put(f'/api/building/{-1}/owners/', follow=True, data=d)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+        r = self.client.put(f'/api/building/{self.building.pk}/owners/', data={"ietsrandom"}, follow=True)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # Test DELETE /building/{id}/owners endpoint
+    def test_delete_owners(self):
+        r = self.client.delete(f'/api/building/{self.building.pk}/owners/', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        r = self.client.get(f'/api/building/{self.building.pk}/owners/', follow=True)
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(r.data), 0)
+        r = self.client.delete(f'/api/building/{-1}/owners/', follow=True)
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
