@@ -16,7 +16,6 @@ export default function BuildingForm({ id }) {
   const router = useRouter();
 
   // DATA ////////////////////////////////////////
-  const [url, setUrl] = useState({});
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [allOwners, setAllOwners] = useState([]);
@@ -50,16 +49,17 @@ export default function BuildingForm({ id }) {
     }
 
     try {
+      let response;
       if (id) {
-        await BuildingService.patchById(id, data);
+        response = await BuildingService.patchById(id, data);
       } else {
-        await BuildingService.post(data);
+        response = await BuildingService.post(data);
       }
 
       if (owner !== "") {
-        await BuildingService.putOwnersByUrl(url, [urlToPK(owner)]);
+        await BuildingService.putOwnersByUrl(response.url, [urlToPK(owner)]);
       } else {
-        await BuildingService.deleteOwnersByUrl(url);
+        await BuildingService.deleteOwnersByUrl(response.url);
       }
 
       await router.reload();
@@ -83,7 +83,6 @@ export default function BuildingForm({ id }) {
       setLoading(true);
       if (id) {
         const data = await BuildingService.getById(id);
-        setUrl(data.url);
         setName(data.nickname);
         setDescription(data.description);
         setAddress1(data.address_line_1);
